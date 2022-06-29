@@ -2648,4 +2648,13 @@ footer .copyright span:last-child::after {
 #go-top a:hover {
 	background: #000000;
 }
+
+figcaption h3 {
+	font-size: 10px !important;
+}
+
+figcaption p {
+	font-size: 8px !important;
+}
+
 /*# sourceMappingURL=main.css.map */
