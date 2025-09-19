@@ -86,6 +86,7 @@
         </select>
         <input id="cityInput" type="text" placeholder="Ketik nama kota...">
         <button id="btnCity">Gunakan kota</button>
+        <button id="btnDefault">Lebak Bulus</button>
         <button id="btnRefresh">GPS</button>
       </div>
     </div>
@@ -97,7 +98,7 @@
   </div>
 
   <footer>
-    <div>I♡F</div>
+    <div>Muhammad Faris Muzakki & Indana Zulfa</div>
     <div class="small">Sumber: Aladhan API (utama) — fallback: perhitungan lokal (PrayTimes.js).</div>
   </footer>
 </div>
@@ -231,7 +232,16 @@ let _liveInterval = null;
 function updateClock(){
   const now=new Date();
   document.getElementById("nowclock").textContent=now.toLocaleTimeString("id-ID",{hour12:false});
-  document.getElementById("nowdate").textContent=now.toLocaleDateString("id-ID",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+  // Gregorian date
+  const gdate = now.toLocaleDateString("id-ID",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+  // Hijri date (Intl with islamic calendar)
+  let hdate = '';
+  try{
+    hdate = new Intl.DateTimeFormat('id-ID', {calendar: 'islamic', day: 'numeric', month: 'long', year: 'numeric'}).format(now);
+  }catch(e){
+    try{ hdate = new Intl.DateTimeFormat('id-ID-u-ca-islamic').format(now); }catch(e2){ hdate = ''; }
+  }
+  document.getElementById("nowdate").textContent = gdate + (hdate?(' — '+hdate):'');
   // detect local day change and refresh timings if needed
   const todayStr = now.toDateString();
   if(todayStr !== _lastDateStr){
@@ -293,6 +303,34 @@ function renderPrayers(){
         else norm[k] = NaN;
       } else norm[k] = NaN;
     }
+
+    // if Isya already passed today, fetch timings for tomorrow and use them for countdowns
+    const nowHoursCheck = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
+    let usedTomorrow = false;
+    if(!isNaN(norm['isha']) && nowHoursCheck >= norm['isha']){
+      // get tomorrow's timings
+      const tomorrow = new Date(now.getTime() + 24*3600*1000);
+      let tomes = await fetchTimingsFromAladhan(tomorrow,currentLat,currentLon,currentMethod);
+      if(!tomes){
+        tomes = getPrayerTimes(tomorrow,currentLat,currentLon,tz,currentMethod);
+      }
+      if(tomes){
+        // replace times for display but normalize by adding 24 so countdowns point to next day
+        for(let k of Object.keys(prayNames)){
+          const vv = tomes[k];
+          // keep display as tomes (local time) but norm add 24
+          if(typeof vv === 'number') norm[k] = vv + 24;
+          else if(typeof vv === 'string'){
+            const parts = vv.split(':');
+            if(parts.length>=2) norm[k] = parseInt(parts[0],10) + parseInt(parts[1],10)/60 + (parts[2]?parseInt(parts[2],10)/3600:0) + 24;
+            else norm[k] = NaN;
+          } else norm[k] = NaN;
+          // ensure the times variable shows tomorrow's time for display
+          times[k] = (typeof vv === 'number') ? vv : vv;
+        }
+        usedTomorrow = true;
+      }
+    }
       for(let k of Object.keys(prayNames)){
         const displayTime = floatToTime(times[k]);
         const t = norm[k];
@@ -300,7 +338,7 @@ function renderPrayers(){
         if(!isNaN(t)){
           if(t <= nowHours){
             // already passed for today
-            infoText = 'selesai';
+            infoText = 'Selesai';
           } else {
             const diffSec = Math.round((t - nowHours) * 3600);
             infoText = formatHMS(diffSec);
@@ -364,8 +402,8 @@ function renderPrayers(){
         const h = Math.floor(diffSec/3600); const m = Math.floor((diffSec%3600)/60); const s = diffSec%60;
         infoCell.textContent = (h<10?('0'+h):h)+':'+(m<10?('0'+m):m)+':'+(s<10?('0'+s):s);
       } else {
-        // not the next: if already passed today -> 'selesai' otherwise show '—'
-        if(t <= nowHours) infoCell.textContent = 'selesai';
+        // not the next: if already passed today -> 'Selesai' otherwise show '—'
+        if(t <= nowHours) infoCell.textContent = 'Selesai';
         else infoCell.textContent = '—';
       }
       // highlight
@@ -473,6 +511,15 @@ document.getElementById("btnCity").addEventListener("click",async()=>{
   const result=await getCoordsFromCity(city);
   if(result){setLocation(result.lat,result.lon,result.display);}
   else alert("Kota tidak ditemukan.");
+});
+document.getElementById("btnDefault").addEventListener("click",async()=>{
+  const city = 'Lebak Bulus, Cilandak, Jakarta Selatan, Daerah Khusus Ibukota Jakarta, Jawa, Indonesia';
+  const result = await getCoordsFromCity(city);
+  if(result) {
+    // override the displayed name to the exact text requested
+    const display = 'Lebak Bulus, Cilandak, Jakarta Selatan, Daerah Khusus Ibukota Jakarta, Jawa, Indonesia';
+    setLocation(result.lat,result.lon,display);
+  } else alert('Gagal mengambil lokasi default.');
 });
 
 // Init
