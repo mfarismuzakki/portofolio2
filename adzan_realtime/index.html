@@ -18,17 +18,36 @@
   .row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
   .clock{font-size:28px;font-weight:600}
   .sub{color:var(--muted);font-size:13px}
+
+  /* Table base */
   table{width:100%;border-collapse:collapse;margin-top:10px}
-  th,td{padding:10px 8px;text-align:left}
-  tr{border-bottom:1px dashed rgba(255,255,255,0.03)}
+  /* nicer header */
+  #prayTable thead th{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:12px 10px; font-weight:700; font-size:13px; color:#f7fafc; letter-spacing:0.2px; text-align:left;
+    border-bottom:1px solid rgba(255,255,255,0.04);
+  }
+  /* default cell */
+  #prayTable td{padding:12px 10px; text-align:left}
+  /* subtle zebra and row separators */
+  #prayTable tbody tr{border-bottom:1px solid rgba(255,255,255,0.03)}
+  #prayTable tbody tr:nth-child(odd){background:rgba(255,255,255,0.012)}
+  #prayTable tbody tr:hover{background:rgba(255,255,255,0.02)}
+
   td.time{font-weight:600}
   /* stabilize table to avoid layout shift when countdown updates */
   #prayTable{table-layout:fixed}
   #prayTable th:nth-child(1), #prayTable td:nth-child(1){width:36%}
   #prayTable th:nth-child(2), #prayTable td:nth-child(2){width:32%}
   #prayTable th:nth-child(3), #prayTable td:nth-child(3){width:32%}
-  td.small, td.time{white-space:nowrap; text-overflow:ellipsis; overflow:hidden}
-  td.small{font-variant-numeric:tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace; text-align:right}
+  /* Info column centered and stable numeric font */
+  #prayTable th:nth-child(3),
+  #prayTable td:nth-child(3),
+  #prayTable td[data-info]{
+    text-align:center;
+  }
+  #prayTable td.small{white-space:nowrap; text-overflow:ellipsis; overflow:hidden; font-variant-numeric:tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;}
+
   .next{background:linear-gradient(90deg, rgba(245,158,11,0.12), rgba(255,184,107,0.05));border-radius:8px;padding:8px}
   tr.row-next{
     background: linear-gradient(90deg, rgba(245,158,11,0.22), rgba(255,184,107,0.08));
@@ -186,7 +205,7 @@ async function fetchTimingsFromAladhan(date, lat, lon, methodKey){
     const res = await fetch(url);
     if(!res.ok) throw new Error('Aladhan fetch failed');
     const body = await res.json();
-    if(body && body.code===200 && body.data && body.data.timings){
+  if(body && body.code===200 && body.data && body.data.timings){
       // timings are strings like "05:12" in local timezone; convert to fractional hours
       const t = body.data.timings;
       function parseToFloat(hm){
@@ -202,8 +221,9 @@ async function fetchTimingsFromAladhan(date, lat, lon, methodKey){
         maghrib: parseToFloat(t.Maghrib || t.MAGHRIB || t.maghrib),
         isha: parseToFloat(t.Isha || t.ISHA || t.isha)
       };
-      try{ localStorage.setItem(cacheKey, JSON.stringify(out)); }catch(e){}
-      return out;
+      const timezone = (body.data.meta && body.data.meta.timezone) ? body.data.meta.timezone : null;
+      try{ localStorage.setItem(cacheKey, JSON.stringify({timings: out, timezone: timezone})); }catch(e){}
+      return {timings: out, timezone: timezone};
     }
   }catch(err){
     console.warn('Aladhan API failed, falling back to local calc',err);
@@ -228,10 +248,64 @@ let _lastDateStr = (new Date()).toDateString(); // track local day for auto-refr
 let _midnightTimer = null;
 let _perPrayerNorm = {}; // store normalized times for live updates
 let _liveInterval = null;
+let currentTimeZone = null; // IANA timezone name (e.g. 'Asia/Jakarta') from API when available
+
+// Return {h,m,s} for given date in the specified IANA timezone (fallback to local)
+function getTimePartsInZone(date, timeZone){
+  try{
+    if(timeZone){
+      const parts = new Intl.DateTimeFormat('en-GB', {timeZone: timeZone, hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'}).formatToParts(date);
+      const hh = parseInt(parts.find(p=>p.type==='hour')?.value || '0',10);
+      const mm = parseInt(parts.find(p=>p.type==='minute')?.value || '0',10);
+      const ss = parseInt(parts.find(p=>p.type==='second')?.value || '0',10);
+      return {h:hh, m:mm, s:ss};
+    }
+  }catch(e){/* fallthrough to local */}
+  return {h: date.getHours(), m: date.getMinutes(), s: date.getSeconds()};
+}
+
+// Return offset in hours (may be fractional) for an IANA timezone at given date
+function getZoneOffsetHours(timeZone, date=new Date()){
+  try{
+    if(!timeZone) return -date.getTimezoneOffset()/60;
+    const parts = new Intl.DateTimeFormat('en-GB', {timeZone: timeZone, hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'}).formatToParts(date);
+    const hh = parseInt(parts.find(p=>p.type==='hour')?.value || '0',10);
+    const mm = parseInt(parts.find(p=>p.type==='minute')?.value || '0',10);
+    const ss = parseInt(parts.find(p=>p.type==='second')?.value || '0',10);
+    const localSeconds = hh*3600 + mm*60 + ss;
+    const utcSeconds = date.getUTCHours()*3600 + date.getUTCMinutes()*60 + date.getUTCSeconds();
+    let diff = localSeconds - utcSeconds;
+    if(diff > 12*3600) diff -= 24*3600;
+    if(diff < -12*3600) diff += 24*3600;
+    return diff/3600;
+  }catch(e){
+    return -date.getTimezoneOffset()/60;
+  }
+}
 
 function updateClock(){
   const now=new Date();
-  document.getElementById("nowclock").textContent=now.toLocaleTimeString("id-ID",{hour12:false});
+  // force HH:MM:SS with colons regardless of locale (some locales use dots)
+  function pad(n){return n<10?('0'+n):n}
+  try{
+    if(currentTimeZone){
+      // use toLocaleTimeString with timeZone for broad support
+      try{
+        const s = now.toLocaleTimeString('en-GB', {timeZone: currentTimeZone, hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
+        document.getElementById("nowclock").textContent = s;
+      }catch(e){
+        const hh = pad(now.getHours()); const mm = pad(now.getMinutes()); const ss = pad(now.getSeconds());
+        document.getElementById("nowclock").textContent = `${hh}:${mm}:${ss}`;
+      }
+    } else {
+      const hh = pad(now.getHours()); const mm = pad(now.getMinutes()); const ss = pad(now.getSeconds());
+      document.getElementById("nowclock").textContent = `${hh}:${mm}:${ss}`;
+    }
+  }catch(e){
+    // fallback to local time display
+    const hh = pad(now.getHours()); const mm = pad(now.getMinutes()); const ss = pad(now.getSeconds());
+    document.getElementById("nowclock").textContent = `${hh}:${mm}:${ss}`;
+  }
   // Gregorian date
   const gdate = now.toLocaleDateString("id-ID",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
   // Hijri date (Intl with islamic calendar)
@@ -271,8 +345,12 @@ function scheduleMidnightRefresh(){
 function renderPrayers(){
   if(currentLat===null||currentLon===null) return;
   const now=new Date();
-  const tz= -now.getTimezoneOffset()/60;
-  document.getElementById("tzname").textContent="GMT"+(tz>=0?"+":"")+tz;
+  const clientTzOffset = -now.getTimezoneOffset()/60;
+  // determine target timezone offset (hours) for calculations
+  const zoneOffset = currentTimeZone ? getZoneOffsetHours(currentTimeZone, now) : clientTzOffset;
+  // default display if API doesn't supply timezone
+  function formatOffset(off){ return 'GMT'+(off>=0?'+':'')+off; }
+  document.getElementById("tzname").textContent = formatOffset(clientTzOffset);
   // Try Aladhan API first for more accurate timings
   (async ()=>{
       // helper to format seconds into HH:MM:SS
@@ -283,13 +361,39 @@ function renderPrayers(){
         return pad(h)+':'+pad(m)+':'+pad(sec);
       }
 
-      const nowHours = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
-    let times = await fetchTimingsFromAladhan(now,currentLat,currentLon,currentMethod);
-    if(!times){
-      // fallback to local calculation (returns fractional hours in UTC-adjusted scheme)
-      times = getPrayerTimes(now,currentLat,currentLon,tz,currentMethod);
-      // getPrayerTimes returns hours in UTC? they are fractional hours relative to local Z; ensure values are in local hours
-    }
+  const nowParts = getTimePartsInZone(now, currentTimeZone);
+  const nowHours = nowParts.h + nowParts.m/60 + nowParts.s/3600;
+      let apiResp = await fetchTimingsFromAladhan(now,currentLat,currentLon,currentMethod);
+      let times = null;
+      let apiTimezone = null;
+      if(apiResp && apiResp.timings){
+        times = apiResp.timings;
+        apiTimezone = apiResp.timezone || null;
+      } else {
+        // fallback to old return shape or local calculation
+        if(apiResp && typeof apiResp === 'object' && apiResp.fajr!==undefined){ times = apiResp; }
+  else times = getPrayerTimes(now,currentLat,currentLon,zoneOffset,currentMethod);
+      }
+      // if API supplied timezone, use it in header (show IANA name and client offset)
+      if(apiTimezone){
+        // show IANA timezone and compute numeric GMT offset (e.g. GMT+9 or GMT+9:30)
+        try{
+          const tzName = apiTimezone;
+          // Prefer Intl short timezone name (often returns 'GMT+9' or equivalent)
+          const parts = new Intl.DateTimeFormat('en-US', {timeZone: tzName, timeZoneName: 'short'}).formatToParts(now);
+          const tzShort = parts.find(p => p.type === 'timeZoneName')?.value;
+          if(tzShort){
+            document.getElementById("tzname").textContent = tzName + ' (' + tzShort + ')';
+          } else {
+            document.getElementById("tzname").textContent = tzName;
+          }
+        }catch(e){
+          // fallback to raw timezone name
+          document.getElementById("tzname").textContent = apiTimezone;
+        }
+        // set currentTimeZone so header clock and other UI use it
+        currentTimeZone = apiTimezone;
+      }
     const tbody=document.querySelector("#prayTable tbody");
     tbody.innerHTML="";
     // normalize times (fractional hours) for relative calculations within this scope
@@ -304,15 +408,20 @@ function renderPrayers(){
       } else norm[k] = NaN;
     }
 
-    // if Isya already passed today, fetch timings for tomorrow and use them for countdowns
-    const nowHoursCheck = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
+  // if Isya already passed today, fetch timings for tomorrow and use them for countdowns
+  const nowHoursCheck = nowParts.h + nowParts.m/60 + nowParts.s/3600;
     let usedTomorrow = false;
     if(!isNaN(norm['isha']) && nowHoursCheck >= norm['isha']){
       // get tomorrow's timings
       const tomorrow = new Date(now.getTime() + 24*3600*1000);
-      let tomes = await fetchTimingsFromAladhan(tomorrow,currentLat,currentLon,currentMethod);
-      if(!tomes){
-        tomes = getPrayerTimes(tomorrow,currentLat,currentLon,tz,currentMethod);
+      const tomesResp = await fetchTimingsFromAladhan(tomorrow,currentLat,currentLon,currentMethod);
+      let tomes = null;
+      let tomesTz = null;
+      if(tomesResp && tomesResp.timings){ tomes = tomesResp.timings; tomesTz = tomesResp.timezone || null; }
+      else if(tomesResp && typeof tomesResp === 'object' && tomesResp.fajr !== undefined){ tomes = tomesResp; }
+      else {
+        const tomZoneOffset = currentTimeZone ? getZoneOffsetHours(currentTimeZone, tomorrow) : clientTzOffset;
+        tomes = getPrayerTimes(tomorrow,currentLat,currentLon,tomZoneOffset,currentMethod);
       }
       if(tomes){
         // replace times for display but normalize by adding 24 so countdowns point to next day
@@ -353,7 +462,7 @@ function renderPrayers(){
     updateNext(times);
       // determine next prayer (today only); if none, next is fajr (tomorrow)
       let nextKey = null; let minDiff = Infinity;
-      const nowHoursForNext = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
+  const nowHoursForNext = nowParts.h + nowParts.m/60 + nowParts.s/3600;
       for(const k of Object.keys(norm)){
         const t = norm[k];
         if(isNaN(t)) continue;
@@ -372,8 +481,9 @@ function renderPrayers(){
 
   // update Info column every second and highlight next prayer
   function updateLiveInfo(){
-    const now = new Date();
-    const nowHours = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
+  const now = new Date();
+  const nowParts = getTimePartsInZone(now, currentTimeZone);
+  const nowHours = nowParts.h + nowParts.m/60 + nowParts.s/3600;
     // find next prayer (today only); if none, next is fajr (tomorrow)
     let nextKey = null; let minDiff = Infinity;
     for(const k of Object.keys(_perPrayerNorm)){
@@ -416,7 +526,8 @@ function updateNext(times){
   try{ if(countdownTimer) clearTimeout(countdownTimer); }catch(e){}
 
   const now=new Date();
-  const cur=now.getHours()+now.getMinutes()/60+now.getSeconds()/3600;
+  const nowParts = getTimePartsInZone(now, currentTimeZone);
+  const cur = nowParts.h + nowParts.m/60 + nowParts.s/3600;
   let upcoming=null;
   // Normalize times: they might be fractional numbers (hours) or strings "HH:MM".
   const norm={};
@@ -443,9 +554,10 @@ function updateNext(times){
   }, ms+500);
 }
 
-function setLocation(lat,lon,name){
+function setLocation(lat,lon,name, timezone=null){
   currentLat=lat;currentLon=lon;currentCity=name;
   document.getElementById("locname").textContent=name;
+  if(timezone) currentTimeZone = timezone;
   // Render prayers (renderPrayers will itself try Aladhan and fallback)
   renderPrayers();
   // ensure midnight refresh is scheduled when we have a location
