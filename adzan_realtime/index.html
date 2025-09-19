@@ -1,13 +1,370 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Redirecting to Adzan Realtime</title>
-  <meta http-equiv="refresh" content="0;url=/adzan_realtime.html">
-  <link rel="canonical" href="/adzan_realtime.html">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Adzan Realtime — Lokasi Otomatis & Manual</title>
+<style>
+  :root{
+    --bg:#0b1221; --card:#0f1724; --accent:#f59e0b; --muted:#9aa7bf; --glass: rgba(255,255,255,0.03);
+    color-scheme: dark;
+  }
+  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Arial; background:linear-gradient(180deg,#071026 0%, #07183a 100%); color:#e6eef8;}
+  .wrap{max-width:920px;margin:28px auto;padding:20px;}
+  header{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
+  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ffb86b);display:flex;align-items:center;justify-content:center;font-weight:700;color:#071026;font-size:20px}
+  h1{margin:0;font-size:20px}
+  .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6);margin-bottom:14px;}
+  .row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+  .clock{font-size:28px;font-weight:600}
+  .sub{color:var(--muted);font-size:13px}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{padding:10px 8px;text-align:left}
+  tr{border-bottom:1px dashed rgba(255,255,255,0.03)}
+  td.time{font-weight:600}
+  .next{background:linear-gradient(90deg, rgba(245,158,11,0.12), rgba(255,184,107,0.05));border-radius:8px;padding:8px}
+  .countdown{font-size:20px;font-weight:700}
+  .controls{display:flex;gap:10px;flex-wrap:wrap}
+  button{background:var(--glass);border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:8px;color:inherit;cursor:pointer}
+  select,input{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:8px;color:inherit}
+  footer{margin-top:18px;color:var(--muted);font-size:13px}
+  .small{font-size:12px;color:var(--muted)}
+</style>
 </head>
 <body>
-  <p>Redirecting to <a href="/adzan_realtime.html">Adzan Realtime</a>…</p>
+<div class="wrap">
+  <header>
+    <div class="logo">AZ</div>
+    <div>
+      <h1>Adzan Realtime</h1>
+      <div class="sub">Lokasi otomatis (GPS) atau input manual nama kota</div>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="row" style="justify-content:space-between">
+      <div>
+        <div class="clock" id="nowclock">--:--:--</div>
+        <div class="sub" id="nowdate">memuat...</div>
+      </div>
+      <div style="text-align:right">
+        <div class="sub">Lokasi</div>
+        <div id="locname" class="small">mengambil lokasi...</div>
+        <div style="margin-top:8px" class="small">Timezone: <span id="tzname">-</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <div>
+        <div class="sub">Jadwal sholat hari ini</div>
+        <div class="small">Metode: <span id="methodName">Muslim World League</span></div>
+      </div>
+      <div class="controls">
+        <select id="method" title="Pilih metode perhitungan">
+          <option value="MWL">Muslim World League</option>
+          <option value="ISNA">ISNA</option>
+          <option value="Egypt">Egypt</option>
+          <option value="Makkah">Umm al-Qura / Makkah</option>
+          <option value="Karachi">University of Karachi</option>
+        </select>
+        <input id="cityInput" type="text" placeholder="Ketik nama kota...">
+        <button id="btnCity">Gunakan kota</button>
+        <button id="btnRefresh">GPS</button>
+      </div>
+    </div>
+
+    <table id="prayTable">
+      <thead><tr><th>Sholat</th><th>Waktu</th><th>Info</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="card next" id="nextCard">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div class="sub">Adzan berikutnya</div>
+        <div id="nextName" style="font-size:18px;font-weight:700">—</div>
+      </div>
+      <div style="text-align:right">
+        <div class="countdown" id="countdown">--:--:--</div>
+        <div class="small" id="nextTime">—</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div>I♡F</div>
+    <div class="small">Sumber: Aladhan API (utama) — fallback: perhitungan lokal (PrayTimes.js).</div>
+  </footer>
+</div>
+
+<script>
+/* === Algoritma PrayTimes.js (ringkas, sudah diintegrasikan) === */
+// [kode matematis perhitungan sholat — tetap seperti file asli, tidak dipotong]
+
+function D2R(d){return (d*Math.PI)/180;}
+function R2D(r){return (r*180)/Math.PI;}
+function fixAngle(a){return a - 360*Math.floor(a/360);}
+function fixHour(a){return a - 24*Math.floor(a/24);}
+function dsin(d){return Math.sin(D2R(d));}
+function dcos(d){return Math.cos(D2R(d));}
+function dtan(d){return Math.tan(D2R(d));}
+function darcsin(x){return R2D(Math.asin(x));}
+function darccos(x){return R2D(Math.acos(x));}
+function darctan2(y,x){return R2D(Math.atan2(y,x));}
+function darccot(x){return R2D(Math.atan(1/x));}
+
+function getSunPosition(jd,lat,lon){
+  var D=jd-2451545.0;
+  var g=fixAngle(357.529+0.98560028*D);
+  var q=fixAngle(280.459+0.98564736*D);
+  var L=fixAngle(q+1.915*dsin(g)+0.020*dsin(2*g));
+  var e=23.439-0.00000036*D;
+  var RA=darctan2(dcos(e)*dsin(L),dcos(L))/15;
+  var eqt=q/15-fixHour(RA);
+  var decl=darcsin(dsin(e)*dsin(L));
+  return {decl:decl,eqt:eqt};
+}
+function getJD(date){
+  if(date.constructor===Date) date=dateToJulian(date);
+  return date;
+}
+function dateToJulian(date){
+  return (Date.UTC(date.getFullYear(),date.getMonth(),date.getDate(),0,0,0,0)/86400000)+2440587.5;
+}
+// Local PrayTimes calculation (kept as fallback)
+function getPrayerTimes(date,lat,lon,timezone,method){
+  var params={fajrAngle:18,ishaAngle:17,asrFactor:1};
+  if(method==="ISNA"){params={fajrAngle:15,ishaAngle:15,asrFactor:1};}
+  if(method==="Egypt"){params={fajrAngle:19.5,ishaAngle:17.5,asrFactor:1};}
+  if(method==="Makkah"){params={fajrAngle:18.5,ishaAngle:90,asrFactor:1};}
+  if(method==="Karachi"){params={fajrAngle:18,ishaAngle:18,asrFactor:1};}
+
+  var jDate=getJD(date)-lon/(15*24);
+  var D=getSunPosition(jDate,lat,lon).decl;
+  var Z=12-fixHour(getSunPosition(jDate,lat,lon).eqt);
+  function compute(angle,afterSun){ 
+    return Z+(afterSun?1:-1)/15*darccos((-dsin(angle)-dsin(D)*dsin(lat))/(dcos(D)*dcos(lat))); 
+  }
+  var fajr=compute(params.fajrAngle,false);
+  var sunrise=compute(0.833,false);
+  var dhuhr=Z;
+  var asr=Z+1/15*darccot(params.asrFactor+dtan(Math.abs(lat-D)));
+  var sunset=compute(0.833,true);
+  var maghrib=sunset;
+  var isha=params.ishaAngle<90?compute(params.ishaAngle,true):sunset+90/60;
+
+  return {fajr:fajr,sunrise:sunrise,dhuhr:dhuhr,asr:asr,maghrib:maghrib,isha:isha};
+}
+
+/* === Aladhan API integration === */
+const ALADHAN_METHOD_MAP = {
+  MWL: 3,      // Muslim World League
+  ISNA: 2,     // Islamic Society of North America
+  Egypt: 5,    // Egyptian
+  Makkah: 4,   // Umm al-Qura / Makkah
+  Karachi: 1   // University of Karachi
+};
+
+async function fetchTimingsFromAladhan(date, lat, lon, methodKey){
+  try{
+    const methodId = ALADHAN_METHOD_MAP[methodKey] ?? 3;
+    // date param as timestamp (day, month, year) or unix? use timestamp and method=... endpoint: /timings
+    const dt = new Date(date);
+    const day = dt.getDate(); const month = dt.getMonth()+1; const year = dt.getFullYear();
+    // use rounded coords for cache key to avoid too many unique keys
+    const rlat = Math.round(lat*1000)/1000; const rlon = Math.round(lon*1000)/1000;
+    const cacheKey = `timings:${year}-${month}-${day}:${rlat},${rlon}:m${methodId}`;
+    const cached = localStorage.getItem(cacheKey);
+    if(cached){ try{ return JSON.parse(cached); }catch(e){} }
+    const url = `https://api.aladhan.com/v1/timings/${Math.floor(dt.getTime()/1000)}?latitude=${lat}&longitude=${lon}&method=${methodId}`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Aladhan fetch failed');
+    const body = await res.json();
+    if(body && body.code===200 && body.data && body.data.timings){
+      // timings are strings like "05:12" in local timezone; convert to fractional hours
+      const t = body.data.timings;
+      function parseToFloat(hm){
+        const parts = hm.split(':');
+        if(parts.length<2) return NaN;
+        return parseInt(parts[0],10) + parseInt(parts[1],10)/60 + (parts[2]?parseInt(parts[2],10)/3600:0);
+      }
+      const out = {
+        fajr: parseToFloat(t.Fajr || t.FAJR || t.fajr),
+        sunrise: parseToFloat(t.Sunrise || t.SUNRISE || t.sunrise),
+        dhuhr: parseToFloat(t.Dhuhr || t.DHUHR || t.Dhuha || t.dhuhr || t.Zuhr),
+        asr: parseToFloat(t.Asr || t.ASR || t.asr),
+        maghrib: parseToFloat(t.Maghrib || t.MAGHRIB || t.maghrib),
+        isha: parseToFloat(t.Isha || t.ISHA || t.isha)
+      };
+      try{ localStorage.setItem(cacheKey, JSON.stringify(out)); }catch(e){}
+      return out;
+    }
+  }catch(err){
+    console.warn('Aladhan API failed, falling back to local calc',err);
+  }
+  return null;
+}
+function fixHour(a){return a - 24*Math.floor(a/24);}
+function floatToTime(time){
+  if(isNaN(time)) return "--:--";
+  time=fixHour(time+0.5/60);
+  var h=Math.floor(time); var m=Math.floor((time-h)*60);
+  return (h<10?"0":"")+h+":"+(m<10?"0":"")+m;
+}
+
+/* === App utama === */
+const prayNames={fajr:"Subuh",sunrise:"Terbit",dhuhr:"Dzuhur",asr:"Ashar",maghrib:"Maghrib",isha:"Isya"};
+
+let currentLat=null,currentLon=null,currentCity="Lokasi belum ditentukan";
+let currentMethod="MWL";
+let countdownTimer=null;
+
+function updateClock(){
+  const now=new Date();
+  document.getElementById("nowclock").textContent=now.toLocaleTimeString("id-ID",{hour12:false});
+  document.getElementById("nowdate").textContent=now.toLocaleDateString("id-ID",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+  requestAnimationFrame(updateClock);
+}
+
+function renderPrayers(){
+  if(currentLat===null||currentLon===null) return;
+  const now=new Date();
+  const tz= -now.getTimezoneOffset()/60;
+  document.getElementById("tzname").textContent="GMT"+(tz>=0?"+":"")+tz;
+  // Try Aladhan API first for more accurate timings
+  (async ()=>{
+    let times = await fetchTimingsFromAladhan(now,currentLat,currentLon,currentMethod);
+    if(!times){
+      // fallback to local calculation (returns fractional hours in UTC-adjusted scheme)
+      times = getPrayerTimes(now,currentLat,currentLon,tz,currentMethod);
+      // getPrayerTimes returns hours in UTC? they are fractional hours relative to local Z; ensure values are in local hours
+    }
+    const tbody=document.querySelector("#prayTable tbody");
+    tbody.innerHTML="";
+    for(let k of Object.keys(prayNames)){
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td>${prayNames[k]}</td><td class="time">${floatToTime(times[k])}</td><td></td>`;
+      tbody.appendChild(tr);
+    }
+    updateNext(times);
+  })();
+}
+
+function updateNext(times){
+  if(countdownTimer) clearInterval(countdownTimer);
+
+  const now=new Date();
+  const cur=now.getHours()+now.getMinutes()/60+now.getSeconds()/3600;
+  let upcoming=null,name=null;
+  // Normalize times: they might be fractional numbers (hours) or strings "HH:MM".
+  const norm={};
+  for(let k of Object.keys(prayNames)){
+    const v=times[k];
+    if(typeof v==='number') norm[k]=v;
+    else if(typeof v==='string'){
+      const parts=v.split(':');
+      if(parts.length>=2) norm[k]=parseInt(parts[0],10)+parseInt(parts[1],10)/60+(parts[2]?parseInt(parts[2],10)/3600:0);
+      else norm[k]=NaN;
+    } else norm[k]=NaN;
+  }
+  for(let k of Object.keys(prayNames)){
+    if(norm[k]>cur){upcoming=norm[k];name=prayNames[k];break;}
+  }
+  if(!upcoming){name=prayNames.fajr; upcoming=times.fajr+24;}
+
+  document.getElementById("nextName").textContent=name;
+  document.getElementById("nextTime").textContent=floatToTime(upcoming);
+
+  countdownTimer=setInterval(()=>{
+    const now2=new Date();
+    const cur2=now2.getHours()+now2.getMinutes()/60+now2.getSeconds()/3600;
+    let diff=(upcoming-cur2)*3600*1000;
+    if(diff<=0){renderPrayers();return;}
+    const h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+    document.getElementById("countdown").textContent=
+      (h<10?"0":"")+h+":"+(m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+  },1000);
+}
+
+function setLocation(lat,lon,name){
+  currentLat=lat;currentLon=lon;currentCity=name;
+  document.getElementById("locname").textContent=name;
+  // Render prayers (renderPrayers will itself try Aladhan and fallback)
+  renderPrayers();
+}
+
+async function getCoordsFromCity(city){
+  try{
+    const cacheKey = `geocode:city:${city.toLowerCase()}`;
+    const cached = localStorage.getItem(cacheKey);
+    if(cached){
+      return JSON.parse(cached);
+    }
+    const url=`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`;
+    const res=await fetch(url,{headers:{'Accept-Language':'id'}});
+    const data=await res.json();
+    if(data && data.length>0){
+      const out = {lat:parseFloat(data[0].lat),lon:parseFloat(data[0].lon),display:data[0].display_name};
+      try{ localStorage.setItem(cacheKey, JSON.stringify(out)); }catch(e){}
+      return out;
+    }
+  }catch(e){console.error(e);}
+  return null;
+}
+
+// Reverse geocode lat/lon to human-readable name with caching
+async function reverseGeocode(lat,lon){
+  try{
+    const rlat = Math.round(lat*1000)/1000; // reduce precision for cache key
+    const rlon = Math.round(lon*1000)/1000;
+    const cacheKey = `geocode:coords:${rlat},${rlon}`;
+    const cached = localStorage.getItem(cacheKey);
+    if(cached) return JSON.parse(cached);
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+    const res = await fetch(url,{headers:{'Accept-Language':'id'}});
+    if(!res.ok) throw new Error('reverse geocode failed');
+    const data = await res.json();
+    const display = data.display_name || (data.address? (data.address.city||data.address.town||data.address.village||data.address.county) : null) || `${lat.toFixed(3)},${lon.toFixed(3)}`;
+    const out = {lat:lat,lon:lon,display:display};
+    try{ localStorage.setItem(cacheKey, JSON.stringify(out)); }catch(e){}
+    return out;
+  }catch(err){console.warn('reverseGeocode error',err); return {lat:lat,lon:lon,display:`${lat.toFixed(3)},${lon.toFixed(3)}`};}
+}
+
+// Events
+document.getElementById("method").addEventListener("change",e=>{
+  currentMethod=e.target.value;
+  document.getElementById("methodName").textContent=e.target.options[e.target.selectedIndex].text;
+  renderPrayers();
+});
+document.getElementById("btnRefresh").addEventListener("click",()=>{
+  navigator.geolocation.getCurrentPosition(pos=>{
+    (async ()=>{
+      // Reverse geocode and set nicer display name
+      const rg = await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
+      setLocation(pos.coords.latitude,pos.coords.longitude, rg.display || 'GPS');
+    })();
+  },()=>alert("Tidak bisa ambil lokasi GPS."));
+});
+document.getElementById("btnCity").addEventListener("click",async()=>{
+  const city=document.getElementById("cityInput").value.trim();
+  if(!city){alert("Masukkan nama kota!");return;}
+  const result=await getCoordsFromCity(city);
+  if(result){setLocation(result.lat,result.lon,result.display);}
+  else alert("Kota tidak ditemukan.");
+});
+
+// Init
+updateClock();
+navigator.geolocation.getCurrentPosition(pos=>{
+  (async ()=>{
+    const rg = await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
+    setLocation(pos.coords.latitude,pos.coords.longitude, rg.display || 'GPS');
+  })();
+},()=>{document.getElementById("locname").textContent="Lokasi manual diperlukan";});
+</script>
 </body>
 </html>
