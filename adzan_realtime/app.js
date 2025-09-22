@@ -123,6 +123,11 @@ let _perPrayerNorm = {}; // store normalized times for live updates
 let _liveInterval = null;
 let currentTimeZone = null; // IANA timezone name (e.g. 'Asia/Jakarta') from API when available
 
+// Datalist suggestion helpers (autocomplete by text input)
+let _suggestionTimer = null;
+let _lastQuery = '';
+let _lastResults = [];
+
 // Return {h,m,s} for given date in the specified IANA timezone (fallback to local)
 function getTimePartsInZone(date, timeZone){
   try{
@@ -422,6 +427,7 @@ function setLocation(lat,lon,name, timezone=null){
   currentLat=lat;currentLon=lon;currentCity=name;
   document.getElementById("locname").textContent=name;
   if(timezone) currentTimeZone = timezone;
+  try{ localStorage.setItem('lastLocation', JSON.stringify({lat:lat, lon:lon, display:name, timezone: timezone || currentTimeZone || null})); }catch(e){}
   renderPrayers();
   scheduleMidnightRefresh();
 }
@@ -483,20 +489,64 @@ document.getElementById("btnCity").addEventListener("click",async()=>{
   if(result){setLocation(result.lat,result.lon,result.display);} 
   else alert("Kota tidak ditemukan.");
 });
-document.getElementById("btnDefault").addEventListener("click",async()=>{
-  const city = 'Lebak Bulus, Cilandak, Jakarta Selatan, Daerah Khusus Ibukota Jakarta, Jawa, Indonesia';
-  const result = await getCoordsFromCity(city);
-  if(result) {
-    const display = 'Lebak Bulus, Cilandak, Jakarta Selatan, Daerah Khusus Ibukota Jakarta, Jawa, Indonesia';
-    setLocation(result.lat,result.lon,display);
-  } else alert('Gagal mengambil lokasi default.');
+// Autocomplete suggestions on typing (debounced)
+const cityInputEl = document.getElementById('cityInput');
+const dl = document.getElementById('citySuggestions');
+function debounce(fn, wait){ let t; return function(...args){ clearTimeout(t); t=setTimeout(()=>fn.apply(this,args), wait); }; }
+const updateSuggestions = debounce(async function(){
+  const q = cityInputEl.value.trim();
+  if(q.length < 2){ dl.innerHTML=''; _lastResults=[]; return; }
+  if(q === _lastQuery) return;
+  _lastQuery = q;
+  try{
+    const url=`https://nominatim.openstreetmap.org/search?format=json&limit=5&addressdetails=1&q=${encodeURIComponent(q)}`;
+    const res=await fetch(url,{headers:{'Accept-Language':'id'}});
+    const data=await res.json();
+    _lastResults = data.map(item=>({
+      label: item.display_name,
+      lat: parseFloat(item.lat),
+      lon: parseFloat(item.lon)
+    }));
+    dl.innerHTML = _lastResults
+      .map(r=>`<option value="${r.label.replace(/"/g,'&quot;')}"></option>`)
+      .join('');
+  }catch(e){ /* ignore */ }
+}, 350);
+cityInputEl.addEventListener('input', updateSuggestions);
+cityInputEl.addEventListener('keydown', async (e)=>{
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    const val = cityInputEl.value.trim();
+    // If matches one of suggestions exactly, use its coords if available
+    const match = _lastResults.find(r=>r.label.toLowerCase() === val.toLowerCase());
+    if(match){ setLocation(match.lat, match.lon, match.label); return; }
+    // else fallback to geocode resolver
+    const result=await getCoordsFromCity(val);
+    if(result){setLocation(result.lat,result.lon,result.display);} 
+    else alert("Kota tidak ditemukan.");
+  }
 });
+// removed default button
 
 updateClock();
-navigator.geolocation.getCurrentPosition(pos=>{
-  (async ()=>{
-    const rg = await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
-    setLocation(pos.coords.latitude,pos.coords.longitude, rg.display || 'GPS');
-  })();
-},()=>{document.getElementById("locname").textContent="Lokasi manual diperlukan";});
-scheduleMidnightRefresh();
+// Restore last location if available; else try GPS; else manual
+(async ()=>{
+  try{
+    const last = localStorage.getItem('lastLocation');
+    if(last){
+      const obj = JSON.parse(last);
+      if(obj && typeof obj.lat==='number' && typeof obj.lon==='number'){
+        setLocation(obj.lat, obj.lon, obj.display || 'Lokasi tersimpan', obj.timezone || null);
+        scheduleMidnightRefresh();
+        return;
+      }
+    }
+  }catch(e){}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    (async ()=>{
+      const rg = await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
+      setLocation(pos.coords.latitude,pos.coords.longitude, rg.display || 'GPS');
+    })();
+  },()=>{document.getElementById("locname").textContent="Lokasi manual diperlukan";});
+  scheduleMidnightRefresh();
+})();
