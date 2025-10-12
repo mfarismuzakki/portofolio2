@@ -230,7 +230,7 @@ function formatHMS(s){
 
 
 /* === App utama === */
-const prayNames={fajr:"Subuh",sunrise:"Terbit",dhuhr:"Dzuhur",asr:"Ashar",maghrib:"Maghrib",isha:"Isya"};
+const prayNames={fajr:"Subuh",dhuhr:"Dzuhur",asr:"Ashar",maghrib:"Maghrib",isha:"Isya"};
 
 let currentLat=null,currentLon=null,currentCity="Lokasi belum ditentukan";
 let currentMethod="KEMENAG";
