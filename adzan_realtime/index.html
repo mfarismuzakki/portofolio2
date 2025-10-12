@@ -3,85 +3,23 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Adzan Realtime — Lokasi Otomatis & Manual</title>
-<style>
-  :root{
-    --bg:#0b1221; --card:#0f1724; --accent:#f59e0b; --muted:#9aa7bf; --glass: rgba(255,255,255,0.03);
-    color-scheme: dark;
-  }
-  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Arial; background:linear-gradient(180deg,#071026 0%, #07183a 100%); color:#e6eef8;}
-  .wrap{max-width:920px;margin:28px auto;padding:20px;}
-  header{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
-  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ffb86b);display:flex;align-items:center;justify-content:center;font-weight:700;color:#071026;font-size:20px}
-  h1{margin:0;font-size:20px}
-  .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6);margin-bottom:14px;}
-  .row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
-  .clock{font-size:28px;font-weight:600}
-  .sub{color:var(--muted);font-size:13px}
+<title>Adzan Realtime</title>
 
-  /* Table base */
-  table{width:100%;border-collapse:collapse;margin-top:10px}
-  /* nicer header */
-  #prayTable thead th{
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    padding:12px 10px; font-weight:700; font-size:13px; color:#f7fafc; letter-spacing:0.2px; text-align:left;
-    border-bottom:1px solid rgba(255,255,255,0.04);
-  }
-  /* default cell */
-  #prayTable td{padding:12px 10px; text-align:left}
-  /* subtle zebra and row separators */
-  #prayTable tbody tr{border-bottom:1px solid rgba(255,255,255,0.03)}
-  #prayTable tbody tr:nth-child(odd){background:rgba(255,255,255,0.012)}
-  #prayTable tbody tr:hover{background:rgba(255,255,255,0.02)}
+<!-- PWA Meta Tags -->
+<meta name="theme-color" content="#00ffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Adzan Realtime">
+<meta name="description" content="Aplikasi jadwal sholat real-time dengan hadith shahih dan reminder sholat sunnah">
 
-  td.time{font-weight:600}
-  /* stabilize table to avoid layout shift when countdown updates */
-  #prayTable{table-layout:fixed}
-  #prayTable th:nth-child(1), #prayTable td:nth-child(1){width:36%}
-  #prayTable th:nth-child(2), #prayTable td:nth-child(2){width:32%}
-  #prayTable th:nth-child(3), #prayTable td:nth-child(3){width:32%}
-  /* Info column centered and stable numeric font */
-  #prayTable th:nth-child(3),
-  #prayTable td:nth-child(3),
-  #prayTable td[data-info]{
-    text-align:center;
-  }
-  #prayTable td.small{white-space:nowrap; text-overflow:ellipsis; overflow:hidden; font-variant-numeric:tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;}
+<!-- Icons -->
+<link rel="icon" href="/_favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/images/_logo.png">
+<link rel="manifest" href="/manifest.json">
 
-  .next{background:linear-gradient(90deg, rgba(245,158,11,0.12), rgba(255,184,107,0.05));border-radius:8px;padding:8px}
-  tr.row-next{
-    background: linear-gradient(90deg, rgba(245,158,11,0.22), rgba(255,184,107,0.08));
-    border-left: 4px solid var(--accent);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), inset 0 -6px 18px rgba(2,6,23,0.08);
-    font-weight: 700;
-  }
-  /* ensure full-row highlight (apply to cells) with good contrast */
-  tr.row-next td{
-    background: linear-gradient(180deg, #0b74c6 0%, #085ea9 100%);
-    color: #ffffff; /* ensure text is readable on the blue gradient */
-  }
-  /* Make the small/info cell slightly translucent white for subtlety */
-  tr.row-next td.small {
-    color: rgba(255,255,255,0.92);
-    opacity: 0.95;
-  }
-  /* Time should be bright white and use tabular numerals */
-  tr.row-next td.time {
-    color: #ffffff;
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-  }
-  /* Slight elevation to emphasize the active row */
-  tr.row-next td:first-child { box-shadow: 0 2px 8px rgba(11,117,198,0.12); }
-  /* make transitions smooth when highlight moves */
-  #prayTable tbody tr td{ transition: background-color 220ms ease, color 220ms ease; }
-  .countdown{font-size:20px;font-weight:700}
-  .controls{display:flex;gap:10px;flex-wrap:wrap}
-  button{background:var(--glass);border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:8px;color:inherit;cursor:pointer}
-  select,input{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:8px;color:inherit}
-  footer{margin-top:18px;color:var(--muted);font-size:13px}
-  .small{font-size:12px;color:var(--muted)}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="wrap">
@@ -89,57 +27,136 @@
     <div class="logo">AZ</div>
     <div>
       <h1>Adzan Realtime</h1>
-      <div class="sub">Lokasi otomatis (GPS) atau input manual nama kota</div>
+      <div class="sub">Jadwal sholat otomatis dan hadist harian</div>
     </div>
   </header>
 
   <div class="card">
-    <div class="row" style="justify-content:space-between">
+    <div class="row">
       <div>
         <div class="clock" id="nowclock">--:--:--</div>
         <div class="sub" id="nowdate">memuat...</div>
       </div>
       <div style="text-align:right">
-        <div class="sub">Lokasi</div>
-        <div id="locname" class="small">mengambil lokasi...</div>
+        <div class="sub"><i class="fas fa-map-marker-alt"></i> Lokasi</div>
+        <div id="locname" class="small loading">mengambil lokasi...</div>
         <div style="margin-top:8px" class="small">Timezone: <span id="tzname">-</span></div>
       </div>
     </div>
   </div>
 
+  <div class="card hadith-ticker">
+    <div class="hadith-content" id="hadithContent">
+      <i class="fas fa-quote-right"></i>
+      <div class="hadith-text-container">
+        <div class="hadith-arabic" id="hadithArabic">Loading...</div>
+        <div class="hadith-indonesia" id="hadithIndonesia">Memuat hadith...</div>
+        <div class="hadith-reference" id="hadithReference">-</div>
+      </div>
+    </div>
+    <div class="hadith-progress">
+      <div class="progress-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+  </div>
+
   <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px; margin-bottom: 20px;">
       <div>
-        <div class="sub">Jadwal sholat hari ini</div>
-        <div class="small">Metode: <span id="methodName">University of Karachi</span></div>
+        <div class="sub"><i class="fas fa-mosque"></i> Jadwal sholat hari ini</div>
+        <div class="small">Metode: <span id="methodName">Kemenag Indonesia</span></div>
       </div>
       <div class="controls">
         <select id="method" title="Pilih metode perhitungan">
+          <option value="KEMENAG" selected>Kemenag Indonesia</option>
           <option value="MWL">Muslim World League</option>
           <option value="ISNA">ISNA</option>
           <option value="Egypt">Egypt</option>
           <option value="Makkah">Umm al-Qura / Makkah</option>
-          <option value="Karachi" selected>University of Karachi</option>
+          <option value="Karachi">University of Karachi</option>
         </select>
-        <input id="cityInput" list="citySuggestions" type="text" placeholder="Ketik nama kota...">
+        <input id="cityInput" list="citySuggestions" type="text" placeholder="🔍 Ketik nama kota...">
         <datalist id="citySuggestions"></datalist>
-        <button id="btnCity">Gunakan kota</button>
-        <button id="btnRefresh">GPS</button>
+        <button id="btnCity"><i class="fas fa-city"></i> Gunakan kota</button>
+        <button id="btnRefresh"><i class="fas fa-location-arrow"></i> GPS</button>
+        <button id="btnNotification" class="notification-btn" title="Aktifkan/Nonaktifkan pengingat sholat">
+          <i class="fas fa-bell-slash"></i> <span class="btn-text">Aktifkan Notifikasi</span>
+        </button>
       </div>
     </div>
 
     <table id="prayTable">
-      <thead><tr><th>Sholat</th><th>Waktu</th><th>Info</th></tr></thead>
+      <thead><tr><th><i class="fas fa-pray"></i> Sholat</th><th><i class="fas fa-clock"></i> Waktu</th><th><i class="fas fa-info-circle"></i> Info</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
 
+  <div class="card sunnah-section">
+    <div class="sub"><i class="fas fa-moon"></i> Sholat Sunnah Saat Ini</div>
+    <div class="small" style="margin-bottom: 15px;">Amalan sunnah yang dapat dikerjakan pada waktu ini</div>
+    <div id="sunnahPrayersList" class="sunnah-prayers-list">
+      <!-- Sunnah prayers will be populated by JavaScript -->
+    </div>
+  </div>
+
   <footer>
-    <div>Muhammad Faris Muzakki & Indana Zulfa</div>
-    <div class="small">Sumber: Aladhan API (utama) — fallback: perhitungan lokal (PrayTimes.js).</div>
+    <div class="small"><i class="fas fa-database"></i> Sumber: Aladhan API (utama) — fallback: perhitungan lokal dengan PrayTimes.js.</div>
+    <div class="copyright">
+      <div class="small"><i class="fas fa-copyright"></i> 2025 Muhammad Faris Muzakki & Istri Tercinta (Lulusan Terbaik Imam Muhammad bin Saud University Jurusan Syariah Tahun 2023)</div>
+    </div>
   </footer>
 </div>
 
+<!-- Custom Modal for alerts -->
+<div id="customModal" class="custom-modal">
+  <div class="modal-overlay"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalTitle">Konfirmasi</h3>
+      <button class="modal-close" id="modalClose">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-icon">
+        <i id="modalIcon" class="fas fa-bell"></i>
+      </div>
+      <p id="modalMessage">Pesan akan ditampilkan di sini</p>
+    </div>
+    <div class="modal-actions">
+      <button id="modalCancel" class="modal-btn modal-btn-cancel">
+        <i class="fas fa-times"></i> Batal
+      </button>
+      <button id="modalConfirm" class="modal-btn modal-btn-confirm">
+        <i class="fas fa-check"></i> Setuju
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="./hadith.js"></script>
+<script src="./sunnah-hadith.js"></script>
 <script src="./app.js" defer></script>
+
+<!-- PWA Registration Script -->
+<script>
+// Register service worker for PWA functionality
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('Adzan Realtime: Service Worker registered successfully:', registration.scope);
+      })
+      .catch(error => {
+        console.log('Adzan Realtime: Service Worker registration failed:', error);
+      });
+  });
+}
+</script>
 </body>
 </html>

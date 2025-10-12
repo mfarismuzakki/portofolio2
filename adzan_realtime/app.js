@@ -5,6 +5,113 @@ function D2R(d){return (d*Math.PI)/180;}
 function R2D(r){return (r*180)/Math.PI;}
 function fixAngle(a){return a - 360*Math.floor(a/360);} 
 function fixHour(a){return a - 24*Math.floor(a/24);} 
+function dsin(d){
+  return Math.sin(D2R(d));
+}
+
+function updateLiveInfo(){
+  const now = new Date();
+  const nowParts = getTimePartsInZone(now, currentTimeZone);
+  const nowHours = nowParts.h + nowParts.m/60 + nowParts.s/3600;
+  let nextKey = null; let minDiff = Infinity;
+  
+  for(const k of Object.keys(_perPrayerNorm)){
+    const t = _perPrayerNorm[k];
+    if(isNaN(t)) continue;
+    const diff = t - nowHours;
+    if(diff > 0 && diff < minDiff){ minDiff = diff; nextKey = k; }
+  }
+  if(!nextKey){ nextKey = 'fajr'; }
+
+  document.querySelectorAll('#prayTable tbody tr').forEach(tr=>{
+    const key = tr.getAttribute('data-prayer');
+    const infoCell = tr.querySelector('td[data-info="'+key+'"]');
+    const t = _perPrayerNorm[key];
+    if(isNaN(t)){
+      infoCell.textContent = '--:--:--';
+      tr.style.background = '';
+      tr.style.borderLeft = '';
+      tr.style.boxShadow = '';
+      tr.style.transform = '';
+      tr.style.transition = '';
+      tr.querySelectorAll('td').forEach(td => {
+        td.style.fontWeight = '';
+        td.style.color = '';
+        td.style.textShadow = '';
+        td.style.fontSize = '';
+        td.style.fontFamily = '';
+      });
+      return;
+    }
+    
+    if(key === nextKey){
+      let diffHours = t - nowHours;
+      if(diffHours < 0) diffHours += 24;
+      const diffSec = Math.max(0, Math.round(diffHours * 3600));
+      infoCell.textContent = formatHMS(diffSec);
+      // Apply enhanced highlighting via CSS styling
+      tr.style.background = 'linear-gradient(90deg, rgba(0, 255, 255, 0.2), rgba(0, 128, 255, 0.1))';
+      tr.style.borderLeft = '4px solid var(--primary-cyan)';
+      tr.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.1)';
+      tr.style.transform = 'scale(1.02)';
+      tr.style.transition = 'all 0.3s ease';
+      // Enhanced styling for all columns
+      tr.querySelectorAll('td').forEach((td, index) => {
+        td.style.fontWeight = 'bold';
+        td.style.color = 'var(--text-primary)';
+        td.style.textShadow = '0 0 8px rgba(0, 255, 255, 0.5)';
+        
+        if(index === 0) {
+          // Prayer name column - most prominent
+          td.style.fontSize = '18px';
+          td.style.fontFamily = 'var(--font-primary)';
+          td.style.color = 'var(--primary-cyan)';
+          td.style.fontWeight = '700';
+          td.style.textShadow = '0 0 12px rgba(0, 255, 255, 0.9)';
+        } else if(index === 1) {
+          // Time column - enhanced
+          td.style.fontSize = '16px';
+          td.style.fontFamily = 'var(--font-primary)';
+          td.style.color = 'var(--primary-cyan)';
+          td.style.fontWeight = '600';
+          td.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.7)';
+        }
+      });
+      // Special styling for countdown cell (Info column)
+      infoCell.style.fontSize = '16px';
+      infoCell.style.fontFamily = 'var(--font-primary)';
+      infoCell.style.color = 'var(--primary-cyan)';
+      infoCell.style.fontWeight = '700';
+      infoCell.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.8)';
+    } else {
+      if(t <= nowHours) infoCell.textContent = 'Selesai';
+      else infoCell.textContent = '--:--:--';
+      // Remove highlighting
+      tr.style.background = '';
+      tr.style.borderLeft = '';
+      tr.style.boxShadow = '';
+      tr.style.transform = '';
+      tr.style.transition = '';
+      // Reset text styling
+      tr.querySelectorAll('td').forEach(td => {
+        td.style.fontWeight = '';
+        td.style.color = '';
+        td.style.textShadow = '';
+        td.style.fontSize = '';
+        td.style.fontFamily = '';
+      });
+    }
+  });
+}
+
+function updateNext(times){
+  try{ if(countdownTimer) clearTimeout(countdownTimer); }catch(e){}
+}
+
+function D2R(d){return (d*Math.PI)/180;}
+function R2D(r){return (r*180)/Math.PI;}
+function fixAngle(a){return a - 360*Math.floor(a/360);} 
+function fixHour(a){return a - 24*Math.floor(a/24);} 
 function dsin(d){return Math.sin(D2R(d));}
 function dcos(d){return Math.cos(D2R(d));}
 function dtan(d){return Math.tan(D2R(d));}
@@ -33,7 +140,8 @@ function dateToJulian(date){
 }
 // Local PrayTimes calculation (kept as fallback)
 function getPrayerTimes(date,lat,lon,timezone,method){
-  var params={fajrAngle:18,ishaAngle:17,asrFactor:1};
+  var params={fajrAngle:20,ishaAngle:18,asrFactor:1}; // Default Kemenag Indonesia
+  if(method==="KEMENAG"){params={fajrAngle:20,ishaAngle:18,asrFactor:1};}
   if(method==="ISNA"){params={fajrAngle:15,ishaAngle:15,asrFactor:1};}
   if(method==="Egypt"){params={fajrAngle:19.5,ishaAngle:17.5,asrFactor:1};}
   if(method==="Makkah"){params={fajrAngle:18.5,ishaAngle:90,asrFactor:1};}
@@ -48,16 +156,15 @@ function getPrayerTimes(date,lat,lon,timezone,method){
   var fajr=compute(params.fajrAngle,false);
   var sunrise=compute(0.833,false);
   var dhuhr=Z;
-  var asr=Z+1/15*darccot(params.asrFactor+dtan(Math.abs(lat-D)));
-  var sunset=compute(0.833,true);
-  var maghrib=sunset;
-  var isha=params.ishaAngle<90?compute(params.ishaAngle,true):sunset+90/60;
-
+  var asr=Z+1/15*darccos((dsin(darccot(params.asrFactor+dtan(Math.abs(lat*1-D))))-dsin(D)*dsin(lat))/(dcos(D)*dcos(lat)));
+  var maghrib=compute(0.833,true);
+  var isha=(params.ishaAngle===90)?maghrib+90/60:compute(params.ishaAngle,true);
   return {fajr:fajr,sunrise:sunrise,dhuhr:dhuhr,asr:asr,maghrib:maghrib,isha:isha};
 }
 
 /* === Aladhan API integration === */
 const ALADHAN_METHOD_MAP = {
+  KEMENAG: 11, // Kemenag Indonesia (closest equivalent in Aladhan API)
   MWL: 3,      // Muslim World League
   ISNA: 2,     // Islamic Society of North America
   Egypt: 5,    // Egyptian
@@ -67,7 +174,7 @@ const ALADHAN_METHOD_MAP = {
 
 async function fetchTimingsFromAladhan(date, lat, lon, methodKey){
   try{
-    const methodId = ALADHAN_METHOD_MAP[methodKey] ?? 3;
+    const methodId = ALADHAN_METHOD_MAP[methodKey] ?? 11; // Default to Kemenag
     const dt = new Date(date);
     const day = dt.getDate(); const month = dt.getMonth()+1; const year = dt.getFullYear();
     const rlat = Math.round(lat*1000)/1000; const rlon = Math.round(lon*1000)/1000;
@@ -111,11 +218,22 @@ function floatToTime(time){
   return (h<10?"0":"")+h+":"+(m<10?"0":"")+m;
 }
 
+function formatHMS(s){
+  if(s<=0) return '00:00:00';
+  const h=Math.floor(s/3600); 
+  const m=Math.floor((s%3600)/60); 
+  const sec=Math.floor(s%60);
+  function pad(n){return n<10?('0'+n):n}
+  return pad(h)+':'+pad(m)+':'+pad(sec);
+}
+
+
+
 /* === App utama === */
 const prayNames={fajr:"Subuh",sunrise:"Terbit",dhuhr:"Dzuhur",asr:"Ashar",maghrib:"Maghrib",isha:"Isya"};
 
 let currentLat=null,currentLon=null,currentCity="Lokasi belum ditentukan";
-let currentMethod="Karachi";
+let currentMethod="KEMENAG";
 let countdownTimer=null;
 let _lastDateStr = (new Date()).toDateString(); // track local day for auto-refresh
 let _midnightTimer = null;
@@ -150,12 +268,16 @@ function getZoneOffsetHours(timeZone, date=new Date()){
     const hh = parseInt(parts.find(p=>p.type==='hour')?.value || '0',10);
     const mm = parseInt(parts.find(p=>p.type==='minute')?.value || '0',10);
     const ss = parseInt(parts.find(p=>p.type==='second')?.value || '0',10);
-    const localSeconds = hh*3600 + mm*60 + ss;
-    const utcSeconds = date.getUTCHours()*3600 + date.getUTCMinutes()*60 + date.getUTCSeconds();
-    let diff = localSeconds - utcSeconds;
-    if(diff > 12*3600) diff -= 24*3600;
-    if(diff < -12*3600) diff += 24*3600;
-    return diff/3600;
+    const localParts = new Intl.DateTimeFormat('en-GB', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'}).formatToParts(date);
+    const localHH = parseInt(localParts.find(p=>p.type==='hour')?.value || '0',10);
+    const localMM = parseInt(localParts.find(p=>p.type==='minute')?.value || '0',10);
+    const localSS = parseInt(localParts.find(p=>p.type==='second')?.value || '0',10);
+    const zoneTime = hh + mm/60 + ss/3600;
+    const localTime = localHH + localMM/60 + localSS/3600;
+    let diff = zoneTime - localTime;
+    if(diff > 12) diff -= 24;
+    if(diff < -12) diff += 24;
+    return -date.getTimezoneOffset()/60 + diff;
   }catch(e){
     return -date.getTimezoneOffset()/60;
   }
@@ -185,16 +307,24 @@ function updateClock(){
   if(todayStr !== _lastDateStr){
     _lastDateStr = todayStr;
     renderPrayers();
-    scheduleMidnightRefresh();
   }
-  requestAnimationFrame(updateClock);
+  setTimeout(updateClock,1000);
+}
+
+function setLocation(lat,lon,displayName,timezone=null){
+  currentLat=lat; currentLon=lon; currentCity=displayName; currentTimeZone=timezone;
+  document.getElementById("locname").textContent=currentCity;
+  document.getElementById("locname").classList.remove("loading");
+  try{ localStorage.setItem('lastLocation',JSON.stringify({lat:lat,lon:lon,display:displayName,timezone:timezone})); }catch(e){}
+  renderPrayers();
+  scheduleMidnightRefresh();
 }
 
 function scheduleMidnightRefresh(){
   try{ if(_midnightTimer) clearTimeout(_midnightTimer); }catch(e){}
-  const now = new Date();
-  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 2);
-  const ms = tomorrow.getTime() - now.getTime();
+  const now=new Date();
+  const tomorrow=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,1,0);
+  const ms=tomorrow.getTime()-now.getTime();
   _midnightTimer = setTimeout(()=>{
     _lastDateStr = (new Date()).toDateString();
     renderPrayers();
@@ -227,6 +357,10 @@ function renderPrayers(){
         times = apiResp.timings;
         apiTimezone = apiResp.timezone || null;
         hijri = apiResp.hijri || null;
+        // Update currentTimeZone if we got timezone info from API
+        if(apiTimezone && !currentTimeZone) {
+          currentTimeZone = apiTimezone;
+        }
       } else {
         if(apiResp && typeof apiResp === 'object' && apiResp.fajr!==undefined){ times = apiResp; }
         else times = getPrayerTimes(now,currentLat,currentLon,zoneOffset,currentMethod);
@@ -248,44 +382,24 @@ function renderPrayers(){
           const bulanMap = {
             'muharram':'Muharram','safar':'Safar','rabi al-awwal':'Rabiul Awal','rabi al-awal':'Rabiul Awal','rabi alawwal':'Rabiul Awal','rabiul-awwal':'Rabiul Awal','rabiul awal':'Rabiul Awal',
             'rabi al-thani':'Rabiul Akhir','rabi al-thaniy':'Rabiul Akhir','rabiul-akhir':'Rabiul Akhir','rabiul akhir':'Rabiul Akhir',
-            'jumada al-ula':'Jumadil Awal','jumada al-awwal':'Jumadil Awal','jumada al ula':'Jumadil Awal','jumadil awal':'Jumadil Awal',
-            'jumada al-akhirah':'Jumadil Akhir','jumada al-akhir':'Jumadil Akhir','jumadil akhir':'Jumadil Akhir','jumada al-thaniyah':'Jumadil Akhir',
-            'rajab':'Rajab','shaban':'Sya'+'ban','shaʿban':'Sya'+'ban','shaaban':'Sya'+'ban','sya ban':'Sya'+'ban',
-            'ramadan':'Ramadhan','ramazan':'Ramadhan','rama dan':'Ramadhan','ramadhan':'Ramadhan',
-            'shawwal':'Syawal','dhul qaadah':'Dzulqaidah','dhu al-qadah':'Dzulqaidah','dhul qadah':'Dzulqaidah','dhul-qadah':'Dzulqaidah',
-            'dhul hijjah':'Dzulhijjah','dhu al-hijjah':'Dzulhijjah','dhul-hijjah':'Dzulhijjah','dzulhijjah':'Dzulhijjah'
+            'jumada al-awwal':'Jumadil Awal','jumada al-awal':'Jumadil Awal','jumada alawwal':'Jumadil Awal','jumadil-awal':'Jumadil Awal','jumadil awal':'Jumadil Awal',
+            'jumada al-thani':'Jumadil Akhir','jumada al-thaniy':'Jumadil Akhir','jumadil-akhir':'Jumadil Akhir','jumadil akhir':'Jumadil Akhir',
+            'rajab':'Rajab','shaban':'Syaban','sha ban':'Syaban','syaban':'Syaban',
+            'ramadan':'Ramadan','ramadhan':'Ramadan','shawwal':'Syawal','syawal':'Syawal',
+            'dhu al-qadah':'Dzulqaidah','dhul-qadah':'Dzulqaidah','dzulqaidah':'Dzulqaidah','dhu al-hijjah':'Dzulhijjah','dhul-hijjah':'Dzulhijjah','dzulhijjah':'Dzulhijjah'
           };
-          const hijDay = hijri.day || hijri.date || '';
-          const rawMonth = (hijri.month && (hijri.month.en || hijri.month.ar)) || '';
-          const key = normalizeMonthName(rawMonth);
-          const hijMonId = bulanMap[key] || (rawMonth || '');
-          const hijYear = hijri.year || '';
-          hdateStr = `${hijDay} ${hijMonId} ${hijYear} H`;
-        } else {
-          try{
-            hdateStr = new Intl.DateTimeFormat('id-ID', {calendar: 'islamic', day: 'numeric', month: 'long', year: 'numeric'}).format(now);
-          }catch(e){ try{ hdateStr = new Intl.DateTimeFormat('id-ID-u-ca-islamic').format(now); }catch(e2){ hdateStr=''; } }
-        }
-        document.getElementById('nowdate').textContent = gdate + (hdateStr?(' — '+hdateStr):'');
-      }catch(e){ }
-      if(apiTimezone){
-        try{
-          const tzName = apiTimezone;
-          const parts = new Intl.DateTimeFormat('en-US', {timeZone: tzName, timeZoneName: 'short'}).formatToParts(now);
-          const tzShort = parts.find(p => p.type === 'timeZoneName')?.value;
-          if(tzShort){
-            document.getElementById("tzname").textContent = tzName + ' (' + tzShort + ')';
-          } else {
-            document.getElementById("tzname").textContent = tzName;
+          const normalizedMonth = normalizeMonthName(hijri.month.en || '');
+          const monthName = bulanMap[normalizedMonth] || hijri.month.en || '';
+          if(monthName && hijri.day && hijri.year){
+            hdateStr = ` • ${hijri.day} ${monthName} ${hijri.year} H`;
           }
-        }catch(e){
-          document.getElementById("tzname").textContent = apiTimezone;
         }
-        currentTimeZone = apiTimezone;
-      }
-      const tbody=document.querySelector("#prayTable tbody");
-      tbody.innerHTML="";
+        document.getElementById("nowdate").textContent = gdate + hdateStr;
+      }catch(e){ document.getElementById("nowdate").textContent = now.toLocaleDateString('id-ID', {weekday:'long', year:'numeric', month:'long', day:'numeric'}); }
+      const tbody=document.querySelector('#prayTable tbody');
+      tbody.innerHTML='';
       const norm = {};
+      const nowHoursCheck = nowParts.h + nowParts.m/60 + nowParts.s/3600;
       for(let k of Object.keys(prayNames)){
         const v = times[k];
         if(typeof v === 'number') norm[k] = v;
@@ -295,8 +409,6 @@ function renderPrayers(){
           else norm[k] = NaN;
         } else norm[k] = NaN;
       }
-
-      const nowHoursCheck = nowParts.h + nowParts.m/60 + nowParts.s/3600;
       let usedTomorrow = false;
       if(!isNaN(norm['isha']) && nowHoursCheck >= norm['isha']){
         const tomorrow = new Date(now.getTime() + 24*3600*1000);
@@ -323,25 +435,7 @@ function renderPrayers(){
           usedTomorrow = true;
         }
       }
-      for(let k of Object.keys(prayNames)){
-        const displayTime = floatToTime(times[k]);
-        const t = norm[k];
-        let infoText = '—';
-        if(!isNaN(t)){
-          if(t <= nowHours){
-            infoText = 'Selesai';
-          } else {
-            const diffSec = Math.round((t - nowHours) * 3600);
-            infoText = formatHMS(diffSec);
-          }
-        }
-
-        const tr=document.createElement('tr');
-        tr.setAttribute('data-prayer', k);
-        tr.innerHTML = `<td>${prayNames[k]}</td><td class="time">${displayTime}</td><td class="small" data-info="${k}">${infoText}</td>`;
-        tbody.appendChild(tr);
-      }
-      updateNext(times);
+      // Find next prayer first
       let nextKey = null; let minDiff = Infinity;
       const nowHoursForNext = nowParts.h + nowParts.m/60 + nowParts.s/3600;
       for(const k of Object.keys(norm)){
@@ -351,10 +445,57 @@ function renderPrayers(){
         if(diff > 0 && diff < minDiff){ minDiff = diff; nextKey = k; }
       }
       if(!nextKey){ nextKey = 'fajr'; }
-      _perPrayerNorm = Object.assign({}, norm);
-      if(!_liveInterval){
-        _liveInterval = setInterval(()=>{ updateLiveInfo(); },1000);
+
+      for(let k of Object.keys(prayNames)){
+        const displayTime = floatToTime(times[k]);
+        const t = norm[k];
+        let infoText = '--:--:--';
+        
+        if(!isNaN(t)){
+          if(t <= nowHours){
+            infoText = 'Selesai';
+          } else if(k === nextKey) {
+            // Show countdown for next prayer
+            const diffSec = Math.round((t - nowHours) * 3600);
+            infoText = formatHMS(diffSec);
+          }
+          // All other future prayers show '--:--:--'
+        }
+
+        const tr=document.createElement('tr');
+        tr.setAttribute('data-prayer', k);
+        tr.innerHTML = `<td>${prayNames[k]}</td><td class="time">${displayTime}</td><td class="small" data-info="${k}">${infoText}</td>`;
+        tbody.appendChild(tr);
       }
+      updateNext(times);
+      _perPrayerNorm = Object.assign({}, norm);
+      
+      // Highlight next prayer via CSS styling only
+      document.querySelectorAll('#prayTable tbody tr').forEach(tr=>{
+        const key = tr.getAttribute('data-prayer');
+        if(key === nextKey){
+          tr.style.background = 'linear-gradient(90deg, rgba(0, 255, 255, 0.2), rgba(0, 128, 255, 0.1))';
+          tr.style.borderLeft = '4px solid var(--primary-cyan)';
+          tr.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.1)';
+        } else {
+          tr.style.background = '';
+          tr.style.borderLeft = '';
+          tr.style.boxShadow = '';
+        }
+      });
+      
+      if(!_liveInterval){
+        _liveInterval = setInterval(()=>{ 
+          updateLiveInfo(); 
+          updateSunnahPrayers(); 
+        },1000);
+      }
+      
+      // Initial update of sunnah prayers
+      updateSunnahPrayers();
+      
+      // Schedule notifications for prayer times
+      scheduleNotifications(norm, usedTomorrow);
   })();
 }
 
@@ -363,6 +504,7 @@ function updateLiveInfo(){
   const nowParts = getTimePartsInZone(now, currentTimeZone);
   const nowHours = nowParts.h + nowParts.m/60 + nowParts.s/3600;
   let nextKey = null; let minDiff = Infinity;
+  
   for(const k of Object.keys(_perPrayerNorm)){
     const t = _perPrayerNorm[k];
     if(isNaN(t)) continue;
@@ -376,78 +518,178 @@ function updateLiveInfo(){
     const infoCell = tr.querySelector('td[data-info="'+key+'"]');
     const t = _perPrayerNorm[key];
     if(isNaN(t)){
-      infoCell.textContent = '—';
+      infoCell.textContent = '--:--:--';
       tr.classList.remove('row-next');
       return;
     }
+    
     if(key === nextKey){
       let diffHours = t - nowHours;
       if(diffHours < 0) diffHours += 24;
       const diffSec = Math.max(0, Math.round(diffHours * 3600));
-      const h = Math.floor(diffSec/3600); const m = Math.floor((diffSec%3600)/60); const s = diffSec%60;
-      infoCell.textContent = (h<10?('0'+h):h)+':' + (m<10?('0'+m):m)+':' + (s<10?('0'+s):s);
+      infoCell.textContent = formatHMS(diffSec);
+      // Apply enhanced highlighting via CSS styling
+      tr.style.background = 'linear-gradient(90deg, rgba(0, 255, 255, 0.2), rgba(0, 128, 255, 0.1))';
+      tr.style.borderLeft = '4px solid var(--primary-cyan)';
+      tr.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.1)';
+      tr.style.transform = 'scale(1.02)';
+      tr.style.transition = 'all 0.3s ease';
+      // Enhanced styling for all columns
+      tr.querySelectorAll('td').forEach((td, index) => {
+        td.style.fontWeight = 'bold';
+        td.style.color = 'var(--text-primary)';
+        td.style.textShadow = '0 0 8px rgba(0, 255, 255, 0.5)';
+        
+        if(index === 0) {
+          // Prayer name column - most prominent
+          td.style.fontSize = '18px';
+          td.style.fontFamily = 'var(--font-primary)';
+          td.style.color = 'var(--primary-cyan)';
+          td.style.fontWeight = '700';
+          td.style.textShadow = '0 0 12px rgba(0, 255, 255, 0.9)';
+        } else if(index === 1) {
+          // Time column - enhanced
+          td.style.fontSize = '16px';
+          td.style.fontFamily = 'var(--font-primary)';
+          td.style.color = 'var(--primary-cyan)';
+          td.style.fontWeight = '600';
+          td.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.7)';
+        }
+      });
+      // Special styling for countdown cell (Info column)
+      infoCell.style.fontSize = '16px';
+      infoCell.style.fontFamily = 'var(--font-primary)';
+      infoCell.style.color = 'var(--primary-cyan)';
+      infoCell.style.fontWeight = '700';
+      infoCell.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.8)';
     } else {
       if(t <= nowHours) infoCell.textContent = 'Selesai';
-      else infoCell.textContent = '—';
+      else infoCell.textContent = '--:--:--';
+      // Remove highlighting
+      tr.style.background = '';
+      tr.style.borderLeft = '';
+      tr.style.boxShadow = '';
+      tr.style.transform = '';
+      tr.style.transition = '';
+      // Reset text styling
+      tr.querySelectorAll('td').forEach(td => {
+        td.style.fontWeight = '';
+        td.style.color = '';
+        td.style.textShadow = '';
+        td.style.fontSize = '';
+        td.style.fontFamily = '';
+      });
     }
-    if(key === nextKey) tr.classList.add('row-next'); else tr.classList.remove('row-next');
   });
 }
 
 function updateNext(times){
   try{ if(countdownTimer) clearTimeout(countdownTimer); }catch(e){}
+}
 
-  const now=new Date();
+// Schedule prayer notifications 5 minutes before each prayer time
+function scheduleNotifications(prayerTimes, usedTomorrow) {
+  // Clear any existing notification timeouts
+  if (window.notificationTimeouts) {
+    window.notificationTimeouts.forEach(timeout => clearTimeout(timeout));
+  }
+  window.notificationTimeouts = [];
+
+  // Check if notifications are enabled by user
+  if (!isNotificationEnabled) {
+    return;
+  }
+
+  // Check if notifications are supported and permitted
+  if (!('Notification' in window) || Notification.permission !== 'granted') {
+    return;
+  }
+
+  const now = new Date();
   const nowParts = getTimePartsInZone(now, currentTimeZone);
-  const cur = nowParts.h + nowParts.m/60 + nowParts.s/3600;
-  let upcoming=null;
-  const norm={};
-  for(let k of Object.keys(prayNames)){
-    const v=times[k];
-    if(typeof v==='number') norm[k]=v;
-    else if(typeof v==='string'){
-      const parts=v.split(':');
-      if(parts.length>=2) norm[k]=parseInt(parts[0],10)+parseInt(parts[1],10)/60+(parts[2]?parseInt(parts[2],10)/3600:0);
-      else norm[k]=NaN;
-    } else norm[k]=NaN;
-  }
-  for(let k of Object.keys(prayNames)){
-    if(norm[k]>cur){upcoming=norm[k];break;}
-  }
-  if(!upcoming){ upcoming = (typeof times.fajr === 'number' ? times.fajr : (isNaN(parseFloat(times.fajr)) ? NaN : parseFloat(times.fajr))) + 24; }
+  const nowHours = nowParts.h + nowParts.m/60 + nowParts.s/3600;
 
-  if(isNaN(upcoming)) return;
-  const ms = Math.max(200, Math.round((upcoming - cur) * 3600 * 1000));
-  countdownTimer = setTimeout(()=>{
-    renderPrayers();
-  }, ms+500);
-}
+  // Prayer names in Indonesian
+  const prayerDisplayNames = {
+    'fajr': 'Subuh',
+    'dhuhr': 'Dzuhur', 
+    'asr': 'Ashar',
+    'maghrib': 'Maghrib',
+    'isha': 'Isya'
+  };
 
-function setLocation(lat,lon,name, timezone=null){
-  currentLat=lat;currentLon=lon;currentCity=name;
-  document.getElementById("locname").textContent=name;
-  if(timezone) currentTimeZone = timezone;
-  try{ localStorage.setItem('lastLocation', JSON.stringify({lat:lat, lon:lon, display:name, timezone: timezone || currentTimeZone || null})); }catch(e){}
-  renderPrayers();
-  scheduleMidnightRefresh();
-}
+  Object.keys(prayerTimes).forEach(prayerKey => {
+    const prayerTime = prayerTimes[prayerKey];
+    if (isNaN(prayerTime)) return;
 
-async function getCoordsFromCity(city){
-  try{
-    const cacheKey = `geocode:city:${city.toLowerCase()}`;
-    const cached = localStorage.getItem(cacheKey);
-    if(cached){
-      return JSON.parse(cached);
+    // Calculate notification time (5 minutes before prayer)
+    const notificationTime = prayerTime - (5/60); // 5 minutes in hours
+    
+    // Calculate milliseconds until notification
+    let hoursUntilNotification = notificationTime - nowHours;
+    
+    // If notification time has passed today, skip (don't schedule for yesterday)
+    if (hoursUntilNotification <= 0 && !usedTomorrow) {
+      return;
     }
-    const url=`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`;
-    const res=await fetch(url,{headers:{'Accept-Language':'id'}});
-    const data=await res.json();
-    if(data && data.length>0){
-      const out = {lat:parseFloat(data[0].lat),lon:parseFloat(data[0].lon),display:data[0].display_name};
+    
+    // If using tomorrow's times, don't add extra 24 hours
+    if (hoursUntilNotification <= 0 && usedTomorrow) {
+      hoursUntilNotification += 24;
+    }
+
+    const msUntilNotification = hoursUntilNotification * 60 * 60 * 1000;
+    
+    // Only schedule if within next 24 hours
+    if (msUntilNotification > 0 && msUntilNotification <= 24 * 60 * 60 * 1000) {
+      const timeoutId = setTimeout(() => {
+        const prayerName = prayerDisplayNames[prayerKey] || prayerKey;
+        const notification = new Notification(`Waktu Sholat ${prayerName}`, {
+          body: `5 menit lagi waktu sholat ${prayerName}. Bersiaplah untuk sholat.`,
+          icon: '/images/_logo.png',
+          badge: '/_favicon.png',
+          tag: `prayer-${prayerKey}`,
+          requireInteraction: true,
+          silent: false
+        });
+
+        // Auto close notification after 10 seconds
+        setTimeout(() => {
+          notification.close();
+        }, 10000);
+
+        // Optional: Play notification sound or vibrate
+        if ('vibrate' in navigator) {
+          navigator.vibrate([500, 200, 500]);
+        }
+      }, msUntilNotification);
+
+      window.notificationTimeouts.push(timeoutId);
+      
+      // Log for debugging
+      console.log(`Scheduled ${prayerDisplayNames[prayerKey]} notification in ${Math.round(msUntilNotification/1000/60)} minutes`);
+    }
+  });
+}
+
+async function getCoordsFromCity(cityName){
+  try{
+    const cacheKey = `geocode:city:${cityName.toLowerCase()}`;
+    const cached = localStorage.getItem(cacheKey);
+    if(cached) return JSON.parse(cached);
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cityName)}&limit=1&addressdetails=1`;
+    const res = await fetch(url,{headers:{'Accept-Language':'id'}});
+    if(!res.ok) throw new Error('geocode failed');
+    const data = await res.json();
+    if(data && data.length > 0){
+      const item = data[0];
+      const lat = parseFloat(item.lat); const lon = parseFloat(item.lon);
+      const display = item.display_name || cityName;
+      const out = {lat:lat,lon:lon,display:display};
       try{ localStorage.setItem(cacheKey, JSON.stringify(out)); }catch(e){}
       return out;
     }
-  }catch(e){console.error(e);} 
+  }catch(err){console.warn('getCoordsFromCity error',err);}
   return null;
 }
 
@@ -496,39 +738,380 @@ function debounce(fn, wait){ let t; return function(...args){ clearTimeout(t); t
 const updateSuggestions = debounce(async function(){
   const q = cityInputEl.value.trim();
   if(q.length < 2){ dl.innerHTML=''; _lastResults=[]; return; }
-  if(q === _lastQuery) return;
-  _lastQuery = q;
+  if(q === _lastQuery && _lastResults.length > 0){
+    dl.innerHTML = ''; _lastResults.forEach(r => { const opt = document.createElement('option'); opt.value = r; dl.appendChild(opt); });
+    return;
+  }
   try{
-    const url=`https://nominatim.openstreetmap.org/search?format=json&limit=5&addressdetails=1&q=${encodeURIComponent(q)}`;
-    const res=await fetch(url,{headers:{'Accept-Language':'id'}});
-    const data=await res.json();
-    _lastResults = data.map(item=>({
-      label: item.display_name,
-      lat: parseFloat(item.lat),
-      lon: parseFloat(item.lon)
-    }));
-    dl.innerHTML = _lastResults
-      .map(r=>`<option value="${r.label.replace(/"/g,'&quot;')}"></option>`)
-      .join('');
-  }catch(e){ /* ignore */ }
-}, 350);
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=5&addressdetails=1`;
+    const res = await fetch(url, {headers:{'Accept-Language':'id'}});
+    if(!res.ok) return;
+    const data = await res.json();
+    const suggestions = data.map(item => item.display_name || item.name || '').filter(Boolean).slice(0,5);
+    dl.innerHTML = '';
+    suggestions.forEach(s => { const opt = document.createElement('option'); opt.value = s; dl.appendChild(opt); });
+    _lastQuery = q; _lastResults = suggestions;
+  }catch(e){}
+}, 300);
 cityInputEl.addEventListener('input', updateSuggestions);
-cityInputEl.addEventListener('keydown', async (e)=>{
-  if(e.key === 'Enter'){
-    e.preventDefault();
-    const val = cityInputEl.value.trim();
-    // If matches one of suggestions exactly, use its coords if available
-    const match = _lastResults.find(r=>r.label.toLowerCase() === val.toLowerCase());
-    if(match){ setLocation(match.lat, match.lon, match.label); return; }
-    // else fallback to geocode resolver
-    const result=await getCoordsFromCity(val);
-    if(result){setLocation(result.lat,result.lon,result.display);} 
-    else alert("Kota tidak ditemukan.");
+
+// Custom Modal Functions
+function showCustomModal(title, message, icon = 'fa-bell', onConfirm = null, onCancel = null) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('customModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalIcon = document.getElementById('modalIcon');
+    const modalConfirm = document.getElementById('modalConfirm');
+    const modalCancel = document.getElementById('modalCancel');
+    const modalClose = document.getElementById('modalClose');
+    
+    // Set content
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+    modalIcon.className = `fas ${icon}`;
+    
+    // Show modal
+    modal.classList.add('show');
+    
+    // Handle confirm button
+    const handleConfirm = () => {
+      modal.classList.remove('show');
+      if (onConfirm) onConfirm();
+      resolve(true);
+      cleanup();
+    };
+    
+    // Handle cancel/close
+    const handleCancel = () => {
+      modal.classList.remove('show');
+      if (onCancel) onCancel();
+      resolve(false);
+      cleanup();
+    };
+    
+    // Cleanup function to remove event listeners
+    const cleanup = () => {
+      modalConfirm.removeEventListener('click', handleConfirm);
+      modalCancel.removeEventListener('click', handleCancel);
+      modalClose.removeEventListener('click', handleCancel);
+      modal.querySelector('.modal-overlay').removeEventListener('click', handleCancel);
+    };
+    
+    // Add event listeners
+    modalConfirm.addEventListener('click', handleConfirm);
+    modalCancel.addEventListener('click', handleCancel);
+    modalClose.addEventListener('click', handleCancel);
+    modal.querySelector('.modal-overlay').addEventListener('click', handleCancel);
+  });
+}
+
+// Custom Alert Function (simpler modal for alerts)
+function showCustomAlert(title, message, icon = 'fa-info-circle') {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('customModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalIcon = document.getElementById('modalIcon');
+    const modalConfirm = document.getElementById('modalConfirm');
+    const modalCancel = document.getElementById('modalCancel');
+    const modalClose = document.getElementById('modalClose');
+    
+    // Set content
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+    modalIcon.className = `fas ${icon}`;
+    
+    // Hide cancel button for alerts
+    modalCancel.style.display = 'none';
+    modalConfirm.innerHTML = '<i class="fas fa-check"></i> OK';
+    
+    // Show modal
+    modal.classList.add('show');
+    
+    // Handle OK button
+    const handleOK = () => {
+      modal.classList.remove('show');
+      modalCancel.style.display = 'flex'; // Restore cancel button
+      modalConfirm.innerHTML = '<i class="fas fa-check"></i> Setuju'; // Restore confirm text
+      resolve(true);
+      cleanup();
+    };
+    
+    // Cleanup function
+    const cleanup = () => {
+      modalConfirm.removeEventListener('click', handleOK);
+      modalClose.removeEventListener('click', handleOK);
+      modal.querySelector('.modal-overlay').removeEventListener('click', handleOK);
+    };
+    
+    // Add event listeners
+    modalConfirm.addEventListener('click', handleOK);
+    modalClose.addEventListener('click', handleOK);
+    modal.querySelector('.modal-overlay').addEventListener('click', handleOK);
+  });
+}
+
+// Notification management
+let isNotificationEnabled = false;
+
+// Load notification preference from localStorage
+function loadNotificationPreference() {
+  const saved = localStorage.getItem('prayerNotificationEnabled');
+  isNotificationEnabled = saved === 'true';
+  updateNotificationButton();
+}
+
+// Save notification preference to localStorage
+function saveNotificationPreference() {
+  localStorage.setItem('prayerNotificationEnabled', isNotificationEnabled.toString());
+}
+
+// Update notification button appearance
+function updateNotificationButton() {
+  const btn = document.getElementById('btnNotification');
+  const icon = btn.querySelector('i');
+  const text = btn.querySelector('.btn-text');
+  
+  if (isNotificationEnabled) {
+    btn.classList.add('active');
+    icon.className = 'fas fa-bell';
+    text.textContent = 'Notifikasi Aktif';
+  } else {
+    btn.classList.remove('active');
+    icon.className = 'fas fa-bell-slash';
+    text.textContent = 'Aktifkan Notifikasi';
+  }
+}
+
+// Handle notification button click
+document.getElementById('btnNotification').addEventListener('click', async () => {
+  if (!('Notification' in window)) {
+    await showCustomAlert(
+      'Browser Tidak Mendukung',
+      'Browser Anda tidak mendukung notifikasi. Silakan gunakan browser yang lebih baru seperti Chrome, Firefox, atau Safari.',
+      'fa-exclamation-triangle'
+    );
+    return;
+  }
+  
+  if (isNotificationEnabled) {
+    // Show confirmation before disabling
+    const confirmed = await showCustomModal(
+      'Nonaktifkan Notifikasi',
+      'Apakah Anda yakin ingin menonaktifkan pengingat sholat? Anda tidak akan mendapat notifikasi 5 menit sebelum waktu sholat.',
+      'fa-bell-slash'
+    );
+    
+    if (confirmed) {
+      // Disable notifications
+      isNotificationEnabled = false;
+      saveNotificationPreference();
+      updateNotificationButton();
+      
+      // Clear existing notification timeouts
+      if (window.notificationTimeouts) {
+        window.notificationTimeouts.forEach(timeout => clearTimeout(timeout));
+        window.notificationTimeouts = [];
+      }
+      
+      await showCustomAlert(
+        'Notifikasi Dinonaktifkan',
+        'Pengingat sholat telah dinonaktifkan. Anda dapat mengaktifkannya kembali kapan saja.',
+        'fa-check-circle'
+      );
+      
+      console.log('Notifikasi sholat dinonaktifkan');
+    }
+  } else {
+    // Show explanation before enabling
+    const wantsToEnable = await showCustomModal(
+      'Aktifkan Pengingat Sholat',
+      'Aplikasi ini akan mengirimkan notifikasi 5 menit sebelum waktu sholat untuk membantu Anda bersiap. Notifikasi hanya akan muncul pada waktu sholat yang tepat sesuai lokasi Anda.\n\nApakah Anda ingin mengaktifkan pengingat sholat?',
+      'fa-bell'
+    );
+    
+    if (wantsToEnable) {
+      // Enable notifications
+      let permission = Notification.permission;
+      
+      if (permission === 'default') {
+        permission = await Notification.requestPermission();
+      }
+      
+      if (permission === 'granted') {
+        isNotificationEnabled = true;
+        saveNotificationPreference();
+        updateNotificationButton();
+        
+        // Show confirmation notification
+        new Notification('Notifikasi Sholat Aktif', {
+          body: 'Anda akan mendapat pengingat 5 menit sebelum waktu sholat',
+          icon: '/images/_logo.png',
+          badge: '/_favicon.png'
+        });
+        
+        // Reschedule notifications with current prayer times
+        if (_perPrayerNorm && Object.keys(_perPrayerNorm).length > 0) {
+          scheduleNotifications(_perPrayerNorm, false);
+        }
+        
+        await showCustomAlert(
+          'Notifikasi Diaktifkan',
+          'Pengingat sholat berhasil diaktifkan! Anda akan mendapat notifikasi 5 menit sebelum setiap waktu sholat.',
+          'fa-check-circle'
+        );
+        
+        console.log('Notifikasi sholat diaktifkan');
+      } else if (permission === 'denied') {
+        await showCustomAlert(
+          'Izin Notifikasi Ditolak',
+          'Izin notifikasi ditolak. Untuk mengaktifkan pengingat sholat, silakan buka pengaturan browser dan izinkan notifikasi untuk situs ini.',
+          'fa-exclamation-triangle'
+        );
+      } else {
+        await showCustomAlert(
+          'Izin Notifikasi Diperlukan',
+          'Izin notifikasi diperlukan untuk mengaktifkan pengingat sholat. Silakan aktifkan di pengaturan browser.',
+          'fa-info-circle'
+        );
+      }
+    }
   }
 });
-// removed default button
+
+// Hadith rotation variables
+let currentHadithIndex = 0;
+let hadithInterval = null;
+let progressInterval = null;
+let currentProgress = 0;
+
+function updateHadithProgress() {
+  const dots = document.querySelectorAll('.progress-dots .dot');
+  const totalDots = dots.length;
+  const timePerDot = 5000 / totalDots; // 5 seconds divided by number of dots
+  
+  const activeDotIndex = Math.floor(currentProgress / timePerDot);
+  
+  dots.forEach((dot, index) => {
+    dot.classList.remove('active', 'pulse');
+    if (index < activeDotIndex) {
+      dot.classList.add('active');
+    } else if (index === activeDotIndex) {
+      dot.classList.add('pulse');
+    }
+  });
+  
+  currentProgress += 100; // Update every 100ms
+  if (currentProgress >= 5000) {
+    currentProgress = 0;
+  }
+}
+
+function updateSunnahPrayers() {
+  if (!_perPrayerNorm || Object.keys(_perPrayerNorm).length === 0) return;
+  
+  const now = new Date();
+  const nowParts = getTimePartsInZone(now, currentTimeZone);
+  const sunnahContainer = document.getElementById('sunnahPrayersList');
+  
+  if (!sunnahContainer) return;
+  
+  // Filter only available sunnah prayers
+  const availablePrayers = sunnahHadithCollection.filter(prayer => 
+    prayer.timeCondition(_perPrayerNorm, nowParts)
+  );
+  
+  if (availablePrayers.length === 0) {
+    sunnahContainer.innerHTML = `
+      <div class="sunnah-prayer-item no-available">
+        <div class="sunnah-prayer-name">
+          <i class="fas fa-info-circle status-icon not-available"></i>
+          Tidak ada sholat sunnah yang dapat dikerjakan saat ini
+        </div>
+        <div class="sunnah-prayer-time">Silakan menunggu waktu sholat sunnah berikutnya</div>
+        <div class="sunnah-prayer-dalil">Gunakan waktu ini untuk berdzikir dan berdoa kepada Allah</div>
+      </div>
+    `;
+    return;
+  }
+  
+  sunnahContainer.innerHTML = '';
+  
+  availablePrayers.forEach(prayer => {
+    const prayerElement = document.createElement('div');
+    prayerElement.className = 'sunnah-prayer-item available';
+    
+    prayerElement.innerHTML = `
+      <div class="sunnah-prayer-name">
+        <i class="fas fa-check-circle status-icon available"></i>
+        ${prayer.name}
+      </div>
+      <div class="sunnah-prayer-time">${prayer.timeDescription}</div>
+      <div class="sunnah-prayer-arabic">${prayer.arabic}</div>
+      <div class="sunnah-prayer-indonesia">${prayer.indonesia}</div>
+      <div class="sunnah-prayer-reference">${prayer.reference}</div>
+    `;
+    
+    sunnahContainer.appendChild(prayerElement);
+  });
+}
+
+function initHadithRotation() {
+  const hadithArabic = document.getElementById('hadithArabic');
+  const hadithIndonesia = document.getElementById('hadithIndonesia');
+  const hadithReference = document.getElementById('hadithReference');
+  const hadithContent = document.getElementById('hadithContent');
+  
+  function getRandomHadithIndex() {
+    let newIndex;
+    do {
+      newIndex = Math.floor(Math.random() * hadithCollection.length);
+    } while (newIndex === currentHadithIndex && hadithCollection.length > 1);
+    return newIndex;
+  }
+  
+  function showNextHadith() {
+    hadithContent.classList.add('fade-out');
+    currentProgress = 0; // Reset progress when changing hadith
+    
+    setTimeout(() => {
+      currentHadithIndex = getRandomHadithIndex();
+      const hadith = hadithCollection[currentHadithIndex];
+      hadithArabic.textContent = hadith.arabic;
+      hadithIndonesia.textContent = hadith.indonesia;
+      hadithReference.textContent = hadith.reference;
+      hadithContent.classList.remove('fade-out');
+    }, 250);
+  }
+  
+  // Show first hadith immediately (random)
+  if (hadithCollection && hadithCollection.length > 0) {
+    currentHadithIndex = Math.floor(Math.random() * hadithCollection.length);
+    const hadith = hadithCollection[currentHadithIndex];
+    hadithArabic.textContent = hadith.arabic;
+    hadithIndonesia.textContent = hadith.indonesia;
+    hadithReference.textContent = hadith.reference;
+    
+    // Start progress indicator
+    progressInterval = setInterval(updateHadithProgress, 100);
+    
+    // Rotate every 5 seconds
+    hadithInterval = setInterval(showNextHadith, 5000);
+  }
+}
 
 updateClock();
+
+// Initialize method name
+document.getElementById("methodName").textContent = "Kemenag Indonesia";
+
+// Initialize notification preference
+loadNotificationPreference();
+
+// Initialize hadith rotation
+initHadithRotation();
+
 // Restore last location if available; else try GPS; else manual
 (async ()=>{
   try{
