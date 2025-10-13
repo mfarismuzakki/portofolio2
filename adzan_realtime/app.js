@@ -467,9 +467,14 @@ function renderPrayers(){
         let infoText = '--:--:--';
         
         if(!isNaN(t)){
-          // Syuruq always shows '--:--:--' (no countdown, no "Selesai")
           if(k === 'sunrise'){
-            infoText = '--:--:--';
+            // Syuruq: show countdown if it's next prayer, otherwise '--:--:--' (never "Selesai")
+            if(k === nextKey && t > nowHours) {
+              const diffSec = Math.round((t - nowHours) * 3600);
+              infoText = formatHMS(diffSec);
+            } else {
+              infoText = '--:--:--';
+            }
           } else if(t <= nowHours){
             infoText = 'Selesai';
           } else if(k === nextKey) {
@@ -560,8 +565,7 @@ function updateLiveInfo(){
   for(const k of Object.keys(_perPrayerNorm)){
     const t = _perPrayerNorm[k];
     if(isNaN(t)) continue;
-    // Skip sunrise from next prayer calculation
-    if(k === 'sunrise') continue;
+    // Include sunrise in next prayer calculation for table display
     const diff = t - nowHours;
     if(diff > 0 && diff < minDiff){ minDiff = diff; nextKey = k; }
   }
@@ -577,7 +581,7 @@ function updateLiveInfo(){
       return;
     }
     
-    if(key === nextKey && key !== 'sunrise'){
+    if(key === nextKey){
       let diffHours = t - nowHours;
       if(diffHours < 0) diffHours += 24;
       const diffSec = Math.max(0, Math.round(diffHours * 3600));
