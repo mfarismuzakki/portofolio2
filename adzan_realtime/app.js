@@ -44,7 +44,7 @@ function updateLiveInfo(){
       return;
     }
     
-    if(key === nextKey){
+    if(key === nextKey && key !== 'sunrise'){
       let diffHours = t - nowHours;
       if(diffHours < 0) diffHours += 24;
       const diffSec = Math.max(0, Math.round(diffHours * 3600));
@@ -84,8 +84,14 @@ function updateLiveInfo(){
       infoCell.style.fontWeight = '700';
       infoCell.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.8)';
     } else {
-      if(t <= nowHours) infoCell.textContent = 'Selesai';
-      else infoCell.textContent = '--:--:--';
+      // Syuruq always shows '--:--:--' (no countdown, no "Selesai")
+      if(key === 'sunrise'){
+        infoCell.textContent = '--:--:--';
+      } else if(t <= nowHours) {
+        infoCell.textContent = 'Selesai';
+      } else {
+        infoCell.textContent = '--:--:--';
+      }
       // Remove highlighting
       tr.style.background = '';
       tr.style.borderLeft = '';
@@ -461,7 +467,10 @@ function renderPrayers(){
         let infoText = '--:--:--';
         
         if(!isNaN(t)){
-          if(t <= nowHours){
+          // Syuruq always shows '--:--:--' (no countdown, no "Selesai")
+          if(k === 'sunrise'){
+            infoText = '--:--:--';
+          } else if(t <= nowHours){
             infoText = 'Selesai';
           } else if(k === nextKey) {
             // Show countdown for next prayer
@@ -551,6 +560,8 @@ function updateLiveInfo(){
   for(const k of Object.keys(_perPrayerNorm)){
     const t = _perPrayerNorm[k];
     if(isNaN(t)) continue;
+    // Skip sunrise from next prayer calculation
+    if(k === 'sunrise') continue;
     const diff = t - nowHours;
     if(diff > 0 && diff < minDiff){ minDiff = diff; nextKey = k; }
   }
@@ -566,7 +577,7 @@ function updateLiveInfo(){
       return;
     }
     
-    if(key === nextKey){
+    if(key === nextKey && key !== 'sunrise'){
       let diffHours = t - nowHours;
       if(diffHours < 0) diffHours += 24;
       const diffSec = Math.max(0, Math.round(diffHours * 3600));
@@ -606,8 +617,14 @@ function updateLiveInfo(){
       infoCell.style.fontWeight = '700';
       infoCell.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.8)';
     } else {
-      if(t <= nowHours) infoCell.textContent = 'Selesai';
-      else infoCell.textContent = '--:--:--';
+      // Syuruq always shows '--:--:--' (no countdown, no "Selesai")
+      if(key === 'sunrise'){
+        infoCell.textContent = '--:--:--';
+      } else if(t <= nowHours) {
+        infoCell.textContent = 'Selesai';
+      } else {
+        infoCell.textContent = '--:--:--';
+      }
       // Remove highlighting
       tr.style.background = '';
       tr.style.borderLeft = '';
