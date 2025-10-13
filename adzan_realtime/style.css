@@ -527,8 +527,61 @@ footer {
   font-family: var(--font-primary);
 }
 
-.hadith-progress {
+/* Hadith Carousel Controls */
+.hadith-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
   margin-top: 16px;
+  margin-left: calc(1.5rem + 16px); /* Offset to align with text center (icon width + gap) */
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hadith-btn {
+  background: rgba(0, 255, 255, 0.08);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  border-radius: 6px;
+  color: var(--primary-cyan);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  height: 28px;
+  width: 28px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.hadith-btn:hover {
+  background: rgba(0, 255, 255, 0.15);
+  border-color: var(--primary-cyan);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 255, 255, 0.25);
+}
+
+.hadith-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 255, 255, 0.2);
+}
+
+.hadith-btn.paused {
+  background: rgba(255, 196, 0, 0.08);
+  border-color: rgba(255, 196, 0, 0.25);
+  color: #ffc400;
+}
+
+.hadith-btn.paused:hover {
+  background: rgba(255, 196, 0, 0.15);
+  border-color: #ffc400;
+  box-shadow: 0 3px 8px rgba(255, 196, 0, 0.25);
+}
+
+.hadith-progress {
+  margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
@@ -753,6 +806,19 @@ footer {
   .hadith-reference {
     text-align: center;
     font-size: 0.8rem;
+  }
+  
+  .hadith-controls {
+    gap: 6px;
+    margin-top: 12px;
+    margin-left: calc(1.5rem + 12px); /* Slightly smaller offset for mobile */
+    padding-top: 8px;
+  }
+  
+  .hadith-btn {
+    height: 24px;
+    width: 24px;
+    font-size: 0.7rem;
   }
   
   .progress-bar-container {

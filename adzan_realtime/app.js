@@ -1209,8 +1209,12 @@ let currentHadithIndex = 0;
 let hadithInterval = null;
 let progressInterval = null;
 let currentProgress = 0;
+let isHadithPaused = false;
 
 function updateHadithProgress() {
+  // Don't update progress if paused
+  if (isHadithPaused) return;
+  
   const progressFill = document.querySelector('.progress-fill');
   if (!progressFill) return;
   
@@ -1302,6 +1306,73 @@ function initHadithRotation() {
       hadithContent.classList.remove('fade-out');
     }, 250);
   }
+
+  function showHadithByIndex(index) {
+    hadithContent.classList.add('fade-out');
+    currentProgress = 0; // Reset progress when changing hadith
+    
+    setTimeout(() => {
+      currentHadithIndex = index;
+      const hadith = hadithCollection[currentHadithIndex];
+      hadithArabic.textContent = hadith.arabic;
+      hadithIndonesia.textContent = hadith.indonesia;
+      hadithReference.textContent = hadith.reference;
+      hadithContent.classList.remove('fade-out');
+    }, 250);
+  }
+
+  function showPreviousHadith() {
+    let prevIndex = currentHadithIndex - 1;
+    if (prevIndex < 0) {
+      prevIndex = hadithCollection.length - 1;
+    }
+    showHadithByIndex(prevIndex);
+  }
+
+  function showNextHadithManual() {
+    let nextIndex = currentHadithIndex + 1;
+    if (nextIndex >= hadithCollection.length) {
+      nextIndex = 0;
+    }
+    showHadithByIndex(nextIndex);
+  }
+
+  function togglePlayPause() {
+    const playPauseBtn = document.getElementById('playPauseHadith');
+    const playPauseIcon = playPauseBtn.querySelector('i');
+    
+    if (isHadithPaused) {
+      // Resume
+      isHadithPaused = false;
+      playPauseBtn.classList.remove('paused');
+      playPauseIcon.className = 'fas fa-pause';
+      playPauseBtn.title = 'Pause Auto';
+      
+      // Restart intervals
+      progressInterval = setInterval(updateHadithProgress, 100);
+      hadithInterval = setInterval(showNextHadith, 5000);
+    } else {
+      // Pause
+      isHadithPaused = true;
+      playPauseBtn.classList.add('paused');
+      playPauseIcon.className = 'fas fa-play';
+      playPauseBtn.title = 'Play Auto';
+      
+      // Clear intervals
+      if (progressInterval) clearInterval(progressInterval);
+      if (hadithInterval) clearInterval(hadithInterval);
+      
+      // Reset progress
+      currentProgress = 0;
+      const progressFill = document.querySelector('.progress-fill');
+      if (progressFill) progressFill.style.width = '0%';
+    }
+  }
+
+  // Add event listeners for carousel controls
+  document.getElementById('prevHadith').addEventListener('click', showPreviousHadith);
+  document.getElementById('nextHadith').addEventListener('click', showNextHadithManual);
+  document.getElementById('playPauseHadith').addEventListener('click', togglePlayPause);
   
   // Show first hadith immediately (random)
   if (hadithCollection && hadithCollection.length > 0) {
