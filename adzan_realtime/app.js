@@ -230,7 +230,7 @@ function formatHMS(s){
 
 
 /* === App utama === */
-const prayNames={fajr:"Subuh",dhuhr:"Dzuhur",asr:"Ashar",maghrib:"Maghrib",isha:"Isya"};
+const prayNames={fajr:"Subuh",sunrise:"Syuruq",dhuhr:"Dzuhur",asr:"Ashar",maghrib:"Maghrib",isha:"Isya"};
 
 let currentLat=null,currentLon=null,currentCity="Lokasi belum ditentukan";
 let currentMethod="KEMENAG";
@@ -478,7 +478,7 @@ function renderPrayers(){
       }
       updateNext(times);
       
-      // Add sunrise to norm for sunnah prayer calculations (even though not displayed in table)
+      // Add sunrise to norm for calculations
       if(times.sunrise !== undefined) {
         if(typeof times.sunrise === 'number') norm.sunrise = times.sunrise;
         else if(typeof times.sunrise === 'string') {
@@ -658,6 +658,7 @@ function scheduleNotifications(prayerTimes, usedTomorrow) {
   // Prayer names in Indonesian
   const prayerDisplayNames = {
     'fajr': 'Subuh',
+    'sunrise': 'Syuruq',
     'dhuhr': 'Dzuhur', 
     'asr': 'Ashar',
     'maghrib': 'Maghrib',
@@ -1765,8 +1766,6 @@ function updateFloatingWidget() {
     let minDiff = Infinity;
     
     Object.entries(_perPrayerNorm).forEach(([key, time]) => {
-      if (key === 'sunrise') return; // Skip sunrise
-      
       const timeHours = parseFloat(time);
       let diff = timeHours - nowHours;
       

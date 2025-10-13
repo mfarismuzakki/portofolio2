@@ -218,10 +218,9 @@ td.time {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  font-variant-numeric: tabular-nums;
-  font-family: var(--font-secondary);
-  color: var(--text-secondary);
 }
+
+
 
 tr.row-next {
   background: linear-gradient(135deg, rgba(0, 128, 255, 0.2), rgba(0, 255, 255, 0.1)) !important;
