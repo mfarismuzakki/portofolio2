@@ -1211,23 +1211,17 @@ let progressInterval = null;
 let currentProgress = 0;
 
 function updateHadithProgress() {
-  const dots = document.querySelectorAll('.progress-dots .dot');
-  const totalDots = dots.length;
-  const timePerDot = 5000 / totalDots; // 5 seconds divided by number of dots
+  const progressFill = document.querySelector('.progress-fill');
+  if (!progressFill) return;
   
-  const activeDotIndex = Math.floor(currentProgress / timePerDot);
+  const totalTime = 5000; // 5 seconds total
+  const progressPercentage = (currentProgress / totalTime) * 100;
   
-  dots.forEach((dot, index) => {
-    dot.classList.remove('active', 'pulse');
-    if (index < activeDotIndex) {
-      dot.classList.add('active');
-    } else if (index === activeDotIndex) {
-      dot.classList.add('pulse');
-    }
-  });
+  // Update progress bar width with smooth animation
+  progressFill.style.width = progressPercentage + '%';
   
   currentProgress += 100; // Update every 100ms
-  if (currentProgress >= 5000) {
+  if (currentProgress >= totalTime) {
     currentProgress = 0;
   }
 }

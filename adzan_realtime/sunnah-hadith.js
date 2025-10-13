@@ -27,22 +27,28 @@ const sunnahHadithCollection = [
     indonesia: "Pada pagi hari diwajibkan bagi seluruh persendian di antara kalian untuk bersedekah. Ini semua bisa dicukupi dengan melaksanakan shalat Dhuha sebanyak 2 rakaat.",
     reference: "HR. Muslim",
     timeCondition: (times, now) => {
-      // Sholat Dhuha: 15 menit setelah matahari terbit hingga sebelum sholat Dzuhur
-      // Hanya berlaku di pagi hari (6-12 siang)
-      const dhuhaStart = times.sunrise + 0.25; // 15 menit setelah terbit
-      const dhuhaEnd = times.dhuhr; // Hingga sebelum Dzuhur
+      // Sholat Dhuha: 15 menit setelah matahari terbit hingga 30 menit sebelum Dzuhur
+      // Dinamis berdasarkan waktu sholat aktual, tidak terikat jam statis
       const nowHours = now.h + now.m/60 + now.s/3600;
       
-      // Validasi ketat: Dhuha hanya di pagi hari
-      // Sunrise biasanya 5-7 AM, Dhuhr biasanya 11-13 PM
-      if (nowHours >= 6 && nowHours <= 13 && 
-          dhuhaStart >= 5 && dhuhaStart <= 8 && 
-          dhuhaEnd >= 11 && dhuhaEnd <= 14) {
-        return nowHours >= dhuhaStart && nowHours < dhuhaEnd;
+      // Validasi data waktu sholat tersedia
+      if (isNaN(times.sunrise) || isNaN(times.dhuhr)) {
+        return false;
       }
-      return false;
+      
+      const dhuhaStart = times.sunrise + 0.25; // 15 menit setelah terbit matahari
+      const dhuhaEnd = times.dhuhr - 0.5; // 30 menit sebelum Dzuhur
+      
+      // Pastikan ada jarak waktu yang logis antara sunrise dan dhuhr (minimal 3 jam)
+      const timeGap = times.dhuhr - times.sunrise;
+      if (timeGap < 3 || timeGap > 8) {
+        return false; // Data tidak valid
+      }
+      
+      // Dhuha valid dari 15 menit setelah sunrise hingga 30 menit sebelum dhuhr
+      return nowHours >= dhuhaStart && nowHours <= dhuhaEnd;
     },
-    timeDescription: "15 menit setelah terbit hingga sebelum Dzuhur"
+    timeDescription: "15 menit setelah terbit matahari hingga 30 menit sebelum Dzuhur"
   },
   {
     name: "Sunnah Dzuhur (Qabliyah)",

@@ -538,34 +538,59 @@ footer {
   padding-left: calc(1.5rem + 16px); /* Account for icon space (1.5rem icon + 16px gap) */
 }
 
-.progress-dots {
+/* Gaming-style progress bar */
+.progress-bar-container {
   display: flex;
-  gap: 6px;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  padding: 0 20px;
 }
 
-.dot {
-  width: 8px;
+.progress-bar {
+  width: 100%;
   height: 8px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-.dot.active {
-  background: var(--primary-cyan);
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-  transform: scale(1.2);
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, 
+    var(--primary-cyan) 0%, 
+    rgba(0, 255, 255, 0.8) 50%, 
+    var(--primary-cyan) 100%);
+  border-radius: 12px;
+  transition: width 0.1s ease-out;
+  position: relative;
+  box-shadow: 
+    0 0 8px rgba(0, 255, 255, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-@keyframes dotPulse {
-  0%, 100% { transform: scale(1); opacity: 0.6; }
-  50% { transform: scale(1.2); opacity: 1; }
+/* Gaming-style glow effect */
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.4) 50%, 
+    transparent 100%);
+  animation: progressShine 2s infinite;
 }
 
-.dot.pulse {
-  animation: dotPulse 1s infinite;
+@keyframes progressShine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 /* Sunnah Prayer Section */
@@ -730,8 +755,12 @@ footer {
     font-size: 0.8rem;
   }
   
-  .progress-dots {
-    gap: 4px;
+  .progress-bar-container {
+    padding: 0 16px;
+  }
+  
+  .progress-bar {
+    height: 6px;
   }
   
   .dot {

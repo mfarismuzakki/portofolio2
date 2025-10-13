@@ -1,4 +1,3 @@
-// Koleksi Hadith Shahih tentang Shalat
 // Collection of Authentic Hadith about Prayer
 
 const hadithCollection = [
@@ -10,12 +9,12 @@ const hadithCollection = [
   {
     arabic: "صَلَاةُ الْجَمَاعَةِ تَفْضُلُ صَلَاةَ الْفَذِّ بِسَبْعٍ وَعِشْرِينَ دَرَجَةً",
     indonesia: "Shalat berjamaah lebih utama daripada shalat sendirian dengan 27 derajat.",
-    reference: "HR. Bukhari & Muslim"
+    reference: "HR. Al-Bukhari & Muslim"
   },
   {
     arabic: "خَيْرُ الْأَعْمَالِ الصَّلَاةُ عَلَى وَقْتِهَا",
     indonesia: "Sebaik-baik amal adalah shalat pada waktunya.",
-    reference: "HR. Bukhari & Muslim"
+    reference: "HR. Al-Bukhari & Muslim"
   },
   {
     arabic: "الصَّلَاةُ نُورٌ",
@@ -30,7 +29,7 @@ const hadithCollection = [
   {
     arabic: "مَن تَرَكَ صَلَاةَ الْعَصْرِ فَقَدْ حَبِطَ عَمَلُهُ",
     indonesia: "Barangsiapa yang meninggalkan shalat Ashar, maka terhapuslah amalnya.",
-    reference: "HR. Bukhari"
+    reference: "HR. Al-Bukhari"
   },
   {
     arabic: "بَيْنَ الرَّجُلِ وَبَيْنَ الشِّرْكِ وَالْكُفْرِ تَرْكُ الصَّلَاةِ",
@@ -40,7 +39,7 @@ const hadithCollection = [
   {
     arabic: "مَا مِن مُسْلِمٍ يَتَوَضَّأُ فَيُحْسِنُ وُضُوءَهُ ثُمَّ يَقُومُ فَيُصَلِّي رَكْعَتَيْنِ",
     indonesia: "Tidaklah seorang muslim berwudhu lalu memperbaiki wudhunya kemudian berdiri shalat dua rakaat, melainkan Allah akan mengampuni dosa-dosanya.",
-    reference: "HR. Bukhari & Muslim"
+    reference: "HR. Al-Bukhari & Muslim"
   },
   {
     arabic: "الطُّهُورُ شَطْرُ الْإِيمَانِ وَالْحَمْدُ لِلَّهِ تَمْلَأُ الْمِيزَانَ",
@@ -50,12 +49,12 @@ const hadithCollection = [
   {
     arabic: "مَن قَالَ سُبْحَانَ اللَّهِ وَبِحَمْدِهِ فِي يَوْمٍ مِائَةَ مَرَّةٍ حُطَّت خَطَايَاهُ وَإِن كَانَت مِثْلَ زَبَدِ الْبَحْرِ",
     indonesia: "Barangsiapa yang mengucapkan Subhanallahi wa bihamdihi dalam sehari 100 kali, maka dihapuskanlah dosa-dosanya walaupun sebanyak buih lautan.",
-    reference: "HR. Bukhari & Muslim"
+    reference: "HR. Al-Bukhari & Muslim"
   },
   {
     arabic: "صَلُّوا كَمَا رَأَيْتُمُونِي أُصَلِّي",
     indonesia: "Shalatlah kalian sebagaimana kalian melihat aku shalat.",
-    reference: "HR. Bukhari"
+    reference: "HR. Al-Bukhari"
   },
   {
     arabic: "الصَّلَاةُ خَيْرُ مَوْضُوعٍ فَمَن اسْتَطَاعَ أَن يَسْتَكْثِرَ فَلْيَسْتَكْثِرْ",
@@ -65,17 +64,17 @@ const hadithCollection = [
   {
     arabic: "لَا يَزَالُ الْعَبْدُ فِي صَلَاةٍ مَا دَامَ فِي مُصَلَّاهُ يَنْتَظِرُ الصَّلَاةَ",
     indonesia: "Seorang hamba senantiasa dalam keadaan shalat selama ia berada di tempat shalatnya menunggu shalat.",
-    reference: "HR. Bukhari"
+    reference: "HR. Al-Bukhari"
   },
   {
     arabic: "مَن صَلَّى الْبَرْدَيْنِ دَخَلَ الْجَنَّةَ",
     indonesia: "Barangsiapa yang shalat dua waktu yang dingin (Subuh dan Ashar), maka ia masuk surga.",
-    reference: "HR. Bukhari & Muslim"
+    reference: "HR. Al-Bukhari & Muslim"
   },
   {
     arabic: "إِنَّ أَعْظَمَ الذُّنُوبِ عِنْدَ اللَّهِ أَن تَدْعُوَ لِلَّهِ نِدًّا وَهُوَ خَلَقَكَ",
     indonesia: "Sesungguhnya dosa yang paling besar di sisi Allah adalah menjadikan sekutu bagi Allah padahal Dia yang menciptakanmu.",
-    reference: "HR. Bukhari"
+    reference: "HR. Al-Bukhari"
   },
   {
     arabic: "رَكْعَتَا الْفَجْرِ خَيْرٌ مِنَ الدُّنْيَا وَمَا فِيهَا",
@@ -85,7 +84,7 @@ const hadithCollection = [
   {
     arabic: "مَن حَافَظَ عَلَى أَرْبَعِ رَكَعَاتٍ قَبْلَ الظُّهْرِ وَأَرْبَعٍ بَعْدَهَا حَرَّمَهُ اللَّهُ عَلَى النَّارِ",
     indonesia: "Barangsiapa yang menjaga empat rakaat sebelum Dhuhur dan empat rakaat sesudahnya, Allah haramkan dia atas api neraka.",
-    reference: "HR. Abu Dawud & Tirmidzi"
+    reference: "HR. Abu Dawud & At-Tirmidzi"
   },
   {
     arabic: "أَيُّهَا النَّاسُ عَلَيْكُم بِالسُّجُودِ فَإِنَّكُم لاَ تَسْجُدُونَ لِلَّهِ سَجْدَةً إِلاَّ رَفَعَكُمُ اللَّهُ بِهَا دَرَجَةً",
@@ -110,7 +109,7 @@ const hadithCollection = [
   {
     arabic: "مَن صَلَّى الضُّحَى أَرْبَعَ رَكَعَاتٍ وَقَبْلَ الأُولَى أَرْبَعَ رَكَعَاتٍ بُنِيَ لَهُ بَيْتٌ فِي الْجَنَّةِ",
     indonesia: "Barangsiapa yang shalat Dhuha empat rakaat dan sebelum Dhuhur empat rakaat, maka dibangunkan untuknya rumah di surga.",
-    reference: "HR. Tirmidzi"
+    reference: "HR. At-Tirmidzi"
   },
   {
     arabic: "الْوِتْرُ حَقٌّ فَمَن لَم يُوتِرْ فَلَيْسَ مِنَّا",
@@ -130,7 +129,7 @@ const hadithCollection = [
   {
     arabic: "كَانَ النَّبِيُّ لاَ يَدَعُ أَرْبَعًا قَبْلَ الظُّهْرِ وَرَكْعَتَيْنِ قَبْلَ الْغَدَاةِ",
     indonesia: "Nabi tidak pernah meninggalkan empat rakaat sebelum Dhuhur dan dua rakaat sebelum Subuh.",
-    reference: "HR. Bukhari"
+    reference: "HR. Al-Bukhari"
   }
 ];
 
