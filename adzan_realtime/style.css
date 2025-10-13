@@ -697,6 +697,68 @@ footer {
     width: 6px;
     height: 6px;
   }
+  
+  /* Fix countdown display on mobile */
+  #prayTable {
+    font-size: 14px;
+  }
+  
+  #prayTable td {
+    padding: 12px 8px;
+  }
+  
+  #prayTable th:nth-child(3), 
+  #prayTable td:nth-child(3),
+  #prayTable td[data-info] {
+    text-align: center;
+    min-width: 80px;
+    font-size: 13px;
+  }
+  
+  /* Ensure countdown text is visible */
+  #prayTable td.small {
+    font-size: 13px !important;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  /* Enhanced countdown styling for highlighted row */
+  tr[data-prayer] td[data-info] {
+    font-family: var(--font-primary) !important;
+    font-weight: 700 !important;
+    min-width: 90px;
+    font-size: 14px !important;
+  }
+  
+  /* Responsive table layout for mobile */
+  #prayTable th:nth-child(1), #prayTable td:nth-child(1) { width: 30%; }
+  #prayTable th:nth-child(2), #prayTable td:nth-child(2) { width: 35%; }
+  #prayTable th:nth-child(3), #prayTable td:nth-child(3) { width: 35%; }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  #prayTable {
+    font-size: 13px;
+  }
+  
+  #prayTable td {
+    padding: 10px 6px;
+  }
+  
+  #prayTable th:nth-child(1), #prayTable td:nth-child(1) { width: 25%; }
+  #prayTable th:nth-child(2), #prayTable td:nth-child(2) { width: 35%; }
+  #prayTable th:nth-child(3), #prayTable td:nth-child(3) { width: 40%; }
+  
+  #prayTable td.small {
+    font-size: 12px !important;
+  }
+  
+  tr[data-prayer] td[data-info] {
+    font-size: 13px !important;
+  }
 }
 
 /* Custom Modal Styles */

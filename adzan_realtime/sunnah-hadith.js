@@ -8,11 +8,12 @@ const sunnahHadithCollection = [
     indonesia: "Dua rakaat sunnah Subuh lebih baik daripada dunia dan segala isinya.",
     reference: "HR. Muslim",
     timeCondition: (times, now) => {
-      const fajrStart = times.fajr - 0.5; // 30 minutes before Fajr
+      // Sunnah Subuh: sejak masuk waktu Subuh hingga sebelum sholat Subuh dilakukan
+      // Bisa dilakukan kapan saja selama waktu Subuh belum terlewat
       const nowHours = now.h + now.m/60 + now.s/3600;
-      return nowHours >= fajrStart && nowHours < times.fajr;
+      return nowHours >= times.fajr && nowHours < times.sunrise;
     },
-    timeDescription: "Sebelum sholat Subuh"
+    timeDescription: "Sejak masuk waktu Subuh hingga terbit matahari"
   },
   {
     name: "Sholat Dhuha",
@@ -20,12 +21,14 @@ const sunnahHadithCollection = [
     indonesia: "Barangsiapa yang shalat Dhuha empat rakaat dan sebelum Dhuhur empat rakaat, maka dibangunkan untuknya rumah di surga.",
     reference: "HR. Tirmidzi",
     timeCondition: (times, now) => {
-      const dhuhaStart = times.sunrise + 0.25; // 15 minutes after sunrise
-      const dhuhaEnd = times.dhuhr - 0.25; // 15 minutes before Dhuhr
+      // Sholat Dhuha: 15 menit setelah matahari terbit hingga sebelum sholat Dzuhur
+      // Waktu utama: ketika matahari naik setinggi tombak (sekitar 7-8 meter)
+      const dhuhaStart = times.sunrise + 0.25; // 15 menit setelah terbit
+      const dhuhaEnd = times.dhuhr; // Hingga sebelum Dzuhur (tanpa batasan 15 menit)
       const nowHours = now.h + now.m/60 + now.s/3600;
-      return nowHours >= dhuhaStart && nowHours <= dhuhaEnd;
+      return nowHours >= dhuhaStart && nowHours < dhuhaEnd;
     },
-    timeDescription: "Setelah terbit hingga sebelum Dzuhur"
+    timeDescription: "15 menit setelah terbit hingga sebelum Dzuhur"
   },
   {
     name: "Sunnah Dzuhur (Qabliyah)",
@@ -33,11 +36,12 @@ const sunnahHadithCollection = [
     indonesia: "Barangsiapa yang menjaga empat rakaat sebelum Dhuhur dan empat rakaat sesudahnya, Allah haramkan dia atas api neraka.",
     reference: "HR. Abu Dawud & Tirmidzi",
     timeCondition: (times, now) => {
-      const dhuhrStart = times.dhuhr - 0.25; // 15 minutes before Dhuhr
+      // Sunnah Qabliyah Dzuhur: sejak masuk waktu Dzuhur hingga sebelum sholat Dzuhur dilakukan
+      // Bisa dilakukan kapan saja selama waktu Dzuhur belum terlewat
       const nowHours = now.h + now.m/60 + now.s/3600;
-      return nowHours >= dhuhrStart && nowHours < times.dhuhr;
+      return nowHours >= times.dhuhr && nowHours < times.asr;
     },
-    timeDescription: "Sebelum sholat Dzuhur"
+    timeDescription: "Sejak masuk waktu Dzuhur hingga sebelum Ashar"
   },
   {
     name: "Sunnah Dzuhur (Ba'diyah)",
@@ -45,12 +49,12 @@ const sunnahHadithCollection = [
     indonesia: "Tidaklah seorang hamba muslim yang shalat kepada Allah setiap hari dua belas rakaat sunnah selain yang fardhu, melainkan Allah membangunkan untuknya rumah di surga.",
     reference: "HR. Muslim",
     timeCondition: (times, now) => {
-      const dhuhrEnd = times.dhuhr + 0.25; // 15 minutes after Dhuhr
-      const asrStart = times.asr - 0.25; // 15 minutes before Asr
+      // Sunnah Ba'diyah Dzuhur: setelah sholat Dzuhur hingga sebelum masuk waktu Ashar
+      // Waktu yang lebih baik: segera setelah sholat Dzuhur
       const nowHours = now.h + now.m/60 + now.s/3600;
-      return nowHours >= times.dhuhr && nowHours <= Math.min(dhuhrEnd, asrStart);
+      return nowHours >= times.dhuhr && nowHours < times.asr;
     },
-    timeDescription: "Setelah sholat Dzuhur"
+    timeDescription: "Setelah sholat Dzuhur hingga sebelum Ashar"
   },
   {
     name: "Sunnah Maghrib (Ba'diyah)",
@@ -58,12 +62,12 @@ const sunnahHadithCollection = [
     indonesia: "Apabila salah seorang di antara kalian shalat Maghrib, hendaklah ia shalat dua rakaat sesudahnya.",
     reference: "HR. Abu Dawud",
     timeCondition: (times, now) => {
-      const maghribEnd = times.maghrib + 0.25; // 15 minutes after Maghrib
-      const ishaStart = times.isha - 0.25; // 15 minutes before Isha
+      // Sunnah Ba'diyah Maghrib: setelah sholat Maghrib hingga sebelum masuk waktu Isya
+      // Waktu yang lebih baik: segera setelah sholat Maghrib
       const nowHours = now.h + now.m/60 + now.s/3600;
-      return nowHours >= times.maghrib && nowHours <= Math.min(maghribEnd, ishaStart);
+      return nowHours >= times.maghrib && nowHours < times.isha;
     },
-    timeDescription: "Setelah sholat Maghrib"
+    timeDescription: "Setelah sholat Maghrib hingga sebelum Isya"
   },
   {
     name: "Sholat Witir",
@@ -71,10 +75,17 @@ const sunnahHadithCollection = [
     indonesia: "Witir itu haq (kewajiban), barangsiapa yang tidak melakukan witir maka dia bukan dari golongan kami.",
     reference: "HR. Abu Dawud",
     timeCondition: (times, now) => {
-      const witrStart = times.isha + 0.25; // 15 minutes after Isha
-      const fajrStart = times.fajr - 0.25; // 15 minutes before Fajr (next day)
+      // Sholat Witir: setelah Isya hingga sebelum Subuh
+      // Waktu terbaik: sepertiga malam terakhir atau sebelum tidur
       const nowHours = now.h + now.m/60 + now.s/3600;
-      return nowHours >= witrStart || nowHours <= fajrStart;
+      // Dari setelah Isya sampai sebelum Subuh (menggunakan logika 24 jam)
+      if (times.isha < times.fajr) {
+        // Normal case: Isha dan Fajr di hari yang sama
+        return nowHours >= times.isha && nowHours < times.fajr;
+      } else {
+        // Cross midnight case: Fajr di hari berikutnya
+        return nowHours >= times.isha || nowHours < times.fajr;
+      }
     },
     timeDescription: "Setelah Isya hingga sebelum Subuh"
   },
@@ -84,14 +95,28 @@ const sunnahHadithCollection = [
     indonesia: "Keadaan paling dekat antara Rabb dengan hamba adalah pada pertengahan malam terakhir.",
     reference: "HR. Tirmidzi",
     timeCondition: (times, now) => {
-      const nightStart = times.isha + 0.5; // 30 minutes after Isha
-      const nightEnd = times.fajr - 0.25; // 15 minutes before Fajr
+      // Tahajjud: sepertiga malam terakhir (waktu terbaik untuk tahajjud)
+      // Dihitung dari tengah malam hingga sebelum Subuh
       const nowHours = now.h + now.m/60 + now.s/3600;
-      // Third part of night (for tahajjud specifically)
-      const thirdNightStart = nightStart + ((nightEnd + 24 - nightStart) * 2/3) % 24;
-      return (nowHours >= thirdNightStart) || (nowHours <= nightEnd);
+      
+      // Hitung durasi malam (dari Isya sampai Fajr)
+      let nightDuration;
+      if (times.fajr > times.isha) {
+        nightDuration = times.fajr - times.isha;
+      } else {
+        nightDuration = (24 - times.isha) + times.fajr;
+      }
+      
+      // Sepertiga malam terakhir dimulai 2/3 setelah Isya
+      const tahajjudStart = (times.isha + (nightDuration * 2/3)) % 24;
+      
+      if (tahajjudStart < times.fajr) {
+        return nowHours >= tahajjudStart && nowHours < times.fajr;
+      } else {
+        return nowHours >= tahajjudStart || nowHours < times.fajr;
+      }
     },
-    timeDescription: "Sepertiga malam terakhir"
+    timeDescription: "Sepertiga malam terakhir (waktu mustajab)"
   },
   {
     name: "Sunnah Isya (Ba'diyah)",
@@ -99,12 +124,18 @@ const sunnahHadithCollection = [
     indonesia: "Nabi tidak pernah meninggalkan empat rakaat sebelum Dhuhur dan dua rakaat sebelum Subuh.",
     reference: "HR. Bukhari",
     timeCondition: (times, now) => {
-      const ishaEnd = times.isha + 0.25; // 15 minutes after Isha
-      const witrStart = times.isha + 1; // 1 hour after Isha (before witr time)
+      // Sunnah Ba'diyah Isya: setelah sholat Isya hingga sebelum tidur
+      // Waktu yang baik: segera setelah sholat Isya sebelum sholat Witir
       const nowHours = now.h + now.m/60 + now.s/3600;
-      return nowHours >= times.isha && nowHours <= Math.min(ishaEnd, witrStart);
+      const isyaPlus1Hour = (times.isha + 1) % 24; // 1 jam setelah Isya
+      
+      if (times.isha < isyaPlus1Hour) {
+        return nowHours >= times.isha && nowHours < isyaPlus1Hour;
+      } else {
+        return nowHours >= times.isha || nowHours < isyaPlus1Hour;
+      }
     },
-    timeDescription: "Setelah sholat Isya"
+    timeDescription: "Setelah sholat Isya (sebelum Witir)"
   }
 ];
 

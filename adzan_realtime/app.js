@@ -468,6 +468,17 @@ function renderPrayers(){
         tbody.appendChild(tr);
       }
       updateNext(times);
+      
+      // Add sunrise to norm for sunnah prayer calculations (even though not displayed in table)
+      if(times.sunrise !== undefined) {
+        if(typeof times.sunrise === 'number') norm.sunrise = times.sunrise;
+        else if(typeof times.sunrise === 'string') {
+          const parts = times.sunrise.split(':');
+          if(parts.length>=2) norm.sunrise = parseInt(parts[0],10) + parseInt(parts[1],10)/60 + (parts[2]?parseInt(parts[2],10)/3600:0);
+          else norm.sunrise = NaN;
+        } else norm.sunrise = NaN;
+      }
+      
       _perPrayerNorm = Object.assign({}, norm);
       
       // Highlight next prayer via CSS styling only
