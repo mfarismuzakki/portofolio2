@@ -811,7 +811,7 @@ footer {
   .hadith-controls {
     gap: 6px;
     margin-top: 12px;
-    margin-left: calc(1.5rem + 12px); /* Slightly smaller offset for mobile */
+    margin-left: 0; /* No offset needed for mobile - icon is above, not left */
     padding-top: 8px;
   }
   
