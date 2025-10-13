@@ -10,21 +10,23 @@
   "scope": "/",
   "lang": "id",
   "categories": ["lifestyle", "productivity", "education", "utilities"],
+  "permissions": ["notifications"],
+  "gcm_sender_id": "103953800507",
   "icons": [
     {
-      "src": "/images/_logo.png",
+      "src": "../images/_logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/images/_logo.png",
+      "src": "../images/_logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/_favicon.png",
+      "src": "../_favicon.png",
       "sizes": "48x48",
       "type": "image/png"
     }
@@ -37,7 +39,7 @@
       "url": "/",
       "icons": [
         {
-          "src": "/_favicon.png",
+          "src": "../_favicon.png",
           "sizes": "48x48"
         }
       ]
@@ -45,7 +47,7 @@
   ],
   "screenshots": [
     {
-      "src": "/images/bg.jpg",
+      "src": "../images/bg.jpg",
       "sizes": "1280x720",
       "type": "image/jpeg",
       "form_factor": "wide"

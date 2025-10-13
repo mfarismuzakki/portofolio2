@@ -7,9 +7,9 @@ const urlsToCache = [
   '/hadith.js',
   '/sunnah-hadith.js',
   '/style.css',
-  '/_favicon.png',
-  '/images/_logo.png',
-  '/images/bg.jpg',
+  '../_favicon.png',
+  '../images/_logo.png',
+  '../images/bg.jpg',
   '/css/font-awesome/css/font-awesome.min.css',
   '/js/jquery-2.1.3.min.js'
 ];
@@ -68,8 +68,8 @@ self.addEventListener('push', event => {
     const data = event.data.json();
     const options = {
       body: data.body,
-      icon: '/_favicon.png',
-      badge: '/_favicon.png',
+      icon: '../_favicon.png',
+      badge: '../_favicon.png',
       vibrate: [200, 100, 200],
       data: data.data || {},
       actions: [
@@ -94,9 +94,23 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
   event.notification.close();
 
-  if (event.action === 'open') {
+  if (event.action === 'open' || !event.action) {
     event.waitUntil(
-      clients.openWindow('/')
+      clients.matchAll({
+        type: 'window',
+        includeUncontrolled: true
+      }).then(clientList => {
+        // Check if app is already open
+        for (const client of clientList) {
+          if (client.url.includes(self.registration.scope) && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        // If not open, open new window
+        if (clients.openWindow) {
+          return clients.openWindow('/');
+        }
+      })
     );
   }
 });

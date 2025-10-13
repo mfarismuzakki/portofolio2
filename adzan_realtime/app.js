@@ -653,25 +653,50 @@ function scheduleNotifications(prayerTimes, usedTomorrow) {
     
     // Only schedule if within next 24 hours
     if (msUntilNotification > 0 && msUntilNotification <= 24 * 60 * 60 * 1000) {
-      const timeoutId = setTimeout(() => {
+      const timeoutId = setTimeout(async () => {
         const prayerName = prayerDisplayNames[prayerKey] || prayerKey;
-        const notification = new Notification(`Waktu Sholat ${prayerName}`, {
-          body: `5 menit lagi waktu sholat ${prayerName}. Bersiaplah untuk sholat.`,
-          icon: '/images/_logo.png',
-          badge: '/_favicon.png',
-          tag: `prayer-${prayerKey}`,
-          requireInteraction: true,
-          silent: false
-        });
-
-        // Auto close notification after 10 seconds
-        setTimeout(() => {
-          notification.close();
-        }, 10000);
-
-        // Optional: Play notification sound or vibrate
+        
+        // Use Service Worker for better Android compatibility
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+          try {
+            const registration = await navigator.serviceWorker.ready;
+            await registration.showNotification(`🕌 Waktu Sholat ${prayerName}`, {
+              body: `⏰ 5 menit lagi waktu sholat ${prayerName}. Bersiaplah untuk sholat.`,
+              icon: '../images/_logo.png',
+              badge: '../_favicon.png',
+              tag: `prayer-${prayerKey}`,
+              requireInteraction: true,
+              silent: false,
+              vibrate: [500, 200, 500, 200, 500],
+              actions: [
+                {
+                  action: 'open',
+                  title: '📖 Buka Aplikasi'
+                },
+                {
+                  action: 'dismiss', 
+                  title: '❌ Tutup'
+                }
+              ],
+              data: {
+                prayer: prayerKey,
+                time: prayerTime,
+                url: '/'
+              }
+            });
+          } catch (error) {
+            console.log('Service Worker notification failed, using fallback:', error);
+            // Fallback to regular notification
+            createFallbackNotification(prayerName, prayerKey);
+          }
+        } else {
+          // Fallback for browsers without service worker
+          createFallbackNotification(prayerName, prayerKey);
+        }
+        
+        // Vibrate for mobile devices
         if ('vibrate' in navigator) {
-          navigator.vibrate([500, 200, 500]);
+          navigator.vibrate([500, 200, 500, 200, 500]);
         }
       }, msUntilNotification);
 
@@ -681,6 +706,29 @@ function scheduleNotifications(prayerTimes, usedTomorrow) {
       console.log(`Scheduled ${prayerDisplayNames[prayerKey]} notification in ${Math.round(msUntilNotification/1000/60)} minutes`);
     }
   });
+}
+
+// Fallback notification function for compatibility
+function createFallbackNotification(prayerName, prayerKey) {
+  const notification = new Notification(`🕌 Waktu Sholat ${prayerName}`, {
+    body: `⏰ 5 menit lagi waktu sholat ${prayerName}. Bersiaplah untuk sholat.`,
+    icon: '../images/_logo.png',
+    badge: '../_favicon.png',
+    tag: `prayer-${prayerKey}`,
+    requireInteraction: true,
+    silent: false
+  });
+
+  // Auto close notification after 15 seconds for Android compatibility
+  setTimeout(() => {
+    notification.close();
+  }, 15000);
+
+  // Handle notification click
+  notification.onclick = function() {
+    window.focus();
+    notification.close();
+  };
 }
 
 async function getCoordsFromCity(cityName){
@@ -943,11 +991,30 @@ document.getElementById('btnNotification').addEventListener('click', async () =>
     );
     
     if (wantsToEnable) {
-      // Enable notifications
+      // Enable notifications with Android-specific handling
       let permission = Notification.permission;
       
+      // Log device info for debugging
+      console.log('Device info:', {
+        userAgent: navigator.userAgent,
+        isAndroid: /Android/i.test(navigator.userAgent),
+        hasServiceWorker: 'serviceWorker' in navigator,
+        currentPermission: permission
+      });
+      
       if (permission === 'default') {
-        permission = await Notification.requestPermission();
+        // For Android Chrome, request permission more explicitly
+        try {
+          permission = await Notification.requestPermission();
+        } catch (error) {
+          console.error('Permission request failed:', error);
+          // Fallback for older Android versions
+          if (window.Notification && window.Notification.requestPermission) {
+            permission = await new Promise(resolve => {
+              window.Notification.requestPermission(resolve);
+            });
+          }
+        }
       }
       
       if (permission === 'granted') {
@@ -955,12 +1022,28 @@ document.getElementById('btnNotification').addEventListener('click', async () =>
         saveNotificationPreference();
         updateNotificationButton();
         
-        // Show confirmation notification
-        new Notification('Notifikasi Sholat Aktif', {
-          body: 'Anda akan mendapat pengingat 5 menit sebelum waktu sholat',
-          icon: '/images/_logo.png',
-          badge: '/_favicon.png'
-        });
+        // Show confirmation notification with Android compatibility
+        try {
+          if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            const registration = await navigator.serviceWorker.ready;
+            await registration.showNotification('🕌 Notifikasi Sholat Aktif', {
+              body: '✅ Anda akan mendapat pengingat 5 menit sebelum waktu sholat',
+              icon: '../images/_logo.png',
+              badge: '../_favicon.png',
+              tag: 'notification-enabled',
+              silent: false,
+              vibrate: [200, 100, 200]
+            });
+          } else {
+            new Notification('🕌 Notifikasi Sholat Aktif', {
+              body: '✅ Anda akan mendapat pengingat 5 menit sebelum waktu sholat',
+              icon: '../images/_logo.png',
+              badge: '../_favicon.png'
+            });
+          }
+        } catch (error) {
+          console.log('Confirmation notification failed:', error);
+        }
         
         // Reschedule notifications with current prayer times
         if (_perPrayerNorm && Object.keys(_perPrayerNorm).length > 0) {
@@ -975,15 +1058,25 @@ document.getElementById('btnNotification').addEventListener('click', async () =>
         
         console.log('Notifikasi sholat diaktifkan');
       } else if (permission === 'denied') {
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const message = isAndroid 
+          ? 'Izin notifikasi ditolak. Untuk Android:\n\n1. Buka Chrome Settings (tiga titik)\n2. Pilih "Site settings" atau "Setelan situs"\n3. Pilih "Notifications" atau "Notifikasi"\n4. Cari situs ini dan ubah ke "Allow"\n\nAtau install aplikasi sebagai PWA dengan tombol "Add to Home Screen"'
+          : 'Izin notifikasi ditolak. Silakan buka pengaturan browser dan izinkan notifikasi untuk situs ini.';
+          
         await showCustomAlert(
           'Izin Notifikasi Ditolak',
-          'Izin notifikasi ditolak. Untuk mengaktifkan pengingat sholat, silakan buka pengaturan browser dan izinkan notifikasi untuk situs ini.',
+          message,
           'fa-exclamation-triangle'
         );
       } else {
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const message = isAndroid
+          ? 'Untuk Android Chrome:\n\n1. Pastikan notifikasi tidak diblokir di pengaturan sistem Android\n2. Install aplikasi sebagai PWA (Add to Home Screen) untuk notifikasi yang lebih andal\n3. Atau aktifkan notifikasi di Chrome Settings > Site Settings > Notifications'
+          : 'Izin notifikasi diperlukan untuk mengaktifkan pengingat sholat. Silakan aktifkan di pengaturan browser.';
+          
         await showCustomAlert(
           'Izin Notifikasi Diperlukan',
-          'Izin notifikasi diperlukan untuk mengaktifkan pengingat sholat. Silakan aktifkan di pengaturan browser.',
+          message,
           'fa-info-circle'
         );
       }
@@ -1144,3 +1237,72 @@ initHadithRotation();
   },()=>{document.getElementById("locname").textContent="Lokasi manual diperlukan";});
   scheduleMidnightRefresh();
 })();
+
+// PWA Install functionality
+let deferredPrompt;
+const pwaInstallBanner = document.getElementById('pwaInstallBanner');
+const btnInstallPWA = document.getElementById('btnInstallPWA');
+const btnCloseBanner = document.getElementById('btnCloseBanner');
+
+// Listen for the beforeinstallprompt event
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later
+  deferredPrompt = e;
+  
+  // Check if user is on Android and hasn't dismissed banner
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  const bannerDismissed = localStorage.getItem('pwa-banner-dismissed');
+  
+  if (isAndroid && !bannerDismissed) {
+    // Show PWA install banner after a short delay
+    setTimeout(() => {
+      pwaInstallBanner.style.display = 'block';
+    }, 3000);
+  }
+});
+
+// Handle PWA install button click
+btnInstallPWA.addEventListener('click', async () => {
+  if (!deferredPrompt) {
+    // Fallback instructions for manual installation
+    await showCustomAlert(
+      'Install Aplikasi',
+      'Untuk install aplikasi:\n\n1. Tap menu Chrome (⋮)\n2. Pilih "Add to Home screen"\n3. Tap "Add" untuk install\n\nSetelah install, notifikasi akan lebih andal!',
+      'fa-mobile-alt'
+    );
+    return;
+  }
+
+  // Show the install prompt
+  deferredPrompt.prompt();
+  
+  // Wait for the user to respond to the prompt
+  const { outcome } = await deferredPrompt.userChoice;
+  
+  if (outcome === 'accepted') {
+    console.log('PWA installed');
+    await showCustomAlert(
+      'Aplikasi Terinstall',
+      'Aplikasi berhasil diinstall! Sekarang Anda dapat menggunakan aplikasi dari home screen dan mendapat notifikasi yang lebih andal.',
+      'fa-check-circle'
+    );
+  }
+  
+  // Clear the deferredPrompt
+  deferredPrompt = null;
+  pwaInstallBanner.style.display = 'none';
+});
+
+// Handle banner close button
+btnCloseBanner.addEventListener('click', () => {
+  pwaInstallBanner.style.display = 'none';
+  localStorage.setItem('pwa-banner-dismissed', 'true');
+});
+
+// Check if app is already installed
+window.addEventListener('appinstalled', () => {
+  console.log('PWA was installed');
+  pwaInstallBanner.style.display = 'none';
+});
