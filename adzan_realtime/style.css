@@ -732,10 +732,30 @@ footer {
     font-size: 14px !important;
   }
   
+  /* Mobile-specific styling for highlighted row to prevent text collision */
+  tr[style*="background"] td:nth-child(1) {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    padding-right: 8px !important;
+  }
+  
+  tr[style*="background"] td:nth-child(2) {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+  
+  tr[style*="background"] td:nth-child(3) {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    padding-left: 8px !important;
+  }
+  
   /* Responsive table layout for mobile */
-  #prayTable th:nth-child(1), #prayTable td:nth-child(1) { width: 30%; }
-  #prayTable th:nth-child(2), #prayTable td:nth-child(2) { width: 35%; }
-  #prayTable th:nth-child(3), #prayTable td:nth-child(3) { width: 35%; }
+  #prayTable th:nth-child(1), #prayTable td:nth-child(1) { width: 28%; }
+  #prayTable th:nth-child(2), #prayTable td:nth-child(2) { width: 32%; }
+  #prayTable th:nth-child(3), #prayTable td:nth-child(3) { width: 40%; }
 }
 
 /* Extra small screens */
@@ -745,12 +765,12 @@ footer {
   }
   
   #prayTable td {
-    padding: 10px 6px;
+    padding: 8px 5px;
   }
   
-  #prayTable th:nth-child(1), #prayTable td:nth-child(1) { width: 25%; }
-  #prayTable th:nth-child(2), #prayTable td:nth-child(2) { width: 35%; }
-  #prayTable th:nth-child(3), #prayTable td:nth-child(3) { width: 40%; }
+  #prayTable th:nth-child(1), #prayTable td:nth-child(1) { width: 26%; }
+  #prayTable th:nth-child(2), #prayTable td:nth-child(2) { width: 30%; }
+  #prayTable th:nth-child(3), #prayTable td:nth-child(3) { width: 44%; }
   
   #prayTable td.small {
     font-size: 12px !important;
@@ -758,6 +778,25 @@ footer {
   
   tr[data-prayer] td[data-info] {
     font-size: 13px !important;
+  }
+  
+  /* Further reduce font sizes for highlighted row on very small screens */
+  tr[style*="background"] td:nth-child(1) {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    padding-right: 4px !important;
+  }
+  
+  tr[style*="background"] td:nth-child(2) {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    padding: 8px 3px !important;
+  }
+  
+  tr[style*="background"] td:nth-child(3) {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding-left: 6px !important;
   }
 }
 
