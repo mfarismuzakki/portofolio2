@@ -1,4 +1,4 @@
-// Koleksi Hadith Shahih tentang Sholat Sunnah
+// Koleksi Hadith Shahi  {
 
 const sunnahHadithCollection = [
   {
@@ -23,9 +23,9 @@ const sunnahHadithCollection = [
   },
   {
     name: "Sholat Dhuha",
-    arabic: "مَن صَلَّى الضُّحَى أَرْبَعَ رَكَعَاتٍ وَقَبْلَ الأُولَى أَرْبَعَ رَكَعَاتٍ بُنِيَ لَهُ بَيْتٌ فِي الْجَنَّةِ",
-    indonesia: "Barangsiapa yang shalat Dhuha empat rakaat dan sebelum Dhuhur empat rakaat, maka dibangunkan untuknya rumah di surga.",
-    reference: "HR. Tirmidzi",
+    arabic: "وَيُجْزِئُ مِنْ ذَلِكَ رَكْعَتَانِ يَرْكَعُهُمَا مِنَ الضُّحَى",
+    indonesia: "Pada pagi hari diwajibkan bagi seluruh persendian di antara kalian untuk bersedekah. Ini semua bisa dicukupi dengan melaksanakan shalat Dhuha sebanyak 2 rakaat.",
+    reference: "HR. Muslim no. 1704",
     timeCondition: (times, now) => {
       // Sholat Dhuha: 15 menit setelah matahari terbit hingga sebelum sholat Dzuhur
       // Hanya berlaku di pagi hari (6-12 siang)
@@ -103,9 +103,9 @@ const sunnahHadithCollection = [
   },
   {
     name: "Sholat Witir",
-    arabic: "الْوِتْرُ حَقٌّ فَمَن لَم يُوتِرْ فَلَيْسَ مِنَّا",
-    indonesia: "Witir itu haq (kewajiban), barangsiapa yang tidak melakukan witir maka dia bukan dari golongan kami.",
-    reference: "HR. Abu Dawud",
+    arabic: "إِنَّ اللَّهَ أَمَدَّكُمْ بِصَلاَةٍ هِيَ خَيْرٌ لَكُمْ مِنْ حُمْرِ النَّعَمِ الْوِتْرُ جَعَلَهُ اللَّهُ لَكُمْ فِيمَا بَيْنَ صَلاَةِ الْعِشَاءِ إِلَى أَنْ يَطْلُعَ الْفَجْرُ",
+    indonesia: "Sesungguhnya Allah menambah bagi kalian shalat yang lebih baik bagi kalian ketimbang memiliki onta merah, yaitu shalat witir. Allah meletakkannya antara shalat Isya sampai terbitnya fajar.",
+    reference: "HR. at-Tirmidzi",
     timeCondition: (times, now) => {
       // Sholat Witir: setelah Isya hingga sebelum Subuh
       const nowHours = now.h + now.m/60 + now.s/3600;
@@ -129,9 +129,9 @@ const sunnahHadithCollection = [
   },
   {
     name: "Tahajjud",
-    arabic: "أَقْرَبُ مَا يَكُونُ الرَّبُّ إِلَى الْعَبْدِ فِي جَوْفِ اللَّيْلِ الآخِرِ",
-    indonesia: "Keadaan paling dekat antara Rabb dengan hamba adalah pada pertengahan malam terakhir.",
-    reference: "HR. Tirmidzi",
+    arabic: "يَنْزِلُ رَبُّنَا تَبَارَكَ وَتَعَالَى كُلَّ لَيْلَةٍ إِلَى السَّمَاءِ الدُّنْيَا حِينَ يَبْقَى ثُلُثُ اللَّيْلِ اْلآخِرُ، يَقُولُ: مَنْ يَدْعُونِي فَأَسْتَجِيبَ لَهُ، مَنْ يَسْأَلُنِي فَأُعْطِيَهُ، مَنْ يَسْتَغْفِرُنِي فَأَغْفِرُ لَهُ",
+    indonesia: "Rabb kami turun ke langit dunia pada setiap malam ketika tinggal sepertiga malam terakhir, lalu berfirman: 'Barangsiapa yang berdo'a kepada-Ku, niscaya akan Aku kabulkan do'anya, barangsiapa yang meminta kepada-Ku, niscaya Aku akan penuhi permintaannya, dan barangsiapa yang memohon ampunan kepada-Ku, maka Aku akan mengampuninya.'",
+    reference: "HR. Bukhari",
     timeCondition: (times, now) => {
       // Sholat Tahajjud: sepertiga malam terakhir (biasanya 01:00-04:00)
       const nowHours = now.h + now.m/60 + now.s/3600;
@@ -155,9 +155,9 @@ const sunnahHadithCollection = [
   },
   {
     name: "Sunnah Isya (Ba'diyah)",
-    arabic: "كَانَ النَّبِيُّ لاَ يَدَعُ أَرْبَعًا قَبْلَ الظُّهْرِ وَرَكْعَتَيْنِ قَبْلَ الْغَدَاةِ",
-    indonesia: "Nabi tidak pernah meninggalkan empat rakaat sebelum Dhuhur dan dua rakaat sebelum Subuh.",
-    reference: "HR. Bukhari",
+    arabic: "صَلَّيْتُ مَعَ النَّبيِّ – صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ – رَكْعَتَيْنِ بَعْدَ العِشَاءِ ، وَ بَيْنَ كُلِّ أذَانَيْنِ صَلاةٌ",
+    indonesia: "Aku shalat bersama Nabi dua rakaat ba'diyah Isya. Dan antara dua azan terdapat shalat sunnah.",
+    reference: "HR. Bukhari dan Muslim",
     timeCondition: (times, now) => {
       // Sunnah Ba'diyah Isya: setelah sholat Isya hingga sebelum Witir
       const nowHours = now.h + now.m/60 + now.s/3600;
