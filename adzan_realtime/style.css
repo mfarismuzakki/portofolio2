@@ -379,6 +379,48 @@ select:focus, input:focus {
   box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2);
 }
 
+/* City Input Container with Loader */
+.city-input-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.city-loader {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.loader-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 255, 255, 0.2);
+  border-top: 2px solid var(--primary-cyan);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.city-input-container input {
+  width: 100%;
+  padding-right: 40px; /* Space for loader */
+}
+
+.city-input-container input.loading {
+  border-color: var(--primary-cyan);
+  box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1);
+}
+
 select option {
   background: var(--dark-bg);
   color: var(--text-primary);
@@ -1125,5 +1167,252 @@ footer {
   .pwa-install-btn {
     padding: 6px 12px;
     font-size: 11px;
+  }
+}
+
+/* Floating Prayer Widget for Mobile and Desktop */
+.floating-prayer-widget {
+  position: fixed;
+  top: 80px;
+  right: 15px;
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 16px;
+  padding: 12px 16px;
+  z-index: 100;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(0, 255, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-10px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  min-width: 200px;
+  max-width: calc(100vw - 40px);
+}
+
+/* Mobile-specific styling */
+.floating-prayer-widget.mobile-mode {
+  right: 15px;
+  top: 80px;
+  max-width: calc(100vw - 40px);
+  min-width: 200px;
+}
+
+/* Desktop-specific styling */
+.floating-prayer-widget.desktop-mode {
+  right: 30px;
+  top: 120px;
+  min-width: 280px;
+  max-width: 320px;
+  padding: 16px 20px;
+  border-radius: 20px;
+  backdrop-filter: blur(25px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(0, 255, 255, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.floating-prayer-widget.visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto;
+  display: block !important;
+}
+
+/* Transparent state when overlapping header content */
+.floating-prayer-widget.transparent {
+  opacity: 0.3;
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(10px);
+  border-color: rgba(0, 255, 255, 0.15);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 0 10px rgba(0, 255, 255, 0.1);
+}
+
+.widget-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.widget-icon {
+  color: var(--primary-cyan);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(0, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.widget-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.widget-prayer-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.widget-countdown {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary-cyan);
+  font-family: var(--font-primary);
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+  letter-spacing: 1px;
+}
+
+/* Desktop enhancements for widget content */
+.floating-prayer-widget.desktop-mode .widget-icon {
+  width: 40px;
+  height: 40px;
+  font-size: 1.4rem;
+  border-radius: 12px;
+}
+
+.floating-prayer-widget.desktop-mode .widget-prayer-name {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.floating-prayer-widget.desktop-mode .widget-countdown {
+  font-size: 18px;
+  letter-spacing: 1.2px;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+}
+
+.floating-prayer-widget.desktop-mode .widget-content {
+  gap: 16px;
+}
+
+/* Desktop hover effects */
+.floating-prayer-widget.desktop-mode:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(128, 0, 255, 0.15));
+  border-color: rgba(0, 255, 255, 0.5);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(0, 255, 255, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.floating-prayer-widget.desktop-mode:hover .widget-countdown {
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+  color: rgba(0, 255, 255, 1);
+}
+
+/* Responsive visibility adjustments */
+@media (max-width: 768px) {
+  .floating-prayer-widget.desktop-mode {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .floating-prayer-widget:not(.desktop-mode):not(.mobile-mode) {
+    /* Apply desktop styling by default on larger screens */
+    right: 30px;
+    top: 120px;
+    min-width: 280px;
+    max-width: 320px;
+    padding: 16px 20px;
+  }
+}
+
+.widget-pulse {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  background: var(--matrix-green);
+  border-radius: 50%;
+  animation: widgetPulse 2s infinite;
+}
+
+@keyframes widgetPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.5);
+  }
+}
+
+.floating-prayer-widget:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(0, 255, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 480px) {
+  .floating-prayer-widget {
+    top: 15px;
+    right: 15px;
+    left: 15px;
+    right: 15px;
+    min-width: auto;
+    max-width: none;
+    padding: 10px 14px;
+  }
+  
+  .widget-content {
+    gap: 10px;
+  }
+  
+  .widget-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 1.1rem;
+  }
+  
+  .widget-prayer-name {
+    font-size: 12px;
+  }
+  
+  .widget-countdown {
+    font-size: 15px;
+  }
+}
+
+/* Show widget properly on mobile */
+@media (max-width: 768px) {
+  .floating-prayer-widget {
+    display: block;
+  }
+  
+  .floating-prayer-widget.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
+/* Hide widget on desktop */
+@media (min-width: 769px) {
+  .floating-prayer-widget {
+    display: none !important;
   }
 }

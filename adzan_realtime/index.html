@@ -80,7 +80,12 @@
           <option value="Makkah">Umm al-Qura / Makkah</option>
           <option value="Karachi">University of Karachi</option>
         </select>
-        <input id="cityInput" list="citySuggestions" type="text" placeholder="🔍 Ketik nama kota...">
+        <div class="city-input-container">
+          <input id="cityInput" list="citySuggestions" type="text" placeholder="🔍 Ketik nama kota...">
+          <div class="city-loader" id="cityLoader" style="display: none;">
+            <div class="loader-spinner"></div>
+          </div>
+        </div>
         <datalist id="citySuggestions"></datalist>
         <button id="btnCity"><i class="fas fa-city"></i> Gunakan kota</button>
         <button id="btnRefresh"><i class="fas fa-location-arrow"></i> GPS</button>
@@ -152,6 +157,20 @@
   </div>
 </div>
 
+<!-- Floating Prayer Widget for Mobile -->
+<div id="floatingPrayerWidget" class="floating-prayer-widget" style="display: none;">
+  <div class="widget-content">
+    <div class="widget-icon">
+      <i class="fas fa-mosque"></i>
+    </div>
+    <div class="widget-info">
+      <div class="widget-prayer-name" id="widgetPrayerName">Sholat Berikutnya</div>
+      <div class="widget-countdown" id="widgetCountdown">--:--:--</div>
+    </div>
+    <div class="widget-pulse"></div>
+  </div>
+</div>
+
 <script src="./hadith.js"></script>
 <script src="./sunnah-hadith.js"></script>
 <script src="./app.js" defer></script>
@@ -159,9 +178,10 @@
 <!-- PWA Registration Script -->
 <script>
 // Register service worker for PWA functionality
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
+    // Use relative path for better compatibility
+    navigator.serviceWorker.register('./sw.js')
       .then(registration => {
         console.log('Adzan Realtime: Service Worker registered successfully:', registration.scope);
       })
@@ -169,6 +189,8 @@ if ('serviceWorker' in navigator) {
         console.log('Adzan Realtime: Service Worker registration failed:', error);
       });
   });
+} else {
+  console.log('Adzan Realtime: Service Worker not supported or file:// protocol detected');
 }
 </script>
 </body>

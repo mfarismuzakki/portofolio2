@@ -108,7 +108,7 @@ self.addEventListener('notificationclick', event => {
         }
         // If not open, open new window
         if (clients.openWindow) {
-          return clients.openWindow('/');
+          return clients.openWindow('https://mfarismuzakki.id/adzan_realtime/');
         }
       })
     );

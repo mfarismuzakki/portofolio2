@@ -241,6 +241,15 @@ let _perPrayerNorm = {}; // store normalized times for live updates
 let _liveInterval = null;
 let currentTimeZone = null; // IANA timezone name (e.g. 'Asia/Jakarta') from API when available
 
+// Floating Prayer Widget variables
+let floatingWidget = null;
+let widgetPrayerName = null;
+let widgetCountdown = null;
+let prayerTableSection = null;
+let isWidgetVisible = false;
+let currentNextPrayer = null;
+let lastDecision = null; // Track intersection observer decisions for stability
+
 // Datalist suggestion helpers (autocomplete by text input)
 let _suggestionTimer = null;
 let _lastQuery = '';
@@ -481,6 +490,29 @@ function renderPrayers(){
       
       _perPrayerNorm = Object.assign({}, norm);
       
+      // Trigger floating widget update when prayer data is ready (only if not already handled)
+      setTimeout(() => {
+        if (floatingWidget && !isWidgetVisible) {
+          console.log('Prayer data updated, checking if widget should show');
+          const tableRect = prayerTableSection?.getBoundingClientRect();
+          if (tableRect) {
+            const tableVisibleRatio = Math.max(0, Math.min(1, 
+              (Math.min(tableRect.bottom, window.innerHeight) - Math.max(tableRect.top, 0)) / tableRect.height
+            ));
+            
+            const isMobile = window.innerWidth <= 768;
+            const showThreshold = isMobile ? 0.3 : 0.2;
+            
+            // Only show if clearly should be shown and not already visible
+            if (tableVisibleRatio <= showThreshold) {
+              console.log('Post-data update: showing widget');
+              updateFloatingWidget();
+              showFloatingWidget();
+            }
+          }
+        }
+      }, 200);
+      
       // Highlight next prayer via CSS styling only
       document.querySelectorAll('#prayTable tbody tr').forEach(tr=>{
         const key = tr.getAttribute('data-prayer');
@@ -592,6 +624,9 @@ function updateLiveInfo(){
       });
     }
   });
+  
+  // Update floating widget for mobile
+  updateFloatingWidget();
 }
 
 function updateNext(times){
@@ -681,7 +716,7 @@ function scheduleNotifications(prayerTimes, usedTomorrow) {
               data: {
                 prayer: prayerKey,
                 time: prayerTime,
-                url: '/'
+                url: 'https://mfarismuzakki.id/adzan_realtime/'
               }
             });
           } catch (error) {
@@ -726,6 +761,7 @@ function createFallbackNotification(prayerName, prayerKey) {
 
   // Handle notification click
   notification.onclick = function() {
+    window.open('https://mfarismuzakki.id/adzan_realtime/', '_blank');
     window.focus();
     notification.close();
   };
@@ -785,10 +821,33 @@ document.getElementById("btnRefresh").addEventListener("click",()=>{
 });
 document.getElementById("btnCity").addEventListener("click",async()=>{
   const city=document.getElementById("cityInput").value.trim();
+  const btn = document.getElementById("btnCity");
+  const btnIcon = btn.querySelector('i');
+  const originalText = btn.innerHTML;
+  
   if(!city){alert("Masukkan nama kota!");return;}
-  const result=await getCoordsFromCity(city);
-  if(result){setLocation(result.lat,result.lon,result.display);} 
-  else alert("Kota tidak ditemukan.");
+  
+  // Show loading state
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
+  btn.style.opacity = '0.7';
+  
+  try {
+    const result = await getCoordsFromCity(city);
+    if(result) {
+      setLocation(result.lat, result.lon, result.display);
+    } else {
+      alert("Kota tidak ditemukan.");
+    }
+  } catch (error) {
+    console.error('City geocoding error:', error);
+    alert("Error saat mencari kota. Silakan coba lagi.");
+  } finally {
+    // Restore button state
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+    btn.style.opacity = '1';
+  }
 });
 // Autocomplete suggestions on typing (debounced)
 const cityInputEl = document.getElementById('cityInput');
@@ -796,21 +855,64 @@ const dl = document.getElementById('citySuggestions');
 function debounce(fn, wait){ let t; return function(...args){ clearTimeout(t); t=setTimeout(()=>fn.apply(this,args), wait); }; }
 const updateSuggestions = debounce(async function(){
   const q = cityInputEl.value.trim();
-  if(q.length < 2){ dl.innerHTML=''; _lastResults=[]; return; }
+  const loader = document.getElementById('cityLoader');
+  
+  if(q.length < 2){ 
+    dl.innerHTML=''; 
+    _lastResults=[]; 
+    hideLoader();
+    return; 
+  }
+  
   if(q === _lastQuery && _lastResults.length > 0){
-    dl.innerHTML = ''; _lastResults.forEach(r => { const opt = document.createElement('option'); opt.value = r; dl.appendChild(opt); });
+    dl.innerHTML = ''; 
+    _lastResults.forEach(r => { 
+      const opt = document.createElement('option'); 
+      opt.value = r; 
+      dl.appendChild(opt); 
+    });
     return;
   }
+  
+  // Show loader
+  showLoader();
+  
   try{
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=5&addressdetails=1`;
     const res = await fetch(url, {headers:{'Accept-Language':'id'}});
-    if(!res.ok) return;
+    if(!res.ok) {
+      hideLoader();
+      return;
+    }
     const data = await res.json();
     const suggestions = data.map(item => item.display_name || item.name || '').filter(Boolean).slice(0,5);
     dl.innerHTML = '';
-    suggestions.forEach(s => { const opt = document.createElement('option'); opt.value = s; dl.appendChild(opt); });
-    _lastQuery = q; _lastResults = suggestions;
-  }catch(e){}
+    suggestions.forEach(s => { 
+      const opt = document.createElement('option'); 
+      opt.value = s; 
+      dl.appendChild(opt); 
+    });
+    _lastQuery = q; 
+    _lastResults = suggestions;
+  }catch(e){
+    console.error('City suggestions fetch error:', e);
+  } finally {
+    hideLoader();
+  }
+  
+  function showLoader() {
+    if(loader) {
+      loader.style.display = 'flex';
+      cityInputEl.classList.add('loading');
+    }
+  }
+  
+  function hideLoader() {
+    if(loader) {
+      loader.style.display = 'none';
+      cityInputEl.classList.remove('loading');
+    }
+  }
 }, 300);
 cityInputEl.addEventListener('input', updateSuggestions);
 
@@ -1216,6 +1318,15 @@ loadNotificationPreference();
 // Initialize hadith rotation
 initHadithRotation();
 
+// Initialize floating prayer widget for mobile
+initializeFloatingWidget();
+addFloatingWidgetClickHandler();
+
+// Initial widget update with loading state
+setTimeout(() => {
+  updateFloatingWidget();
+}, 1000);
+
 // Restore last location if available; else try GPS; else manual
 (async ()=>{
   try{
@@ -1223,12 +1334,16 @@ initHadithRotation();
     if(last){
       const obj = JSON.parse(last);
       if(obj && typeof obj.lat==='number' && typeof obj.lon==='number'){
+        console.log('Restoring cached location:', obj);
         setLocation(obj.lat, obj.lon, obj.display || 'Lokasi tersimpan', obj.timezone || null);
         scheduleMidnightRefresh();
         return;
       }
     }
-  }catch(e){}
+  }catch(e){
+    console.error('Error restoring cached location:', e);
+  }
+  
   navigator.geolocation.getCurrentPosition(pos=>{
     (async ()=>{
       const rg = await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
@@ -1306,3 +1421,500 @@ window.addEventListener('appinstalled', () => {
   console.log('PWA was installed');
   pwaInstallBanner.style.display = 'none';
 });
+
+// Floating Prayer Widget Logic
+function initializeFloatingWidget() {
+  floatingWidget = document.getElementById('floatingPrayerWidget');
+  widgetPrayerName = document.getElementById('widgetPrayerName');
+  widgetCountdown = document.getElementById('widgetCountdown');
+  prayerTableSection = document.querySelector('#prayTable').closest('.card');
+  
+  if (!floatingWidget || !prayerTableSection) return;
+  
+  // Initialize widget with appropriate mode class based on screen size
+  const isMobile = window.innerWidth <= 768;
+  const isDesktop = window.innerWidth > 768;
+  
+  floatingWidget.classList.toggle('mobile-mode', isMobile);
+  floatingWidget.classList.toggle('desktop-mode', isDesktop);
+  
+  // Create stable intersection observer with simplified logic
+  let widgetTimeout = null;
+  let lastDecision = null; // Track last decision to prevent flickering
+  
+  const tableObserver = new IntersectionObserver(
+    (entries) => {
+      const [entry] = entries;
+      const intersectionRatio = entry.intersectionRatio;
+      const isMobile = window.innerWidth <= 768;
+      const isDesktop = window.innerWidth > 768;
+      
+      // Clear any pending widget changes
+      if (widgetTimeout) {
+        clearTimeout(widgetTimeout);
+        widgetTimeout = null;
+      }
+      
+      // Update widget positioning class based on screen size
+      if (floatingWidget) {
+        floatingWidget.classList.toggle('desktop-mode', isDesktop);
+        floatingWidget.classList.toggle('mobile-mode', isMobile);
+      }
+      
+      // Improved thresholds - widget should hide when table is prominently visible
+      const hideThreshold = isMobile ? 0.5 : 0.6; // Hide when table is 50%+ (mobile) or 60%+ (desktop) visible
+      const showThreshold = isMobile ? 0.2 : 0.3; // Show when table is less than 20%/30% visible
+      
+      let decision = null;
+      
+      console.log('Intersection check:', {
+        intersectionRatio: intersectionRatio.toFixed(2),
+        hideThreshold,
+        showThreshold,
+        isMobile,
+        isDesktop
+      });
+      
+      // Clear decision zones - widget should definitely hide when table is prominent
+      if (intersectionRatio >= hideThreshold) {
+        decision = 'hide';
+        console.log('Decision: HIDE - table is prominently visible');
+      } else if (intersectionRatio <= showThreshold) {
+        decision = 'show';
+        console.log('Decision: SHOW - table is minimally visible');
+      } else {
+        // Hysteresis zone - keep current state but favor hiding for full table visibility
+        decision = lastDecision || (intersectionRatio > 0.4 ? 'hide' : 'show');
+        console.log('Decision: HYSTERESIS -', decision, 'based on ratio', intersectionRatio.toFixed(2));
+      }
+      
+      // Only act if decision changed or we have prayer data
+      if (decision !== lastDecision && _perPrayerNorm && Object.keys(_perPrayerNorm).length > 0) {
+        console.log('Widget decision changed:', {
+          intersectionRatio: intersectionRatio.toFixed(2),
+          decision,
+          lastDecision,
+          isDesktop,
+          hideThreshold,
+          showThreshold
+        });
+        
+        lastDecision = decision;
+        
+        // Stable timeout - no rapid changes
+        widgetTimeout = setTimeout(() => {
+          if (decision === 'show') {
+            updateFloatingWidget();
+            showFloatingWidget();
+          } else {
+            hideFloatingWidget();
+          }
+        }, decision === 'hide' ? 100 : 300); // Faster hiding, slower showing for stability
+      }
+    },
+    {
+      threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8], // Reduced thresholds for stability
+      rootMargin: '0px' // No margin for precise control
+    }
+  );
+  
+  tableObserver.observe(prayerTableSection);
+  
+  // Periodic check to ensure widget behaves correctly
+  setInterval(() => {
+    if (!prayerTableSection || !_perPrayerNorm || Object.keys(_perPrayerNorm).length === 0) return;
+    
+    const tableRect = prayerTableSection.getBoundingClientRect();
+    const tableVisibleRatio = Math.max(0, Math.min(1, 
+      (Math.min(tableRect.bottom, window.innerHeight) - Math.max(tableRect.top, 0)) / tableRect.height
+    ));
+    
+    const isMobile = window.innerWidth <= 768;
+    const hideThreshold = isMobile ? 0.5 : 0.6;
+    const showThreshold = isMobile ? 0.2 : 0.3;
+    
+    // Force correct state if widget is in wrong state
+    if (tableVisibleRatio >= hideThreshold && isWidgetVisible) {
+      console.log('Periodic check: Force hiding widget', {
+        tableVisibleRatio: tableVisibleRatio.toFixed(2),
+        hideThreshold
+      });
+      hideFloatingWidget();
+    } else if (tableVisibleRatio <= showThreshold && !isWidgetVisible) {
+      console.log('Periodic check: Force showing widget', {
+        tableVisibleRatio: tableVisibleRatio.toFixed(2),
+        showThreshold
+      });
+      updateFloatingWidget();
+      showFloatingWidget();
+    }
+  }, 2000); // Check every 2 seconds
+  
+  // Add observer for header area to make widget transparent when overlapping
+  const headerArea = document.querySelector('.header, h1, .intro-bg') || document.querySelector('body > *:first-child');
+  if (headerArea) {
+    const headerObserver = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && floatingWidget) {
+          // Widget is in header area - make it transparent
+          floatingWidget.classList.add('transparent');
+        } else if (floatingWidget) {
+          // Widget is out of header area - remove transparency
+          floatingWidget.classList.remove('transparent');
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px'
+      }
+    );
+    
+    headerObserver.observe(headerArea);
+  }
+  
+  // Stable initial check - single evaluation to prevent flickering
+  setTimeout(() => {
+    if (!_perPrayerNorm || Object.keys(_perPrayerNorm).length === 0) {
+      console.log('Initial check skipped - no prayer data yet');
+      return;
+    }
+    
+    const tableRect = prayerTableSection.getBoundingClientRect();
+    const tableVisibleRatio = Math.max(0, Math.min(1, 
+      (Math.min(tableRect.bottom, window.innerHeight) - Math.max(tableRect.top, 0)) / tableRect.height
+    ));
+    
+    const isMobile = window.innerWidth <= 768;
+    const hideThreshold = isMobile ? 0.5 : 0.6;
+    const showThreshold = isMobile ? 0.2 : 0.3;
+    
+    console.log('Stable initial widget check:', {
+      tableVisibleRatio: tableVisibleRatio.toFixed(2),
+      hideThreshold,
+      showThreshold,
+      shouldShow: tableVisibleRatio <= showThreshold,
+      shouldHide: tableVisibleRatio >= hideThreshold,
+      isMobile,
+      windowWidth: window.innerWidth
+    });
+    
+    // Clear initial decision logic
+    if (tableVisibleRatio >= hideThreshold) {
+      lastDecision = 'hide';
+      console.log('Initial: Table is prominently visible - hiding widget');
+    } else if (tableVisibleRatio <= showThreshold) {
+      lastDecision = 'show';
+      console.log('Initial: Table is minimally visible - showing widget');
+      updateFloatingWidget();
+      showFloatingWidget();
+    } else {
+      lastDecision = tableVisibleRatio > 0.4 ? 'hide' : 'show';
+      console.log('Initial: Intermediate visibility - decision:', lastDecision);
+      if (lastDecision === 'show') {
+        updateFloatingWidget();
+        showFloatingWidget();
+      }
+    }
+  }, 1500); // Single check after page settles
+  
+  // Stable resize handler
+  let resizeTimeout = null;
+  window.addEventListener('resize', () => {
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout);
+    }
+    
+    const isMobile = window.innerWidth <= 768;
+    const isDesktop = window.innerWidth > 768;
+    
+    // Update widget classes immediately
+    if (floatingWidget) {
+      floatingWidget.classList.toggle('desktop-mode', isDesktop);
+      floatingWidget.classList.toggle('mobile-mode', isMobile);
+    }
+    
+    // Debounced re-evaluation to prevent rapid changes during resize
+    resizeTimeout = setTimeout(() => {
+      if (!_perPrayerNorm || Object.keys(_perPrayerNorm).length === 0) return;
+      
+      const tableRect = prayerTableSection.getBoundingClientRect();
+      const tableVisibleRatio = Math.max(0, Math.min(1, 
+        (Math.min(tableRect.bottom, window.innerHeight) - Math.max(tableRect.top, 0)) / tableRect.height
+      ));
+      
+      const hideThreshold = isMobile ? 0.5 : 0.6;
+      const showThreshold = isMobile ? 0.2 : 0.3;
+      
+      console.log('Resize: Re-evaluating widget', {
+        tableVisibleRatio: tableVisibleRatio.toFixed(2),
+        hideThreshold,
+        showThreshold,
+        shouldShow: tableVisibleRatio <= showThreshold,
+        shouldHide: tableVisibleRatio >= hideThreshold
+      });
+      
+      // Clear decision logic for resize
+      let newDecision;
+      if (tableVisibleRatio >= hideThreshold) {
+        newDecision = 'hide';
+      } else if (tableVisibleRatio <= showThreshold) {
+        newDecision = 'show';
+      } else {
+        newDecision = tableVisibleRatio > 0.4 ? 'hide' : 'show';
+      }
+      
+      lastDecision = newDecision;
+      
+      if (newDecision === 'show') {
+        updateFloatingWidget();
+        showFloatingWidget();
+      } else {
+        hideFloatingWidget();
+      }
+    }, 500); // Longer debounce for stability
+  });
+  
+  // Simplified scroll listener with better debouncing
+  let scrollTimeout = null;
+  let isScrolling = false;
+  
+  window.addEventListener('scroll', () => {
+    if (!isScrolling) {
+      isScrolling = true;
+    }
+    
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
+    
+    // Longer timeout for stability, let intersection observer handle most cases
+    scrollTimeout = setTimeout(() => {
+      isScrolling = false;
+      
+      // Enhanced check to ensure widget hides when table is prominently visible
+      const tableRect = prayerTableSection.getBoundingClientRect();
+      const tableVisibleRatio = Math.max(0, Math.min(1, 
+        (Math.min(tableRect.bottom, window.innerHeight) - Math.max(tableRect.top, 0)) / tableRect.height
+      ));
+      
+      const isMobile = window.innerWidth <= 768;
+      const criticalHideThreshold = isMobile ? 0.5 : 0.6; // Same as intersection observer
+      
+      console.log('Scroll check:', {
+        tableVisibleRatio: tableVisibleRatio.toFixed(2),
+        criticalHideThreshold,
+        isWidgetVisible,
+        shouldHide: tableVisibleRatio >= criticalHideThreshold
+      });
+      
+      // Force hide if table is prominently visible and widget is showing
+      if (tableVisibleRatio >= criticalHideThreshold && isWidgetVisible) {
+        console.log('Scroll override: FORCE hiding widget - table is prominently visible');
+        hideFloatingWidget();
+      }
+      // Also check for showing when table is barely visible
+      else if (tableVisibleRatio <= (isMobile ? 0.2 : 0.3) && !isWidgetVisible && 
+               _perPrayerNorm && Object.keys(_perPrayerNorm).length > 0) {
+        console.log('Scroll override: showing widget - table barely visible');
+        updateFloatingWidget();
+        showFloatingWidget();
+      }
+    }, 300); // Increased timeout for stability
+  }, { passive: true });
+}
+
+function updateFloatingWidget() {
+  if (!floatingWidget || !widgetPrayerName || !widgetCountdown) {
+    console.log('Floating widget elements not found:', {
+      floatingWidget: !!floatingWidget,
+      widgetPrayerName: !!widgetPrayerName,
+      widgetCountdown: !!widgetCountdown
+    });
+    return;
+  }
+  
+  // Safety check - don't update if table is prominently visible
+  if (prayerTableSection) {
+    const tableRect = prayerTableSection.getBoundingClientRect();
+    const tableVisibleRatio = Math.max(0, Math.min(1, 
+      (Math.min(tableRect.bottom, window.innerHeight) - Math.max(tableRect.top, 0)) / tableRect.height
+    ));
+    
+    const isMobile = window.innerWidth <= 768;
+    const hideThreshold = isMobile ? 0.5 : 0.6;
+    
+    if (tableVisibleRatio >= hideThreshold) {
+      console.log('updateFloatingWidget: Aborting update - table is prominently visible', {
+        tableVisibleRatio: tableVisibleRatio.toFixed(2),
+        hideThreshold
+      });
+      // Instead of updating, hide the widget
+      setTimeout(() => hideFloatingWidget(), 50);
+      return;
+    }
+  }
+  
+  // Find next prayer from current prayer data
+  if (_perPrayerNorm && Object.keys(_perPrayerNorm).length > 0) {
+    const now = new Date();
+    const nowHours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+    
+    // Find next prayer
+    let nextPrayer = null;
+    let minDiff = Infinity;
+    
+    Object.entries(_perPrayerNorm).forEach(([key, time]) => {
+      if (key === 'sunrise') return; // Skip sunrise
+      
+      const timeHours = parseFloat(time);
+      let diff = timeHours - nowHours;
+      
+      // Handle cross-midnight prayers
+      if (diff < 0) {
+        diff += 24;
+      }
+      
+      if (diff < minDiff) {
+        minDiff = diff;
+        nextPrayer = {
+          key,
+          name: prayNames[key] || key,
+          time: time,
+          diff: diff
+        };
+      }
+    });
+    
+    currentNextPrayer = nextPrayer;
+    
+    if (nextPrayer) {
+      widgetPrayerName.textContent = nextPrayer.name;
+      
+      // Update countdown
+      const diffSec = Math.max(0, Math.round(nextPrayer.diff * 3600));
+      widgetCountdown.textContent = formatHMS(diffSec);
+    } else {
+      // Fallback when no next prayer found
+      widgetPrayerName.textContent = 'Memuat...';
+      widgetCountdown.textContent = '--:--:--';
+    }
+  } else {
+    // Show loading state when no prayer data available
+    widgetPrayerName.textContent = 'Memuat jadwal...';
+    widgetCountdown.textContent = '--:--:--';
+    console.log('No prayer data available for floating widget');
+  }
+}
+
+// Stabilized show function with cooldown
+let lastShowTime = 0;
+let lastHideTime = 0;
+const SHOW_COOLDOWN = 500; // Minimum time between show/hide operations
+
+function showFloatingWidget() {
+  const now = Date.now();
+  
+  // Prevent rapid show/hide cycles
+  if (now - lastHideTime < SHOW_COOLDOWN) {
+    console.log('showFloatingWidget: Skipped due to cooldown');
+    return;
+  }
+  
+  if (!isWidgetVisible && floatingWidget) {
+    console.log('showFloatingWidget: Showing widget');
+    isWidgetVisible = true;
+    lastShowTime = now;
+    
+    floatingWidget.style.display = 'block';
+    
+    // Ensure stable transition
+    setTimeout(() => {
+      if (isWidgetVisible) { // Double-check state hasn't changed
+        floatingWidget.classList.add('visible');
+      }
+    }, 50); // Increased delay for stability
+  }
+}
+
+function hideFloatingWidget() {
+  const now = Date.now();
+  
+  // Prevent rapid show/hide cycles
+  if (now - lastShowTime < SHOW_COOLDOWN) {
+    console.log('hideFloatingWidget: Skipped due to cooldown');
+    return;
+  }
+  
+  if (isWidgetVisible && floatingWidget) {
+    console.log('hideFloatingWidget: Hiding widget');
+    isWidgetVisible = false;
+    lastHideTime = now;
+    
+    floatingWidget.classList.remove('visible');
+    
+    // Hide after animation completes
+    setTimeout(() => {
+      if (!isWidgetVisible) { // Double-check state hasn't changed
+        floatingWidget.style.display = 'none';
+      }
+    }, 400);
+  }
+}
+
+// Add click handler for floating widget
+// Force show floating widget for debugging
+function forceShowFloatingWidget() {
+  if (floatingWidget && _perPrayerNorm && Object.keys(_perPrayerNorm).length > 0) {
+    console.log('Force showing floating widget');
+    updateFloatingWidget();
+    showFloatingWidget();
+    return true;
+  }
+  console.log('Cannot force show widget:', {
+    hasWidget: !!floatingWidget,
+    hasPrayerData: !!(_perPrayerNorm && Object.keys(_perPrayerNorm).length > 0)
+  });
+  return false;
+}
+
+// Debug function to check widget state
+function debugFloatingWidget() {
+  console.log('=== Floating Widget Debug ===');
+  console.log('Widget element exists:', !!floatingWidget);
+  console.log('Widget element ID:', floatingWidget?.id);
+  console.log('Widget classes:', floatingWidget ? Array.from(floatingWidget.classList) : 'N/A');
+  console.log('Widget display:', floatingWidget?.style.display);
+  console.log('Widget computed display:', floatingWidget ? window.getComputedStyle(floatingWidget).display : 'N/A');
+  console.log('Widget computed opacity:', floatingWidget ? window.getComputedStyle(floatingWidget).opacity : 'N/A');
+  console.log('Widget computed visibility:', floatingWidget ? window.getComputedStyle(floatingWidget).visibility : 'N/A');
+  console.log('Widget rect:', floatingWidget?.getBoundingClientRect());
+  console.log('Is widget visible state:', isWidgetVisible);
+  console.log('Prayer data exists:', !!(_perPrayerNorm && Object.keys(_perPrayerNorm).length > 0));
+  console.log('Prayer data:', _perPrayerNorm);
+  console.log('Window width:', window.innerWidth);
+  console.log('Is mobile:', window.innerWidth <= 768);
+  console.log('Is desktop:', window.innerWidth > 768);
+  console.log('=== End Debug ===');
+  return {
+    element: floatingWidget,
+    isVisible: isWidgetVisible,
+    hasPrayerData: !!(_perPrayerNorm && Object.keys(_perPrayerNorm).length > 0)
+  };
+}
+
+// Expose to window for debugging
+window.forceShowFloatingWidget = forceShowFloatingWidget;
+window.debugFloatingWidget = debugFloatingWidget;
+
+function addFloatingWidgetClickHandler() {
+  if (floatingWidget) {
+    floatingWidget.addEventListener('click', () => {
+      // Scroll to prayer table section
+      prayerTableSection.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    });
+  }
+}
