@@ -28,8 +28,8 @@ const sunnahHadithCollection = [
   },
   {
     name: "Sholat Dhuha",
-    arabic: "وَيُجْزِئُ مِنْ ذَلِكَ رَكْعَتَانِ يَرْكَعُهُمَا مِنَ الضُّحَى",
-    indonesia: "Pada pagi hari diwajibkan bagi seluruh persendian di antara kalian untuk bersedekah. Ini semua bisa dicukupi dengan melaksanakan shalat Dhuha sebanyak 2 rakaat.",
+    arabic: "يُصْبِحُ عَلَى كُلِّ سُلاَمَى مِنْ أَحَدِكُمْ صَدَقَةٌ فَكُلُّ تَسْبِيحَةٍ صَدَقَةٌ وَكُلُّ تَحْمِيدَةٍ صَدَقَةٌ وَكُلُّ تَهْلِيلَةٍ صَدَقَةٌ وَكُلُّ تَكْبِيرَةٍ صَدَقَةٌ وَأَمْرٌ بِالْمَعْرُوفِ صَدَقَةٌ وَنَهْىٌ عَنِ الْمُنْكَرِ صَدَقَةٌ وَيُجْزِئُ مِنْ ذَلِكَ رَكْعَتَانِ يَرْكَعُهُمَا مِنَ الضُّحَى",
+    indonesia: "Pada pagi hari diwajibkan bagi seluruh persendian di antara kalian untuk bersedekah. Setiap tasbih adalah sedekah, setiap tahmid adalah sedekah, setiap tahlil adalah sedekah, setiap takbir adalah sedekah, amar ma'ruf adalah sedekah, dan nahi munkar adalah sedekah. Semua itu bisa dicukupi dengan melaksanakan dua rakaat shalat Dhuha.",
     reference: "HR. Muslim",
     timeCondition: (times, now) => {
       // Sholat Dhuha: 15 menit setelah matahari terbit hingga 30 menit sebelum Dzuhur
