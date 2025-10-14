@@ -46,8 +46,39 @@
  *
  * ------------------------------------------------------------------- 
  */
+
+/* ===== STANDARDIZED SCROLL BAR ===== */
+/* Webkit Browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: linear-gradient(135deg, #00d4ff 0%, #ff6b6b 100%);
+	border-radius: 10px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: linear-gradient(135deg, #00b8e6 0%, #ff5252 100%);
+	box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+::-webkit-scrollbar-corner {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+/* Firefox */
 html {
 	font-size: 10px;
+	scrollbar-width: thin;
+	scrollbar-color: #00d4ff rgba(255, 255, 255, 0.1);
 }
 
 @media only screen and (max-width:1024px) {

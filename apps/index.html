@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamic Applications Hub - M. Faris Muzakki</title>
+    <meta name="description" content="Kumpulan aplikasi islami modern - Adzan Realtime, Dzikir & Doa, dan aplikasi lainnya">
+    <link rel="icon" href="../_favicon.png">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <a href="../index.html">
+                    <span class="logo-text">ISLAMIC APPS HUB</span>
+                </a>
+            </div>
+            <div class="nav-toggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background">
+            <div class="cyber-grid"></div>
+            <div class="floating-particles"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="title-line">ISLAMIC</span>
+                    <span class="title-line glow">APPLICATIONS</span>
+                    <span class="title-line">HUB</span>
+                </h1>
+                <div class="hero-hadith">
+                    <p class="hadith-arabic">
+                        مَنْ دَلَّ عَلَى خَيْرٍ فَلَهُ مِثْلُ أَجْرِ فَاعِلِهِ
+                    </p>
+                    <p class="hadith-translation">
+                        "Barangsiapa yang menunjukkan kepada kebaikan, maka baginya pahala seperti pahala orang yang melakukannya."
+                    </p>
+                    <p class="hadith-reference">
+                        <i class="fas fa-book"></i> HR. Muslim no. 1893
+                    </p>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="2">0</span>
+                        <span class="stat-label">Apps Available</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="5">0</span>
+                        <span class="stat-label">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-arrow">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <span>Scroll to explore</span>
+        </div>
+    </section>
+
+    <!-- Available Apps Section -->
+    <section class="apps-section" id="available-apps">
+        <div class="container">
+            <div class="section-title">
+                <h2>AVAILABLE APPLICATIONS</h2>
+                <p>Aplikasi yang sudah dapat digunakan sekarang</p>
+            </div>
+            
+            <div class="apps-grid">
+                <!-- Adzan Realtime -->
+                <div class="app-card featured">
+                    <div class="app-header">
+                        <div class="app-icon">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <div class="app-badge">LIVE</div>
+                    </div>
+                    <div class="app-content">
+                        <h3 class="app-title">Adzan Realtime</h3>
+                        <p class="app-subtitle">Islamic Prayer Times Application</p>
+                        <p class="app-description">
+                            Aplikasi waktu sholat real-time dengan perhitungan akurat, layanan berbasis lokasi, 
+                            dan beberapa metode perhitungan. Dilengkapi deteksi lokasi otomatis dan kalender Hijri.
+                        </p>
+                        <ul class="app-features">
+                            <li><i class="fas fa-check"></i> Perhitungan waktu sholat real-time</li>
+                            <li><i class="fas fa-check"></i> Deteksi lokasi berbasis GPS</li>
+                            <li><i class="fas fa-check"></i> Multiple calculation methods</li>
+                            <li><i class="fas fa-check"></i> Integrasi kalender Hijri</li>
+                        </ul>
+                    </div>
+                    <div class="app-actions">
+                        <a href="../adzan_realtime/index.html" class="btn-app primary" target="_blank">
+                            <i class="fas fa-rocket"></i>
+                            Launch App
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Dzikir & Doa -->
+                <div class="app-card featured">
+                    <div class="app-header">
+                        <div class="app-icon">
+                            <i class="fas fa-praying-hands"></i>
+                        </div>
+                        <div class="app-badge">LIVE</div>
+                    </div>
+                    <div class="app-content">
+                        <h3 class="app-title">Dzikir & Doa Harian</h3>
+                        <p class="app-subtitle">Daily Islamic Supplications</p>
+                        <p class="app-description">
+                            Kumpulan lengkap dzikir dan doa harian sesuai sunnah Rasulullah SAW. 
+                            Dilengkapi dengan teks Arab, transliterasi, terjemahan, dan referensi hadis yang shahih.
+                        </p>
+                        <ul class="app-features">
+                            <li><i class="fas fa-check"></i> Dzikir pagi dan sore lengkap</li>
+                            <li><i class="fas fa-check"></i> Doa sebelum dan sesudah tidur</li>
+                            <li><i class="fas fa-check"></i> Dzikir setelah sholat</li>
+                            <li><i class="fas fa-check"></i> Referensi hadis shahih</li>
+                        </ul>
+                    </div>
+                    <div class="app-actions">
+                        <a href="../dzikir_doa/index.html" class="btn-app primary" target="_blank">
+                            <i class="fas fa-rocket"></i>
+                            Launch App
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coming Soon Section -->
+    <section class="coming-soon-section" id="coming-soon">
+        <div class="container">
+            <div class="section-title">
+                <h2>COMING SOON</h2>
+                <p>Aplikasi yang sedang dalam pengembangan</p>
+            </div>
+            
+            <div class="apps-grid coming-soon-grid">
+                <!-- Kalkulator Waris -->
+                <div class="app-card coming-soon">
+                    <div class="app-header">
+                        <div class="app-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="app-badge coming-soon">SOON</div>
+                    </div>
+                    <div class="app-content">
+                        <h3 class="app-title">Kalkulator Waris</h3>
+                        <p class="app-subtitle">Islamic Inheritance Calculator</p>
+                        <p class="app-description">
+                            Kalkulator waris islami yang menghitung pembagian harta warisan sesuai syariat Islam 
+                            dengan skenario komprehensif dan penjelasan detail.
+                        </p>
+                        <ul class="app-features">
+                            <li><i class="fas fa-hourglass-half"></i> Perhitungan sesuai syariat</li>
+                            <li><i class="fas fa-hourglass-half"></i> Multiple heir scenarios</li>
+                            <li><i class="fas fa-hourglass-half"></i> Penjelasan detail aturan</li>
+                        </ul>
+                    </div>
+                    <div class="app-actions">
+                        <button class="btn-app disabled">
+                            <i class="fas fa-clock"></i>
+                            Coming Soon
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Qibla Finder -->
+                <div class="app-card coming-soon">
+                    <div class="app-header">
+                        <div class="app-icon">
+                            <i class="fas fa-kaaba"></i>
+                        </div>
+                        <div class="app-badge coming-soon">SOON</div>
+                    </div>
+                    <div class="app-content">
+                        <h3 class="app-title">Qibla Finder</h3>
+                        <p class="app-subtitle">Accurate Qibla Direction</p>
+                        <p class="app-description">
+                            Pencari arah kiblat yang akurat menggunakan teknologi geolokasi dan kompas canggih 
+                            dengan fitur augmented reality.
+                        </p>
+                        <ul class="app-features">
+                            <li><i class="fas fa-hourglass-half"></i> Perhitungan akurat berbasis GPS</li>
+                            <li><i class="fas fa-hourglass-half"></i> Interface kompas visual</li>
+                            <li><i class="fas fa-hourglass-half"></i> Augmented reality overlay</li>
+                        </ul>
+                    </div>
+                    <div class="app-actions">
+                        <button class="btn-app disabled">
+                            <i class="fas fa-clock"></i>
+                            Coming Soon
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Digital Quran -->
+                <div class="app-card coming-soon">
+                    <div class="app-header">
+                        <div class="app-icon">
+                            <i class="fas fa-book-quran"></i>
+                        </div>
+                        <div class="app-badge coming-soon">SOON</div>
+                    </div>
+                    <div class="app-content">
+                        <h3 class="app-title">Digital Quran</h3>
+                        <p class="app-subtitle">Interactive Quran Reader</p>
+                        <p class="app-description">
+                            Pembaca Al-Quran digital modern dengan multiple terjemahan, audio tilawah, 
+                            bookmark, dan fitur pencarian yang canggih.
+                        </p>
+                        <ul class="app-features">
+                            <li><i class="fas fa-hourglass-half"></i> Multiple translations</li>
+                            <li><i class="fas fa-hourglass-half"></i> Audio recitations</li>
+                            <li><i class="fas fa-hourglass-half"></i> Advanced search functionality</li>
+                        </ul>
+                    </div>
+                    <div class="app-actions">
+                        <button class="btn-app disabled">
+                            <i class="fas fa-clock"></i>
+                            Coming Soon
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tanya Jawab Islam -->
+                <div class="app-card coming-soon">
+                    <div class="app-header">
+                        <div class="app-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="app-badge coming-soon">SOON</div>
+                    </div>
+                    <div class="app-content">
+                        <h3 class="app-title">Tanya Jawab Islam</h3>
+                        <p class="app-subtitle">Islamic Q&A with AI Assistant</p>
+                        <p class="app-description">
+                            Sistem tanya jawab Islam cerdas yang diperkuat teknologi AI dengan data autentik 
+                            mengikuti Al-Quran dan Sunnah yang shahih.
+                        </p>
+                        <ul class="app-features">
+                            <li><i class="fas fa-hourglass-half"></i> AI-powered knowledge base</li>
+                            <li><i class="fas fa-hourglass-half"></i> Curated dengan Quran & Sunnah</li>
+                            <li><i class="fas fa-hourglass-half"></i> Authentic hadith references</li>
+                        </ul>
+                    </div>
+                    <div class="app-actions">
+                        <button class="btn-app disabled">
+                            <i class="fas fa-clock"></i>
+                            Coming Soon
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tata Cara Sholat -->
+                <div class="app-card coming-soon">
+                    <div class="app-header">
+                        <div class="app-icon">
+                            <i class="fas fa-hands"></i>
+                        </div>
+                        <div class="app-badge coming-soon">SOON</div>
+                    </div>
+                    <div class="app-content">
+                        <h3 class="app-title">Tata Cara Sholat</h3>
+                        <p class="app-subtitle">Interactive Prayer Tutorial</p>
+                        <p class="app-description">
+                            Panduan interaktif tata cara sholat yang lengkap dengan gerakan, bacaan, dan doa-doa. 
+                            Dilengkapi dengan animasi 3D dan audio untuk memudahkan pembelajaran.
+                        </p>
+                        <ul class="app-features">
+                            <li><i class="fas fa-hourglass-half"></i> Animasi 3D gerakan sholat</li>
+                            <li><i class="fas fa-hourglass-half"></i> Audio bacaan dan doa</li>
+                            <li><i class="fas fa-hourglass-half"></i> Panduan step-by-step</li>
+                            <li><i class="fas fa-hourglass-half"></i> Sholat fardhu dan sunnah</li>
+                        </ul>
+                    </div>
+                    <div class="app-actions">
+                        <button class="btn-app disabled">
+                            <i class="fas fa-clock"></i>
+                            Coming Soon
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="privacy-notice">
+                    <div class="small">
+                        <i class="fas fa-shield-alt"></i> 
+                        <strong>Privacy Notice:</strong> Kami tidak melacak aktivitas apapun dari pengguna. Semua aplikasi berjalan secara lokal di perangkat Anda.
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Applications</h4>
+                        <ul>
+                            <li><a href="../adzan_realtime/index.html">Adzan Realtime</a></li>
+                            <li><a href="../dzikir_doa/index.html">Dzikir & Doa</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Connect</h4>
+                        <ul>
+                            <li><a href="../index.html#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="copyright">
+                    <div class="small">
+                        <i class="fas fa-copyright"></i> 2025 Muhammad Faris Muzakki & Istri Tercinta (Lulusan Terbaik Imam Muhammad bin Saud University Jurusan Syariah Tahun 2022)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
