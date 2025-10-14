@@ -14,16 +14,91 @@ class DzikirDoaApp {
         this.currentDoaIndex = -1;
         this.favorites = this.loadFavorites();
         
+        // Caching system
+        this.cache = {
+            categories: null,
+            rendered: new Map(),
+            lastUpdate: null,
+            version: '1.0.0'
+        };
+        
+        this.loadFromCache();
+        this.registerServiceWorker();
         this.init();
     }
 
     init() {
         this.bindEvents();
-        this.loadCategories();
+        
+        // Fast initialization if cache available
+        if (this.cache.categories && this.isValidCache()) {
+            this.loadCategoriesFromCache();
+            this.hideLoadingScreen(300); // Super fast with SW + cache
+        } else {
+            this.loadCategories();
+            this.hideLoadingScreen();
+        }
+        
         this.loadTimeRecommendations();
         this.checkLocationIntegration();
-        this.hideLoadingScreen();
         this.handleShortcuts();
+        this.preloadPopularContent();
+        
+        // Initialize progressive loading after main content
+        setTimeout(() => {
+            this.initProgressiveLoading();
+            this.measurePerformance();
+        }, 100);
+    }
+
+    // ===== Service Worker Registration =====
+    async registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            try {
+                const registration = await navigator.serviceWorker.register('./sw.js');
+                console.log('Service Worker registered:', registration);
+                
+                // Handle updates
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // Show update notification
+                            this.showUpdateNotification();
+                        }
+                    });
+                });
+                
+                // Listen for messages from SW
+                navigator.serviceWorker.addEventListener('message', event => {
+                    console.log('Message from SW:', event.data);
+                });
+                
+            } catch (error) {
+                console.warn('Service Worker registration failed:', error);
+            }
+        }
+    }
+
+    showUpdateNotification() {
+        const notification = document.createElement('div');
+        notification.className = 'update-notification';
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas fa-download"></i>
+                <span>Update tersedia! Refresh untuk versi terbaru.</span>
+                <button onclick="location.reload()" class="btn-update">Update</button>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto hide after 10 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 10000);
     }
 
     // ===== Initialization Methods =====
@@ -135,14 +210,115 @@ class DzikirDoaApp {
         });
     }
 
-    hideLoadingScreen() {
+    hideLoadingScreen(delay = 1500) {
         setTimeout(() => {
             const loadingScreen = document.getElementById('loadingScreen');
             loadingScreen?.classList.add('hidden');
             setTimeout(() => {
                 loadingScreen?.remove();
             }, 500);
-        }, 1500);
+        }, delay);
+    }
+
+    // ===== Cache Management =====
+    loadFromCache() {
+        try {
+            const cachedData = localStorage.getItem('dzikirDoa_cache');
+            if (cachedData) {
+                const parsed = JSON.parse(cachedData);
+                this.cache = { ...this.cache, ...parsed };
+                console.log('Cache loaded successfully');
+            }
+        } catch (error) {
+            console.warn('Failed to load cache:', error);
+            this.clearCache();
+        }
+    }
+
+    saveToCache() {
+        try {
+            const cacheData = {
+                categories: this.cache.categories,
+                rendered: Array.from(this.cache.rendered.entries()),
+                lastUpdate: Date.now(),
+                version: this.cache.version
+            };
+            localStorage.setItem('dzikirDoa_cache', JSON.stringify(cacheData));
+            console.log('Cache saved successfully');
+        } catch (error) {
+            console.warn('Failed to save cache:', error);
+        }
+    }
+
+    isValidCache() {
+        const maxAge = 10 * 60 * 1000; // 10 minutes
+        const now = Date.now();
+        
+        if (!this.cache.lastUpdate) {
+            console.log('Cache: No lastUpdate found');
+            return false;
+        }
+        
+        const cacheAge = now - this.cache.lastUpdate;
+        const isExpired = cacheAge >= maxAge;
+        
+        if (isExpired) {
+            console.log(`Cache expired: ${Math.round(cacheAge / 1000 / 60)} minutes old (max: 10 minutes)`);
+            return false;
+        }
+        
+        console.log(`Cache valid: ${Math.round(cacheAge / 1000 / 60)} minutes old`);
+        return true;
+    }
+
+    clearCache() {
+        this.cache = {
+            categories: null,
+            rendered: new Map(),
+            lastUpdate: null,
+            version: '1.0.0'
+        };
+        localStorage.removeItem('dzikirDoa_cache');
+    }
+
+    loadCategoriesFromCache() {
+        if (!this.cache.categories) return false;
+        
+        const categoriesGrid = document.getElementById('categoriesGrid');
+        if (!categoriesGrid) return false;
+
+        // Restore rendered categories from cache
+        categoriesGrid.innerHTML = '';
+        this.cache.categories.forEach(categoryData => {
+            const card = this.createCategoryCard(categoryData.id, categoryData.data);
+            categoriesGrid.appendChild(card);
+        });
+
+        console.log('📦 Categories loaded from cache');
+        return true;
+    }
+
+    preloadPopularContent() {
+        // Preload commonly accessed categories in background
+        const popularCategories = ['dzikir_pagi', 'dzikir_petang', 'doa_tidur', 'sholat'];
+        
+        setTimeout(() => {
+            popularCategories.forEach(categoryId => {
+                try {
+                    const category = doaUtils.getCategoryData(categoryId);
+                    if (category) {
+                        const cacheKey = `modal_${categoryId}`;
+                        if (!this.cache.rendered.has(cacheKey)) {
+                            const doaListHTML = this.createDoaList(category.doa, categoryId);
+                            this.cache.rendered.set(cacheKey, doaListHTML);
+                        }
+                    }
+                } catch (error) {
+                    // Silent fail for preloading
+                }
+            });
+            console.log('🚀 Popular content preloaded');
+        }, 2000); // Preload after initial load
     }
 
     // ===== Navigation Methods =====
@@ -179,11 +355,25 @@ class DzikirDoaApp {
         const categories = doaUtils.getAllCategories();
         categoriesGrid.innerHTML = '';
 
+        // Cache categories data
+        this.cache.categories = [];
+        
         categories.forEach(categoryId => {
             const category = doaUtils.getCategoryData(categoryId);
+            
+            // Store in cache
+            this.cache.categories.push({
+                id: categoryId,
+                data: category
+            });
+            
             const card = this.createCategoryCard(categoryId, category);
             categoriesGrid.appendChild(card);
         });
+
+        // Save cache after loading
+        this.saveToCache();
+        console.log('💾 Categories cached for faster loading');
     }
 
     createCategoryCard(categoryId, category) {
@@ -251,28 +441,41 @@ class DzikirDoaApp {
         const modalContent = document.getElementById('modalContent');
 
         modalTitle.textContent = category.title;
-        modalContent.innerHTML = this.createDoaList(category.doa, categoryId);
 
-        // Add event delegation for doa items
-        modalContent.addEventListener('click', (e) => {
-            const doaItem = e.target.closest('.doa-item');
-            if (doaItem && doaItem.getAttribute('data-clickable') === 'true') {
-                const doaId = doaItem.getAttribute('data-doa-id');
-                const doaData = category.doa.find(d => d.id === doaId);
-                if (doaData) {
-                    const doaWithCategory = {
-                        ...doaData,
-                        category: categoryId,
-                        categoryTitle: category.title,
-                        hadistReference: doaData.hadistReference,
-                        hadistText: doaData.hadistText,
-                        reference: doaData.reference,
-                        benefit: doaData.benefit
-                    };
-                    this.openDoaModal(doaWithCategory);
+        // Check if content is cached
+        const cacheKey = `modal_${categoryId}`;
+        if (this.cache.rendered.has(cacheKey)) {
+            modalContent.innerHTML = this.cache.rendered.get(cacheKey);
+        } else {
+            // Generate and cache content
+            const doaListHTML = this.createDoaList(category.doa, categoryId);
+            modalContent.innerHTML = doaListHTML;
+            this.cache.rendered.set(cacheKey, doaListHTML);
+        }
+
+        // Add event delegation for doa items (only once)
+        if (!modalContent.hasAttribute('data-events-bound')) {
+            modalContent.addEventListener('click', (e) => {
+                const doaItem = e.target.closest('.doa-item');
+                if (doaItem && doaItem.getAttribute('data-clickable') === 'true') {
+                    const doaId = doaItem.getAttribute('data-doa-id');
+                    const doaData = category.doa.find(d => d.id === doaId);
+                    if (doaData) {
+                        const doaWithCategory = {
+                            ...doaData,
+                            category: categoryId,
+                            categoryTitle: category.title,
+                            hadistReference: doaData.hadistReference,
+                            hadistText: doaData.hadistText,
+                            reference: doaData.reference,
+                            benefit: doaData.benefit
+                        };
+                        this.openDoaModal(doaWithCategory);
+                    }
                 }
-            }
-        });
+            });
+            modalContent.setAttribute('data-events-bound', 'true');
+        }
 
         modalOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -1030,6 +1233,157 @@ class DzikirDoaApp {
             console.log('Favorites saved:', this.favorites.length, 'items');
         } catch (e) {
             console.error('Error saving favorites:', e);
+        }
+    }
+
+    // ===== Progressive Loading Methods =====
+    initProgressiveLoading() {
+        // Lazy load images
+        this.initLazyLoading();
+        
+        // Progressive load heavy content
+        this.initProgressiveContentLoad();
+        
+        // Prefetch next content based on user behavior
+        this.initPredictiveLoading();
+    }
+
+    initLazyLoading() {
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.classList.remove('lazy');
+                            img.classList.add('loaded');
+                            observer.unobserve(img);
+                        }
+                    }
+                });
+            }, {
+                rootMargin: '50px 0px',
+                threshold: 0.01
+            });
+
+            // Observe all lazy images
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                imageObserver.observe(img);
+            });
+
+            // Store observer for future use
+            this.imageObserver = imageObserver;
+        } else {
+            // Fallback for older browsers
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+                img.classList.add('loaded');
+            });
+        }
+    }
+
+    initProgressiveContentLoad() {
+        // Load content in chunks to prevent blocking
+        const contentSections = document.querySelectorAll('.progressive-content');
+        
+        contentSections.forEach((section, index) => {
+            setTimeout(() => {
+                section.classList.add('loaded');
+                
+                // Trigger any animations
+                const animElements = section.querySelectorAll('[data-animation]');
+                animElements.forEach(el => {
+                    el.classList.add(el.dataset.animation);
+                });
+                
+            }, index * 100); // Stagger loading by 100ms
+        });
+    }
+
+    initPredictiveLoading() {
+        // Track user interaction patterns
+        let hoveredCategories = new Set();
+        
+        document.addEventListener('mouseover', (e) => {
+            const categoryCard = e.target.closest('[data-category]');
+            if (categoryCard && !hoveredCategories.has(categoryCard.dataset.category)) {
+                hoveredCategories.add(categoryCard.dataset.category);
+                
+                // Prefetch category data after 500ms hover
+                setTimeout(() => {
+                    if (categoryCard.matches(':hover')) {
+                        this.prefetchCategoryData(categoryCard.dataset.category);
+                    }
+                }, 500);
+            }
+        });
+
+        // Prefetch based on scroll position
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                this.handleScrollPrefetch();
+            }, 150);
+        });
+    }
+
+    async prefetchCategoryData(categoryId) {
+        try {
+            // Check if already in cache
+            if (this.cache.rendered.has(categoryId)) {
+                return;
+            }
+
+            console.log('Prefetching category:', categoryId);
+            
+            // Generate and cache the modal content
+            const categoryData = doaUtils.getCategoryData(categoryId);
+            if (categoryData && categoryData.doas) {
+                const modalContent = this.generateCategoryModalContent(categoryData);
+                this.cache.rendered.set(categoryId, {
+                    html: modalContent,
+                    timestamp: Date.now()
+                });
+                
+                // Save to localStorage
+                this.saveToCache();
+            }
+        } catch (error) {
+            console.warn('Prefetch failed for category:', categoryId, error);
+        }
+    }
+
+    handleScrollPrefetch() {
+        // Prefetch content that's about to come into view
+        const scrollPosition = window.scrollY + window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollPercent = scrollPosition / documentHeight;
+
+        // If user scrolled past 70%, prefetch popular categories
+        if (scrollPercent > 0.7) {
+            const popularCategories = ['dzikir_pagi', 'dzikir_petang', 'doa_tidur'];
+            popularCategories.forEach(categoryId => {
+                this.prefetchCategoryData(categoryId);
+            });
+        }
+    }
+
+    // Performance monitoring
+    measurePerformance() {
+        if ('performance' in window) {
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    const perfData = performance.getEntriesByType('navigation')[0];
+                    console.log('Performance metrics:', {
+                        loadTime: perfData.loadEventEnd - perfData.loadEventStart,
+                        domReady: perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart,
+                        ttfb: perfData.responseStart - perfData.requestStart
+                    });
+                }, 100);
+            });
         }
     }
 }

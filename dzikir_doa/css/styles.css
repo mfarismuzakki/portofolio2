@@ -70,6 +70,89 @@ body::before {
     z-index: -1;
 }
 
+/* Update Notification */
+.update-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10000;
+    animation: slideDown 0.3s ease-out;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.notification-content i {
+    font-size: 16px;
+}
+
+.btn-update {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-update:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateX(-50%) translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Progressive Loading & Lazy Images */
+img.lazy {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+img.loaded {
+    opacity: 1;
+}
+
+.progressive-content {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.progressive-content.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Performance optimization */
+.category-card {
+    will-change: transform;
+}
+
+.category-card:hover {
+    transform: translateY(-2px) scale(1.02);
+}
+
 /* Loading Screen */
 .loading-screen {
     position: fixed;
@@ -795,6 +878,7 @@ body::before {
     justify-content: space-between;
     padding: 20px 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
 }
 
 .modal-back,
@@ -819,6 +903,14 @@ body::before {
     font-size: 18px;
     font-weight: 600;
     color: #ffffff;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: calc(100% - 120px); /* Space for buttons */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Modal Hint */
@@ -1719,7 +1811,10 @@ body::before {
     .nav-btn.current-indicator {
         font-size: 12px;
         min-width: 50px;
+        max-width: 80px;
+        height: 42px; /* Ensure consistent height */
         padding: 0 12px;
+        line-height: 1.2; /* Better text alignment */
     }
 }
 
@@ -1782,6 +1877,34 @@ body::before {
         font-size: 16px;
         line-height: 1.6;
         padding: 0 8px;
+    }
+    
+    /* Fix navigation buttons on smaller mobile */
+    .doa-navigation {
+        bottom: max(15px, env(safe-area-inset-bottom));
+        padding: 8px 12px;
+        gap: 8px;
+    }
+    
+    .nav-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+    
+    .nav-btn.current-indicator {
+        font-size: 11px;
+        min-width: 45px;
+        max-width: 70px;
+        height: 40px;
+        padding: 0 8px;
+        line-height: 1.1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 

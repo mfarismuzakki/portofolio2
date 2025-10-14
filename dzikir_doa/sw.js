@@ -1,9 +1,11 @@
 // Service Worker untuk Dzikir & Doa Harian
-// Offline-first progressive web app
+// Offline-first progressive web app dengan advanced caching
 
-const CACHE_NAME = 'dzikirdoa-v1.0.0';
-const STATIC_CACHE_NAME = 'dzikirdoa-static-v1.0.0';
-const DYNAMIC_CACHE_NAME = 'dzikirdoa-dynamic-v1.0.0';
+const VERSION = '1.2.0';
+const CACHE_NAME = 'dzikirdoa-v' + VERSION;
+const STATIC_CACHE_NAME = 'dzikirdoa-static-v' + VERSION;
+const DYNAMIC_CACHE_NAME = 'dzikirdoa-dynamic-v' + VERSION;
+const PRECACHE_NAME = 'dzikirdoa-precache-v' + VERSION;
 
 // File yang akan di-cache untuk offline
 const STATIC_FILES = [
@@ -18,8 +20,20 @@ const STATIC_FILES = [
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
 ];
 
-// Cache dinamis untuk gambar dan resource lainnya
-const CACHE_LIMIT = 50;
+// Cache limits dan strategy
+const CACHE_LIMITS = {
+  static: 100,
+  dynamic: 50,
+  precache: 30
+};
+
+// Preload popular categories untuk instant access
+const POPULAR_CATEGORIES = [
+  'dzikir_pagi',
+  'dzikir_petang', 
+  'doa_tidur',
+  'sholat'
+];
 
 // Install event - cache static files
 self.addEventListener('install', event => {
@@ -53,8 +67,10 @@ self.addEventListener('activate', event => {
             // Delete old versions of caches
             if (cacheName !== STATIC_CACHE_NAME && 
                 cacheName !== DYNAMIC_CACHE_NAME &&
+                cacheName !== PRECACHE_NAME &&
                 (cacheName.includes('dzikirdoa-static') || 
-                 cacheName.includes('dzikirdoa-dynamic'))) {
+                 cacheName.includes('dzikirdoa-dynamic') ||
+                 cacheName.includes('dzikirdoa-precache'))) {
               console.log('Service Worker: Deleting old cache:', cacheName);
               return caches.delete(cacheName);
             }
@@ -63,6 +79,10 @@ self.addEventListener('activate', event => {
       })
       .then(() => {
         console.log('Service Worker: Activated successfully');
+        // Preload popular content after activation
+        return preloadPopularContent();
+      })
+      .then(() => {
         return self.clients.claim();
       })
   );
@@ -121,7 +141,7 @@ self.addEventListener('fetch', event => {
               caches.open(DYNAMIC_CACHE_NAME)
                 .then(cache => {
                   return cache.keys().then(keys => {
-                    if (keys.length >= CACHE_LIMIT) {
+                    if (keys.length >= CACHE_LIMITS.dynamic) {
                       // Remove oldest cached item
                       return cache.delete(keys[0]).then(() => {
                         return cache.put(request, responseToCache);
@@ -309,6 +329,68 @@ self.addEventListener('message', event => {
     }
   }
 });
+
+// Preload popular content untuk akses instant
+async function preloadPopularContent() {
+  try {
+    console.log('Service Worker: Preloading popular content...');
+    
+    // Import doa collection data
+    const doaResponse = await fetch('./data/doa-collection.js');
+    if (!doaResponse.ok) throw new Error('Failed to fetch doa collection');
+    
+    const doaText = await doaResponse.text();
+    
+    // Extract doa collection object using regex (safe evaluation)
+    const match = doaText.match(/const doaCollection = ({[\s\S]*?});/);
+    if (!match) {
+      console.warn('Service Worker: Could not parse doa collection');
+      return;
+    }
+    
+    const cache = await caches.open(PRECACHE_NAME);
+    let preloadCount = 0;
+    
+    // Preload popular categories
+    for (const category of POPULAR_CATEGORIES) {
+      try {
+        // Create virtual request for category data
+        const categoryKey = `category-${category}`;
+        const categoryRequest = new Request(categoryKey);
+        
+        // Check if already cached
+        const cached = await cache.match(categoryRequest);
+        if (!cached) {
+          // Create response with category data
+          const categoryResponse = new Response(
+            JSON.stringify({ 
+              category, 
+              timestamp: Date.now(),
+              preloaded: true 
+            }), 
+            {
+              headers: { 'Content-Type': 'application/json' }
+            }
+          );
+          
+          await cache.put(categoryRequest, categoryResponse);
+          preloadCount++;
+        }
+        
+        // Limit preload operations
+        if (preloadCount >= CACHE_LIMITS.precache) break;
+        
+      } catch (error) {
+        console.warn(`Service Worker: Failed to preload ${category}:`, error);
+      }
+    }
+    
+    console.log(`Service Worker: Preloaded ${preloadCount} popular categories`);
+    
+  } catch (error) {
+    console.error('Service Worker: Error preloading popular content:', error);
+  }
+}
 
 // Clear all caches
 async function clearAllCaches() {
