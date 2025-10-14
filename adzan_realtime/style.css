@@ -486,6 +486,12 @@ footer {
   color: var(--text-secondary);
 }
 
+.smaller {
+  font-size: 10px;
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
 /* Loading animation */
 @keyframes pulse {
   0%, 100% { opacity: 1; }

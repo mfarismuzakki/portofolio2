@@ -396,14 +396,48 @@ const doaCollection = {
       },
       {
         id: "tidur_002",
-        title: "Membaca Al-Ikhlas, Al-Falaq, An-Nas",
-        arabic: "قُلْ هُوَ اللَّهُ أَحَدٌ...",
-        latin: "Qul huwa'llāhu ahad...",
-        translation: "Katakanlah: Dia-lah Allah, Yang Maha Esa...",
-        benefit: "Perlindungan dari segala kejahatan dan gangguan",
-        reference: "HR. At-Tirmidzi, dishahihkan Al-Albani",
+        title: "Surat Al-Ikhlas",
+        arabic: "قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+        latin: "Qul huwa'llāhu ahad. Allāhush-shamad. Lam yalid wa lam yūlad. Wa lam yakul lahū kufuwan ahad.",
+        translation: "Katakanlah: Dia-lah Allah, Yang Maha Esa. Allah adalah Tuhan yang bergantung kepada-Nya segala sesuatu. Dia tiada beranak dan tidak pula diperanakkan. Dan tidak ada seorangpun yang setara dengan Dia.",
+        benefit: "Perlindungan dari segala kejahatan dan gangguan, sama nilainya dengan sepertiga Al-Qur'an",
+        reference: "HR. At-Tirmidzi no. 3575, dishahihkan Al-Albani",
         repetition: 3,
         category: "surat"
+      },
+      {
+        id: "tidur_003",
+        title: "Surat Al-Falaq",
+        arabic: "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِن شَرِّ مَا خَلَقَ ۝ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ۝ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+        latin: "Qul a'ūdzu birabbi'l-falaq. Min syarri mā khalaq. Wa min syarri ghāsiqin idzā waqab. Wa min syarri'n-naffātsāti fi'l-'uqad. Wa min syarri hāsidin idzā hasad.",
+        translation: "Katakanlah: Aku berlindung kepada Tuhan yang menguasai subuh, dari kejahatan makhluk-Nya, dan dari kejahatan malam yang gelap gulita apabila telah tiba, dan dari kejahatan wanita-wanita tukang sihir yang meniup pada buhul-buhul, dan dari kejahatan orang yang dengki apabila ia dengki.",
+        benefit: "Perlindungan dari sihir, hasad, dan kejahatan makhluk",
+        reference: "HR. At-Tirmidzi no. 3575, dishahihkan Al-Albani",
+        repetition: 3,
+        category: "surat"
+      },
+      {
+        id: "tidur_004",
+        title: "Surat An-Nas",
+        arabic: "قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَٰهِ النَّاسِ ۝ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ۝ مِنَ الْجِنَّةِ وَالنَّاسِ",
+        latin: "Qul a'ūdzu birabbi'n-nās. Maliki'n-nās. Ilāhi'n-nās. Min syarri'l-waswāsi'l-khannās. Alladhī yuwaswisu fī shudūri'n-nās. Mina'l-jinnati wa'n-nās.",
+        translation: "Katakanlah: Aku berlindung kepada Tuhan manusia, Raja manusia, Sembahan manusia, dari kejahatan (bisikan) syaitan yang biasa bersembunyi, yang membisikkan (kejahatan) ke dalam dada manusia, dari (golongan) jin dan manusia.",
+        benefit: "Perlindungan dari bisikan syaitan dan gangguan jin",
+        reference: "HR. At-Tirmidzi no. 3575, dishahihkan Al-Albani",
+        repetition: 3,
+        category: "surat"
+      },
+      {
+        id: "tidur_005",
+        title: "Surat Al-Mulk",
+        arabic: "تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ ۝ الَّذِي خَلَقَ الْمَوْتَ وَالْحَيَاةَ لِيَبْلُوَكُمْ أَيُّكُمْ أَحْسَنُ عَمَلًا ۚ وَهُوَ الْعَزِيزُ الْغَفُورُ...",
+        latin: "Tabāraka'lladhī biyadihi'l-mulku wa huwa 'alā kulli syay'in qadīr. Alladhī khalaqa'l-mawta wa'l-hayāta liyabluwakum ayyukum ahsanu 'amalan wa huwa'l-'azīzu'l-ghafūr...",
+        translation: "Maha suci Allah yang di tangan-Nya-lah segala kerajaan, dan Dia Maha Kuasa atas segala sesuatu, yang menjadikan mati dan hidup, supaya Dia menguji kamu, siapa di antara kamu yang lebih baik amalnya. Dan Dia Maha Perkasa lagi Maha Pengampun... (30 ayat lengkap)",
+        benefit: "Perlindungan dari azab kubur dan syafaat di hari kiamat. Surat ini akan membela pembacanya dari azab kubur.",
+        reference: "HR. At-Tirmidzi no. 2891 dan An-Nasa'i no. 1746: 'Sesungguhnya dalam Al-Qur'an ada satu surat yang berjumlah 30 ayat, yang akan memberi syafaat kepada seseorang hingga dia diampuni, yaitu Surat Tabarak (Al-Mulk)'",
+        repetition: 1,
+        category: "surat",
+        note: "Surat lengkap 30 ayat. Rasulullah SAW tidak pernah tidur kecuali setelah membaca surat ini."
       }
     ]
   },

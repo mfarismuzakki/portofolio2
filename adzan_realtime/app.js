@@ -238,14 +238,22 @@ function formatHMS(s){
 /* === App utama === */
 const prayNames={fajr:"Subuh",sunrise:"Syuruq",dhuhr:"Dzuhur",asr:"Ashar",maghrib:"Maghrib",isha:"Isya"};
 
-let currentLat=null,currentLon=null,currentCity="Lokasi belum ditentukan";
+let currentLat=-6.2088,currentLon=106.8456,currentCity="Jakarta (Default - Ubah sesuai kota Anda)";
 let currentMethod="KEMENAG";
 let countdownTimer=null;
 let _lastDateStr = (new Date()).toDateString(); // track local day for auto-refresh
 let _midnightTimer = null;
 let _perPrayerNorm = {}; // store normalized times for live updates
 let _liveInterval = null;
-let currentTimeZone = null; // IANA timezone name (e.g. 'Asia/Jakarta') from API when available
+let currentTimeZone = 'Asia/Jakarta'; // Default timezone untuk Jakarta
+
+// Initialize dengan default Jakarta
+setTimeout(() => {
+  document.getElementById("locname").textContent = currentCity;
+  document.getElementById("tzname").textContent = currentTimeZone;
+  document.getElementById("locname").classList.remove("loading");
+  renderPrayers();
+}, 100);
 
 // Floating Prayer Widget variables
 let floatingWidget = null;
@@ -1417,7 +1425,7 @@ setTimeout(() => {
   updateFloatingWidget();
 }, 1000);
 
-// Restore last location if available; else try GPS; else manual
+// Restore last location if available; else try GPS; else default Jakarta
 (async ()=>{
   try{
     const last = localStorage.getItem('lastLocation');
@@ -1434,12 +1442,17 @@ setTimeout(() => {
     console.error('Error restoring cached location:', e);
   }
   
+  // Try GPS first, if fail use Jakarta as default
   navigator.geolocation.getCurrentPosition(pos=>{
     (async ()=>{
       const rg = await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
       setLocation(pos.coords.latitude,pos.coords.longitude, rg.display || 'GPS');
     })();
-  },()=>{document.getElementById("locname").textContent="Lokasi manual diperlukan";});
+  },()=>{
+    console.log('GPS failed, using Jakarta as default location');
+    // Jakarta coordinates: -6.2088, 106.8456
+    setLocation(-6.2088, 106.8456, 'Jakarta (Default - Ubah sesuai kota Anda)', 'Asia/Jakarta');
+  });
   scheduleMidnightRefresh();
 })();
 
@@ -1848,39 +1861,44 @@ function updateFloatingWidget() {
   // Find next prayer from current prayer data
   if (_perPrayerNorm && Object.keys(_perPrayerNorm).length > 0) {
     const now = new Date();
-    const nowHours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+    const nowParts = getTimePartsInZone(now, currentTimeZone);
+    const nowHours = nowParts.h + nowParts.m/60 + nowParts.s/3600;
     
-    // Find next prayer
-    let nextPrayer = null;
+    // Find next prayer (using same logic as updateLiveInfo)
+    let nextKey = null; 
     let minDiff = Infinity;
     
-    Object.entries(_perPrayerNorm).forEach(([key, time]) => {
-      const timeHours = parseFloat(time);
-      let diff = timeHours - nowHours;
-      
-      // Handle cross-midnight prayers
-      if (diff < 0) {
-        diff += 24;
+    for(const k of Object.keys(_perPrayerNorm)){
+      const t = _perPrayerNorm[k];
+      if(isNaN(t)) continue;
+      // Skip sunrise (syuruq) as it's not an adzan time
+      if(k === 'sunrise') continue;
+      const diff = t - nowHours;
+      if(diff > 0 && diff < minDiff){ 
+        minDiff = diff; 
+        nextKey = k; 
       }
-      
-      if (diff < minDiff) {
-        minDiff = diff;
-        nextPrayer = {
-          key,
-          name: prayNames[key] || key,
-          time: time,
-          diff: diff
-        };
-      }
-    });
+    }
+    if(!nextKey){ nextKey = 'fajr'; }
+    
+    // Create nextPrayer object for widget display
+    const nextPrayer = nextKey ? {
+      key: nextKey,
+      name: prayNames[nextKey] || nextKey,
+      time: _perPrayerNorm[nextKey],
+      diff: minDiff
+    } : null;
     
     currentNextPrayer = nextPrayer;
     
     if (nextPrayer) {
       widgetPrayerName.textContent = nextPrayer.name;
       
-      // Update countdown
-      const diffSec = Math.max(0, Math.round(nextPrayer.diff * 3600));
+      // Update countdown using same logic as updateLiveInfo
+      const t = _perPrayerNorm[nextKey];
+      let diffHours = t - nowHours;
+      if(diffHours < 0) diffHours += 24;
+      const diffSec = Math.max(0, Math.round(diffHours * 3600));
       widgetCountdown.textContent = formatHMS(diffSec);
     } else {
       // Fallback when no next prayer found
