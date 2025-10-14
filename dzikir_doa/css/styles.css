@@ -204,7 +204,7 @@ body::before {
 .main-content {
     margin-top: 20px;
     min-height: calc(100vh - 20px);
-    padding-bottom: 80px;
+    padding-bottom: 120px;
 }
 
 .section {
@@ -1604,7 +1604,7 @@ body::before {
     }
     
     .main-content {
-        padding-bottom: 120px;
+        padding-bottom: 160px;
     }
     
     .hero-stats {
@@ -2197,6 +2197,7 @@ footer {
     font-size: 13px;
     text-align: center;
     padding-top: 20px;
+    padding-bottom: 40px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
