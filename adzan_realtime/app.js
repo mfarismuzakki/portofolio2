@@ -476,15 +476,8 @@ function renderPrayers(){
         
         if(!isNaN(t)){
           if(k === 'sunrise'){
-            // Syuruq: show countdown if it's next prayer, "Selesai" if past, otherwise '--:--:--'
-            if(t <= nowHours) {
-              infoText = 'Selesai';
-            } else if(k === nextKey) {
-              const diffSec = Math.round((t - nowHours) * 3600);
-              infoText = formatHMS(diffSec);
-            } else {
-              infoText = '--:--:--';
-            }
+            // Syuruq: always shows '--:--:--' (no countdown, no "Selesai")
+            infoText = '--:--:--';
           } else if(t <= nowHours){
             infoText = 'Selesai';
           } else if(k === nextKey) {
@@ -633,8 +626,7 @@ function updateLiveInfo(){
     } else {
       // Syuruq always shows '--:--:--' (no countdown, no "Selesai")
       if(key === 'sunrise'){
-        // infoCell.textContent = '--:--:--';
-        infoCell.textContent = 'Selesai';
+        infoCell.textContent = '--:--:--';
       } else if(t <= nowHours) {
         infoCell.textContent = 'Selesai';
       } else {

@@ -226,7 +226,16 @@ class DzikirDoaApp {
             const cachedData = localStorage.getItem('dzikirDoa_cache');
             if (cachedData) {
                 const parsed = JSON.parse(cachedData);
-                this.cache = { ...this.cache, ...parsed };
+                
+                // Restore cache with proper Map reconstruction
+                this.cache = {
+                    ...this.cache,
+                    categories: parsed.categories,
+                    rendered: new Map(parsed.rendered || []),
+                    lastUpdate: parsed.lastUpdate,
+                    version: parsed.version
+                };
+                
                 console.log('Cache loaded successfully');
             }
         } catch (error) {
@@ -305,7 +314,7 @@ class DzikirDoaApp {
         setTimeout(() => {
             popularCategories.forEach(categoryId => {
                 try {
-                    const category = doaUtils.getCategoryData(categoryId);
+                    const category = window.doaUtils.getCategoryData(categoryId);
                     if (category) {
                         const cacheKey = `modal_${categoryId}`;
                         if (!this.cache.rendered.has(cacheKey)) {
@@ -352,14 +361,14 @@ class DzikirDoaApp {
         const categoriesGrid = document.getElementById('categoriesGrid');
         if (!categoriesGrid) return;
 
-        const categories = doaUtils.getAllCategories();
+        const categories = window.doaUtils.getAllCategories();
         categoriesGrid.innerHTML = '';
 
         // Cache categories data
         this.cache.categories = [];
         
         categories.forEach(categoryId => {
-            const category = doaUtils.getCategoryData(categoryId);
+            const category = window.doaUtils.getCategoryData(categoryId);
             
             // Store in cache
             this.cache.categories.push({
@@ -774,7 +783,7 @@ class DzikirDoaApp {
 
     // ===== Search Methods =====
     performSearch(query) {
-        const results = doaUtils.searchDoa(query);
+        const results = window.doaUtils.searchDoa(query);
         const searchResults = document.getElementById('searchResults');
         
         if (results.length === 0) {
@@ -804,7 +813,7 @@ class DzikirDoaApp {
     // ===== Time-based Recommendations =====
     loadTimeRecommendations() {
         const currentHour = new Date().getHours();
-        const recommendations = doaUtils.getTimeBasedRecommendations(currentHour);
+        const recommendations = window.doaUtils.getTimeBasedRecommendations(currentHour);
         const recommendationCards = document.getElementById('recommendationCards');
 
         if (!recommendationCards || recommendations.length === 0) {
@@ -813,7 +822,7 @@ class DzikirDoaApp {
         }
 
         recommendationCards.innerHTML = recommendations.map(categoryId => {
-            const category = doaUtils.getCategoryData(categoryId);
+            const category = window.doaUtils.getCategoryData(categoryId);
             return `
                 <div class="recommendation-card" onclick="window.app.openCategoryModal('${categoryId}', window.doaUtils.getCategoryData('${categoryId}'))">
                     <div class="rec-header">
@@ -934,7 +943,7 @@ class DzikirDoaApp {
             
             if (categoryId) {
                 setTimeout(() => {
-                    const category = doaUtils.getCategoryData(categoryId);
+                    const category = window.doaUtils.getCategoryData(categoryId);
                     if (category) {
                         this.openCategoryModal(categoryId, category);
                     }
@@ -1340,7 +1349,7 @@ class DzikirDoaApp {
             console.log('Prefetching category:', categoryId);
             
             // Generate and cache the modal content
-            const categoryData = doaUtils.getCategoryData(categoryId);
+            const categoryData = window.doaUtils.getCategoryData(categoryId);
             if (categoryData && categoryData.doas) {
                 const modalContent = this.generateCategoryModalContent(categoryData);
                 this.cache.rendered.set(categoryId, {
@@ -1388,6 +1397,59 @@ class DzikirDoaApp {
     }
 }
 
+// ===== Utility Functions =====
+// Check if doaUtils already exists to prevent redeclaration error
+if (typeof window.doaUtils === 'undefined') {
+    window.doaUtils = {
+        getAllCategories() {
+            return Object.keys(doaCollection);
+        },
+        
+        getCategoryData(categoryId) {
+            return doaCollection[categoryId];
+        },
+        
+        searchDoa(query) {
+            const results = [];
+            const searchTerm = query.toLowerCase();
+            
+            Object.keys(doaCollection).forEach(categoryId => {
+                const category = doaCollection[categoryId];
+                category.doa.forEach(doa => {
+                    if (
+                        doa.title.toLowerCase().includes(searchTerm) ||
+                        doa.arabic.toLowerCase().includes(searchTerm) ||
+                        doa.latin.toLowerCase().includes(searchTerm) ||
+                        doa.translation.toLowerCase().includes(searchTerm)
+                    ) {
+                        results.push({
+                            ...doa,
+                            category: categoryId,
+                            categoryTitle: category.title
+                        });
+                    }
+                });
+            });
+            
+            return results;
+        },
+        
+        getTimeBasedRecommendations(hour) {
+            const recommendations = [];
+            
+            if (hour >= 5 && hour < 11) {
+                recommendations.push('dzikir_pagi');
+            } else if (hour >= 15 && hour < 18) {
+                recommendations.push('dzikir_petang');
+            } else if (hour >= 20 || hour < 5) {
+                recommendations.push('doa_tidur');
+            }
+            
+            return recommendations;
+        }
+    };
+}
+
 // Initialize app when DOM is loaded
 let app;
 document.addEventListener('DOMContentLoaded', () => {
@@ -1395,7 +1457,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Make globally accessible for onclick handlers
     window.app = app;
-    window.doaUtils = doaUtils;
+    // doaUtils is already defined as window.doaUtils above
 });
 
 // Fallback for immediate access
