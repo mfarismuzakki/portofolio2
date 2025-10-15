@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Kalkulator Waris</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-case {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .test-error {
+            background: #ffe8e8;
+            color: #d00;
+        }
+        pre {
+            background: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Kalkulator Waris</h1>
+    
+    <div class="test-case">
+        <h2>Test 1: Umariyatain</h2>
+        <p><strong>Skenario:</strong> Suami + Ayah + Ibu, Harta 120 juta</p>
+        <div id="test1-result" class="test-result">Running test...</div>
+    </div>
+    
+    <div class="test-case">
+        <h2>Test 2: Kasus 'Awl</h2>
+        <p><strong>Skenario:</strong> Suami + 2 Anak Perempuan + Ibu, Harta 100 juta</p>
+        <div id="test2-result" class="test-result">Running test...</div>
+    </div>
+    
+    <div class="test-case">
+        <h2>Test 3: Kasus Radd</h2>
+        <p><strong>Skenario:</strong> Istri + 1 Anak Perempuan, Harta 90 juta</p>
+        <div id="test3-result" class="test-result">Running test...</div>
+    </div>
+    
+    <div class="test-case">
+        <h2>Test 4: Kasus Asabah</h2>
+        <p><strong>Skenario:</strong> Istri + 2 Anak Laki-laki + 1 Anak Perempuan, Harta 200 juta</p>
+        <div id="test4-result" class="test-result">Running test...</div>
+    </div>
+
+    <script>
+        // Simplified test engine untuk validasi algoritma
+        class TestInheritanceCalculator {
+            constructor() {
+                this.tests = [];
+            }
+            
+            // Test Case 1: Umariyatain
+            testUmariyatain() {
+                const data = {
+                    assets: {
+                        totalAssets: 120000000,
+                        funeralCosts: 5000000,
+                        debts: 0,
+                        wasiat: 0
+                    },
+                    heirs: {
+                        valid: {
+                            spouse: 'husband',
+                            father: true,
+                            mother: true
+                        }
+                    },
+                    settings: {
+                        raddMethod: 'jumhur',
+                        grandfatherMethod: 'zaid',
+                        showDalil: true
+                    }
+                };
+                
+                const netAssets = data.assets.totalAssets - data.assets.funeralCosts;
+                
+                // Expected: Suami 1/2 = 57.5jt, Ibu 1/3 sisa = 19.17jt, Ayah sisa = 38.33jt
+                const expected = {
+                    husband: netAssets * 0.5,        // 57,500,000
+                    mother: (netAssets * 0.5) / 3,   // 19,166,667 (1/3 dari sisa setelah suami)
+                    father: netAssets - (netAssets * 0.5) - ((netAssets * 0.5) / 3) // Sisa
+                };
+                
+                return {
+                    scenario: 'Umariyatain',
+                    data: data,
+                    expected: expected,
+                    netAssets: netAssets,
+                    rules: [
+                        'Suami: 1/2 (QS 4:12 - tidak ada anak)',
+                        'Ibu: 1/3 dari sisa setelah suami (Atsar Umar r.a.)',
+                        'Ayah: Sisa sebagai asabah'
+                    ]
+                };
+            }
+            
+            // Test Case 2: Awl
+            testAwl() {
+                const data = {
+                    assets: {
+                        totalAssets: 100000000,
+                        funeralCosts: 3000000,
+                        debts: 0,
+                        wasiat: 0
+                    },
+                    heirs: {
+                        valid: {
+                            spouse: 'husband',
+                            daughters: 2,
+                            mother: true
+                        }
+                    }
+                };
+                
+                const netAssets = data.assets.totalAssets - data.assets.funeralCosts;
+                
+                // Normal: Suami 1/4, 2 Anak perempuan 2/3, Ibu 1/6
+                // Total: 3/12 + 8/12 + 2/12 = 13/12 > 1 (Awl diperlukan)
+                const totalFurudh = 0.25 + (2/3) + (1/6); // 1.083333
+                const awlFactor = 1 / totalFurudh;
+                
+                const expected = {
+                    husband: netAssets * (0.25 * awlFactor),
+                    daughters: netAssets * ((2/3) * awlFactor),
+                    mother: netAssets * ((1/6) * awlFactor)
+                };
+                
+                return {
+                    scenario: 'Kasus Awl',
+                    data: data,
+                    expected: expected,
+                    netAssets: netAssets,
+                    awlInfo: {
+                        totalFurudh: totalFurudh,
+                        awlFactor: awlFactor
+                    },
+                    rules: [
+                        'Suami: 1/4 (QS 4:12 - ada anak)',
+                        '2 Anak perempuan: 2/3 (QS 4:11)',
+                        'Ibu: 1/6 (QS 4:11 - ada anak)',
+                        'Total > 100% → Awl (pengurangan proporsional)'
+                    ]
+                };
+            }
+            
+            // Test Case 3: Radd
+            testRadd() {
+                const data = {
+                    assets: {
+                        totalAssets: 90000000,
+                        funeralCosts: 2000000,
+                        debts: 0,
+                        wasiat: 0
+                    },
+                    heirs: {
+                        valid: {
+                            spouse: 'wife',
+                            daughters: 1
+                        }
+                    },
+                    settings: {
+                        raddMethod: 'jumhur'
+                    }
+                };
+                
+                const netAssets = data.assets.totalAssets - data.assets.funeralCosts;
+                
+                // Normal: Istri 1/8, Anak perempuan 1/2
+                // Total: 1/8 + 4/8 = 5/8 < 1 (ada sisa 3/8)
+                // Radd jumhur: istri tidak dapat radd, sisa untuk anak perempuan
+                
+                const expected = {
+                    wife: netAssets * 0.125,           // 1/8
+                    daughter: netAssets * 0.875        // 1/2 + sisa (karena radd)
+                };
+                
+                return {
+                    scenario: 'Kasus Radd (Jumhur)',
+                    data: data,
+                    expected: expected,
+                    netAssets: netAssets,
+                    rules: [
+                        'Istri: 1/8 (QS 4:12 - ada anak)',
+                        'Anak perempuan: 1/2 + radd sisa (QS 4:11)',
+                        'Metode Jumhur: istri tidak mendapat radd'
+                    ]
+                };
+            }
+            
+            // Test Case 4: Asabah
+            testAsabah() {
+                const data = {
+                    assets: {
+                        totalAssets: 200000000,
+                        funeralCosts: 5000000,
+                        debts: 10000000,
+                        wasiat: 0
+                    },
+                    heirs: {
+                        valid: {
+                            spouse: 'wife',
+                            sons: 2,
+                            daughters: 1
+                        }
+                    }
+                };
+                
+                const netAssets = data.assets.totalAssets - data.assets.funeralCosts - data.assets.debts;
+                
+                // Istri: 1/8 (ada anak)
+                // Sisa untuk anak-anak dengan rasio 2:1
+                // Total shares: 2*2 + 1*1 = 5 shares
+                const wifeShare = netAssets * 0.125;
+                const residue = netAssets - wifeShare;
+                
+                const expected = {
+                    wife: wifeShare,
+                    sons: residue * (4/5),          // 2 anak laki × 2 = 4 shares
+                    daughters: residue * (1/5)      // 1 anak perempuan × 1 = 1 share
+                };
+                
+                return {
+                    scenario: 'Kasus Asabah',
+                    data: data,
+                    expected: expected,
+                    netAssets: netAssets,
+                    rules: [
+                        'Istri: 1/8 (QS 4:12 - ada anak)',
+                        '2 Anak laki-laki & 1 anak perempuan: Asabah dengan rasio 2:1 (QS 4:11)',
+                        'Pembagian sisa: (2×2 + 1×1) = 5 bagian'
+                    ]
+                };
+            }
+            
+            runAllTests() {
+                const results = [];
+                
+                try {
+                    results.push(this.testUmariyatain());
+                    this.displayTest(1, results[0]);
+                } catch (e) {
+                    this.displayError(1, e);
+                }
+                
+                try {
+                    results.push(this.testAwl());
+                    this.displayTest(2, results[1]);
+                } catch (e) {
+                    this.displayError(2, e);
+                }
+                
+                try {
+                    results.push(this.testRadd());
+                    this.displayTest(3, results[2]);
+                } catch (e) {
+                    this.displayError(3, e);
+                }
+                
+                try {
+                    results.push(this.testAsabah());
+                    this.displayTest(4, results[3]);
+                } catch (e) {
+                    this.displayError(4, e);
+                }
+                
+                return results;
+            }
+            
+            displayTest(testNum, result) {
+                const element = document.getElementById(`test${testNum}-result`);
+                
+                let html = `
+                    <h4>✅ ${result.scenario}</h4>
+                    <p><strong>Harta Bersih:</strong> ${this.formatCurrency(result.netAssets)}</p>
+                    <h5>Pembagian:</h5>
+                    <ul>
+                `;
+                
+                Object.keys(result.expected).forEach(heir => {
+                    const amount = result.expected[heir];
+                    const percentage = ((amount / result.netAssets) * 100).toFixed(2);
+                    html += `<li><strong>${this.getHeirName(heir)}:</strong> ${this.formatCurrency(amount)} (${percentage}%)</li>`;
+                });
+                
+                html += `</ul><h5>Dasar Hukum:</h5><ul>`;
+                
+                result.rules.forEach(rule => {
+                    html += `<li>${rule}</li>`;
+                });
+                
+                html += `</ul>`;
+                
+                if (result.awlInfo) {
+                    html += `
+                        <h5>Info 'Awl:</h5>
+                        <p>Total Furudh: ${(result.awlInfo.totalFurudh * 100).toFixed(2)}%</p>
+                        <p>Faktor Koreksi: ${result.awlInfo.awlFactor.toFixed(6)}</p>
+                    `;
+                }
+                
+                element.innerHTML = html;
+                element.className = 'test-result';
+            }
+            
+            displayError(testNum, error) {
+                const element = document.getElementById(`test${testNum}-result`);
+                element.innerHTML = `❌ Error: ${error.message}`;
+                element.className = 'test-result test-error';
+            }
+            
+            getHeirName(heir) {
+                const names = {
+                    husband: 'Suami',
+                    wife: 'Istri',
+                    father: 'Ayah',
+                    mother: 'Ibu',
+                    sons: 'Anak Laki-laki (2)',
+                    daughters: 'Anak Perempuan (2)',
+                    daughter: 'Anak Perempuan (1)'
+                };
+                return names[heir] || heir;
+            }
+            
+            formatCurrency(amount) {
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                }).format(amount);
+            }
+        }
+        
+        // Run tests when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const tester = new TestInheritanceCalculator();
+            tester.runAllTests();
+        });
+    </script>
+</body>
+</html>

@@ -155,10 +155,6 @@
                             <i class="fas fa-book-open"></i>
                             Ayat
                         </button>
-                        <button class="filter-btn" data-filter="favorites">
-                            <i class="fas fa-heart"></i>
-                            Favorit
-                        </button>
                     </div>
                 </div>
                 
@@ -179,23 +175,7 @@
                 </div>
             </div>
 
-            <!-- Favorites Section -->
-            <div class="favorites-section" id="favoritesSection" style="display: none;">
-                <h2 class="section-title">
-                    <i class="fas fa-heart"></i>
-                    Doa & Dzikir Favorit
-                </h2>
-                <div class="favorites-content" id="favoritesContent">
-                    <!-- Dynamic favorites content -->
-                </div>
-                <div class="empty-favorites" id="emptyFavorites" style="display: none;">
-                    <div class="empty-icon">
-                        <i class="far fa-heart"></i>
-                    </div>
-                    <h3>Belum Ada Favorit</h3>
-                    <p>Tambahkan doa atau dzikir ke favorit dengan menekan tombol ❤️ saat membaca</p>
-                </div>
-            </div>
+
         </section>
 
         <!-- Detail Modal -->
@@ -282,6 +262,27 @@
                 </div>
             </div>
         </div>
+
+        <!-- Favorites Section -->
+        <section id="favorites" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-heart"></i>
+                    Doa Favorit Saya
+                </h2>
+            </div>
+            
+            <div class="favorites-content" id="favoritesContent">
+                <div class="empty-state" id="emptyFavorites">
+                    <div class="empty-icon">💝</div>
+                    <h3>Belum Ada Favorit</h3>
+                    <p>Tambahkan doa-doa favorit Anda dengan menekan tombol hati (❤️) pada setiap doa</p>
+                </div>
+                <div class="favorites-list" id="favoritesList">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
@@ -298,6 +299,18 @@
             <span class="toast-message">Pesan berhasil</span>
         </div>
     </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-section="home">
+            <i class="fas fa-home"></i>
+            <span>Beranda</span>
+        </button>
+        <button class="nav-item" data-section="favorites">
+            <i class="fas fa-heart"></i>
+            <span>Favorit</span>
+        </button>
+    </nav>
 
     <!-- Scripts -->
     <script src="data/doa-collection.js"></script>

@@ -734,18 +734,6 @@ const doaCollection = {
       {
         id: "makan_003",
         title: "Doa Sesudah Makan",
-        arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ",
-        latin: "Alhamdu lillāhi'lladhī at'amanā wa saqānā wa ja'alanā muslimīn",
-        translation: "Segala puji bagi Allah yang memberi kami makan dan minum serta menjadikan kami muslim",
-        benefit: "Bersyukur atas nikmat makanan dan Islam",
-        reference: "HR. Abu Dawud no. 3850, At-Tirmidzi no. 3456",
-        hadistText: "Dari Abu Ayyub Al-Anshari رضي الله عنه bahwa Rasulullah ﷺ apabila selesai makan atau minum, beliau mengucapkan: (doa di atas)",
-        repetition: 1,
-        category: "doa"
-      },
-      {
-        id: "makan_004",
-        title: "Doa Sesudah Makan",
         arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلاَ قُوَّةٍ",
         latin: "Alhamdu lillāhi'lladhī at'amanī hādhā wa razaqanīhi min ghairi hawlin minnī wa lā quwwah",
         translation: "Segala puji bagi Allah yang memberi makan kepadaku makanan ini dan memberikan rezeki ini tanpa daya dan kekuatan dariku",
@@ -756,7 +744,7 @@ const doaCollection = {
         category: "doa"
       },
       {
-        id: "makan_005",
+        id: "makan_004",
         title: "Doa Sebelum Minum",
         arabic: "بِسْمِ اللَّهِ",
         latin: "Bismillāh", 
@@ -768,7 +756,7 @@ const doaCollection = {
         category: "doa"
       },
       {
-        id: "makan_006",
+        id: "makan_005",
         title: "Doa Sesudah Minum",
         arabic: "الْحَمْدُ لِلَّهِ",
         latin: "Alhamdulillāh",

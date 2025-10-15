@@ -84,11 +84,14 @@ function updateLiveInfo(){
       infoCell.style.fontWeight = '700';
       infoCell.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.8)';
     } else {
-      // Syuruq always shows '--:--:--' (no countdown, no "Selesai")
-      if(key === 'sunrise'){
-        infoCell.textContent = '--:--:--';
-      } else if(t <= nowHours) {
-        infoCell.textContent = 'Selesai';
+      // Check if time has passed for all prayers 
+      if(t <= nowHours) {
+        // For syuruk (sunrise), show strip instead of "Selesai"
+        if(key === 'sunrise') {
+          infoCell.textContent = '--:--:--';
+        } else {
+          infoCell.textContent = 'Selesai';
+        }
       } else {
         infoCell.textContent = '--:--:--';
       }
@@ -510,7 +513,6 @@ function renderPrayers(){
       // Trigger floating widget update when prayer data is ready (only if not already handled)
       setTimeout(() => {
         if (floatingWidget && !isWidgetVisible) {
-          console.log('Prayer data updated, checking if widget should show');
           const tableRect = prayerTableSection?.getBoundingClientRect();
           if (tableRect) {
             const tableVisibleRatio = Math.max(0, Math.min(1, 
@@ -522,7 +524,6 @@ function renderPrayers(){
             
             // Only show if clearly should be shown and not already visible
             if (tableVisibleRatio <= showThreshold) {
-              console.log('Post-data update: showing widget');
               updateFloatingWidget();
               showFloatingWidget();
             }
@@ -543,6 +544,9 @@ function renderPrayers(){
           tr.style.boxShadow = '';
         }
       });
+      
+      // Call updateLiveInfo immediately to show correct status from the start
+      updateLiveInfo();
       
       if(!_liveInterval){
         _liveInterval = setInterval(()=>{ 
@@ -624,11 +628,14 @@ function updateLiveInfo(){
       infoCell.style.fontWeight = '700';
       infoCell.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.8)';
     } else {
-      // Syuruq always shows '--:--:--' (no countdown, no "Selesai")
-      if(key === 'sunrise'){
-        infoCell.textContent = '--:--:--';
-      } else if(t <= nowHours) {
-        infoCell.textContent = 'Selesai';
+      // Check if time has passed for all prayers 
+      if(t <= nowHours) {
+        // For syuruk (sunrise), show strip instead of "Selesai"
+        if(key === 'sunrise') {
+          infoCell.textContent = '--:--:--';
+        } else {
+          infoCell.textContent = 'Selesai';
+        }
       } else {
         infoCell.textContent = '--:--:--';
       }
@@ -745,7 +752,6 @@ function scheduleNotifications(prayerTimes, usedTomorrow) {
               }
             });
           } catch (error) {
-            console.log('Service Worker notification failed, using fallback:', error);
             // Fallback to regular notification
             createFallbackNotification(prayerName, prayerKey);
           }
@@ -763,7 +769,6 @@ function scheduleNotifications(prayerTimes, usedTomorrow) {
       window.notificationTimeouts.push(timeoutId);
       
       // Log for debugging
-      console.log(`Scheduled ${prayerDisplayNames[prayerKey]} notification in ${Math.round(msUntilNotification/1000/60)} minutes`);
     }
   });
 }
@@ -1107,7 +1112,6 @@ document.getElementById('btnNotification').addEventListener('click', async () =>
         'fa-check-circle'
       );
       
-      console.log('Notifikasi sholat dinonaktifkan');
     }
   } else {
     // Show explanation before enabling
@@ -1120,14 +1124,6 @@ document.getElementById('btnNotification').addEventListener('click', async () =>
     if (wantsToEnable) {
       // Enable notifications with Android-specific handling
       let permission = Notification.permission;
-      
-      // Log device info for debugging
-      console.log('Device info:', {
-        userAgent: navigator.userAgent,
-        isAndroid: /Android/i.test(navigator.userAgent),
-        hasServiceWorker: 'serviceWorker' in navigator,
-        currentPermission: permission
-      });
       
       if (permission === 'default') {
         // For Android Chrome, request permission more explicitly
@@ -1169,7 +1165,6 @@ document.getElementById('btnNotification').addEventListener('click', async () =>
             });
           }
         } catch (error) {
-          console.log('Confirmation notification failed:', error);
         }
         
         // Reschedule notifications with current prayer times
@@ -1183,7 +1178,6 @@ document.getElementById('btnNotification').addEventListener('click', async () =>
           'fa-check-circle'
         );
         
-        console.log('Notifikasi sholat diaktifkan');
       } else if (permission === 'denied') {
         const isAndroid = /Android/i.test(navigator.userAgent);
         const message = isAndroid 
@@ -1424,7 +1418,6 @@ setTimeout(() => {
     if(last){
       const obj = JSON.parse(last);
       if(obj && typeof obj.lat==='number' && typeof obj.lon==='number'){
-        console.log('Restoring cached location:', obj);
         setLocation(obj.lat, obj.lon, obj.display || 'Lokasi tersimpan', obj.timezone || null);
         scheduleMidnightRefresh();
         return;
@@ -1441,7 +1434,6 @@ setTimeout(() => {
       setLocation(pos.coords.latitude,pos.coords.longitude, rg.display || 'GPS');
     })();
   },()=>{
-    console.log('GPS failed, using Jakarta as default location');
     // Jakarta coordinates: -6.2088, 106.8456
     setLocation(-6.2088, 106.8456, 'Jakarta (Default - Ubah sesuai kota Anda)', 'Asia/Jakarta');
   });
@@ -1492,7 +1484,6 @@ btnInstallPWA.addEventListener('click', async () => {
   const { outcome } = await deferredPrompt.userChoice;
   
   if (outcome === 'accepted') {
-    console.log('PWA installed');
     await showCustomAlert(
       'Aplikasi Terinstall',
       'Aplikasi berhasil diinstall! Sekarang Anda dapat menggunakan aplikasi dari home screen dan mendapat notifikasi yang lebih andal.',
@@ -1513,7 +1504,6 @@ btnCloseBanner.addEventListener('click', () => {
 
 // Check if app is already installed
 window.addEventListener('appinstalled', () => {
-  console.log('PWA was installed');
   pwaInstallBanner.style.display = 'none';
 });
 
@@ -1562,37 +1552,18 @@ function initializeFloatingWidget() {
       
       let decision = null;
       
-      console.log('Intersection check:', {
-        intersectionRatio: intersectionRatio.toFixed(2),
-        hideThreshold,
-        showThreshold,
-        isMobile,
-        isDesktop
-      });
-      
       // Clear decision zones - widget should definitely hide when table is prominent
       if (intersectionRatio >= hideThreshold) {
         decision = 'hide';
-        console.log('Decision: HIDE - table is prominently visible');
       } else if (intersectionRatio <= showThreshold) {
         decision = 'show';
-        console.log('Decision: SHOW - table is minimally visible');
       } else {
         // Hysteresis zone - keep current state but favor hiding for full table visibility
         decision = lastDecision || (intersectionRatio > 0.4 ? 'hide' : 'show');
-        console.log('Decision: HYSTERESIS -', decision, 'based on ratio', intersectionRatio.toFixed(2));
       }
       
       // Only act if decision changed or we have prayer data
       if (decision !== lastDecision && _perPrayerNorm && Object.keys(_perPrayerNorm).length > 0) {
-        console.log('Widget decision changed:', {
-          intersectionRatio: intersectionRatio.toFixed(2),
-          decision,
-          lastDecision,
-          isDesktop,
-          hideThreshold,
-          showThreshold
-        });
         
         lastDecision = decision;
         
@@ -1630,16 +1601,8 @@ function initializeFloatingWidget() {
     
     // Force correct state if widget is in wrong state
     if (tableVisibleRatio >= hideThreshold && isWidgetVisible) {
-      console.log('Periodic check: Force hiding widget', {
-        tableVisibleRatio: tableVisibleRatio.toFixed(2),
-        hideThreshold
-      });
       hideFloatingWidget();
     } else if (tableVisibleRatio <= showThreshold && !isWidgetVisible) {
-      console.log('Periodic check: Force showing widget', {
-        tableVisibleRatio: tableVisibleRatio.toFixed(2),
-        showThreshold
-      });
       updateFloatingWidget();
       showFloatingWidget();
     }
@@ -1671,7 +1634,6 @@ function initializeFloatingWidget() {
   // Stable initial check - single evaluation to prevent flickering
   setTimeout(() => {
     if (!_perPrayerNorm || Object.keys(_perPrayerNorm).length === 0) {
-      console.log('Initial check skipped - no prayer data yet');
       return;
     }
     
@@ -1684,28 +1646,15 @@ function initializeFloatingWidget() {
     const hideThreshold = isMobile ? 0.5 : 0.6;
     const showThreshold = isMobile ? 0.2 : 0.3;
     
-    console.log('Stable initial widget check:', {
-      tableVisibleRatio: tableVisibleRatio.toFixed(2),
-      hideThreshold,
-      showThreshold,
-      shouldShow: tableVisibleRatio <= showThreshold,
-      shouldHide: tableVisibleRatio >= hideThreshold,
-      isMobile,
-      windowWidth: window.innerWidth
-    });
-    
     // Clear initial decision logic
     if (tableVisibleRatio >= hideThreshold) {
       lastDecision = 'hide';
-      console.log('Initial: Table is prominently visible - hiding widget');
     } else if (tableVisibleRatio <= showThreshold) {
       lastDecision = 'show';
-      console.log('Initial: Table is minimally visible - showing widget');
       updateFloatingWidget();
       showFloatingWidget();
     } else {
       lastDecision = tableVisibleRatio > 0.4 ? 'hide' : 'show';
-      console.log('Initial: Intermediate visibility - decision:', lastDecision);
       if (lastDecision === 'show') {
         updateFloatingWidget();
         showFloatingWidget();
@@ -1740,14 +1689,6 @@ function initializeFloatingWidget() {
       
       const hideThreshold = isMobile ? 0.5 : 0.6;
       const showThreshold = isMobile ? 0.2 : 0.3;
-      
-      console.log('Resize: Re-evaluating widget', {
-        tableVisibleRatio: tableVisibleRatio.toFixed(2),
-        hideThreshold,
-        showThreshold,
-        shouldShow: tableVisibleRatio <= showThreshold,
-        shouldHide: tableVisibleRatio >= hideThreshold
-      });
       
       // Clear decision logic for resize
       let newDecision;
@@ -1796,22 +1737,13 @@ function initializeFloatingWidget() {
       const isMobile = window.innerWidth <= 768;
       const criticalHideThreshold = isMobile ? 0.5 : 0.6; // Same as intersection observer
       
-      console.log('Scroll check:', {
-        tableVisibleRatio: tableVisibleRatio.toFixed(2),
-        criticalHideThreshold,
-        isWidgetVisible,
-        shouldHide: tableVisibleRatio >= criticalHideThreshold
-      });
-      
       // Force hide if table is prominently visible and widget is showing
       if (tableVisibleRatio >= criticalHideThreshold && isWidgetVisible) {
-        console.log('Scroll override: FORCE hiding widget - table is prominently visible');
         hideFloatingWidget();
       }
       // Also check for showing when table is barely visible
       else if (tableVisibleRatio <= (isMobile ? 0.2 : 0.3) && !isWidgetVisible && 
                _perPrayerNorm && Object.keys(_perPrayerNorm).length > 0) {
-        console.log('Scroll override: showing widget - table barely visible');
         updateFloatingWidget();
         showFloatingWidget();
       }
@@ -1821,11 +1753,6 @@ function initializeFloatingWidget() {
 
 function updateFloatingWidget() {
   if (!floatingWidget || !widgetPrayerName || !widgetCountdown) {
-    console.log('Floating widget elements not found:', {
-      floatingWidget: !!floatingWidget,
-      widgetPrayerName: !!widgetPrayerName,
-      widgetCountdown: !!widgetCountdown
-    });
     return;
   }
   
@@ -1840,10 +1767,6 @@ function updateFloatingWidget() {
     const hideThreshold = isMobile ? 0.5 : 0.6;
     
     if (tableVisibleRatio >= hideThreshold) {
-      console.log('updateFloatingWidget: Aborting update - table is prominently visible', {
-        tableVisibleRatio: tableVisibleRatio.toFixed(2),
-        hideThreshold
-      });
       // Instead of updating, hide the widget
       setTimeout(() => hideFloatingWidget(), 50);
       return;
@@ -1901,7 +1824,6 @@ function updateFloatingWidget() {
     // Show loading state when no prayer data available
     widgetPrayerName.textContent = 'Memuat jadwal...';
     widgetCountdown.textContent = '--:--:--';
-    console.log('No prayer data available for floating widget');
   }
 }
 
@@ -1915,12 +1837,10 @@ function showFloatingWidget() {
   
   // Prevent rapid show/hide cycles
   if (now - lastHideTime < SHOW_COOLDOWN) {
-    console.log('showFloatingWidget: Skipped due to cooldown');
     return;
   }
   
   if (!isWidgetVisible && floatingWidget) {
-    console.log('showFloatingWidget: Showing widget');
     isWidgetVisible = true;
     lastShowTime = now;
     
@@ -1940,12 +1860,10 @@ function hideFloatingWidget() {
   
   // Prevent rapid show/hide cycles
   if (now - lastShowTime < SHOW_COOLDOWN) {
-    console.log('hideFloatingWidget: Skipped due to cooldown');
     return;
   }
   
   if (isWidgetVisible && floatingWidget) {
-    console.log('hideFloatingWidget: Hiding widget');
     isWidgetVisible = false;
     lastHideTime = now;
     
@@ -1964,36 +1882,15 @@ function hideFloatingWidget() {
 // Force show floating widget for debugging
 function forceShowFloatingWidget() {
   if (floatingWidget && _perPrayerNorm && Object.keys(_perPrayerNorm).length > 0) {
-    console.log('Force showing floating widget');
     updateFloatingWidget();
     showFloatingWidget();
     return true;
   }
-  console.log('Cannot force show widget:', {
-    hasWidget: !!floatingWidget,
-    hasPrayerData: !!(_perPrayerNorm && Object.keys(_perPrayerNorm).length > 0)
-  });
   return false;
 }
 
 // Debug function to check widget state
 function debugFloatingWidget() {
-  console.log('=== Floating Widget Debug ===');
-  console.log('Widget element exists:', !!floatingWidget);
-  console.log('Widget element ID:', floatingWidget?.id);
-  console.log('Widget classes:', floatingWidget ? Array.from(floatingWidget.classList) : 'N/A');
-  console.log('Widget display:', floatingWidget?.style.display);
-  console.log('Widget computed display:', floatingWidget ? window.getComputedStyle(floatingWidget).display : 'N/A');
-  console.log('Widget computed opacity:', floatingWidget ? window.getComputedStyle(floatingWidget).opacity : 'N/A');
-  console.log('Widget computed visibility:', floatingWidget ? window.getComputedStyle(floatingWidget).visibility : 'N/A');
-  console.log('Widget rect:', floatingWidget?.getBoundingClientRect());
-  console.log('Is widget visible state:', isWidgetVisible);
-  console.log('Prayer data exists:', !!(_perPrayerNorm && Object.keys(_perPrayerNorm).length > 0));
-  console.log('Prayer data:', _perPrayerNorm);
-  console.log('Window width:', window.innerWidth);
-  console.log('Is mobile:', window.innerWidth <= 768);
-  console.log('Is desktop:', window.innerWidth > 768);
-  console.log('=== End Debug ===');
   return {
     element: floatingWidget,
     isVisible: isWidgetVisible,

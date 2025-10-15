@@ -1,0 +1,143 @@
+{
+  "name": "Kalkulator Waris Syar'i",
+  "short_name": "KalkulatorWaris",
+  "description": "Kalkulator waris syar'i dengan dalil lengkap sesuai Al-Qur'an dan Sunnah berdasarkan pemahaman salaf",
+  "version": "1.0.0",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0f0f23",
+  "theme_color": "#1a1a2e",
+  "orientation": "portrait-primary",
+  "scope": "./",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["lifestyle", "education", "utilities"],
+  "icons": [
+    {
+      "src": "icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-96x96.png", 
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-128x128.png",
+      "sizes": "128x128", 
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Kalkulasi Cepat",
+      "short_name": "Kalkulasi",
+      "description": "Mulai perhitungan waris baru",
+      "url": "./?action=calculate",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Contoh Kasus",
+      "short_name": "Contoh",
+      "description": "Lihat contoh perhitungan waris",
+      "url": "./?action=examples",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Dalil & Referensi",
+      "short_name": "Dalil",
+      "description": "Pelajari dasar hukum waris Islam",
+      "url": "./?action=dalil",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "./share",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Halaman utama aplikasi"
+    },
+    {
+      "src": "screenshot2.png",
+      "sizes": "540x720",
+      "type": "image/png", 
+      "platform": "wide",
+      "label": "Form perhitungan waris"
+    }
+  ],
+  "protocol_handlers": [],
+  "launch_handler": {
+    "client_mode": "navigate-new"
+  }
+}

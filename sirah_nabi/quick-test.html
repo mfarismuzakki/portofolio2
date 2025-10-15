@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Data Test</title>
+</head>
+<body>
+    <h1>Quick Data Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        // Test semua file database
+        const scripts = [
+            './data/nabi-part1.js',
+            './data/nabi-part2.js',
+            './data/nabi-part3.js',
+            './data/nabi-part4.js',
+            './data/nabi-part5.js',
+            './data/nabi-disputed.js',
+            './data/sahabat-khulafa.js',
+            './data/sahabat-asharah.js',
+            './data/sahabat-muhajirin-anshar.js',
+            './data/sahabiyat.js'
+        ];
+        
+        let loadedCount = 0;
+        
+        function testWindowData() {
+            const results = document.getElementById('results');
+            const tests = [
+                { name: 'nabiPart1', data: window.nabiPart1 },
+                { name: 'nabiPart2', data: window.nabiPart2 },
+                { name: 'nabiPart3', data: window.nabiPart3 },
+                { name: 'nabiPart4', data: window.nabiPart4 },
+                { name: 'nabiPart5', data: window.nabiPart5 },
+                { name: 'nabiDisputed', data: window.nabiDisputed },
+                { name: 'sahabatKhulafa', data: window.sahabatKhulafa },
+                { name: 'sahabatAsharah', data: window.sahabatAsharah },
+                { name: 'sahabatMuhajirinAnshar', data: window.sahabatMuhajirinAnshar },
+                { name: 'sahabiyat', data: window.sahabiyat }
+            ];
+            
+            let html = '<h2>Window Data Test Results:</h2>';
+            
+            tests.forEach(test => {
+                const status = test.data && Array.isArray(test.data) && test.data.length > 0;
+                const count = test.data ? test.data.length : 0;
+                const color = status ? 'green' : 'red';
+                
+                html += `<div style="color: ${color}">
+                    ${test.name}: ${status ? '✅' : '❌'} (${count} items)
+                </div>`;
+                
+                if (status) {
+                    console.log(`✅ ${test.name}: ${count} items`, test.data[0]);
+                } else {
+                    console.error(`❌ ${test.name}: Failed to load`);
+                }
+            });
+            
+            results.innerHTML = html;
+        }
+        
+        // Load all scripts
+        scripts.forEach((script, index) => {
+            const scriptElement = document.createElement('script');
+            scriptElement.src = script;
+            scriptElement.onload = () => {
+                loadedCount++;
+                console.log(`Loaded ${script} (${loadedCount}/${scripts.length})`);
+                
+                if (loadedCount === scripts.length) {
+                    setTimeout(testWindowData, 100);
+                }
+            };
+            scriptElement.onerror = (error) => {
+                console.error(`Failed to load ${script}:`, error);
+                loadedCount++;
+                
+                if (loadedCount === scripts.length) {
+                    setTimeout(testWindowData, 100);
+                }
+            };
+            
+            document.head.appendChild(scriptElement);
+        });
+    </script>
+</body>
+</html>

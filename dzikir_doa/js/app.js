@@ -53,10 +53,14 @@ class DzikirDoaApp {
 
     // ===== Service Worker Registration =====
     async registerServiceWorker() {
+        // Check if running on supported protocol (not file://)
+        if (location.protocol === 'file:') {
+            return;
+        }
+        
         if ('serviceWorker' in navigator) {
             try {
                 const registration = await navigator.serviceWorker.register('./sw.js');
-                console.log('Service Worker registered:', registration);
                 
                 // Handle updates
                 registration.addEventListener('updatefound', () => {
@@ -71,11 +75,11 @@ class DzikirDoaApp {
                 
                 // Listen for messages from SW
                 navigator.serviceWorker.addEventListener('message', event => {
-                    console.log('Message from SW:', event.data);
+                    // Message handling
                 });
                 
             } catch (error) {
-                console.warn('Service Worker registration failed:', error);
+                console.error('Service Worker registration failed:', error);
             }
         }
     }
@@ -104,7 +108,7 @@ class DzikirDoaApp {
     // ===== Initialization Methods =====
     bindEvents() {
         // Navigation
-        document.querySelectorAll('.nav-link, .bottom-nav-item').forEach(link => {
+        document.querySelectorAll('.nav-link, .bottom-nav-item, .nav-item').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const section = link.dataset.section;
@@ -236,10 +240,9 @@ class DzikirDoaApp {
                     version: parsed.version
                 };
                 
-                console.log('Cache loaded successfully');
             }
         } catch (error) {
-            console.warn('Failed to load cache:', error);
+            console.error('Failed to load cache:', error);
             this.clearCache();
         }
     }
@@ -253,9 +256,8 @@ class DzikirDoaApp {
                 version: this.cache.version
             };
             localStorage.setItem('dzikirDoa_cache', JSON.stringify(cacheData));
-            console.log('Cache saved successfully');
         } catch (error) {
-            console.warn('Failed to save cache:', error);
+            console.error('Failed to save cache:', error);
         }
     }
 
@@ -264,7 +266,6 @@ class DzikirDoaApp {
         const now = Date.now();
         
         if (!this.cache.lastUpdate) {
-            console.log('Cache: No lastUpdate found');
             return false;
         }
         
@@ -272,11 +273,9 @@ class DzikirDoaApp {
         const isExpired = cacheAge >= maxAge;
         
         if (isExpired) {
-            console.log(`Cache expired: ${Math.round(cacheAge / 1000 / 60)} minutes old (max: 10 minutes)`);
             return false;
         }
         
-        console.log(`Cache valid: ${Math.round(cacheAge / 1000 / 60)} minutes old`);
         return true;
     }
 
@@ -303,7 +302,6 @@ class DzikirDoaApp {
             categoriesGrid.appendChild(card);
         });
 
-        console.log('📦 Categories loaded from cache');
         return true;
     }
 
@@ -326,7 +324,6 @@ class DzikirDoaApp {
                     // Silent fail for preloading
                 }
             });
-            console.log('🚀 Popular content preloaded');
         }, 2000); // Preload after initial load
     }
 
@@ -336,10 +333,12 @@ class DzikirDoaApp {
         document.querySelectorAll('.section').forEach(section => {
             section.classList.remove('active');
         });
-        document.getElementById(sectionId)?.classList.add('active');
+        
+        const targetSection = document.getElementById(sectionId);
+        targetSection?.classList.add('active');
 
         // Update active navigation
-        document.querySelectorAll('.nav-link, .bottom-nav-item').forEach(link => {
+        document.querySelectorAll('.nav-link, .bottom-nav-item, .nav-item').forEach(link => {
             link.classList.remove('active');
         });
         document.querySelectorAll(`[data-section="${sectionId}"]`).forEach(link => {
@@ -347,6 +346,12 @@ class DzikirDoaApp {
         });
 
         this.currentSection = sectionId;
+
+        // Scroll to top when navigating to any section
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
 
         // Load section-specific content
         switch (sectionId) {
@@ -382,7 +387,6 @@ class DzikirDoaApp {
 
         // Save cache after loading
         this.saveToCache();
-        console.log('💾 Categories cached for faster loading');
     }
 
     createCategoryCard(categoryId, category) {
@@ -670,6 +674,17 @@ class DzikirDoaApp {
         setTimeout(() => {
             doaModalOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
+            
+            // Scroll modal content to top when opening new doa
+            const doaContent = document.getElementById('doaContent');
+            if (doaContent) {
+                doaContent.scrollTop = 0;
+            }
+            
+            // Also scroll modal overlay to top if needed
+            if (doaModalOverlay) {
+                doaModalOverlay.scrollTop = 0;
+            }
         }, 100);
     }
 
@@ -781,6 +796,17 @@ class DzikirDoaApp {
 
 
 
+    // ===== Favorites Methods =====
+    removeFavorite(index) {
+        if (index >= 0 && index < this.favorites.length) {
+            const doa = this.favorites[index];
+            this.favorites.splice(index, 1);
+            localStorage.setItem('dzikirDoa_favorites', JSON.stringify(this.favorites));
+            this.loadFavoritesSection(); // Reload favorites section
+            this.showToast(`"${doa.title}" dihapus dari favorit`);
+        }
+    }
+
     // ===== Search Methods =====
     performSearch(query) {
         const results = window.doaUtils.searchDoa(query);
@@ -813,14 +839,24 @@ class DzikirDoaApp {
     // ===== Time-based Recommendations =====
     loadTimeRecommendations() {
         const currentHour = new Date().getHours();
+        
         const recommendations = window.doaUtils.getTimeBasedRecommendations(currentHour);
+        
         const recommendationCards = document.getElementById('recommendationCards');
+        const timeRecommendationsSection = document.getElementById('timeRecommendations');
+        
 
         if (!recommendationCards || recommendations.length === 0) {
-            document.getElementById('timeRecommendations').style.display = 'none';
+            if (timeRecommendationsSection) {
+                timeRecommendationsSection.style.display = 'none';
+            }
             return;
         }
 
+        if (timeRecommendationsSection) {
+            timeRecommendationsSection.style.display = 'block';
+        }
+        
         recommendationCards.innerHTML = recommendations.map(categoryId => {
             const category = window.doaUtils.getCategoryData(categoryId);
             return `
@@ -837,19 +873,28 @@ class DzikirDoaApp {
                 </div>
             `;
         }).join('');
+        
     }
 
     // ===== Favorites Methods =====
     toggleFavorite() {
         if (!this.currentDoa) {
-            console.error('No current doa selected');
+            console.error('No current doa to favorite');
             return;
         }
 
-        const existingIndex = this.favorites.findIndex(fav => fav.id === this.currentDoa.id);
         const doaFavorite = document.getElementById('doaFavorite');
+        if (!doaFavorite) {
+            console.error('Favorite button not found');
+            return;
+        }
 
-        if (existingIndex >= 0) {
+        
+        // Check if already in favorites
+        const existingIndex = this.favorites.findIndex(fav => fav.id === this.currentDoa.id);
+        
+        if (existingIndex !== -1) {
+            // Remove from favorites
             this.favorites.splice(existingIndex, 1);
             doaFavorite.innerHTML = '<i class="far fa-heart"></i>';
             doaFavorite.classList.remove('active');
@@ -884,37 +929,48 @@ class DzikirDoaApp {
     }
 
     loadFavoritesSection() {
+        
         const favoritesContent = document.getElementById('favoritesContent');
         const emptyFavorites = document.getElementById('emptyFavorites');
+        const favoritesList = document.getElementById('favoritesList');
 
-        if (!favoritesContent || !emptyFavorites) {
-            console.error('Favorites elements not found');
+
+        if (!favoritesContent) {
+            console.error('Favorites content element not found');
             return;
         }
 
         if (this.favorites.length === 0) {
-            favoritesContent.innerHTML = '';
-            emptyFavorites.style.display = 'block';
+            if (emptyFavorites) emptyFavorites.style.display = 'block';
+            if (favoritesList) favoritesList.style.display = 'none';
             return;
         }
 
-        emptyFavorites.style.display = 'none';
+        if (emptyFavorites) emptyFavorites.style.display = 'none';
         
-        favoritesContent.innerHTML = `
-            <div class="categories-grid">
-                ${this.favorites.map((doa, index) => `
-                    <div class="category-card" onclick="window.app.openDoaModal(window.app.favorites[${index}])">
-                        <div class="category-icon">❤️</div>
-                        <h3 class="category-title">${doa.title}</h3>
-                        <p class="category-description">${doa.translation}</p>
-                        <div class="category-time">
-                            <i class="fas fa-book"></i>
-                            ${doa.reference || 'Dzikir & Doa'}
-                        </div>
-                    </div>
-                `).join('')}
+        // Create favorites list if it doesn't exist
+        let favoritesListElement = favoritesList;
+        if (!favoritesListElement) {
+            favoritesListElement = document.createElement('div');
+            favoritesListElement.id = 'favoritesList';
+            favoritesListElement.className = 'favorites-list';
+            favoritesContent.appendChild(favoritesListElement);
+        }
+
+        favoritesListElement.style.display = 'block';
+        favoritesListElement.innerHTML = this.favorites.map((doa, index) => `
+            <div class="favorite-item" onclick="window.app.openDoaModal(window.app.favorites[${index}])">
+                <div class="favorite-header">
+                    <div class="favorite-title">${doa.title}</div>
+                    <button class="remove-favorite" onclick="event.stopPropagation(); window.app.removeFavorite(${index})" title="Hapus dari favorit">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="favorite-preview">${doa.arabic}</div>
+                <div class="favorite-category">${doa.reference || 'Dzikir & Doa'}</div>
             </div>
-        `;
+        `).join('');
+        
     }
 
 
@@ -966,7 +1022,6 @@ class DzikirDoaApp {
                 text: doaText,
                 url: window.location.href
             }).catch(err => {
-                console.log('Error sharing:', err);
                 // Fallback to copy if share fails
                 this.copyDoaToClipboard(doaText);
             });
@@ -1104,7 +1159,6 @@ class DzikirDoaApp {
                 this.showLocationNotice();
             }
         } catch (e) {
-            console.log('Error checking location integration:', e);
             this.showLocationNotice();
         }
     }
@@ -1239,7 +1293,6 @@ class DzikirDoaApp {
     saveFavorites() {
         try {
             localStorage.setItem('dzikirDoa_favorites', JSON.stringify(this.favorites));
-            console.log('Favorites saved:', this.favorites.length, 'items');
         } catch (e) {
             console.error('Error saving favorites:', e);
         }
@@ -1346,7 +1399,6 @@ class DzikirDoaApp {
                 return;
             }
 
-            console.log('Prefetching category:', categoryId);
             
             // Generate and cache the modal content
             const categoryData = window.doaUtils.getCategoryData(categoryId);
@@ -1386,11 +1438,7 @@ class DzikirDoaApp {
             window.addEventListener('load', () => {
                 setTimeout(() => {
                     const perfData = performance.getEntriesByType('navigation')[0];
-                    console.log('Performance metrics:', {
-                        loadTime: perfData.loadEventEnd - perfData.loadEventStart,
-                        domReady: perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart,
-                        ttfb: perfData.responseStart - perfData.requestStart
-                    });
+                    // Performance data ready
                 }, 100);
             });
         }
@@ -1438,10 +1486,21 @@ if (typeof window.doaUtils === 'undefined') {
             const recommendations = [];
             
             if (hour >= 5 && hour < 11) {
+                // Pagi hari (05:00 - 10:59)
                 recommendations.push('dzikir_pagi');
+            } else if (hour >= 11 && hour < 15) {
+                // Siang hari (11:00 - 14:59) - Doa sebelum makan, doa saat hujan
+                recommendations.push('doa_makan');
+                if (Math.random() > 0.5) recommendations.push('doa_hujan');
             } else if (hour >= 15 && hour < 18) {
+                // Sore hari (15:00 - 17:59)
                 recommendations.push('dzikir_petang');
+            } else if (hour >= 18 && hour < 20) {
+                // Maghrib-Isya (18:00 - 19:59)
+                recommendations.push('doa_makan');
+                recommendations.push('doa_sore');
             } else if (hour >= 20 || hour < 5) {
+                // Malam hari (20:00 - 04:59)
                 recommendations.push('doa_tidur');
             }
             

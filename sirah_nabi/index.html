@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sirah Nabi & Rasul, Sahabat - Aplikasi Islam Digital</title>
+    <meta name="description" content="Sirah nabi dan rasul serta sahabat utama berdasarkan riwayat shahih Al-Qur'an, hadits, dan atsar dengan dalil lengkap">
+    <meta name="keywords" content="sirah, nabi, sahabat, islam, hadits shahih, tarikh, sejarah islam">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    
+    <!-- Apple -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="../__favicon.png">
+    
+    <style>
+        /* Critical CSS untuk loading yang cepat */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        .loading-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        .loading-animation {
+            width: 50px; height: 50px;
+            border: 3px solid rgba(0, 255, 255, 0.1);
+            border-top: 3px solid #00ffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-animation"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="section hero-section">
+                <div class="section-content">
+                    <h1 class="section-title">
+                        <i class="fas fa-users section-icon"></i>
+                        Sirah Nabi & Rasul, Sahabat
+                    </h1>
+                    <p class="section-description">
+                        Kisah inspiratif nabi dan rasul serta para sahabat mulia berdasarkan riwayat shahih Al-Qur'an, hadits, dan atsar sesuai pemahaman salaf
+                    </p>
+
+                    <!-- Search & Filter -->
+                    <div class="search-container">
+                        <div class="search-box">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="searchInput" placeholder="Cari nama nabi atau sahabat..." autocomplete="off">
+                            <button class="search-clear" id="searchClear" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all">
+                            <i class="fas fa-list"></i>
+                            <span>Semua</span>
+                        </button>
+                        <button class="filter-tab" data-filter="nabi">
+                            <span>Nabi & Rasul</span>
+                        </button>
+                        <button class="filter-tab" data-filter="sahabat">
+                            <span>Sahabat Utama</span>
+                        </button>
+                        <button class="filter-tab" data-filter="sahabat-wanita">
+                            <span>Sahabat Wanita</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Content Section -->
+            <section class="section content-section" id="contentSection">
+                <div class="section-content">
+                    <!-- Results Info -->
+                    <div class="results-info" id="resultsInfo">
+                        <span id="resultsCount">0</span> tokoh ditemukan
+                    </div>
+
+                    <!-- Sirah Grid -->
+                    <div class="sirah-grid" id="sirahGrid">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="emptyState" style="display: none;">
+                        <div class="empty-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>Tidak Ada Hasil</h3>
+                        <p>Coba kata kunci lain atau ubah filter pencarian</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Favorites Section -->
+            <section class="section favorites-section" id="favoritesSection" style="display: none;">
+                <div class="section-content">
+                    <h2 class="section-title">
+                        <i class="fas fa-heart section-icon"></i>
+                        Tokoh Favorit
+                    </h2>
+                    
+                    <div class="favorites-grid" id="favoritesGrid">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>
+
+                    <!-- Empty Favorites -->
+                    <div class="empty-state" id="emptyFavorites">
+                        <div class="empty-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>Belum Ada Favorit</h3>
+                        <p>Tambahkan tokoh favorit dengan menekan ikon hati pada detail tokoh</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-section="home">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </button>
+            <button class="nav-item" data-section="favorites">
+                <i class="fas fa-heart"></i>
+                <span>Favorit</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-container modal-large">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <h3 id="modalTitle"></h3>
+                    <p id="modalSubtitle"></p>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-action-btn" id="favoriteBtn" title="Tambah ke favorit">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <button class="modal-action-btn" id="shareBtn" title="Bagikan">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                    <button class="btn-close" onclick="app.closeModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Detail Tabs -->
+            <div class="detail-tabs">
+                <button class="detail-tab active" data-tab="biodata">
+                    <i class="fas fa-user"></i>
+                    <span>Biodata</span>
+                </button>
+                <button class="detail-tab" data-tab="biography">
+                    <i class="fas fa-book"></i>
+                    <span>Kisah Hidup</span>
+                </button>
+                <button class="detail-tab" data-tab="events">
+                    <i class="fas fa-timeline"></i>
+                    <span>Peristiwa Penting</span>
+                </button>
+                <button class="detail-tab" data-tab="lessons">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Pelajaran</span>
+                </button>
+                <button class="detail-tab" data-tab="hadits">
+                    <i class="fas fa-quote-right"></i>
+                    <span>Hadits/Atsar</span>
+                </button>
+            </div>
+
+            <div class="modal-content" id="modalContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="toast-icon"></i>
+            <span class="toast-message"></span>
+        </div>
+    </div>
+
+    <footer>
+        <div class="small"><i class="fas fa-database"></i> Sumber: Kisah sirah nabi, rasul, dan sahabat dari Al-Qur'an dan hadist shahih.</div>
+        <div class="copyright">
+            <div class="small"><i class="fas fa-copyright"></i> 2025 Muhammad Faris Muzakki & Istri Tercinta (Lulusan Terbaik Imam Muhammad bin Saud University Jurusan Syariah Tahun 2022)</div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Cache Manager -->
+    <script src="cache-manager.js"></script>
+    
+    <!-- Database Files will be loaded progressively by cache manager -->
+    <!-- Removed static script loading to prevent duplicate declarations -->
+    
+    <!-- Main App -->
+    <script src="app.js"></script>
+</body>
+</html>

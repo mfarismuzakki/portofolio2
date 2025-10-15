@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Waris - Aplikasi Islam Digital</title>
+    <meta name="description" content="Kalkulator waris syar'i dengan dalil lengkap sesuai Al-Qur'an dan Sunnah. Perhitungan faraidh berdasarkan pemahaman salaf">
+    <meta name="keywords" content="kalkulator waris, faraidh, islam, syariah, ashabul furudh, asabah, dalil">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    
+    <!-- Apple -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    
+    <style>
+        /* Critical CSS untuk loading yang cepat */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        .loading-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        .loading-animation {
+            width: 50px; height: 50px;
+            border: 3px solid rgba(0, 255, 255, 0.1);
+            border-top: 3px solid #00ffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-animation"></div>
+    </div>
+
+    <!-- Update Notification -->
+    <div class="update-notification" id="updateNotification" style="display: none;">
+        <div class="notification-content">
+            <i class="fas fa-download"></i>
+            <span>Pembaruan aplikasi tersedia</span>
+            <button class="btn-update" onclick="updateApp()">Perbarui</button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="section hero-section">
+                <div class="section-content">
+                    <h1 class="section-title">
+                        <i class="fas fa-balance-scale section-icon"></i>
+                        Kalkulator Waris Syar'i
+                    </h1>
+                    <p class="section-description">
+                        Perhitungan waris berdasarkan Al-Qur'an dan Sunnah dengan dalil lengkap sesuai pemahaman salaf
+                    </p>
+                    
+                    <!-- Quick Actions -->
+                    <div class="category-grid">
+                        <div class="category-card" data-action="calculate">
+                            <div class="category-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="category-info">
+                                <h3>Kalkulasi Baru</h3>
+                                <p>Mulai perhitungan waris baru</p>
+                            </div>
+                        </div>
+                        
+                        <div class="category-card" data-action="examples">
+                            <div class="category-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div class="category-info">
+                                <h3>Contoh Kasus</h3>
+                                <p>Lihat contoh perhitungan</p>
+                            </div>
+                        </div>
+                        
+                        <div class="category-card" data-action="dalil">
+                            <div class="category-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="category-info">
+                                <h3>Dalil & Referensi</h3>
+                                <p>Pelajari dasar hukum waris</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Calculator Section -->
+            <section class="section calculator-section" id="calculatorSection" style="display: none;">
+                <div class="section-content">
+                    <h2 class="section-title">
+                        <i class="fas fa-calculator section-icon"></i>
+                        Formulir Perhitungan Waris
+                    </h2>
+                    
+                    <!-- Form Wizard -->
+                    <div class="form-wizard">
+                        <!-- Progress Bar -->
+                        <div class="wizard-progress">
+                            <div class="progress-step active" data-step="1">
+                                <div class="step-number">1</div>
+                                <div class="step-label">Data Tirkah</div>
+                            </div>
+                            <div class="progress-step" data-step="2">
+                                <div class="step-number">2</div>
+                                <div class="step-label">Ahli Waris</div>
+                            </div>
+                            <div class="progress-step" data-step="4">
+                                <div class="step-number">3</div>
+                                <div class="step-label">Hasil</div>
+                            </div>
+                        </div>
+
+                        <!-- Step 1: Data Tirkah -->
+                        <div class="wizard-step active" id="step1">
+                            <div class="form-card">
+                                <h3 class="form-title">
+                                    <i class="fas fa-coins"></i>
+                                    Data Tirkah (Harta Warisan)
+                                </h3>
+                                
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="totalAssets">Total Harta (Rupiah)</label>
+                                        <input type="number" id="totalAssets" placeholder="Masukkan total harta" min="0" step="1000">
+                                        <div class="form-help">Seluruh aset yang ditinggalkan pewaris</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="funeralCosts">Biaya Pemakaman</label>
+                                        <input type="number" id="funeralCosts" placeholder="Biaya tajhiz jenazah" min="0" step="1000">
+                                        <div class="form-help">Biaya yang wajar untuk pemakaman</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="debts">Pelunasan Utang</label>
+                                        <input type="number" id="debts" placeholder="Total utang yang harus dibayar" min="0" step="1000">
+                                        <div class="form-help">Utang yang harus dilunasi dari tirkah</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="wasiat">Wasiat (Maksimal 1/3)</label>
+                                        <input type="number" id="wasiat" placeholder="Nilai wasiat" min="0" step="1000">
+                                        <div class="form-help">Wasiat untuk non-ahli waris (maks 1/3 harta bersih)</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="tirkah-summary">
+                                    <h4>Ringkasan Tirkah</h4>
+                                    <div class="summary-grid">
+                                        <div class="summary-item">
+                                            <span>Total Harta:</span>
+                                            <span id="summaryAssets">Rp 0</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span>Dikurangi Biaya & Utang:</span>
+                                            <span id="summaryDeductions">Rp 0</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span>Dikurangi Wasiat:</span>
+                                            <span id="summaryWasiat">Rp 0</span>
+                                        </div>
+                                        <div class="summary-item total">
+                                            <span>Harta untuk Waris:</span>
+                                            <span id="summaryNet">Rp 0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Ahli Waris -->
+                        <div class="wizard-step" id="step2">
+                            <div class="form-card">
+                                <h3 class="form-title">
+                                    <i class="fas fa-users"></i>
+                                    Daftar Ahli Waris
+                                </h3>
+                                
+                                <div class="heirs-grid">
+                                    <!-- Suami/Istri -->
+                                    <div class="heir-category">
+                                        <h4 class="category-title">Suami/Istri</h4>
+                                        <div class="heir-options">
+                                            <label class="heir-checkbox">
+                                                <input type="radio" name="spouse" value="husband">
+                                                <span class="checkbox-custom"></span>
+                                                Suami
+                                            </label>
+                                            <label class="heir-checkbox">
+                                                <input type="radio" name="spouse" value="wife">
+                                                <span class="checkbox-custom"></span>
+                                                Istri
+                                            </label>
+                                            <div class="heir-count" id="wifeCount" style="display: none;">
+                                                <label>Jumlah Istri:</label>
+                                                <select id="wifeNumber">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Orang Tua -->
+                                    <div class="heir-category">
+                                        <h4 class="category-title">Orang Tua</h4>
+                                        <div class="heir-options">
+                                            <label class="heir-checkbox">
+                                                <input type="checkbox" name="father" value="father">
+                                                <span class="checkbox-custom"></span>
+                                                Ayah
+                                            </label>
+                                            <label class="heir-checkbox">
+                                                <input type="checkbox" name="mother" value="mother">
+                                                <span class="checkbox-custom"></span>
+                                                Ibu
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Kakek/Nenek -->
+                                    <div class="heir-category">
+                                        <h4 class="category-title">Kakek/Nenek</h4>
+                                        <div class="heir-options">
+                                            <label class="heir-checkbox">
+                                                <input type="checkbox" name="grandfather" value="grandfather">
+                                                <span class="checkbox-custom"></span>
+                                                Kakek (Ayah dari Ayah)
+                                            </label>
+                                            <label class="heir-checkbox">
+                                                <input type="checkbox" name="grandmother" value="grandmother">
+                                                <span class="checkbox-custom"></span>
+                                                Nenek
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Anak -->
+                                    <div class="heir-category">
+                                        <h4 class="category-title">Anak</h4>
+                                        <div class="heir-options">
+                                            <label class="heir-checkbox">
+                                                <input type="checkbox" name="sons" value="sons">
+                                                <span class="checkbox-custom"></span>
+                                                Anak Laki-laki
+                                            </label>
+                                            <div class="heir-count" id="sonsCount" style="display: none;">
+                                                <label>Jumlah:</label>
+                                                <input type="number" id="sonsNumber" min="1" value="1">
+                                            </div>
+                                            
+                                            <label class="heir-checkbox">
+                                                <input type="checkbox" name="daughters" value="daughters">
+                                                <span class="checkbox-custom"></span>
+                                                Anak Perempuan
+                                            </label>
+                                            <div class="heir-count" id="daughtersCount" style="display: none;">
+                                                <label>Jumlah:</label>
+                                                <input type="number" id="daughtersNumber" min="1" value="1">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Saudara -->
+                                    <div class="heir-category">
+                                        <h4 class="category-title">Saudara</h4>
+                                        <div class="heir-options">
+                                            <label class="heir-checkbox">
+                                                <input type="checkbox" name="fullBrothersSisters" value="fullBrothersSisters">
+                                                <span class="checkbox-custom"></span>
+                                                Saudara Kandung
+                                            </label>
+                                            <div class="heir-details" id="fullSiblingsDetails" style="display: none;">
+                                                <div class="heir-count">
+                                                    <label>Laki-laki:</label>
+                                                    <input type="number" id="fullBrothersNumber" min="0" value="0">
+                                                </div>
+                                                <div class="heir-count">
+                                                    <label>Perempuan:</label>
+                                                    <input type="number" id="fullSistersNumber" min="0" value="0">
+                                                </div>
+                                            </div>
+                                            
+                                            <label class="heir-checkbox">
+                                                <input type="checkbox" name="halfBrothersSisters" value="halfBrothersSisters">
+                                                <span class="checkbox-custom"></span>
+                                                Saudara Seayah
+                                            </label>
+                                            <div class="heir-details" id="halfSiblingsDetails" style="display: none;">
+                                                <div class="heir-count">
+                                                    <label>Laki-laki:</label>
+                                                    <input type="number" id="halfBrothersNumber" min="0" value="0">
+                                                </div>
+                                                <div class="heir-count">
+                                                    <label>Perempuan:</label>
+                                                    <input type="number" id="halfSistersNumber" min="0" value="0">
+                                                </div>
+                                            </div>
+                                            
+                                            <label class="heir-checkbox">
+                                                <input type="checkbox" name="maternalSiblings" value="maternalSiblings">
+                                                <span class="checkbox-custom"></span>
+                                                Saudara Seibu
+                                            </label>
+                                            <div class="heir-count" id="maternalSiblingsCount" style="display: none;">
+                                                <label>Jumlah:</label>
+                                                <input type="number" id="maternalSiblingsNumber" min="1" value="1">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Dalil Section in Calculator -->
+                                <div class="form-card dalil-card-calculator" style="margin-top: 2rem;">
+                                    <div class="dalil-section">
+                                        <div class="dalil-accordion">
+                                            <div class="dalil-header" onclick="app.toggleDalilCalculator()">
+                                                <h4>
+                                                    <i class="fas fa-book-open"></i>
+                                                    Dalil & Penjelasan Syar'i
+                                                </h4>
+                                                <i class="fas fa-chevron-down dalil-toggle" id="dalilToggleCalculator"></i>
+                                            </div>
+                                            <div class="dalil-content" id="dalilCalculatorContent" style="display: block;">
+                                                <!-- Dalil content will be populated by JavaScript -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Hasil -->
+                        <div class="wizard-step" id="step4">
+                            <div class="results-container" id="resultsContainer">
+                                <!-- Results akan diisi oleh JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Navigation Buttons -->
+                        <div class="wizard-navigation">
+                            <button class="btn-secondary" id="prevBtn" style="display: none;">
+                                <i class="fas fa-arrow-left"></i>
+                                Sebelumnya
+                            </button>
+                            <button class="btn-primary" id="nextBtn">
+                                Selanjutnya
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button class="btn-primary" id="calculateBtn" style="display: none;">
+                                <i class="fas fa-calculator"></i>
+                                Hitung Waris
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Examples Section -->
+            <section class="section examples-section" id="examplesSection" style="display: none;">
+                <div class="section-content">
+                    <h2 class="section-title">
+                        <i class="fas fa-book-open section-icon"></i>
+                        Contoh Kasus Perhitungan
+                    </h2>
+                    
+                    <div class="examples-grid">
+                        <div class="example-card" data-example="umariyah">
+                            <div class="example-title">Kasus Umariyatain</div>
+                            <div class="example-description">
+                                Pewaris meninggal dengan ahli waris: suami, ayah, dan ibu
+                            </div>
+                            <div class="example-details">
+                                <span class="example-tag">Suami</span>
+                                <span class="example-tag">Ayah</span>
+                                <span class="example-tag">Ibu</span>
+                            </div>
+                        </div>
+                        
+                        <div class="example-card" data-example="awl">
+                            <div class="example-title">Kasus 'Awl</div>
+                            <div class="example-description">
+                                Kasus di mana total furudh melebihi 100% sehingga perlu pengurangan proporsional
+                            </div>
+                            <div class="example-details">
+                                <span class="example-tag">Suami</span>
+                                <span class="example-tag">2 Anak Perempuan</span>
+                                <span class="example-tag">Ibu</span>
+                            </div>
+                        </div>
+                        
+                        <div class="example-card" data-example="radd">
+                            <div class="example-title">Kasus Radd</div>
+                            <div class="example-description">
+                                Kasus di mana terdapat sisa yang dikembalikan ke ahli waris
+                            </div>
+                            <div class="example-details">
+                                <span class="example-tag">Istri</span>
+                                <span class="example-tag">Anak Perempuan</span>
+                            </div>
+                        </div>
+                        
+                        <div class="example-card" data-example="asabah">
+                            <div class="example-title">Kasus Asabah</div>
+                            <div class="example-description">
+                                Anak laki-laki dan perempuan sebagai asabah dengan rasio 2:1
+                            </div>
+                            <div class="example-details">
+                                <span class="example-tag">2 Anak Laki-laki</span>
+                                <span class="example-tag">1 Anak Perempuan</span>
+                                <span class="example-tag">Istri</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section class="section history-section" id="historySection" style="display: none;">
+                <div class="section-content">
+                    <h2 class="section-title">
+                        <i class="fas fa-history section-icon"></i>
+                        Riwayat Perhitungan
+                    </h2>
+                    
+                    <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                        <button class="btn-secondary" onclick="app.clearAllHistory()" style="background: rgba(255,0,0,0.1); color: #ff4444;">
+                            <i class="fas fa-trash-alt"></i>
+                            Hapus Semua
+                        </button>
+                    </div>
+                    
+                    <div class="history-list" id="historyList">
+                        <div class="result-card" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-history" style="font-size: 3rem; opacity: 0.3; margin-bottom: 20px;"></i>
+                            <h3 style="margin-bottom: 10px; opacity: 0.7;">Belum Ada Riwayat</h3>
+                            <p style="opacity: 0.5;">Mulai perhitungan waris untuk melihat riwayat di sini</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="section settings-section" id="settingsSection" style="display: none;">
+                <div class="section-content">
+                    <h2 class="section-title">
+                        <i class="fas fa-cog section-icon"></i>
+                        Pengaturan Aplikasi
+                    </h2>
+                    
+                    <div class="form-wizard">
+                        <div class="form-card">
+                            <h3 class="form-title">
+                                <i class="fas fa-mosque"></i>
+                                Pengaturan Madzhab
+                            </h3>
+                            
+                            <div class="settings-grid">
+                                <div class="setting-group">
+                                    <h4>Metode Radd Default</h4>
+                                    <div class="radio-group">
+                                        <label class="radio-option">
+                                            <input type="radio" name="defaultRaddMethod" value="jumhur" checked>
+                                            <span class="radio-custom"></span>
+                                            <div class="radio-content">
+                                                <strong>Jumhur Ulama</strong>
+                                                <p>Tidak meradd ke suami/istri</p>
+                                            </div>
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="defaultRaddMethod" value="hanafi">
+                                            <span class="radio-custom"></span>
+                                            <div class="radio-content">
+                                                <strong>Madzhab Hanafi</strong>
+                                                <p>Meradd termasuk ke suami/istri</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="setting-group">
+                                    <h4>Metode Kakek vs Saudara Default</h4>
+                                    <div class="radio-group">
+                                        <label class="radio-option">
+                                            <input type="radio" name="defaultGrandfatherMethod" value="zaid" checked>
+                                            <span class="radio-custom"></span>
+                                            <div class="radio-content">
+                                                <strong>Zaid bin Tsabit</strong>
+                                                <p>Kakek mendapat yang terbaik</p>
+                                            </div>
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="defaultGrandfatherMethod" value="masud">
+                                            <span class="radio-custom"></span>
+                                            <div class="radio-content">
+                                                <strong>Ibn Mas'ud</strong>
+                                                <p>Kakek seperti ayah</p>
+                                            </div>
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="defaultGrandfatherMethod" value="abbas">
+                                            <span class="radio-custom"></span>
+                                            <div class="radio-content">
+                                                <strong>Ibn Abbas</strong>
+                                                <p>Saudara lebih diutamakan</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-card">
+                            <h3 class="form-title">
+                                <i class="fas fa-display"></i>
+                                Pengaturan Tampilan
+                            </h3>
+                            
+                            <div class="checkbox-group">
+                                <label class="checkbox-option">
+                                    <input type="checkbox" name="defaultShowDalil" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <div class="checkbox-content">
+                                        <strong>Tampilkan Dalil</strong>
+                                        <p>Sertakan dalil Al-Qur'an dan hadits secara default</p>
+                                    </div>
+                                </label>
+                                <label class="checkbox-option">
+                                    <input type="checkbox" name="defaultShowComparison">
+                                    <span class="checkbox-custom"></span>
+                                    <div class="checkbox-content">
+                                        <strong>Bandingkan Pendapat</strong>
+                                        <p>Tampilkan perbandingan pendapat ulama secara default</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="wizard-navigation">
+                            <button class="btn-primary" onclick="saveSettings()">
+                                <i class="fas fa-save"></i>
+                                Simpan Pengaturan
+                            </button>
+                            <button class="btn-secondary" onclick="resetSettings()">
+                                <i class="fas fa-undo"></i>
+                                Reset Default
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-section="home">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </button>
+            <button class="nav-item" data-section="calculator">
+                <i class="fas fa-calculator"></i>
+                <span>Kalkulator</span>
+            </button>
+            <button class="nav-item" data-section="history">
+                <i class="fas fa-history"></i>
+                <span>Riwayat</span>
+            </button>
+        </nav>
+        
+        <!-- Footer -->
+        <footer>
+            <div class="small"><i class="fas fa-database"></i> Sumber: Perhitungan faraidh berdasarkan Al-Qur'an dan Sunnah sesuai pemahaman salaf.</div>
+            <div class="copyright">
+                <div class="small"><i class="fas fa-copyright"></i> 2025 Muhammad Faris Muzakki & Istri Tercinta (Lulusan Terbaik Imam Muhammad bin Saud University Jurusan Syariah Tahun 2022)</div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <!-- Info Modal -->
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Tentang Kalkulator Waris</h3>
+                <button class="btn-close" onclick="closeModal('infoModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <div class="info-content">
+                    <div class="info-section">
+                        <h4>Dasar Hukum</h4>
+                        <p>Aplikasi ini menggunakan dalil dari Al-Qur'an dan Sunnah sesuai pemahaman salaf:</p>
+                        <ul>
+                            <li>QS. An-Nisa 4:11-12 (Ayat Faraidh)</li>
+                            <li>QS. An-Nisa 4:176 (Ayat Kalalah)</li>
+                            <li>Hadits Bukhari-Muslim tentang faraidh</li>
+                            <li>Ijma' sahabat dalam kasus khusus</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-section">
+                        <h4>Disclaimer</h4>
+                        <div class="disclaimer">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Aplikasi ini membantu simulasi faraidh berdasarkan dalil dan pendapat ulama salaf. Untuk kasus kompleks, konsultasikan kepada ahli faraidh yang kompeten.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <h4>Fitur Utama</h4>
+                        <ul>
+                            <li>Perhitungan lengkap ashabul furudh dan asabah</li>
+                            <li>Dalil syar'i untuk setiap bagian waris</li>
+                            <li>Penanganan kasus khusus ('awl, radd, hajb)</li>
+                            <li>Perbandingan pendapat ulama</li>
+                            <li>Offline dan dapat diunduh (PWA)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dalil Modal -->
+    <div class="modal-overlay" id="dalilModal">
+        <div class="modal-container modal-large">
+            <div class="modal-header">
+                <h3>Dalil & Penjelasan</h3>
+                <button class="btn-close" onclick="closeModal('dalilModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <div id="dalilContent">
+                    <!-- Dalil content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="toast-icon"></i>
+            <span class="toast-message"></span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>

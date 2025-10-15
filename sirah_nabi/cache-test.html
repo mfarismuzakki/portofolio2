@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cache System Test - Sirah App</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #00d4ff 0%, #ff6b6b 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+        
+        .test-result {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .cache-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .cache-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #00d4ff;
+        }
+        
+        .cache-item h4 {
+            margin: 0 0 10px 0;
+            color: #00d4ff;
+        }
+        
+        .cache-item p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .success { color: #4caf50; }
+        .error { color: #f44336; }
+        .info { color: #2196f3; }
+        .warning { color: #ff9800; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🧪 Sirah Cache System Test</h1>
+            <p>Test performa dan fungsi sistem cache untuk database sirah yang besar</p>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Cache Status & Info</h3>
+            <button class="test-button" onclick="getCacheInfo()">📋 Get Cache Info</button>
+            <button class="test-button" onclick="clearAllCache()">🧹 Clear All Cache</button>
+            <div class="test-result" id="cacheInfo"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📡 Data Loading Test</h3>
+            <button class="test-button" onclick="testLoadNabiData()">👨‍🦳 Load Nabi Data</button>
+            <button class="test-button" onclick="testLoadSahabatData()">👥 Load Sahabat Data</button>
+            <button class="test-button" onclick="testLoadAllData()">🌍 Load All Data</button>
+            <div class="test-result" id="loadingResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>⚡ Performance Test</h3>
+            <button class="test-button" onclick="performanceTest()">🚀 Run Performance Test</button>
+            <button class="test-button" onclick="cacheVsNoCache()">⚖️ Cache vs No Cache</button>
+            <div class="test-result" id="performanceResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Search Performance</h3>
+            <button class="test-button" onclick="testSearch()">🔎 Test Search Speed</button>
+            <button class="test-button" onclick="testFilter()">🏷️ Test Filter Speed</button>
+            <div class="test-result" id="searchResults"></div>
+        </div>
+
+        <div class="cache-info" id="cacheDetails"></div>
+    </div>
+
+    <!-- Load Cache Manager -->
+    <script src="cache-manager.js"></script>
+    
+    <script>
+        // Initialize cache manager
+        let cacheManager = null;
+        
+        window.onload = function() {
+            try {
+                cacheManager = new SirahCacheManager();
+                log('✅ Cache Manager initialized successfully', 'success');
+                getCacheInfo();
+            } catch (error) {
+                log('❌ Failed to initialize Cache Manager: ' + error.message, 'error');
+            }
+        };
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type;
+            console.log(`[${timestamp}] ${message}`);
+            
+            // Update UI if needed
+            const activeResult = document.querySelector('.test-result:last-child');
+            if (activeResult) {
+                activeResult.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+                activeResult.scrollTop = activeResult.scrollHeight;
+            }
+        }
+        
+        async function getCacheInfo() {
+            const resultDiv = document.getElementById('cacheInfo');
+            const detailsDiv = document.getElementById('cacheDetails');
+            
+            if (!cacheManager) {
+                resultDiv.innerHTML = '<span class="error">Cache Manager not initialized</span>';
+                return;
+            }
+            
+            try {
+                const info = cacheManager.getCacheInfo();
+                
+                resultDiv.innerHTML = `
+<span class="success">Cache Version: ${info.version}</span>
+<span class="info">Total Items: ${info.totalItems}</span>
+<span class="info">Total Size: ${info.totalSizeFormatted}</span>
+<span class="info">Storage Used: ${((JSON.stringify(localStorage).length / 1024 / 1024)).toFixed(2)} MB</span>
+
+📦 Cached Items:
+${Object.entries(info.items).map(([key, item]) => 
+    `  ${key}: ${item.size} (${item.age} old)`
+).join('\n')}
+                `;
+                
+                // Update details grid
+                detailsDiv.innerHTML = Object.entries(info.items).map(([key, item]) => `
+                    <div class="cache-item">
+                        <h4>${key}</h4>
+                        <p><strong>Size:</strong> ${item.size}</p>
+                        <p><strong>Age:</strong> ${item.age}</p>
+                        <p><strong>Compressed:</strong> ${item.compressed ? 'Yes' : 'No'}</p>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+        
+        async function clearAllCache() {
+            const resultDiv = document.getElementById('cacheInfo');
+            
+            if (!cacheManager) {
+                resultDiv.innerHTML = '<span class="error">Cache Manager not initialized</span>';
+                return;
+            }
+            
+            try {
+                cacheManager.clearAllCache();
+                resultDiv.innerHTML = '<span class="success">✅ All cache cleared successfully</span>';
+                document.getElementById('cacheDetails').innerHTML = '';
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Error clearing cache: ${error.message}</span>`;
+            }
+        }
+        
+        async function testLoadNabiData() {
+            const resultDiv = document.getElementById('loadingResults');
+            resultDiv.innerHTML = '🔄 Loading Nabi data...\n';
+            
+            if (!cacheManager) {
+                resultDiv.innerHTML += '<span class="error">Cache Manager not initialized</span>';
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                
+                // Load semua data Nabi
+                const nabiKeys = ['nabi_part1', 'nabi_part2', 'nabi_part3', 'nabi_part4', 'nabi_part5', 'nabi_disputed'];
+                const results = {};
+                
+                for (const key of nabiKeys) {
+                    const keyStartTime = performance.now();
+                    const data = await cacheManager.loadData(key);
+                    const keyEndTime = performance.now();
+                    
+                    results[key] = {
+                        count: data.length,
+                        loadTime: (keyEndTime - keyStartTime).toFixed(2)
+                    };
+                    
+                    resultDiv.innerHTML += `<span class="success">✅ ${key}: ${data.length} items (${results[key].loadTime}ms)</span>\n`;
+                }
+                
+                const endTime = performance.now();
+                const totalTime = (endTime - startTime).toFixed(2);
+                const totalCount = Object.values(results).reduce((sum, result) => sum + result.count, 0);
+                
+                resultDiv.innerHTML += `\n<span class="info">📊 Total: ${totalCount} Nabi loaded in ${totalTime}ms</span>\n`;
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<span class="error">❌ Error: ${error.message}</span>\n`;
+            }
+        }
+        
+        async function testLoadSahabatData() {
+            const resultDiv = document.getElementById('loadingResults');
+            resultDiv.innerHTML = '🔄 Loading Sahabat data...\n';
+            
+            if (!cacheManager) {
+                resultDiv.innerHTML += '<span class="error">Cache Manager not initialized</span>';
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                
+                // Load semua data Sahabat
+                const sahabatKeys = ['sahabat_khulafa', 'sahabat_asharah', 'sahabat_muhajirin_anshar', 'sahabiyat'];
+                const results = {};
+                
+                for (const key of sahabatKeys) {
+                    const keyStartTime = performance.now();
+                    const data = await cacheManager.loadData(key);
+                    const keyEndTime = performance.now();
+                    
+                    results[key] = {
+                        count: data.length,
+                        loadTime: (keyEndTime - keyStartTime).toFixed(2)
+                    };
+                    
+                    resultDiv.innerHTML += `<span class="success">✅ ${key}: ${data.length} items (${results[key].loadTime}ms)</span>\n`;
+                }
+                
+                const endTime = performance.now();
+                const totalTime = (endTime - startTime).toFixed(2);
+                const totalCount = Object.values(results).reduce((sum, result) => sum + result.count, 0);
+                
+                resultDiv.innerHTML += `\n<span class="info">📊 Total: ${totalCount} Sahabat loaded in ${totalTime}ms</span>\n`;
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<span class="error">❌ Error: ${error.message}</span>\n`;
+            }
+        }
+        
+        async function testLoadAllData() {
+            const resultDiv = document.getElementById('loadingResults');
+            resultDiv.innerHTML = '🔄 Loading ALL data...\n';
+            
+            if (!cacheManager) {
+                resultDiv.innerHTML += '<span class="error">Cache Manager not initialized</span>';
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                
+                const allKeys = Object.keys(cacheManager.dataFiles);
+                const results = await cacheManager.loadMultipleData(allKeys);
+                
+                const endTime = performance.now();
+                const totalTime = (endTime - startTime).toFixed(2);
+                
+                let totalCount = 0;
+                Object.entries(results).forEach(([key, data]) => {
+                    totalCount += data.length;
+                    resultDiv.innerHTML += `<span class="success">✅ ${key}: ${data.length} items</span>\n`;
+                });
+                
+                resultDiv.innerHTML += `\n<span class="info">🎉 SUCCESS: ${totalCount} total items loaded in ${totalTime}ms</span>\n`;
+                resultDiv.innerHTML += `<span class="info">⚡ Average: ${(totalTime / allKeys.length).toFixed(2)}ms per file</span>\n`;
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<span class="error">❌ Error: ${error.message}</span>\n`;
+            }
+        }
+        
+        async function performanceTest() {
+            const resultDiv = document.getElementById('performanceResults');
+            resultDiv.innerHTML = '🚀 Running performance tests...\n\n';
+            
+            if (!cacheManager) {
+                resultDiv.innerHTML += '<span class="error">Cache Manager not initialized</span>';
+                return;
+            }
+            
+            try {
+                const testRuns = 5;
+                const testKey = 'nabi_part1';
+                
+                // Test 1: First load (no cache)
+                cacheManager.removeFromCache(testKey);
+                let firstLoadTimes = [];
+                
+                for (let i = 0; i < testRuns; i++) {
+                    cacheManager.removeFromCache(testKey);
+                    const startTime = performance.now();
+                    await cacheManager.loadData(testKey);
+                    const endTime = performance.now();
+                    firstLoadTimes.push(endTime - startTime);
+                }
+                
+                const avgFirstLoad = (firstLoadTimes.reduce((a, b) => a + b, 0) / testRuns).toFixed(2);
+                resultDiv.innerHTML += `<span class="warning">📡 First Load (no cache): ${avgFirstLoad}ms average</span>\n`;
+                
+                // Test 2: Cached load
+                let cachedLoadTimes = [];
+                
+                for (let i = 0; i < testRuns; i++) {
+                    const startTime = performance.now();
+                    await cacheManager.loadData(testKey);
+                    const endTime = performance.now();
+                    cachedLoadTimes.push(endTime - startTime);
+                }
+                
+                const avgCachedLoad = (cachedLoadTimes.reduce((a, b) => a + b, 0) / testRuns).toFixed(2);
+                resultDiv.innerHTML += `<span class="success">⚡ Cached Load: ${avgCachedLoad}ms average</span>\n`;
+                
+                // Performance improvement
+                const improvement = ((avgFirstLoad - avgCachedLoad) / avgFirstLoad * 100).toFixed(1);
+                resultDiv.innerHTML += `\n<span class="info">📈 Performance Improvement: ${improvement}%</span>\n`;
+                resultDiv.innerHTML += `<span class="info">🚀 Speed Boost: ${(avgFirstLoad / avgCachedLoad).toFixed(1)}x faster</span>\n`;
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<span class="error">❌ Error: ${error.message}</span>\n`;
+            }
+        }
+        
+        async function cacheVsNoCache() {
+            const resultDiv = document.getElementById('performanceResults');
+            resultDiv.innerHTML = '⚖️ Cache vs No Cache comparison...\n\n';
+            
+            if (!cacheManager) {
+                resultDiv.innerHTML += '<span class="error">Cache Manager not initialized</span>';
+                return;
+            }
+            
+            try {
+                const iterations = 10;
+                
+                // Test without cache (clear before each load)
+                let noCacheTimes = [];
+                resultDiv.innerHTML += '🔄 Testing without cache...\n';
+                
+                for (let i = 0; i < iterations; i++) {
+                    cacheManager.clearAllCache();
+                    const startTime = performance.now();
+                    await cacheManager.loadData('nabi_part1');
+                    const endTime = performance.now();
+                    noCacheTimes.push(endTime - startTime);
+                    resultDiv.innerHTML += `  Run ${i + 1}: ${(endTime - startTime).toFixed(2)}ms\n`;
+                }
+                
+                // Test with cache
+                let cacheTimes = [];
+                resultDiv.innerHTML += '\n⚡ Testing with cache...\n';
+                
+                // First load to populate cache
+                await cacheManager.loadData('nabi_part1');
+                
+                for (let i = 0; i < iterations; i++) {
+                    const startTime = performance.now();
+                    await cacheManager.loadData('nabi_part1');
+                    const endTime = performance.now();
+                    cacheTimes.push(endTime - startTime);
+                    resultDiv.innerHTML += `  Run ${i + 1}: ${(endTime - startTime).toFixed(2)}ms\n`;
+                }
+                
+                // Calculate averages
+                const avgNoCache = (noCacheTimes.reduce((a, b) => a + b, 0) / iterations).toFixed(2);
+                const avgCache = (cacheTimes.reduce((a, b) => a + b, 0) / iterations).toFixed(2);
+                const speedup = (avgNoCache / avgCache).toFixed(1);
+                const improvement = (((avgNoCache - avgCache) / avgNoCache) * 100).toFixed(1);
+                
+                resultDiv.innerHTML += `\n📊 RESULTS:\n`;
+                resultDiv.innerHTML += `<span class="warning">No Cache Average: ${avgNoCache}ms</span>\n`;
+                resultDiv.innerHTML += `<span class="success">With Cache Average: ${avgCache}ms</span>\n`;
+                resultDiv.innerHTML += `<span class="info">Speed Improvement: ${speedup}x faster</span>\n`;
+                resultDiv.innerHTML += `<span class="info">Performance Gain: ${improvement}%</span>\n`;
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<span class="error">❌ Error: ${error.message}</span>\n`;
+            }
+        }
+        
+        async function testSearch() {
+            const resultDiv = document.getElementById('searchResults');
+            resultDiv.innerHTML = '🔍 Testing search performance...\n\n';
+            
+            if (!cacheManager) {
+                resultDiv.innerHTML += '<span class="error">Cache Manager not initialized</span>';
+                return;
+            }
+            
+            try {
+                // Load all data first
+                resultDiv.innerHTML += '📡 Loading all data for search test...\n';
+                const allData = await cacheManager.loadMultipleData(Object.keys(cacheManager.dataFiles));
+                
+                // Flatten all data
+                let flatData = [];
+                Object.values(allData).forEach(dataArray => {
+                    flatData = flatData.concat(dataArray);
+                });
+                
+                resultDiv.innerHTML += `✅ Loaded ${flatData.length} total items\n\n`;
+                
+                // Test different search terms
+                const searchTerms = ['muhammad', 'ali', 'abu', 'nabi', 'sahabat'];
+                
+                for (const term of searchTerms) {
+                    const startTime = performance.now();
+                    
+                    const results = flatData.filter(person => {
+                        return person.name.toLowerCase().includes(term) ||
+                               person.arabicName?.toLowerCase().includes(term) ||
+                               person.title.toLowerCase().includes(term) ||
+                               person.biography.toLowerCase().includes(term);
+                    });
+                    
+                    const endTime = performance.now();
+                    const searchTime = (endTime - startTime).toFixed(2);
+                    
+                    resultDiv.innerHTML += `<span class="success">🔍 "${term}": ${results.length} results in ${searchTime}ms</span>\n`;
+                }
+                
+                // Test complex search
+                const startTime = performance.now();
+                const complexResults = flatData.filter(person => {
+                    return (person.name.toLowerCase().includes('muhammad') || 
+                            person.title.toLowerCase().includes('khalifah')) &&
+                           person.category === 'sahabat';
+                });
+                const endTime = performance.now();
+                
+                resultDiv.innerHTML += `\n<span class="info">🔬 Complex search: ${complexResults.length} results in ${(endTime - startTime).toFixed(2)}ms</span>\n`;
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<span class="error">❌ Error: ${error.message}</span>\n`;
+            }
+        }
+        
+        async function testFilter() {
+            const resultDiv = document.getElementById('searchResults');
+            resultDiv.innerHTML = '🏷️ Testing filter performance...\n\n';
+            
+            if (!cacheManager) {
+                resultDiv.innerHTML += '<span class="error">Cache Manager not initialized</span>';
+                return;
+            }
+            
+            try {
+                // Load all data first
+                const allData = await cacheManager.loadMultipleData(Object.keys(cacheManager.dataFiles));
+                
+                // Flatten all data
+                let flatData = [];
+                Object.values(allData).forEach(dataArray => {
+                    flatData = flatData.concat(dataArray);
+                });
+                
+                resultDiv.innerHTML += `📊 Testing filters on ${flatData.length} items\n\n`;
+                
+                // Test different filters
+                const filters = {
+                    'nabi': person => person.category === 'nabi',
+                    'sahabat': person => person.category === 'sahabat',
+                    'sahabiyat': person => person.category === 'sahabiyat',
+                    'asharah': person => person.subcategory === 'asharah_mubasysyarah',
+                    'khulafa': person => person.subcategory === 'khulafaur_rasyidin'
+                };
+                
+                for (const [filterName, filterFn] of Object.entries(filters)) {
+                    const startTime = performance.now();
+                    const filtered = flatData.filter(filterFn);
+                    const endTime = performance.now();
+                    
+                    const filterTime = (endTime - startTime).toFixed(2);
+                    resultDiv.innerHTML += `<span class="success">🏷️ ${filterName}: ${filtered.length} items in ${filterTime}ms</span>\n`;
+                }
+                
+                // Test combined filter + search
+                const startTime = performance.now();
+                const combined = flatData.filter(person => 
+                    person.category === 'sahabat' && 
+                    person.name.toLowerCase().includes('ali')
+                );
+                const endTime = performance.now();
+                
+                resultDiv.innerHTML += `\n<span class="info">🎯 Combined filter+search: ${combined.length} results in ${(endTime - startTime).toFixed(2)}ms</span>\n`;
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<span class="error">❌ Error: ${error.message}</span>\n`;
+            }
+        }
+    </script>
+</body>
+</html>
