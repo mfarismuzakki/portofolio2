@@ -1,0 +1,75 @@
+{
+    "name": "Tata Cara Sholat - Panduan Lengkap",
+    "short_name": "Tata Cara Sholat",
+    "description": "Panduan lengkap tata cara sholat berdasarkan Al-Quran dan Hadits shahih menurut pemahaman salaf",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#0f0f23",
+    "theme_color": "#00ffff",
+    "orientation": "portrait-primary",
+    "scope": "./",
+    "lang": "id",
+    "dir": "ltr",
+    "categories": ["education", "lifestyle", "religion"],
+    "icons": [
+        {
+            "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9InVybCgjZ3JhZGllbnQwX2xpbmVhcl8xXzEpIi8+CjxwYXRoIGQ9Ik05NiA0OEM4NC45NTQzIDQ4IDc2IDU2Ljk1NDMgNzYgNjhWMTI0Qzc2IDEzNS4wNDYgODQuOTU0MyAxNDQgOTYgMTQ0QzEwNy4wNDYgMTQ0IDExNiAxMzUuMDQ2IDExNiAxMjRWNjhDMTE2IDU2Ljk1NDMgMTA3LjA0NiA0OCA5NiA0OFoiIGZpbGw9IiMwMGZmZmYiLz4KPHBhdGggZD0iTTk2IDY0QzEwMy43MzIgNjQgMTEwIDcwLjI2OCAxMTAgNzhWMTA4QzExMCAxMTUuNzMyIDEwMy43MzIgMTIyIDk2IDEyMkM4OC4yNjggMTIyIDgyIDExNS43MzIgODIgMTA4Vjc4QzgyIDcwLjI2OCA4OC4yNjggNjQgOTYgNjRaIiBmaWxsPSIjMGYwZjIzIi8+CjxjaXJjbGUgY3g9Ijk2IiBjeT0iODQiIHI9IjQiIGZpbGw9IiMwMGZmZmYiLz4KPGV2aSByeWdodCBjeD0iOTYiIGN5PSIxMzIiIHJ4PSIzMiIgcnk9IjgiIGZpbGw9IiMwMGZmZmYiIG9wYWNpdHk9IjAuMyIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkaWVudDBfbGluZWFyXzFfMSIgeDE9IjAiIHkxPSIwIiB4Mj0iMTkyIiB5Mj0iMTkyIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMwZjBmMjMiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMWExYTJlIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iNjQiIGZpbGw9InVybCgjZ3JhZGllbnQwX2xpbmVhcl8xXzEpIi8+CjxwYXRoIGQ9Ik0yNTYgMTI4QzIyNy42IDEyOCAyMDQuOCAxNTAuOCAyMDQuOCAxNzlWMzMzQzIwNC44IDM2MS40IDIyNy42IDM4NCAyNTYgMzg0QzI4NC40IDM4NCAzMDcuMiAzNjEuNCAzMDcuMiAzMzNWMTc5QzMwNy4yIDE1MC44IDI4NC40IDEyOCAyNTYgMTI4WiIgZmlsbD0iIzAwZmZmZiIvPgo8cGF0aCBkPSJNMjU2IDE3MkMyODAuMyAxNzIgMzAwIDIyMy43IDMwMCAyNTZWMjg4QzMwMCAzMTIuMyAyODAuMyAzMzIgMjU2IDMzMkMyMzEuNyAzMzIgMjEyIDMxMi4zIDIxMiAyODhWMjU2QzIxMiAyMjMuNyAyMzEuNyAxNzIgMjU2IDE3MloiIGZpbGw9IiMwZjBmMjMiLz4KPGNpcmNsZSBjeD0iMjU2IiBjeT0iMjI0IiByPSIxMCIgZmlsbD0iIzAwZmZmZiIvPgo8ZWxsaXBzZSBjeD0iMjU2IiBjeT0iMzUyIiByeD0iODUiIHJ5PSIyMSIgZmlsbD0iIzAwZmZmZiIgb3BhY2l0eT0iMC4zIi8+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWRpZW50MF9saW5lYXJfMV8xIiB4MT0iMCIgeTE9IjAiIHgyPSI1MTIiIHkyPSI1MTIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzBmMGYyMyIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxYTFhMmUiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4=",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjU2OCIgdmlld0JveD0iMCAwIDMyMCA1NjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMjAiIGhlaWdodD0iNTY4IiBmaWxsPSJ1cmwoI2dyYWRpZW50MF9saW5lYXJfMV8xKSIvPgo8dGV4dCB4PSIxNjAiIHk9IjEwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzAwZmZmZiIgZm9udC1zaXplPSIyNCIgZm9udC1mYW1pbHk9IkFyaWFsIj5UYXRhIENhcmEgU2hvbGF0PC90ZXh0Pgo8dGV4dCB4PSIxNjAiIHk9IjEzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhjOWVkYyIgZm9udC1zaXplPSIxNCIgZm9udC1mYW1pbHk9IkFyaWFsIj5QYW5kdWFuIExlbmdrYXA8L3RleHQ+CjxyZWN0IHg9IjIwIiB5PSIxNjAiIHdpZHRoPSIyODAiIGhlaWdodD0iMTAwIiByeD0iMTIiIGZpbGw9InJnYmEoMCwyNTUsMjU1LDAuMSkiIHN0cm9rZT0iIzAwZmZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMyIvPgo8cmVjdCB4PSIyMCIgeT0iMjgwIiB3aWR0aD0iMjgwIiBoZWlnaHQ9IjEwMCIgcng9IjEyIiBmaWxsPSJyZ2JhKDAsMjU1LDI1NSwwLjEpIiBzdHJva2U9IiMwMGZmZmYiIHN0cm9rZS1vcGFjaXR5PSIwLjMiLz4KPHJlY3QgeD0iMjAiIHk9IjQwMCIgd2lkdGg9IjI4MCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMiIgZmlsbD0icmdiYSgwLDI1NSwyNTUsMC4xKSIgc3Ryb2tlPSIjMDBmZmZmIiBzdHJva2Utb3BhY2l0eT0iMC4zIi8+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWRpZW50MF9saW5lYXJfMV8xIiB4MT0iMCIgeTE9IjAiIHgyPSIzMjAiIHkyPSI1NjgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzBmMGYyMyIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxYTFhMmUiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4=",
+            "sizes": "320x568",
+            "type": "image/svg+xml",
+            "form_factor": "narrow"
+        },
+        {
+            "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzY4IiBoZWlnaHQ9IjEwMjQiIHZpZXdCb3g9IjAgMCA3NjggMTAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9Ijc2OCIgaGVpZ2h0PSIxMDI0IiBmaWxsPSJ1cmwoI2dyYWRpZW50MF9saW5lYXJfMV8xKSIvPgo8dGV4dCB4PSIzODQiIHk9IjE1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzAwZmZmZiIgZm9udC1zaXplPSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIj5UYXRhIENhcmEgU2hvbGF0PC90ZXh0Pgo8dGV4dCB4PSIzODQiIHk9IjIwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhjOWVkYyIgZm9udC1zaXplPSIyMCIgZm9udC1mYW1pbHk9IkFyaWFsIj5QYW5kdWFuIExlbmdrYXAgU2hvbGF0IEJlcmRhc2Fya2FuIEFsLVF1cmFuIGRhbiBIYWRpdHM8L3RleHQ+CjxyZWN0IHg9IjUwIiB5PSIyNTAiIHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiByeD0iMTYiIGZpbGw9InJnYmEoMCwyNTUsMjU1LDAuMSkiIHN0cm9rZT0iIzAwZmZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMyIvPgo8cmVjdCB4PSI0MTgiIHk9IjI1MCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIHJ4PSIxNiIgZmlsbD0icmdiYSgwLDI1NSwyNTUsMC4xKSIgc3Ryb2tlPSIjMDBmZmZmIiBzdHJva2Utb3BhY2l0eT0iMC4zIi8+CjxyZWN0IHg9IjUwIiB5PSI1MDAiIHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiByeD0iMTYiIGZpbGw9InJnYmEoMCwyNTUsMjU1LDAuMSkiIHN0cm9rZT0iIzAwZmZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMyIvPgo8cmVjdCB4PSI0MTgiIHk9IjUwMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIHJ4PSIxNiIgZmlsbD0icmdiYSgwLDI1NSwyNTUsMC4xKSIgc3Ryb2tlPSIjMDBmZmZmIiBzdHJva2Utb3BhY2l0eT0iMC4zIi8+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWRpZW50MF9saW5lYXJfMV8xIiB4MT0iMCIgeTE9IjAiIHgyPSI3NjgiIHkyPSIxMDI0IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMwZjBmMjMiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMWExYTJlIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+",
+            "sizes": "768x1024",
+            "type": "image/svg+xml",
+            "form_factor": "wide"
+        }
+    ],
+    "features": [
+        "Cross Platform",
+        "Fast",
+        "Simple"
+    ],
+    "prefer_related_applications": false,
+    "related_applications": [],
+    "shortcuts": [
+        {
+            "name": "Panduan Sholat",
+            "short_name": "Panduan",
+            "description": "Buka panduan tata cara sholat",
+            "url": "./index.html?category=rukun",
+            "icons": [
+                {
+                    "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIGZpbGw9IiMwMGZmZmYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bS0yIDE1bC01LTUgMS40MS0xLjQxTDEwIDE0LjE3bDcuNTktNy41OUwxOSA4bC05IDl6Ii8+Cjwvc3ZnPg==",
+                    "sizes": "96x96"
+                }
+            ]
+        },
+        {
+            "name": "Favorit",
+            "short_name": "Favorit",
+            "description": "Lihat item favorit",
+            "url": "./index.html?category=favorites",
+            "icons": [
+                {
+                    "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIGZpbGw9IiMwMGZmZmYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0ibTEyIDIxLjM1bC0xLjQ1LTEuMzJDNS40IDE1LjM2IDIgMTIuMjggMiA4LjUgMiA1LjQyIDQuNDIgMyA3LjUgM2MxLjc0IDAgMy40MS44MSA0LjUgMi4wOUMxMy4wOSAzLjgxIDE0Ljc2IDMgMTYuNSAzIDE5LjU4IDMgMjIgNS40MiAyMiA4LjVjMCAzLjc4LTMuNCA2Ljg2LTguNTUgMTEuNTRMMTIgMjEuMzV6Ii8+Cjwvc3ZnPg==",
+                    "sizes": "96x96"
+                }
+            ]
+        }
+    ]
+}

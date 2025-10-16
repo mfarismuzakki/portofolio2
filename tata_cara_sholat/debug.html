@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Data Load</title>
+</head>
+<body>
+    <h1>Debug Data Loading</h1>
+    <div id="debug-output"></div>
+    
+    <script src="data/sholat-data.js"></script>
+    <script src="data/bacaan-sholat.js"></script>
+    <script src="data/sunnah-sholat.js"></script>
+    <script>
+        setTimeout(() => {
+            const output = document.getElementById('debug-output');
+            let html = '';
+            
+            html += `<h2>Window Objects:</h2>`;
+            html += `<p>window.sholatData: ${window.sholatData ? window.sholatData.length + ' items' : 'undefined'}</p>`;
+            html += `<p>window.bacaanSholat: ${window.bacaanSholat ? window.bacaanSholat.length + ' items' : 'undefined'}</p>`;
+            html += `<p>window.sunnahSholat: ${window.sunnahSholat ? window.sunnahSholat.length + ' items' : 'undefined'}</p>`;
+            html += `<p>window.sholatCategories: ${window.sholatCategories ? window.sholatCategories.length + ' items' : 'undefined'}</p>`;
+            
+            if (window.sholatData && window.sholatData.length > 0) {
+                html += `<h3>First sholat data item:</h3>`;
+                html += `<pre>${JSON.stringify(window.sholatData[0], null, 2)}</pre>`;
+            }
+            
+            if (window.bacaanSholat && window.bacaanSholat.length > 0) {
+                html += `<h3>First bacaan data item:</h3>`;
+                html += `<pre>${JSON.stringify(window.bacaanSholat[0], null, 2)}</pre>`;
+            }
+            
+            output.innerHTML = html;
+        }, 500);
+    </script>
+</body>
+</html>
