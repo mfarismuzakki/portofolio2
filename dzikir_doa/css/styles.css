@@ -1259,6 +1259,15 @@ img.loaded {
     min-height: 0; /* Ensures proper flexbox scrolling */
 }
 
+/* Desktop: Move scrollbar to right edge of screen */
+@media (min-width: 769px) {
+    .doa-content {
+        margin: 0;
+        max-width: none;
+        padding-right: 40px;
+    }
+}
+
 .doa-detail-title {
     font-size: 24px;
     font-weight: 600;

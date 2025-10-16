@@ -570,8 +570,25 @@ body {
     transition: all 0.3s ease;
 }
 
+.modal-container.modal-fullpage {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    border: none;
+    border-radius: 0;
+    max-width: none;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    transform: translateY(100%);
+    display: flex;
+    flex-direction: column;
+}
+
 .modal-overlay.active .modal-container {
     transform: scale(1) translateY(0);
+}
+
+.modal-overlay.active .modal-container.modal-fullpage {
+    transform: translateY(0);
 }
 
 .modal-header {
@@ -701,6 +718,8 @@ body {
     padding: 25px;
     max-height: 60vh;
     overflow-y: auto;
+    flex: 1;
+    min-height: 0;
 }
 
 /* Biodata Styles */
@@ -993,16 +1012,23 @@ body {
     }
 
     .modal-header {
-        padding: 20px;
-        gap: 15px;
+        padding: 16px;
+        gap: 12px;
+        flex-wrap: nowrap;
+        min-height: 70px;
+    }
+
+    .modal-title-group {
+        margin: 0 8px;
     }
 
     .modal-title-group h3 {
-        font-size: 1.2rem;
+        font-size: 1rem;
+        margin-bottom: 2px;
     }
 
     .modal-title-group p {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
 
     .modal-actions {
@@ -1035,6 +1061,15 @@ body {
     .detail-tabs {
         flex-wrap: nowrap;
         overflow-x: auto;
+        padding: 0 16px;
+        margin: 0 -16px 16px -16px;
+        gap: 8px;
+    }
+
+    .detail-tab {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        white-space: nowrap;
     }
 
     .biodata-grid {
@@ -1081,7 +1116,8 @@ body {
     }
 
     .modal-content {
-        padding: 20px;
+        padding: 16px;
+        margin-top: 0;
     }
 
     .bottom-nav {
