@@ -1,4 +1,4 @@
-// Database Nabi dan Rasul - Part 5 (5 Nabi Terakhir: Alyasa' - Muhammad SAW)
+// Database Nabi dan Rasul - Part 5 (5 Nabi Terakhir: Alyasa' - Muhammad Shallallahu 'alaihi wa sallam)
 
 const nabiPart5 = [
     {
