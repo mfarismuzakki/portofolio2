@@ -598,11 +598,13 @@ body {
     justify-content: space-between;
     padding: max(20px, env(safe-area-inset-top)) 20px 20px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(26, 26, 46, 0.9);
+    background: rgba(26, 26, 46, 0.95);
     backdrop-filter: blur(20px);
     min-height: 60px;
     gap: 20px;
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .modal-back {
@@ -657,7 +659,7 @@ body {
     gap: 8px;
     align-items: center;
     flex-shrink: 0;
-    z-index: 2;
+    z-index: 101;
 }
 
 .modal-action-btn {
@@ -737,8 +739,7 @@ body {
 }
 
 .modal-content {
-    padding: 25px;
-    max-height: 60vh;
+    padding: 25px 25px max(40px, env(safe-area-inset-bottom)) 25px;
     overflow-y: auto;
     flex: 1;
     min-height: 0;
