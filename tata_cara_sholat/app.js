@@ -17,10 +17,10 @@ class TataCaraSholatApp {
     }
 
     init() {
-        // Sembunyikan loading screen dulu
+        // Tampilkan loading screen terlebih dahulu
         const loadingSection = document.getElementById('loadingSection');
         if (loadingSection) {
-            loadingSection.style.display = 'none';
+            loadingSection.style.display = 'flex';
         }
         
         // Tunggu sebentar untuk memastikan semua script data sudah dijalankan
@@ -31,6 +31,16 @@ class TataCaraSholatApp {
             this.setupServiceWorker();
             this.renderItems();
             this.updateStats();
+            
+            // Sembunyikan loading screen setelah semua selesai dengan smooth transition
+            if (loadingSection) {
+                setTimeout(() => {
+                    loadingSection.classList.add('hidden');
+                    setTimeout(() => {
+                        loadingSection.style.display = 'none';
+                    }, 500);
+                }, 300);
+            }
         }, 300);
     }
 

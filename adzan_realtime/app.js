@@ -331,6 +331,16 @@ function renderPrayers(){
           else norm[k] = NaN;
         } else norm[k] = NaN;
       }
+      // Add sunrise to norm first before checking for tomorrow's schedule
+      if(times.sunrise !== undefined) {
+        if(typeof times.sunrise === 'number') norm.sunrise = times.sunrise;
+        else if(typeof times.sunrise === 'string') {
+          const parts = times.sunrise.split(':');
+          if(parts.length>=2) norm.sunrise = parseInt(parts[0],10) + parseInt(parts[1],10)/60 + (parts[2]?parseInt(parts[2],10)/3600:0);
+          else norm.sunrise = NaN;
+        } else norm.sunrise = NaN;
+      }
+      
       let usedTomorrow = false;
       if(!isNaN(norm['isha']) && nowHoursCheck >= norm['isha']){
         const tomorrow = new Date(now.getTime() + 24*3600*1000);
@@ -344,7 +354,9 @@ function renderPrayers(){
           tomes = getPrayerTimes(tomorrow,currentLat,currentLon,tomZoneOffset,currentMethod);
         }
         if(tomes){
-          for(let k of Object.keys(prayNames)){
+          // Update all prayer times including sunrise to tomorrow's schedule
+          const allKeys = [...Object.keys(prayNames), 'sunrise'];
+          for(let k of allKeys){
             const vv = tomes[k];
             if(typeof vv === 'number') norm[k] = vv + 24;
             else if(typeof vv === 'string'){
@@ -357,12 +369,14 @@ function renderPrayers(){
           usedTomorrow = true;
         }
       }
-      // Find next prayer first
+      // Find next prayer first (exclude sunrise from next prayer calculation)
       let nextKey = null; let minDiff = Infinity;
       const nowHoursForNext = nowParts.h + nowParts.m/60 + nowParts.s/3600;
       for(const k of Object.keys(norm)){
         const t = norm[k];
         if(isNaN(t)) continue;
+        // Skip sunrise as it's not an adzan time
+        if(k === 'sunrise') continue;
         const diff = t - nowHoursForNext;
         if(diff > 0 && diff < minDiff){ minDiff = diff; nextKey = k; }
       }
@@ -374,10 +388,7 @@ function renderPrayers(){
         let infoText = '--:--:--';
         
         if(!isNaN(t)){
-          if(k === 'sunrise'){
-            // Syuruq: always shows '--:--:--' (no countdown, no "Selesai")
-            infoText = '--:--:--';
-          } else if(t <= nowHours){
+          if(t <= nowHours){
             infoText = 'Selesai';
           } else if(k === nextKey) {
             // Show countdown for next prayer
@@ -393,16 +404,6 @@ function renderPrayers(){
         tbody.appendChild(tr);
       }
       updateNext(times);
-      
-      // Add sunrise to norm for calculations
-      if(times.sunrise !== undefined) {
-        if(typeof times.sunrise === 'number') norm.sunrise = times.sunrise;
-        else if(typeof times.sunrise === 'string') {
-          const parts = times.sunrise.split(':');
-          if(parts.length>=2) norm.sunrise = parseInt(parts[0],10) + parseInt(parts[1],10)/60 + (parts[2]?parseInt(parts[2],10)/3600:0);
-          else norm.sunrise = NaN;
-        } else norm.sunrise = NaN;
-      }
       
       _perPrayerNorm = Object.assign({}, norm);
       
@@ -468,7 +469,8 @@ function updateLiveInfo(){
   for(const k of Object.keys(_perPrayerNorm)){
     const t = _perPrayerNorm[k];
     if(isNaN(t)) continue;
-    // Include sunrise in next prayer calculation for table display
+    // Skip sunrise as it's not an adzan time
+    if(k === 'sunrise') continue;
     const diff = t - nowHours;
     if(diff > 0 && diff < minDiff){ minDiff = diff; nextKey = k; }
   }
@@ -524,9 +526,8 @@ function updateLiveInfo(){
       infoCell.style.fontWeight = '700';
       infoCell.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.8)';
     } else {
-      // Check if time has passed for all prayers 
+      // Check if time has passed for all prayers
       if(t <= nowHours) {
-        // All prayers including Syuruq should show "Selesai" when time has passed
         infoCell.textContent = 'Selesai';
       } else {
         infoCell.textContent = '--:--:--';
@@ -591,6 +592,9 @@ function scheduleNotifications(prayerTimes, usedTomorrow) {
   Object.keys(prayerTimes).forEach(prayerKey => {
     const prayerTime = prayerTimes[prayerKey];
     if (isNaN(prayerTime)) return;
+    
+    // Skip Syuruq/sunrise for notifications as requested
+    if (prayerKey === 'sunrise') return;
 
     // Calculate notification time (5 minutes before prayer)
     const notificationTime = prayerTime - (5/60); // 5 minutes in hours
@@ -1678,7 +1682,7 @@ function updateFloatingWidget() {
     for(const k of Object.keys(_perPrayerNorm)){
       const t = _perPrayerNorm[k];
       if(isNaN(t)) continue;
-      // Skip sunrise (syuruq) as it's not an adzan time
+      // Skip sunrise as it's not an adzan time
       if(k === 'sunrise') continue;
       const diff = t - nowHours;
       if(diff > 0 && diff < minDiff){ 
