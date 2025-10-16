@@ -246,6 +246,9 @@ class TataCaraSholatApp {
         // Set title
         modalTitle.textContent = item.name || 'Detail Sholat';
         
+        // Reset tab to default (Penjelasan) when opening new detail
+        this.switchModalTab('penjelasan');
+        
         // Populate content tabs
         if (penjelasanTab) {
             penjelasanTab.innerHTML = this.createPenjelasanContent(item);
