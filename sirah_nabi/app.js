@@ -375,6 +375,7 @@ class SirahApp {
         });
 
         // Modal actions
+        document.getElementById('copyBtn').addEventListener('click', () => this.copyCurrentPerson());
         document.getElementById('favoriteBtn').addEventListener('click', () => this.toggleFavorite());
         document.getElementById('shareBtn').addEventListener('click', () => this.shareCurrentPerson());
 
@@ -926,6 +927,14 @@ class SirahApp {
         favoriteBtn.classList.toggle('active', isFavorite);
         favoriteBtn.querySelector('i').className = isFavorite ? 'fas fa-heart' : 'far fa-heart';
         favoriteBtn.title = isFavorite ? 'Hapus dari favorit' : 'Tambah ke favorit';
+    }
+
+    copyCurrentPerson() {
+        if (!this.currentPerson) return;
+        
+        const person = this.currentPerson;
+        const copyText = this.createShareText(person);
+        this.copyToClipboard(copyText);
     }
 
     shareCurrentPerson() {

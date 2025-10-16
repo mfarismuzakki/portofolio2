@@ -466,29 +466,36 @@ class DzikirDoaApp {
             this.cache.rendered.set(cacheKey, doaListHTML);
         }
 
-        // Add event delegation for doa items (only once)
-        if (!modalContent.hasAttribute('data-events-bound')) {
-            modalContent.addEventListener('click', (e) => {
-                const doaItem = e.target.closest('.doa-item');
-                if (doaItem && doaItem.getAttribute('data-clickable') === 'true') {
-                    const doaId = doaItem.getAttribute('data-doa-id');
-                    const doaData = category.doa.find(d => d.id === doaId);
-                    if (doaData) {
-                        const doaWithCategory = {
-                            ...doaData,
-                            category: categoryId,
-                            categoryTitle: category.title,
-                            hadistReference: doaData.hadistReference,
-                            hadistText: doaData.hadistText,
-                            reference: doaData.reference,
-                            benefit: doaData.benefit
-                        };
-                        this.openDoaModal(doaWithCategory);
-                    }
+        // Always add fresh event listeners - simpler and more reliable
+        // Remove any existing bound attribute to ensure fresh binding
+        modalContent.removeAttribute('data-events-bound');
+        
+        // Add event delegation for doa items using a more reliable method
+        const handleDoaClick = (e) => {
+            const doaItem = e.target.closest('.doa-item');
+            if (doaItem && doaItem.getAttribute('data-clickable') === 'true') {
+                const doaId = doaItem.getAttribute('data-doa-id');
+                const doaData = category.doa.find(d => d.id === doaId);
+                if (doaData) {
+                    const doaWithCategory = {
+                        ...doaData,
+                        category: categoryId,
+                        categoryTitle: category.title,
+                        hadistReference: doaData.hadistReference,
+                        hadistText: doaData.hadistText,
+                        reference: doaData.reference,
+                        benefit: doaData.benefit
+                    };
+                    this.openDoaModal(doaWithCategory);
                 }
-            });
-            modalContent.setAttribute('data-events-bound', 'true');
-        }
+            }
+        };
+        
+        // Remove existing listeners and add new one
+        modalContent.removeEventListener('click', modalContent._doaClickHandler);
+        modalContent._doaClickHandler = handleDoaClick;
+        modalContent.addEventListener('click', handleDoaClick);
+        modalContent.setAttribute('data-events-bound', 'true');
 
         modalOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -739,12 +746,19 @@ class DzikirDoaApp {
         const doaModalOverlay = document.getElementById('doaModalOverlay');
         const doaNavigation = document.getElementById('doaNavigation');
         doaModalOverlay.classList.remove('active');
-        doaNavigation.style.display = 'none';
+        if (doaNavigation) {
+            doaNavigation.style.display = 'none';
+        }
         document.body.style.overflow = '';
+        
+        // Reset only the modal-specific state, but don't reset category state
+        // This allows proper navigation when returning to the same category
         this.currentDoa = null;
-        this.currentCategory = null;
         this.currentDoaList = [];
         this.currentDoaIndex = -1;
+        
+        // Don't reset currentCategory to preserve category context
+        // this.currentCategory = null;
     }
 
     // ===== Counter Methods =====

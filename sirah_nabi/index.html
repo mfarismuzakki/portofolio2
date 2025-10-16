@@ -174,19 +174,22 @@
     <div class="modal-overlay" id="detailModal">
         <div class="modal-container modal-large">
             <div class="modal-header">
+                <button class="modal-back" onclick="app.closeModal()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
                 <div class="modal-title-group">
                     <h3 id="modalTitle"></h3>
                     <p id="modalSubtitle"></p>
                 </div>
                 <div class="modal-actions">
+                    <button class="modal-action-btn" id="copyBtn" title="Salin ke clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
                     <button class="modal-action-btn" id="favoriteBtn" title="Tambah ke favorit">
                         <i class="far fa-heart"></i>
                     </button>
                     <button class="modal-action-btn" id="shareBtn" title="Bagikan">
                         <i class="fas fa-share-alt"></i>
-                    </button>
-                    <button class="btn-close" onclick="app.closeModal()">
-                        <i class="fas fa-times"></i>
                     </button>
                 </div>
             </div>

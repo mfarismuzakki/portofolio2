@@ -1066,6 +1066,7 @@ img.loaded {
     background: rgba(26, 26, 46, 0.8);
     backdrop-filter: blur(20px);
     min-height: 60px;
+    gap: 20px;
 }
 
 .doa-category-name {
@@ -1221,7 +1222,7 @@ img.loaded {
     background: none;
     border: none;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
     padding: 8px;
     border-radius: 8px;
@@ -1853,6 +1854,7 @@ img.loaded {
     
     .doa-header {
         padding: 16px;
+        gap: 16px;
     }
     
     .doa-content {
@@ -1935,14 +1937,42 @@ img.loaded {
         font-size: 16px;
         max-width: calc(100% - 100px);
     }
-    
+
     .doa-category-name {
         font-size: 13px;
         max-width: 70%;
     }
-}
 
-/* Animations */
+    /* Mobile action buttons - make them bigger and more touch-friendly */
+    .doa-actions {
+        gap: 16px;
+        padding: 4px;
+    }
+
+    .doa-favorite,
+    .doa-copy,
+    .doa-share {
+        padding: 12px;
+        font-size: 20px;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .doa-back {
+        padding: 12px;
+        font-size: 22px;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}/* Animations */
 @keyframes fadeInUp {
     from {
         opacity: 0;
