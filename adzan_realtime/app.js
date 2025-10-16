@@ -9,110 +9,6 @@ function dsin(d){
   return Math.sin(D2R(d));
 }
 
-function updateLiveInfo(){
-  const now = new Date();
-  const nowParts = getTimePartsInZone(now, currentTimeZone);
-  const nowHours = nowParts.h + nowParts.m/60 + nowParts.s/3600;
-  let nextKey = null; let minDiff = Infinity;
-  
-  for(const k of Object.keys(_perPrayerNorm)){
-    const t = _perPrayerNorm[k];
-    if(isNaN(t)) continue;
-    const diff = t - nowHours;
-    if(diff > 0 && diff < minDiff){ minDiff = diff; nextKey = k; }
-  }
-  if(!nextKey){ nextKey = 'fajr'; }
-
-  document.querySelectorAll('#prayTable tbody tr').forEach(tr=>{
-    const key = tr.getAttribute('data-prayer');
-    const infoCell = tr.querySelector('td[data-info="'+key+'"]');
-    const t = _perPrayerNorm[key];
-    if(isNaN(t)){
-      infoCell.textContent = '--:--:--';
-      tr.style.background = '';
-      tr.style.borderLeft = '';
-      tr.style.boxShadow = '';
-      tr.style.transform = '';
-      tr.style.transition = '';
-      tr.querySelectorAll('td').forEach(td => {
-        td.style.fontWeight = '';
-        td.style.color = '';
-        td.style.textShadow = '';
-        td.style.fontSize = '';
-        td.style.fontFamily = '';
-      });
-      return;
-    }
-    
-    if(key === nextKey && key !== 'sunrise'){
-      let diffHours = t - nowHours;
-      if(diffHours < 0) diffHours += 24;
-      const diffSec = Math.max(0, Math.round(diffHours * 3600));
-      infoCell.textContent = formatHMS(diffSec);
-      // Apply enhanced highlighting via CSS styling
-      tr.style.background = 'linear-gradient(90deg, rgba(0, 255, 255, 0.2), rgba(0, 128, 255, 0.1))';
-      tr.style.borderLeft = '4px solid var(--primary-cyan)';
-      tr.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.1)';
-      tr.style.transform = 'scale(1.02)';
-      tr.style.transition = 'all 0.3s ease';
-      // Enhanced styling for all columns
-      tr.querySelectorAll('td').forEach((td, index) => {
-        td.style.fontWeight = 'bold';
-        td.style.color = 'var(--text-primary)';
-        td.style.textShadow = '0 0 8px rgba(0, 255, 255, 0.5)';
-        
-        if(index === 0) {
-          // Prayer name column - most prominent
-          td.style.fontSize = '18px';
-          td.style.fontFamily = 'var(--font-primary)';
-          td.style.color = 'var(--primary-cyan)';
-          td.style.fontWeight = '700';
-          td.style.textShadow = '0 0 12px rgba(0, 255, 255, 0.9)';
-        } else if(index === 1) {
-          // Time column - enhanced
-          td.style.fontSize = '16px';
-          td.style.fontFamily = 'var(--font-primary)';
-          td.style.color = 'var(--primary-cyan)';
-          td.style.fontWeight = '600';
-          td.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.7)';
-        }
-      });
-      // Special styling for countdown cell (Info column)
-      infoCell.style.fontSize = '16px';
-      infoCell.style.fontFamily = 'var(--font-primary)';
-      infoCell.style.color = 'var(--primary-cyan)';
-      infoCell.style.fontWeight = '700';
-      infoCell.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.8)';
-    } else {
-      // Check if time has passed for all prayers 
-      if(t <= nowHours) {
-        // For syuruk (sunrise), show strip instead of "Selesai"
-        if(key === 'sunrise') {
-          infoCell.textContent = '--:--:--';
-        } else {
-          infoCell.textContent = 'Selesai';
-        }
-      } else {
-        infoCell.textContent = '--:--:--';
-      }
-      // Remove highlighting
-      tr.style.background = '';
-      tr.style.borderLeft = '';
-      tr.style.boxShadow = '';
-      tr.style.transform = '';
-      tr.style.transition = '';
-      // Reset text styling
-      tr.querySelectorAll('td').forEach(td => {
-        td.style.fontWeight = '';
-        td.style.color = '';
-        td.style.textShadow = '';
-        td.style.fontSize = '';
-        td.style.fontFamily = '';
-      });
-    }
-  });
-}
-
 function updateNext(times){
   try{ if(countdownTimer) clearTimeout(countdownTimer); }catch(e){}
 }
@@ -630,12 +526,8 @@ function updateLiveInfo(){
     } else {
       // Check if time has passed for all prayers 
       if(t <= nowHours) {
-        // For syuruk (sunrise), show strip instead of "Selesai"
-        if(key === 'sunrise') {
-          infoCell.textContent = '--:--:--';
-        } else {
-          infoCell.textContent = 'Selesai';
-        }
+        // All prayers including Syuruq should show "Selesai" when time has passed
+        infoCell.textContent = 'Selesai';
       } else {
         infoCell.textContent = '--:--:--';
       }
