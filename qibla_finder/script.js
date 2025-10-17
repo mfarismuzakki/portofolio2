@@ -25,10 +25,27 @@ class QiblaFinder {
         this.directionTextEl = document.getElementById('directionText');
         this.qiblaDirectionEl = document.getElementById('qiblaDirection');
         
-        // Compass and orientation
+        // Compass and orientation with smoothing
         this.currentHeading = 0;
+        this.targetHeading = 0;
         this.qiblaDirection = 0;
         this.watchId = null;
+        this.lastUpdateTime = 0;
+        this.isAnimating = false;
+        
+        // Smoothing parameters
+        this.smoothingFactor = 0.8; // Higher = more smoothing
+        this.minimumChange = 2; // Minimum degrees to trigger update
+        this.maxChangePerFrame = 5; // Maximum degrees change per animation frame
+        
+        // Calibration
+        this.calibrationCount = 0;
+        this.calibrationReadings = [];
+        this.isCalibrated = false;
+        
+        // Stability tracking
+        this.lastStableHeading = null;
+        this.stableReadingCount = 0;
         
         this.init();
     }
@@ -38,6 +55,38 @@ class QiblaFinder {
         this.setupEventListeners();
         this.checkGeolocationSupport();
         this.setupDeviceOrientation();
+        this.startSmoothAnimation();
+    }
+    
+    startSmoothAnimation() {
+        const animate = () => {
+            this.smoothUpdateCompass();
+            requestAnimationFrame(animate);
+        };
+        requestAnimationFrame(animate);
+    }
+    
+    smoothUpdateCompass() {
+        if (Math.abs(this.targetHeading - this.currentHeading) > this.minimumChange) {
+            // Calculate the shortest rotation path
+            let diff = this.targetHeading - this.currentHeading;
+            
+            // Handle 360° wraparound
+            if (diff > 180) {
+                diff -= 360;
+            } else if (diff < -180) {
+                diff += 360;
+            }
+            
+            // Apply smoothing and limit max change per frame
+            const change = Math.sign(diff) * Math.min(Math.abs(diff) * (1 - this.smoothingFactor), this.maxChangePerFrame);
+            this.currentHeading += change;
+            
+            // Normalize to 0-360
+            this.currentHeading = (this.currentHeading + 360) % 360;
+            
+            this.updateCompassVisual();
+        }
     }
     
     createDegreeMarks() {
@@ -109,6 +158,41 @@ class QiblaFinder {
         
         // Start watching device orientation
         this.setupDeviceOrientation();
+        
+        // Start calibration process
+        this.startCalibration();
+    }
+    
+    startCalibration() {
+        this.updateCompassStatus('Mengkalibrasi kompas...');
+        this.calibrationCount = 0;
+        this.calibrationReadings = [];
+        
+        // Collect readings for 3 seconds
+        const calibrationInterval = setInterval(() => {
+            this.calibrationCount++;
+            
+            if (this.calibrationCount >= 60) { // 3 seconds at ~20 FPS
+                clearInterval(calibrationInterval);
+                this.finishCalibration();
+            }
+        }, 50);
+    }
+    
+    finishCalibration() {
+        if (this.calibrationReadings.length > 10) {
+            // Remove outliers (values that differ more than 30° from median)
+            this.calibrationReadings.sort((a, b) => a - b);
+            const median = this.calibrationReadings[Math.floor(this.calibrationReadings.length / 2)];
+            this.calibrationReadings = this.calibrationReadings.filter(reading => 
+                Math.abs(reading - median) < 30
+            );
+            
+            this.isCalibrated = true;
+            this.updateCompassStatus('Kompas terkalibrasi dan siap');
+        } else {
+            this.updateCompassStatus('Kalibrasi gagal - gerakan perangkat dalam pola ∞');
+        }
     }
     
     onLocationError(error) {
@@ -204,6 +288,14 @@ class QiblaFinder {
     
     handleOrientation(event) {
         if (event.alpha !== null) {
+            const now = Date.now();
+            
+            // Throttle updates to avoid too frequent changes
+            if (now - this.lastUpdateTime < 50) { // 20 FPS max
+                return;
+            }
+            this.lastUpdateTime = now;
+            
             // Get the compass heading
             let heading = event.alpha;
             
@@ -212,25 +304,39 @@ class QiblaFinder {
                 heading = event.webkitCompassHeading;
             }
             
-            this.currentHeading = heading;
-            this.updateCompass();
+            // Apply calibration if available
+            if (this.isCalibrated && this.calibrationReadings.length > 0) {
+                const avgCalibration = this.calibrationReadings.reduce((a, b) => a + b, 0) / this.calibrationReadings.length;
+                heading = (heading - avgCalibration + 360) % 360;
+            }
+            
+            // Collect calibration data
+            if (this.calibrationCount > 0 && this.calibrationReadings.length < 100) {
+                this.calibrationReadings.push(heading);
+            }
+            
+            // Only update if change is significant enough
+            const diff = Math.abs(heading - this.targetHeading);
+            const normalizedDiff = Math.min(diff, 360 - diff);
+            
+            if (normalizedDiff > this.minimumChange) {
+                this.targetHeading = heading;
+            }
         }
     }
     
-    updateCompass() {
+    updateCompassVisual() {
         if (this.qiblaDirection === 0) return;
         
         // Calculate the relative direction to Qibla
         const relativeDirection = this.qiblaDirection - this.currentHeading;
         
-        // Update needle rotation
+        // Update needle rotation with smooth transition
         this.qiblaNeedle.style.transform = `translate(-50%, -50%) rotate(${relativeDirection}deg)`;
-        
-        // Add animation class
-        this.qiblaNeedle.classList.add('needle-animate');
-        setTimeout(() => {
-            this.qiblaNeedle.classList.remove('needle-animate');
-        }, 800);
+    }
+    
+    updateCompass() {
+        this.updateCompassVisual();
     }
     
     updateLocationDisplay() {
@@ -335,6 +441,35 @@ class QiblaFinder {
     
     toDegrees(radians) {
         return radians * (180 / Math.PI);
+    }
+    
+    // Normalize angle to 0-360 range
+    normalizeAngle(angle) {
+        return ((angle % 360) + 360) % 360;
+    }
+    
+    // Calculate shortest angular distance between two angles
+    angularDistance(a1, a2) {
+        const diff = Math.abs(a1 - a2);
+        return Math.min(diff, 360 - diff);
+    }
+    
+    // Add stability check for consistent readings
+    isStableReading(newHeading) {
+        if (!this.lastStableHeading) {
+            this.lastStableHeading = newHeading;
+            this.stableReadingCount = 1;
+            return false;
+        }
+        
+        if (this.angularDistance(newHeading, this.lastStableHeading) < this.minimumChange) {
+            this.stableReadingCount++;
+            return this.stableReadingCount >= 5; // Require 5 consistent readings
+        } else {
+            this.lastStableHeading = newHeading;
+            this.stableReadingCount = 1;
+            return false;
+        }
     }
 }
 
