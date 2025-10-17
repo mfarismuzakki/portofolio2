@@ -33,6 +33,10 @@ class QiblaFinder {
         this.lastUpdateTime = 0;
         this.isAnimating = false;
         
+        // Screen orientation tracking
+        this.screenOrientation = 0;
+        this.lastOrientation = screen.orientation ? screen.orientation.angle : 0;
+        
         // Smoothing parameters
         this.smoothingFactor = 0.8; // Higher = more smoothing
         this.minimumChange = 2; // Minimum degrees to trigger update
@@ -113,6 +117,31 @@ class QiblaFinder {
                 this.setupDeviceOrientation();
             }
         });
+        
+        // Handle screen orientation changes
+        if (screen.orientation) {
+            screen.orientation.addEventListener('change', () => {
+                this.handleOrientationChange();
+            });
+        } else {
+            // Fallback for older browsers
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => this.handleOrientationChange(), 500);
+            });
+        }
+    }
+    
+    handleOrientationChange() {
+        const newOrientation = screen.orientation ? screen.orientation.angle : (window.orientation || 0);
+        this.screenOrientation = newOrientation;
+        this.updateCompassStatus(`Orientasi layar: ${newOrientation}°`);
+        
+        // Reset calibration after orientation change
+        if (this.isCalibrated) {
+            setTimeout(() => {
+                this.startCalibration();
+            }, 1000);
+        }
     }
     
     checkGeolocationSupport() {
@@ -164,9 +193,11 @@ class QiblaFinder {
     }
     
     startCalibration() {
-        this.updateCompassStatus('Mengkalibrasi kompas...');
+        const orientationName = this.getOrientationName();
+        this.updateCompassStatus(`Mengkalibrasi kompas (${orientationName})...`);
         this.calibrationCount = 0;
         this.calibrationReadings = [];
+        this.isCalibrated = false;
         
         // Collect readings for 3 seconds
         const calibrationInterval = setInterval(() => {
@@ -179,6 +210,18 @@ class QiblaFinder {
         }, 50);
     }
     
+    getOrientationName() {
+        const angle = screen.orientation ? screen.orientation.angle : (window.orientation || 0);
+        switch (angle) {
+            case 0: return 'Portrait';
+            case 90: return 'Landscape Kiri';
+            case 180: return 'Portrait Terbalik';
+            case -90:
+            case 270: return 'Landscape Kanan';
+            default: return `${angle}°`;
+        }
+    }
+    
     finishCalibration() {
         if (this.calibrationReadings.length > 10) {
             // Remove outliers (values that differ more than 30° from median)
@@ -189,9 +232,10 @@ class QiblaFinder {
             );
             
             this.isCalibrated = true;
-            this.updateCompassStatus('Kompas terkalibrasi dan siap');
+            const orientationName = this.getOrientationName();
+            this.updateCompassStatus(`Kompas siap (${orientationName})`);
         } else {
-            this.updateCompassStatus('Kalibrasi gagal - gerakan perangkat dalam pola ∞');
+            this.updateCompassStatus('Kalibrasi gagal - putar perangkat dalam bentuk ∞');
         }
     }
     
@@ -304,6 +348,9 @@ class QiblaFinder {
                 heading = event.webkitCompassHeading;
             }
             
+            // Compensate for screen orientation
+            heading = this.compensateForOrientation(heading);
+            
             // Apply calibration if available
             if (this.isCalibrated && this.calibrationReadings.length > 0) {
                 const avgCalibration = this.calibrationReadings.reduce((a, b) => a + b, 0) / this.calibrationReadings.length;
@@ -325,6 +372,40 @@ class QiblaFinder {
         }
     }
     
+    compensateForOrientation(heading) {
+        // Get current screen orientation
+        let orientationAngle = 0;
+        
+        if (screen.orientation) {
+            orientationAngle = screen.orientation.angle;
+        } else if (window.orientation !== undefined) {
+            orientationAngle = window.orientation;
+        }
+        
+        // Adjust heading based on screen orientation
+        // Portrait: 0°, Landscape left: 90°, Portrait upside down: 180°, Landscape right: 270°
+        let compensatedHeading = heading;
+        
+        switch (orientationAngle) {
+            case 0:   // Portrait
+                compensatedHeading = heading;
+                break;
+            case 90:  // Landscape left
+                compensatedHeading = heading - 90;
+                break;
+            case 180: // Portrait upside down
+                compensatedHeading = heading - 180;
+                break;
+            case -90: // Landscape right
+            case 270:
+                compensatedHeading = heading + 90;
+                break;
+        }
+        
+        // Normalize to 0-360 range
+        return this.normalizeAngle(compensatedHeading);
+    }
+    
     updateCompassVisual() {
         if (this.qiblaDirection === 0) return;
         
@@ -333,6 +414,11 @@ class QiblaFinder {
         
         // Update needle rotation with smooth transition
         this.qiblaNeedle.style.transform = `translate(-50%, -50%) rotate(${relativeDirection}deg)`;
+        
+        // Update debug info (only visible in console for troubleshooting)
+        if (window.location.search.includes('debug')) {
+            console.log(`Heading: ${this.currentHeading.toFixed(1)}°, Qibla: ${this.qiblaDirection.toFixed(1)}°, Relative: ${relativeDirection.toFixed(1)}°, Orientation: ${this.screenOrientation}°`);
+        }
     }
     
     updateCompass() {
