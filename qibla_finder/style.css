@@ -394,24 +394,71 @@ body {
     z-index: 15;
 }
 
+/* Direction indicator */
 .direction-indicator {
     text-align: center;
     margin-top: 20px;
 }
 
 .direction-indicator span {
-    display: block;
-    font-family: var(--font-primary);
-    font-size: 2rem;
+    font-size: 32px;
     font-weight: 700;
-    color: var(--primary-cyan);
-    text-shadow: 0 0 15px var(--primary-cyan);
+    color: var(--accent-color);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
 .direction-indicator label {
-    font-size: 1rem;
-    color: var(--text-secondary);
+    display: block;
+    font-size: 14px;
+    color: var(--text-muted);
     margin-top: 5px;
+}
+
+/* Compass controls */
+.compass-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.control-btn {
+    background: linear-gradient(45deg, var(--accent-color), var(--accent-secondary));
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: var(--bg-dark);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+}
+
+.control-btn:active {
+    transform: translateY(0);
+}
+
+.control-btn.secondary {
+    background: linear-gradient(45deg, var(--text-muted), #555);
+    color: var(--text-primary);
+}
+
+.control-btn.secondary:hover {
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.control-btn i {
+    font-size: 16px;
 }
 
 /* Info Grid */

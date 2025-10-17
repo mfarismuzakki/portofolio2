@@ -37,9 +37,20 @@ class QiblaFinder {
         this.screenOrientation = 0;
         this.lastOrientation = screen.orientation ? screen.orientation.angle : 0;
         
+        // Absolute reference system
+        this.absoluteNorthReference = null;
+        this.baseCalibration = {
+            portrait: null,
+            landscapeLeft: null,
+            portraitUpsideDown: null,
+            landscapeRight: null
+        };
+        this.currentOrientationKey = 'portrait';
+        
         // Smoothing parameters
         this.smoothingFactor = 0.8; // Higher = more smoothing
-        this.minimumChange = 2; // Minimum degrees to trigger update
+        // this.minimumChange = 2; // Minimum degrees to trigger update
+        this.minimumChange = 0.5; // Minimum degrees to trigger update
         this.maxChangePerFrame = 5; // Maximum degrees change per animation frame
         
         // Calibration
@@ -50,6 +61,7 @@ class QiblaFinder {
         // Stability tracking
         this.lastStableHeading = null;
         this.stableReadingCount = 0;
+        this.shouldCalibrateOnOrientationChange = false;
         
         this.init();
     }
@@ -109,6 +121,22 @@ class QiblaFinder {
             this.getCurrentLocation();
         });
         
+        // Handle manual calibration button
+        const calibrateBtn = document.getElementById('calibrateBtn');
+        if (calibrateBtn) {
+            calibrateBtn.addEventListener('click', () => {
+                this.startCalibration();
+            });
+        }
+        
+        // Handle reset calibration button
+        const resetCalibrationBtn = document.getElementById('resetCalibrationBtn');
+        if (resetCalibrationBtn) {
+            resetCalibrationBtn.addEventListener('click', () => {
+                this.resetAllCalibration();
+            });
+        }
+        
         // Handle visibility change to manage device orientation
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
@@ -133,14 +161,29 @@ class QiblaFinder {
     
     handleOrientationChange() {
         const newOrientation = screen.orientation ? screen.orientation.angle : (window.orientation || 0);
-        this.screenOrientation = newOrientation;
-        this.updateCompassStatus(`Orientasi layar: ${newOrientation}°`);
+        const newOrientationKey = this.getOrientationKey(newOrientation);
         
-        // Reset calibration after orientation change
-        if (this.isCalibrated) {
-            setTimeout(() => {
-                this.startCalibration();
-            }, 1000);
+        // Only process if orientation actually changed
+        if (newOrientationKey !== this.currentOrientationKey) {
+            this.screenOrientation = newOrientation;
+            this.currentOrientationKey = newOrientationKey;
+            
+            const orientationName = this.getOrientationName();
+            this.updateCompassStatus(`Orientasi: ${orientationName}`);
+            
+            // Check if we have calibration for this orientation
+            if (this.baseCalibration[newOrientationKey] === null) {
+                // Need calibration for this orientation
+                setTimeout(() => {
+                    if (this.shouldCalibrateOnOrientationChange) {
+                        this.updateCompassStatus(`Perlu kalibrasi untuk ${orientationName}`);
+                        setTimeout(() => this.startCalibration(), 1000);
+                    }
+                }, 500);
+            } else {
+                // We have calibration, just update status
+                this.updateCompassStatus(`Kompas siap (${orientationName})`);
+            }
         }
     }
     
@@ -194,16 +237,16 @@ class QiblaFinder {
     
     startCalibration() {
         const orientationName = this.getOrientationName();
-        this.updateCompassStatus(`Mengkalibrasi kompas (${orientationName})...`);
+        this.updateCompassStatus(`Kalibrasi ${orientationName}...`);
         this.calibrationCount = 0;
         this.calibrationReadings = [];
         this.isCalibrated = false;
         
-        // Collect readings for 3 seconds
+        // Collect readings for 5 seconds for more stable calibration
         const calibrationInterval = setInterval(() => {
             this.calibrationCount++;
             
-            if (this.calibrationCount >= 60) { // 3 seconds at ~20 FPS
+            if (this.calibrationCount >= 100) { // 5 seconds at ~20 FPS
                 clearInterval(calibrationInterval);
                 this.finishCalibration();
             }
@@ -223,20 +266,64 @@ class QiblaFinder {
     }
     
     finishCalibration() {
-        if (this.calibrationReadings.length > 10) {
+        if (this.calibrationReadings.length > 20) {
             // Remove outliers (values that differ more than 30° from median)
             this.calibrationReadings.sort((a, b) => a - b);
             const median = this.calibrationReadings[Math.floor(this.calibrationReadings.length / 2)];
-            this.calibrationReadings = this.calibrationReadings.filter(reading => 
+            const filteredReadings = this.calibrationReadings.filter(reading => 
                 Math.abs(reading - median) < 30
             );
             
-            this.isCalibrated = true;
-            const orientationName = this.getOrientationName();
-            this.updateCompassStatus(`Kompas siap (${orientationName})`);
+            if (filteredReadings.length > 10) {
+                const avgReading = filteredReadings.reduce((a, b) => a + b, 0) / filteredReadings.length;
+                
+                // Set absolute north reference if this is first calibration
+                if (this.absoluteNorthReference === null) {
+                    this.absoluteNorthReference = avgReading;
+                }
+                
+                // Store calibration for current orientation
+                this.baseCalibration[this.currentOrientationKey] = avgReading - this.absoluteNorthReference;
+                
+                this.isCalibrated = true;
+                const orientationName = this.getOrientationName();
+                this.updateCompassStatus(`Kompas siap (${orientationName})`);
+                
+                // Auto-trigger calibration for other orientations if user rotates
+                this.scheduleOrientationCalibration();
+            } else {
+                this.updateCompassStatus('Kalibrasi gagal - terlalu banyak noise');
+            }
         } else {
-            this.updateCompassStatus('Kalibrasi gagal - putar perangkat dalam bentuk ∞');
+            this.updateCompassStatus('Kalibrasi gagal - data tidak cukup');
         }
+    }
+    
+    scheduleOrientationCalibration() {
+        // This will trigger calibration when user changes orientation
+        this.shouldCalibrateOnOrientationChange = true;
+    }
+    
+    resetAllCalibration() {
+        // Reset all calibration data
+        this.absoluteNorthReference = null;
+        this.baseCalibration = {
+            portrait: null,
+            landscapeLeft: null,
+            portraitUpsideDown: null,
+            landscapeRight: null
+        };
+        this.isCalibrated = false;
+        this.calibrationReadings = [];
+        this.calibrationCount = 0;
+        this.shouldCalibrateOnOrientationChange = false;
+        
+        this.updateCompassStatus('Kalibrasi direset - mulai kalibrasi baru');
+        
+        // Auto-start calibration for current orientation
+        setTimeout(() => {
+            this.startCalibration();
+        }, 1000);
     }
     
     onLocationError(error) {
@@ -351,14 +438,20 @@ class QiblaFinder {
             // Compensate for screen orientation
             heading = this.compensateForOrientation(heading);
             
-            // Apply calibration if available
-            if (this.isCalibrated && this.calibrationReadings.length > 0) {
+            // Apply calibration if available - use orientation-specific calibration
+            const orientationCalibration = this.baseCalibration[this.currentOrientationKey];
+            if (this.absoluteNorthReference !== null && orientationCalibration !== null) {
+                // Use absolute reference system
+                heading = heading - this.absoluteNorthReference - orientationCalibration;
+                heading = this.normalizeAngle(heading);
+            } else if (this.isCalibrated && this.calibrationReadings.length > 0) {
+                // Fallback to old system
                 const avgCalibration = this.calibrationReadings.reduce((a, b) => a + b, 0) / this.calibrationReadings.length;
                 heading = (heading - avgCalibration + 360) % 360;
             }
             
-            // Collect calibration data
-            if (this.calibrationCount > 0 && this.calibrationReadings.length < 100) {
+            // Collect calibration data for current orientation
+            if (this.calibrationCount > 0 && this.calibrationReadings.length < 200) {
                 this.calibrationReadings.push(heading);
             }
             
@@ -382,8 +475,24 @@ class QiblaFinder {
             orientationAngle = window.orientation;
         }
         
-        // Adjust heading based on screen orientation
-        // Portrait: 0°, Landscape left: 90°, Portrait upside down: 180°, Landscape right: 270°
+        // Update current orientation key
+        this.currentOrientationKey = this.getOrientationKey(orientationAngle);
+        
+        // Use absolute reference if available
+        if (this.absoluteNorthReference !== null) {
+            // Calculate relative to absolute north reference
+            let compensatedHeading = heading - this.absoluteNorthReference;
+            
+            // Apply orientation-specific calibration
+            const orientationCalibration = this.baseCalibration[this.currentOrientationKey];
+            if (orientationCalibration !== null) {
+                compensatedHeading -= orientationCalibration;
+            }
+            
+            return this.normalizeAngle(compensatedHeading);
+        }
+        
+        // Fallback to basic orientation compensation
         let compensatedHeading = heading;
         
         switch (orientationAngle) {
@@ -406,6 +515,17 @@ class QiblaFinder {
         return this.normalizeAngle(compensatedHeading);
     }
     
+    getOrientationKey(angle) {
+        switch (angle) {
+            case 0: return 'portrait';
+            case 90: return 'landscapeLeft';
+            case 180: return 'portraitUpsideDown';
+            case -90:
+            case 270: return 'landscapeRight';
+            default: return 'portrait';
+        }
+    }
+    
     updateCompassVisual() {
         if (this.qiblaDirection === 0) return;
         
@@ -417,7 +537,8 @@ class QiblaFinder {
         
         // Update debug info (only visible in console for troubleshooting)
         if (window.location.search.includes('debug')) {
-            console.log(`Heading: ${this.currentHeading.toFixed(1)}°, Qibla: ${this.qiblaDirection.toFixed(1)}°, Relative: ${relativeDirection.toFixed(1)}°, Orientation: ${this.screenOrientation}°`);
+            console.log(`Heading: ${this.currentHeading.toFixed(1)}°, Qibla: ${this.qiblaDirection.toFixed(1)}°, Relative: ${relativeDirection.toFixed(1)}°`);
+            console.log(`Orientation: ${this.currentOrientationKey} (${this.screenOrientation}°), AbsRef: ${this.absoluteNorthReference?.toFixed(1) || 'null'}°, Cal: ${this.baseCalibration[this.currentOrientationKey]?.toFixed(1) || 'null'}°`);
         }
     }
     
