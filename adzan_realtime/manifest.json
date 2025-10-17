@@ -2,25 +2,25 @@
   "name": "Adzan Realtime - Jadwal Sholat & Hadith",
   "short_name": "Adzan Realtime",
   "description": "Aplikasi jadwal sholat real-time dengan hadith shahih dan reminder sholat sunnah",
-  "start_url": "/",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0a0a0f",
   "theme_color": "#00ffff",
   "orientation": "portrait-primary",
-  "scope": "/",
+  "scope": "./",
   "lang": "id",
   "categories": ["lifestyle", "productivity", "education", "utilities"],
   "permissions": ["notifications"],
   "gcm_sender_id": "103953800507",
   "icons": [
     {
-      "src": "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230a0a0f'/%3E%3Cstop offset='100%25' style='stop-color:%231a1a2e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='192' height='192' rx='24' fill='url(%23bg)'/%3E%3C!-- Mosque/Minaret Symbol --%3E%3Cpath d='M96 40v20M80 60h32v8H80z' fill='%2300ffff'/%3E%3Cpath d='M88 68h16v40H88z' fill='%2300ffff'/%3E%3Ccircle cx='96' cy='35' r='4' fill='%2300ffff'/%3E%3Cpath d='M70 108h52v8H70z' fill='%2300ffff'/%3E%3C!-- Sound waves --%3E%3Cpath d='M120 80c8 0 14 6 14 14s-6 14-14 14M128 88c4 0 8 3 8 6s-4 6-8 6' stroke='%2300ffff' stroke-width='2' fill='none'/%3E%3Cpath d='M72 80c-8 0-14 6-14 14s6 14 14 14M64 88c-4 0-8 3-8 6s4 6 8 6' stroke='%2300ffff' stroke-width='2' fill='none'/%3E%3C!-- Arabic Text: الأذان --%3E%3Ctext x='96' y='155' text-anchor='middle' fill='%2300ffff' font-size='28' font-family='Amiri,Noto Sans Arabic,serif' font-weight='bold' stroke='%230a0a0f' stroke-width='1'%3E%D8%A7%D9%84%D8%A3%D8%B0%D8%A7%D9%86%3C/text%3E%3C/svg%3E",
+      "src": "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230a0a0f'/%3E%3Cstop offset='100%25' style='stop-color:%231a1a2e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='192' height='192' rx='24' fill='url(%23bg)'/%3E%3Ctext x='96' y='130' text-anchor='middle' fill='%2300ffff' font-size='80' font-family='Orbitron,monospace' font-weight='bold'%3EAD%3C/text%3E%3C/svg%3E",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230a0a0f'/%3E%3Cstop offset='100%25' style='stop-color:%231a1a2e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='64' fill='url(%23bg)'/%3E%3C!-- Mosque/Minaret Symbol --%3E%3Cpath d='M256 100v50M220 150h72v16H220z' fill='%2300ffff'/%3E%3Cpath d='M232 166h48v100h-48z' fill='%2300ffff'/%3E%3Ccircle cx='256' cy='85' r='10' fill='%2300ffff'/%3E%3Cpath d='M180 266h152v16H180z' fill='%2300ffff'/%3E%3C!-- Sound waves --%3E%3Cpath d='M320 200c20 0 36 16 36 36s-16 36-36 36M340 216c12 0 20 8 20 20s-8 20-20 20' stroke='%2300ffff' stroke-width='4' fill='none'/%3E%3Cpath d='M192 200c-20 0-36 16-36 36s16 36 36 36M172 216c-12 0-20 8-20 20s8 20 20 20' stroke='%2300ffff' stroke-width='4' fill='none'/%3E%3C!-- Arabic Text: الأذان --%3E%3Ctext x='256' y='380' text-anchor='middle' fill='%2300ffff' font-size='72' font-family='Amiri,Noto Sans Arabic,serif' font-weight='bold' stroke='%230a0a0f' stroke-width='2'%3E%D8%A7%D9%84%D8%A3%D8%B0%D8%A7%D9%86%3C/text%3E%3C/svg%3E",
+      "src": "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230a0a0f'/%3E%3Cstop offset='100%25' style='stop-color:%231a1a2e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='64' fill='url(%23bg)'/%3E%3Ctext x='256' y='340' text-anchor='middle' fill='%2300ffff' font-size='220' font-family='Orbitron,monospace' font-weight='bold'%3EAD%3C/text%3E%3C/svg%3E",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "maskable any"
@@ -31,7 +31,7 @@
       "name": "Jadwal Sholat Hari Ini",
       "short_name": "Jadwal Sholat",
       "description": "Lihat jadwal sholat hari ini",
-      "url": "/",
+      "url": "./index.html",
       "icons": [
         {
           "src": "../_favicon.png",
