@@ -1,0 +1,92 @@
+/* ===== APP COMPONENTS ===== */
+
+/* App Content */
+.app-content {
+  flex: 1;
+  position: relative;
+  min-height: calc(100vh - 120px);
+}
+
+.app-component {
+  display: none;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.app-component.active {
+  display: block;
+}
+
+/* Component Loading */
+.component-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.component-loading p {
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+/* Component Wrapper Styles */
+.component-wrapper {
+  width: 100%;
+  height: calc(100vh - 140px);
+  position: relative;
+  background: var(--dark-bg);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.component-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 8px;
+  background: var(--dark-bg);
+  display: block;
+}
+
+.iframe-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--dark-bg);
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
+
+.spinner-ring {
+  width: 100%;
+  height: 100%;
+  border: 3px solid rgba(0, 255, 255, 0.1);
+  border-top-color: var(--primary-cyan);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-spinner.small {
+  width: 30px;
+  height: 30px;
+}

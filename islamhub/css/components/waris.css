@@ -1,0 +1,959 @@
+/* ===== Kalkulator Waris Styling ===== */
+
+/* Container */
+.waris-home,
+.waris-examples,
+.waris-calculator {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Back Button */
+.waris-back-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    color: var(--cyan);
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.waris-back-btn:hover {
+    background: rgba(0, 255, 255, 0.1);
+    transform: translateX(-3px);
+}
+
+/* Header */
+.waris-header {
+    text-align: center;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 255, 255, 0.1));
+    border-radius: 20px;
+    margin-bottom: 2rem;
+}
+
+.waris-header h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--electric-blue);
+}
+
+.waris-header h2 i {
+    color: var(--cyan);
+    font-size: 2rem;
+}
+
+.waris-header p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Menu Grid (Home) */
+.waris-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.waris-menu-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.waris-menu-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.waris-menu-card:hover::before {
+    transform: scaleX(1);
+}
+
+.waris-menu-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--cyan);
+    box-shadow: 0 8px 30px rgba(0, 255, 255, 0.3);
+}
+
+.waris-menu-card.coming-soon {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.waris-menu-card.coming-soon:hover {
+    transform: none;
+    border-color: rgba(0, 255, 255, 0.2);
+    box-shadow: none;
+}
+
+.waris-menu-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: white;
+}
+
+.waris-menu-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    color: white;
+}
+
+.waris-menu-card p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.soon-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 107, 107, 0.2);
+    color: #ff6b6b;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+/* Examples Grid */
+.waris-examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.waris-example-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.waris-example-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--cyan);
+    box-shadow: 0 8px 25px rgba(0, 255, 255, 0.2);
+}
+
+.example-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    color: white;
+    padding: 0.35rem 0.85rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.waris-example-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--cyan);
+}
+
+.example-case {
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.example-case p {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.example-case p:last-child {
+    margin-bottom: 0;
+}
+
+.example-case strong {
+    color: white;
+}
+
+.example-heirs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.heir-tag {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0.35rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.heir-tag i {
+    color: var(--cyan);
+}
+
+/* Wizard Container */
+.waris-wizard-container {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Progress Steps */
+.waris-progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.waris-progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: rgba(0, 255, 255, 0.2);
+    z-index: 0;
+}
+
+.waris-progress-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.waris-step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.waris-progress-step.active .waris-step-circle {
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    border-color: var(--cyan);
+    color: white;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.waris-progress-step.completed .waris-step-circle {
+    background: rgba(76, 175, 80, 0.3);
+    border-color: #4caf50;
+    color: #4caf50;
+}
+
+.waris-step-label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+}
+
+.waris-progress-step.active .waris-step-label {
+    color: var(--cyan);
+    font-weight: 600;
+}
+
+/* Wizard Steps */
+.waris-wizard-content {
+    margin-top: 2rem;
+}
+
+.waris-wizard-step {
+    display: none;
+}
+
+.waris-wizard-step.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Step 1: Tirkah */
+.waris-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.waris-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.waris-form-group label i {
+    color: var(--cyan);
+    margin-right: 0.5rem;
+}
+
+.waris-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.waris-input-prefix {
+    position: absolute;
+    left: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.waris-input-group input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.waris-input-group input:focus {
+    outline: none;
+    border-color: var(--cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+/* Tirkah Summary */
+.waris-tirkah-summary {
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.waris-tirkah-summary h4 {
+    color: var(--cyan);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.waris-summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.waris-summary-row:last-child {
+    border-bottom: none;
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+    border-top: 2px solid var(--cyan);
+}
+
+.waris-summary-label {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.waris-summary-value {
+    font-weight: 600;
+    color: white;
+}
+
+.waris-summary-row:last-child .waris-summary-value {
+    color: var(--cyan);
+    font-size: 1.2rem;
+}
+
+/* Step 2: Heirs */
+.waris-heirs-section {
+    margin-bottom: 2rem;
+}
+
+.waris-heirs-section h4 {
+    color: var(--cyan);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.waris-heir-option {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.waris-heir-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 255, 255, 0.4);
+}
+
+.waris-checkbox-group,
+.waris-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+
+.waris-checkbox-group input[type="checkbox"],
+.waris-radio-group input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.waris-checkbox-group label,
+.waris-radio-group label {
+    flex: 1;
+    cursor: pointer;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.waris-count-input {
+    display: none;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.waris-count-input.active {
+    display: flex;
+}
+
+.waris-count-input label {
+    flex: 1;
+    margin: 0;
+}
+
+.waris-count-input input {
+    width: 80px;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    text-align: center;
+}
+
+/* Step 3: Results */
+.waris-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.waris-result-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.waris-result-card h4 {
+    color: var(--cyan);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Summary Grid */
+.waris-summary-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.waris-summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.waris-summary-item.highlight {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.waris-summary-item .label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+.waris-summary-item .value {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+}
+
+.waris-summary-item .value.negative {
+    color: #ff6b6b;
+}
+
+.waris-summary-item.highlight .value {
+    color: var(--cyan);
+    font-size: 1.3rem;
+}
+
+/* Heir Items */
+.waris-heir-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.waris-heir-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+}
+
+.waris-heir-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.waris-heir-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.waris-heir-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+}
+
+.waris-heir-category {
+    font-size: 0.85rem;
+    color: var(--cyan);
+    background: rgba(0, 255, 255, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.waris-heir-amount {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+}
+
+.waris-heir-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--cyan);
+}
+
+.waris-heir-percentage {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.waris-heir-details {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.detail-item i {
+    color: var(--cyan);
+}
+
+.waris-heir-condition {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+}
+
+/* Dalil Cards */
+.waris-dalil-card {
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.dalil-arabic {
+    font-family: 'Amiri', 'Arabic Typesetting', serif;
+    font-size: 1.3rem;
+    line-height: 2;
+    color: white;
+    text-align: right;
+    margin-bottom: 0.75rem;
+}
+
+.dalil-translation {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+}
+
+.dalil-source {
+    font-size: 0.85rem;
+    color: var(--cyan);
+    font-weight: 600;
+}
+
+/* Navigation Buttons */
+.waris-wizard-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-wrap: wrap;
+}
+
+.waris-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+    flex: 1;
+    justify-content: center;
+    min-width: 150px;
+}
+
+.waris-btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.waris-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.waris-btn-primary {
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+}
+
+.waris-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
+}
+
+.waris-btn-reset {
+    background: rgba(255, 107, 107, 0.2);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.waris-btn-reset:hover {
+    background: rgba(255, 107, 107, 0.3);
+}
+
+.waris-btn-favorite {
+    background: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.waris-btn-favorite:hover {
+    background: rgba(255, 215, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.waris-btn-favorite.saved {
+    background: rgba(255, 215, 0, 0.2);
+    border-color: rgba(255, 215, 0, 0.5);
+}
+
+.waris-btn-favorite.saved i {
+    color: #ffd700;
+}
+
+/* Favorites List */
+.waris-favorites-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.waris-favorite-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.waris-favorite-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--cyan);
+    box-shadow: 0 8px 25px rgba(0, 255, 255, 0.2);
+}
+
+.favorite-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.favorite-date {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.favorite-date i {
+    color: var(--cyan);
+}
+
+.favorite-delete-btn {
+    background: rgba(255, 107, 107, 0.2);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    color: #ff6b6b;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.favorite-delete-btn:hover {
+    background: rgba(255, 107, 107, 0.3);
+    transform: scale(1.1);
+}
+
+.favorite-info {
+    margin-bottom: 1.5rem;
+}
+
+.favorite-amount {
+    margin-bottom: 1rem;
+}
+
+.favorite-amount .label {
+    display: block;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.25rem;
+}
+
+.favorite-amount .value {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--cyan);
+}
+
+.favorite-heirs .label {
+    display: block;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.favorite-heirs .label i {
+    color: var(--cyan);
+}
+
+.heirs-list {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+}
+
+.waris-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.waris-empty-state h3 {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.waris-empty-state p {
+    font-size: 0.95rem;
+}
+
+/* Toast Notification */
+.waris-toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4);
+    z-index: 10000;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.waris-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .waris-wizard-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .waris-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .waris-progress-bar {
+        margin-bottom: 2rem;
+    }
+
+    .waris-step-label {
+        font-size: 0.75rem;
+    }
+
+    .waris-heir-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .waris-heir-amount {
+        align-items: flex-start;
+    }
+
+    .waris-wizard-nav {
+        flex-direction: column;
+    }
+
+    .waris-btn {
+        width: 100%;
+        justify-content: center;
+        min-width: auto;
+    }
+
+    .waris-menu-grid,
+    .waris-examples-grid,
+    .waris-favorites-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

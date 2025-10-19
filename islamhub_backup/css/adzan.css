@@ -1,0 +1,169 @@
+/* ===== ADZAN COMPONENT STYLES ===== */
+
+.adzan-wrapper {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+}
+
+.adzan-wrapper .card {
+  margin-bottom: 20px;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.controls select,
+.controls button,
+.controls input {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.controls select:hover,
+.controls button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary-cyan);
+}
+
+.controls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Prayer Table */
+#prayTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+#prayTable thead th {
+  text-align: left;
+  padding: 12px;
+  color: var(--primary-cyan);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+#prayTable tbody tr {
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease;
+}
+
+#prayTable tbody tr:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(5px);
+}
+
+#prayTable tbody td {
+  padding: 15px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+#prayTable tbody td:first-child {
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+#prayTable tbody td:last-child {
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+#prayTable tbody td.time {
+  font-family: var(--font-primary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-cyan);
+}
+
+/* Next Prayer Highlight */
+#prayTable tbody tr.row-next {
+  background: linear-gradient(90deg, rgba(0, 255, 255, 0.2), rgba(0, 128, 255, 0.1));
+  border-left: 4px solid var(--primary-cyan);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.1);
+  transform: scale(1.02);
+}
+
+#prayTable tbody tr.row-next td {
+  font-weight: bold;
+  color: var(--text-primary);
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+#prayTable tbody tr.row-next td:first-child {
+  font-size: 1.3rem;
+  font-family: var(--font-primary);
+  color: var(--primary-cyan);
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(0, 255, 255, 0.9);
+}
+
+#prayTable tbody tr.row-next td.time {
+  font-size: 1.4rem;
+  font-family: var(--font-primary);
+  color: var(--primary-cyan);
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+}
+
+/* Sunnah Section */
+.sunnah-section {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.sunnah-prayers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.sunnah-prayer-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.sunnah-prayer-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--primary-cyan);
+  transform: translateX(5px);
+}
+
+.sunnah-prayer-item h4 {
+  color: var(--primary-cyan);
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.sunnah-prayer-item p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}

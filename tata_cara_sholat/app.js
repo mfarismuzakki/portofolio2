@@ -336,31 +336,55 @@ class TataCaraSholatApp {
     createBacaanContent(item) {
         let content = '';
         
-        if (item.arabic) {
+        // Jika ada variations (format baru untuk doa yang bervariasi)
+        if (item.variations && item.variations.length > 0) {
             content += `
                 <div class="detail-section">
-                    <h4><i class="fas fa-book-open"></i> Bacaan Arab</h4>
-                    <div class="arabic-text large">${item.arabic}</div>
+                    <h4><i class="fas fa-book-open"></i> Variasi Bacaan</h4>
+                    <div class="variations-container">
+                        ${item.variations.map(variation => `
+                            <div class="variation-item">
+                                <div class="variation-header">
+                                    <span class="variation-number">${variation.number}</span>
+                                    ${variation.note ? `<span class="variation-note">${variation.note}</span>` : ''}
+                                    ${variation.frequency ? `<span class="variation-frequency">${variation.frequency}</span>` : ''}
+                                </div>
+                                <div class="arabic-text large">${variation.arabic}</div>
+                                <div class="latin-text large">${variation.latin}</div>
+                                <div class="translation-text">${variation.translation}</div>
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
             `;
-        }
-        
-        if (item.latin) {
-            content += `
-                <div class="detail-section">
-                    <h4><i class="fas fa-language"></i> Bacaan Latin</h4>
-                    <div class="latin-text large">${item.latin}</div>
-                </div>
-            `;
-        }
-        
-        if (item.translation) {
-            content += `
-                <div class="detail-section">
-                    <h4><i class="fas fa-globe"></i> Terjemahan</h4>
-                    <div class="translation-text">${item.translation}</div>
-                </div>
-            `;
+        } else {
+            // Format lama untuk data yang tidak memiliki variations
+            if (item.arabic) {
+                content += `
+                    <div class="detail-section">
+                        <h4><i class="fas fa-book-open"></i> Bacaan Arab</h4>
+                        <div class="arabic-text large">${item.arabic}</div>
+                    </div>
+                `;
+            }
+            
+            if (item.latin) {
+                content += `
+                    <div class="detail-section">
+                        <h4><i class="fas fa-language"></i> Bacaan Latin</h4>
+                        <div class="latin-text large">${item.latin}</div>
+                    </div>
+                `;
+            }
+            
+            if (item.translation) {
+                content += `
+                    <div class="detail-section">
+                        <h4><i class="fas fa-globe"></i> Terjemahan</h4>
+                        <div class="translation-text">${item.translation}</div>
+                    </div>
+                `;
+            }
         }
         
         if (item.bacaan_sunnah && item.bacaan_sunnah.length > 0) {

@@ -1,0 +1,128 @@
+/* ===== FLOATING PRAYER WIDGET ===== */
+.floating-prayer-widget {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  background: rgba(10, 10, 15, 0.95);
+  backdrop-filter: blur(20px);
+  border: 2px solid var(--primary-cyan);
+  border-radius: 16px;
+  padding: 15px 20px;
+  min-width: 200px;
+  box-shadow: var(--shadow-glow);
+  z-index: 999;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.widget-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+}
+
+.widget-icon {
+  width: 45px;
+  height: 45px;
+  background: rgba(0, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-cyan);
+  font-size: 1.5rem;
+}
+
+.widget-info {
+  flex: 1;
+}
+
+.widget-prayer-name {
+  font-family: var(--font-primary);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.widget-countdown {
+  font-family: var(--font-primary);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-cyan);
+}
+
+.widget-city {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 3px;
+}
+
+.widget-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 55px;
+  height: 55px;
+  border: 2px solid var(--primary-cyan);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+/* Widget Toggle Button */
+.widget-toggle-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 28px;
+  height: 28px;
+  background: rgba(0, 255, 255, 0.2);
+  border: 2px solid var(--primary-cyan);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  color: var(--primary-cyan);
+  font-size: 0.75rem;
+}
+
+.widget-toggle-btn:hover {
+  background: rgba(0, 255, 255, 0.3);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+}
+
+/* Widget Restore Button */
+.widget-restore-btn {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--primary-cyan) 0%, var(--electric-blue) 100%);
+  border: 2px solid var(--primary-cyan);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 999;
+  color: var(--dark-bg);
+  font-size: 1.3rem;
+  box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4);
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.widget-restore-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(0, 255, 255, 0.6);
+}

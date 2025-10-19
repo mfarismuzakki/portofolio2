@@ -1,0 +1,226 @@
+/* ===== HOME SECTION ===== */
+.home-hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 30px;
+}
+
+.title-line {
+  font-family: var(--font-primary);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  color: var(--text-primary);
+  line-height: 0.9;
+}
+
+.title-line.glow {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin-top: 50px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-family: var(--font-primary);
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 5px;
+}
+
+/* Apps Grid */
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.app-card {
+  background: var(--surface-dark);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* App Badge */
+.app-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.app-badge.live {
+  background: linear-gradient(135deg, #00ff88 0%, #00ffcc 100%);
+  color: #0a0a0f;
+  animation: pulse-live 2s ease-in-out infinite;
+}
+
+.app-badge.beta {
+  background: linear-gradient(135deg, #ffa500 0%, #ff6b00 100%);
+  color: #0a0a0f;
+}
+
+.app-badge.soon {
+  background: linear-gradient(135deg, #666 0%, #999 100%);
+  color: #fff;
+}
+
+@keyframes pulse-live {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(0, 255, 136, 0.3);
+  }
+  50% {
+    box-shadow: 0 2px 16px rgba(0, 255, 136, 0.6);
+  }
+}
+
+/* Coming Soon Card */
+.app-card.coming-soon {
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.app-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.app-card:hover::before {
+  left: 100%;
+}
+
+.app-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary-cyan);
+  box-shadow: var(--shadow-glow);
+  background: var(--surface-hover);
+}
+
+.app-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: rgba(0, 255, 255, 0.1);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: var(--primary-cyan);
+  transition: all 0.3s ease;
+}
+
+.app-card:hover .app-icon {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+}
+
+.app-name {
+  font-family: var(--font-primary);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.app-description {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .app-badge {
+    top: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    font-size: 0.65rem;
+  }
+
+  .app-card {
+    padding: 24px;
+  }
+
+  .app-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-badge {
+    padding: 3px 8px;
+    font-size: 0.6rem;
+  }
+
+  .app-card {
+    padding: 20px;
+  }
+
+  .app-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+}

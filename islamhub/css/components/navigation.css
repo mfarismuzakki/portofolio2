@@ -1,0 +1,73 @@
+/* ===== NAVIGATION ===== */
+.superapps-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Bottom Navigation */
+.bottom-navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 10, 15, 0.98);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0, 255, 255, 0.2);
+  padding: 10px 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-around;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.bottom-nav-item {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+  min-width: 60px;
+}
+
+.bottom-nav-item i {
+  font-size: 20px;
+}
+
+.bottom-nav-item.active {
+  color: var(--primary-cyan);
+}
+
+.bottom-nav-item:hover {
+  color: var(--primary-cyan);
+  transform: translateY(-2px);
+}
+
+/* ===== APP CONTENT ===== */
+.app-content {
+  flex: 1;
+  position: relative;
+  padding: 20px;
+  padding-bottom: 100px;
+  min-height: calc(100vh - 80px);
+}
+
+.app-component {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.app-component.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
