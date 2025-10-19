@@ -376,19 +376,43 @@
 /* Responsive */
 @media (max-width: 768px) {
     .compass-container {
-        width: 280px;
-        height: 280px;
+        width: 250px;
+        height: 250px;
+        margin: 0 auto 1.5rem;
     }
 
     .degree-mark {
-        transform-origin: 0 140px;
+        transform-origin: 0 125px;
     }
 
     .qibla-degree span {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
 
     .info-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .qibla-container {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .compass-container {
+        width: 220px;
+        height: 220px;
+    }
+
+    .degree-mark {
+        transform-origin: 0 110px;
+    }
+    
+    .cardinal {
+        font-size: 1.2rem;
+    }
+
+    .qibla-degree span {
+        font-size: 1.6rem;
     }
 }

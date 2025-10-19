@@ -46,11 +46,23 @@
             <!-- Home Component -->
             <div id="home-app" class="app-component active" data-app="home">
                 <div class="home-hero">
+                    <!-- Logo -->
+                    <div class="app-logo">
+                        <i class="fas fa-mosque"></i>
+                        <span>IslamHub</span>
+                    </div>
+                    
                     <h1 class="hero-title">
                         <span class="title-line">ISLAMIC</span>
                         <span class="title-line glow">APPLICATIONS</span>
                         <span class="title-line">HUB</span>
                     </h1>
+                    
+                    <!-- Install Button -->
+                    <button class="install-btn" id="installButton" style="display: none;">
+                        <i class="fas fa-download"></i>
+                        <span>Install Aplikasi</span>
+                    </button>
                     
                     <!-- Hadith Ticker Carousel -->
                     <div class="hadith-ticker">
@@ -543,13 +555,18 @@
                 <div class="sholat-modal" id="sholatModal">
                     <div class="sholat-modal-content">
                         <div class="sholat-modal-header">
-                            <h2 id="sholatModalTitle">Detail</h2>
+                            <div class="sholat-modal-title">
+                                <button class="sholat-modal-back" onclick="window.sholatApp.closeModal()">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                                <h2 id="sholatModalTitle">Detail</h2>
+                            </div>
                             <div class="sholat-modal-actions">
+                                <button class="sholat-copy-btn" id="sholatCopyBtn" onclick="window.sholatApp.copyContent()" title="Salin teks">
+                                    <i class="fas fa-copy"></i>
+                                </button>
                                 <button class="sholat-favorite-btn" id="sholatFavoriteBtn" onclick="window.sholatApp.toggleFavorite()" title="Tambah ke favorit">
                                     <i class="far fa-heart"></i>
-                                </button>
-                                <button class="sholat-modal-close" onclick="window.sholatApp.closeModal()">
-                                    <i class="fas fa-times"></i>
                                 </button>
                             </div>
                         </div>

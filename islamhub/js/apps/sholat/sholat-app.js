@@ -184,9 +184,6 @@ export default class SholatApp {
         
         return `
             <div class="sholat-card" data-item-id="${item.id}">
-                <div class="sholat-card-header">
-                    <div class="sholat-badge">${categoryLabel}</div>
-                </div>
                 <h3 class="sholat-title">${item.name}</h3>
                 ${arabicPreview ? `<p class="sholat-arabic">${arabicPreview}</p>` : ''}
                 ${latinPreview ? `<p class="sholat-latin">${latinPreview}</p>` : ''}
@@ -332,7 +329,7 @@ export default class SholatApp {
         `;
         
         document.getElementById('sholatModalContent').innerHTML = content;
-        modal.style.display = 'flex';
+        modal.style.display = 'block';
         document.body.classList.add('sholat-modal-active');
     }
 
@@ -343,6 +340,66 @@ export default class SholatApp {
             document.body.classList.remove('sholat-modal-active');
             this.currentItem = null;
         }
+    }
+
+    // Copy content functionality
+    copyContent() {
+        if (!this.currentItem) return;
+
+        let textContent = `${this.currentItem.name}\n\n`;
+        
+        // Handle variations or single content
+        if (this.currentItem.variations && this.currentItem.variations.length > 0) {
+            this.currentItem.variations.forEach((variation, index) => {
+                textContent += `Variasi ${index + 1}:\n`;
+                if (variation.arabic) textContent += `${variation.arabic}\n`;
+                if (variation.latin) textContent += `${variation.latin}\n`;
+                if (variation.translation) textContent += `Artinya: ${variation.translation}\n`;
+                textContent += '\n';
+            });
+        } else {
+            if (this.currentItem.arabic) textContent += `${this.currentItem.arabic}\n`;
+            if (this.currentItem.latin) textContent += `${this.currentItem.latin}\n`;
+            if (this.currentItem.translation) textContent += `Artinya: ${this.currentItem.translation}\n`;
+        }
+        
+        if (this.currentItem.description) {
+            textContent += `\nKeterangan:\n${this.currentItem.description}\n`;
+        }
+        
+        if (this.currentItem.dalil) {
+            textContent += `\nDalil:\n${this.currentItem.dalil}\n`;
+        }
+        
+        if (this.currentItem.tips && this.currentItem.tips.length > 0) {
+            textContent += `\nTips:\n`;
+            this.currentItem.tips.forEach((tip, index) => {
+                textContent += `${index + 1}. ${tip}\n`;
+            });
+        }
+
+        // Copy to clipboard
+        navigator.clipboard.writeText(textContent).then(() => {
+            this.showCopySuccess();
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            this.showToast('Gagal menyalin teks');
+        });
+    }
+
+    showCopySuccess() {
+        const copyBtn = document.getElementById('sholatCopyBtn');
+        if (copyBtn) {
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.classList.add('copied');
+            copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+            
+            setTimeout(() => {
+                copyBtn.classList.remove('copied');
+                copyBtn.innerHTML = originalHTML;
+            }, 2000);
+        }
+        this.showToast('Teks berhasil disalin!');
     }
 
     // Favorites functionality
@@ -491,8 +548,6 @@ export default class SholatApp {
 
     renderFavoriteCard(item) {
         const categoryLabel = this.getCategoryLabel(item);
-        const tabLabel = item.favTab === 'rukun' ? 'Rukun & Syarat' : 
-                        item.favTab === 'bacaan' ? 'Bacaan' : 'Sunnah';
         
         // Handle items with variations
         let arabic = item.arabic;
@@ -514,10 +569,6 @@ export default class SholatApp {
                 <button class="sholat-delete-favorite" onclick="window.sholatApp.removeFavorite('${item.id}', event)" title="Hapus dari favorit">
                     <i class="fas fa-trash"></i>
                 </button>
-                <div class="sholat-card-header">
-                    <div class="sholat-badge">${categoryLabel}</div>
-                    <div class="sholat-tab-badge">${tabLabel}</div>
-                </div>
                 <h3 class="sholat-title">${item.name}</h3>
                 ${arabicPreview ? `<p class="sholat-arabic">${arabicPreview}</p>` : ''}
                 ${latinPreview ? `<p class="sholat-latin">${latinPreview}</p>` : ''}

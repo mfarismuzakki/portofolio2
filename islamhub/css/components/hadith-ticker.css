@@ -36,9 +36,13 @@
   line-height: 1.8;
   color: var(--primary-cyan);
   text-align: center;
-  direction: ltr;
+  direction: rtl;
   font-weight: 500;
   width: 100%;
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+  text-align-last: center;
 }
 
 .hadith-indonesia {

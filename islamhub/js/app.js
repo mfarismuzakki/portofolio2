@@ -51,6 +51,9 @@ class IslamHubApp {
         
         // Setup floating widget toggle
         this.setupFloatingWidgetToggle();
+        
+        // Setup PWA install button
+        this.setupInstallButton();
     }
 
     setupNavigation() {
@@ -474,6 +477,65 @@ class IslamHubApp {
             
         } catch (error) {
             console.error('Failed to load hadith ticker:', error);
+        }
+    }
+
+    setupInstallButton() {
+        let deferredPrompt;
+        const installButton = document.getElementById('installButton');
+
+        if (!installButton) {
+            console.log('Install button not found');
+            return;
+        }
+
+        // Listen for beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            // Show install button
+            installButton.style.display = 'inline-flex';
+            console.log('PWA install prompt available');
+        });
+
+        // Handle install button click
+        installButton.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                console.log('No install prompt available');
+                return;
+            }
+
+            // Show the install prompt
+            deferredPrompt.prompt();
+            
+            // Wait for the user to respond to the prompt
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+            } else {
+                console.log('User dismissed the install prompt');
+            }
+            
+            // Clear the deferredPrompt
+            deferredPrompt = null;
+            installButton.style.display = 'none';
+        });
+
+        // Handle app installed event
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            installButton.style.display = 'none';
+            deferredPrompt = null;
+        });
+
+        // Check if app is already installed (standalone mode)
+        if (window.matchMedia('(display-mode: standalone)').matches || 
+            window.navigator.standalone === true) {
+            console.log('App is running in standalone mode');
+            installButton.style.display = 'none';
         }
     }
 }
