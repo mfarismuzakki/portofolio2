@@ -222,7 +222,7 @@ export default class AdzanApp {
 
     calculateNextPrayer() {
         const now = new Date();
-        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
         
         let nextPrayer = null;
         let minDiff = Infinity;
@@ -231,11 +231,17 @@ export default class AdzanApp {
             if (name === 'Syuruq') continue; // Skip sunrise
             
             const [hours, minutes] = time.split(':').map(Number);
-            const prayerMinutes = hours * 60 + minutes;
-            let diff = prayerMinutes - currentMinutes;
+            const prayerTime = hours * 60 + minutes;
             
-            if (diff < 0) diff += 1440; // Add 24 hours if passed
+            // Calculate difference in minutes
+            let diff = prayerTime - currentTime;
             
+            // If prayer time has passed today, it's tomorrow (add 24 hours)
+            if (diff <= 0) {
+                diff += 1440; // 24 hours = 1440 minutes
+            }
+            
+            // Find the prayer with minimum difference (closest upcoming prayer)
             if (diff < minDiff) {
                 minDiff = diff;
                 nextPrayer = { name, time, diff };
@@ -282,27 +288,29 @@ export default class AdzanApp {
         if (!this.nextPrayer) return;
         
         const now = new Date();
-        const currentMinutes = now.getHours() * 60 + now.getMinutes();
-        const currentSeconds = now.getSeconds();
-        
         const [hours, minutes] = this.nextPrayer.time.split(':').map(Number);
-        const prayerMinutes = hours * 60 + minutes;
         
-        // Calculate difference in minutes
-        let diffMinutes = prayerMinutes - currentMinutes;
-        if (diffMinutes < 0) {
-            diffMinutes += 1440; // Add 24 hours (1440 minutes) if prayer is tomorrow
+        // Create target prayer time for today
+        const targetTime = new Date();
+        targetTime.setHours(hours, minutes, 0, 0);
+        
+        // Calculate time difference in milliseconds
+        let timeDiff = targetTime.getTime() - now.getTime();
+        
+        // If time has passed, add 24 hours
+        if (timeDiff < 0) {
+            targetTime.setDate(targetTime.getDate() + 1);
+            timeDiff = targetTime.getTime() - now.getTime();
         }
         
-        // Convert to total seconds
-        const totalSeconds = (diffMinutes * 60) - currentSeconds;
-        
-        // If negative or zero, recalculate next prayer
-        if (totalSeconds <= 0) {
+        // If still negative or very close to 0 (within 2 seconds), recalculate next prayer
+        if (timeDiff <= 2000) {
             this.calculateNextPrayer();
             return;
         }
         
+        // Convert to hours, minutes, seconds
+        const totalSeconds = Math.floor(timeDiff / 1000);
         const hrs = Math.floor(totalSeconds / 3600);
         const mins = Math.floor((totalSeconds % 3600) / 60);
         const secs = totalSeconds % 60;
