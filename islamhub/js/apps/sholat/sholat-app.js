@@ -106,10 +106,12 @@ export default class SholatApp {
         
         switch (this.currentTab) {
             case 'rukun':
-                // Only show items with category 'rukun' or 'syarat'
-                data = this.sholatData.filter(item => 
-                    item.category === 'rukun' || item.category === 'syarat'
-                );
+                // Only show items with category 'rukun'
+                data = this.sholatData.filter(item => item.category === 'rukun');
+                break;
+            case 'syarat':
+                // Only show items with category 'syarat'
+                data = this.sholatData.filter(item => item.category === 'syarat');
                 break;
             case 'bacaan':
                 data = this.bacaanData;
@@ -121,9 +123,7 @@ export default class SholatApp {
 
         // Apply filter
         if (this.currentFilter !== 'all') {
-            if (this.currentTab === 'rukun') {
-                data = data.filter(item => item.category === this.currentFilter);
-            } else if (this.currentTab === 'bacaan') {
+            if (this.currentTab === 'bacaan') {
                 data = data.filter(item => item.type === this.currentFilter);
             } else if (this.currentTab === 'sunnah') {
                 data = data.filter(item => item.type === this.currentFilter);
@@ -195,7 +195,7 @@ export default class SholatApp {
     }
 
     getCategoryLabel(item) {
-        if (this.currentTab === 'rukun') {
+        if (this.currentTab === 'rukun' || this.currentTab === 'syarat') {
             return item.category === 'rukun' ? 'Rukun' : 'Syarat';
         } else if (this.currentTab === 'bacaan') {
             return item.type === 'wajib' ? 'Wajib' : 'Sunnah';

@@ -36,9 +36,6 @@
 /* Header */
 .waris-header {
     text-align: center;
-    padding: 2rem 1rem;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 255, 255, 0.1));
-    border-radius: 20px;
     margin-bottom: 2rem;
 }
 

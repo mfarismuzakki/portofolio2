@@ -58,12 +58,6 @@
                         <span class="title-line">HUB</span>
                     </h1>
                     
-                    <!-- Install Button -->
-                    <button class="install-btn" id="installButton" style="display: none;">
-                        <i class="fas fa-download"></i>
-                        <span>Install Aplikasi</span>
-                    </button>
-                    
                     <!-- Hadith Ticker Carousel -->
                     <div class="hadith-ticker">
                         <div class="hadith-content" id="hadithContent">
@@ -96,12 +90,20 @@
                     <div class="hero-stats">
                         <div class="stat-item">
                             <span class="stat-number" data-target="6">6</span>
-                            <span class="stat-label">Apps Available</span>
+                            <span class="stat-label">Aplikasi Tersedia</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-number" data-target="1">1</span>
                             <span class="stat-label">Segera Hadir</span>
                         </div>
+                    </div>
+                    
+                    <!-- Install Button -->
+                    <div class="install-section">
+                        <button class="install-btn" id="installButton" style="display: none;">
+                            <i class="fas fa-download"></i>
+                            <span>Install Aplikasi</span>
+                        </button>
                     </div>
                 </div>
 
@@ -511,7 +513,7 @@
                 <div class="sholat-container">
                     <!-- Header -->
                     <div class="sholat-header">
-                        <h1><i class="fas fa-mosque"></i> Tata Cara Sholat</h1>
+                        <h2><i class="fas fa-mosque"></i> Tata Cara Sholat</h2>
                         <p>Panduan lengkap rukun, bacaan, dan sunnah sholat berdasarkan Al-Quran & Hadits</p>
                     </div>
 
@@ -525,7 +527,10 @@
                     <!-- Tabs -->
                     <div class="sholat-tabs">
                         <button class="sholat-tab active" data-tab="rukun">
-                            <i class="fas fa-check-circle"></i> Rukun & Syarat
+                            <i class="fas fa-check-circle"></i> Rukun Sholat
+                        </button>
+                        <button class="sholat-tab" data-tab="syarat">
+                            <i class="fas fa-list-check"></i> Syarat Sholat
                         </button>
                         <button class="sholat-tab" data-tab="bacaan">
                             <i class="fas fa-book-open"></i> Bacaan Sholat

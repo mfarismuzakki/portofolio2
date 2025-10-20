@@ -258,31 +258,29 @@
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
-    background: rgba(255, 59, 48, 0.9);
-    color: white;
-    border: none;
-    border-radius: 50%;
+    background: rgba(255, 0, 110, 0.2);
+    border: 1px solid rgba(255, 0, 110, 0.4);
+    color: #ff006e;
     width: 32px;
     height: 32px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    z-index: 2;
+    z-index: 10;
+    opacity: 1;
 }
 
 .delete-favorite-btn:hover {
-    background: rgba(255, 59, 48, 1);
+    background: rgba(255, 0, 110, 0.3);
+    border-color: #ff006e;
     transform: scale(1.1);
 }
 
-.delete-favorite-btn:active {
-    transform: scale(0.95);
-}
-
 .delete-favorite-btn i {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
 }
 
 /* ===== Card Content ===== */
@@ -586,7 +584,7 @@
 .modal-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 1rem;
     padding: 1rem;
     background: rgba(0, 255, 255, 0.05);
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
@@ -596,13 +594,12 @@
 }
 
 .modal-back {
-    background: rgba(0, 255, 255, 0.1);
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    color: var(--cyan);
+    background: none;
+    border: none;
+    color: var(--primary-cyan);
+    font-size: 1.5rem;
     cursor: pointer;
+    padding: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -610,16 +607,16 @@
 }
 
 .modal-back:hover {
-    background: rgba(0, 255, 255, 0.2);
-    transform: scale(1.1);
+    transform: translateX(-5px);
 }
 
 .modal-header h3 {
     flex: 1;
-    text-align: center;
-    font-size: 1.2rem;
-    margin: 0 1rem;
-    color: var(--text-primary);
+    font-size: 1.3rem;
+    margin: 0;
+    color: var(--primary-cyan);
+    font-family: var(--font-rajdhani);
+    font-weight: 600;
 }
 
 .modal-actions {
@@ -628,12 +625,12 @@
 }
 
 .action-btn {
-    background: rgba(255, 0, 100, 0.1);
-    border: 1px solid rgba(255, 0, 100, 0.3);
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.3);
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    color: var(--pink);
+    color: var(--primary-cyan);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -642,14 +639,14 @@
     font-size: 1.1rem;
 }
 
-.action-btn:hover,
-.action-btn.active {
-    background: rgba(255, 0, 100, 0.2);
+.action-btn:hover {
+    background: rgba(0, 255, 255, 0.2);
     transform: scale(1.1);
 }
 
 .action-btn.active {
-    color: #ff0064;
+    background: var(--primary-cyan);
+    color: var(--dark-bg);
 }
 
 /* ===== Modal Tabs ===== */

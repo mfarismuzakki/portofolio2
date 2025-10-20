@@ -48,7 +48,7 @@ export default class DzikirApp {
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" placeholder="Cari dzikir atau doa..." />
                     <button class="clear-search" id="clearSearch" style="display: none;">
-                        <i class="fas fa-times"></i>
+                        <i class="fas fa-times-circle"></i>
                     </button>
                 </div>
 
@@ -106,11 +106,11 @@ export default class DzikirApp {
                             </button>
                             <h3 id="doaTitle">Judul Doa</h3>
                             <div class="modal-actions">
-                                <button class="action-btn" id="doaFavorite">
-                                    <i class="far fa-heart"></i>
-                                </button>
                                 <button class="action-btn" id="doaCopy">
                                     <i class="fas fa-copy"></i>
+                                </button>
+                                <button class="action-btn" id="doaFavorite">
+                                    <i class="far fa-heart"></i>
                                 </button>
                             </div>
                         </div>
@@ -177,7 +177,7 @@ export default class DzikirApp {
                 return `
                 <div class="category-card favorite-card" data-favorite-doa="${doa.id}">
                     <button class="favorite-delete-btn" data-doa-id="${doa.id}" title="Hapus dari favorit">
-                        <i class="fas fa-times"></i>
+                        <i class="fas fa-trash"></i>
                     </button>
                     <div class="category-header">
                         <div class="category-icon">

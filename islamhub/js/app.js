@@ -489,6 +489,14 @@ class IslamHubApp {
             return;
         }
 
+        // Check if app is already installed (standalone mode)
+        if (window.matchMedia('(display-mode: standalone)').matches || 
+            window.navigator.standalone === true) {
+            console.log('App is running in standalone mode');
+            installButton.style.display = 'none';
+            return;
+        }
+
         // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
             // Prevent the mini-infobar from appearing on mobile
@@ -503,7 +511,12 @@ class IslamHubApp {
         // Handle install button click
         installButton.addEventListener('click', async () => {
             if (!deferredPrompt) {
-                console.log('No install prompt available');
+                // If no install prompt, show info message
+                alert('Untuk menginstall aplikasi:\n\n' +
+                      '📱 Mobile: Buka menu browser → "Tambahkan ke Layar Utama"\n' +
+                      '💻 Desktop Chrome: Klik icon install di address bar\n' +
+                      '💻 Desktop Edge: Klik menu → "Aplikasi" → "Install IslamHub"\n\n' +
+                      'Atau gunakan browser yang mendukung PWA installation.');
                 return;
             }
 
@@ -531,12 +544,14 @@ class IslamHubApp {
             deferredPrompt = null;
         });
 
-        // Check if app is already installed (standalone mode)
-        if (window.matchMedia('(display-mode: standalone)').matches || 
-            window.navigator.standalone === true) {
-            console.log('App is running in standalone mode');
-            installButton.style.display = 'none';
-        }
+        // Show button after a delay (for testing/fallback)
+        // This ensures button is visible even if beforeinstallprompt doesn't fire
+        setTimeout(() => {
+            if (installButton.style.display === 'none') {
+                installButton.style.display = 'inline-flex';
+                console.log('Install button shown (fallback)');
+            }
+        }, 2000);
     }
 }
 

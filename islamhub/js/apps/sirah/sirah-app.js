@@ -31,14 +31,12 @@ export default class SirahApp {
 
                 <!-- Search Bar -->
                 <div class="search-container">
+                    <input type="text" id="sirahSearchInput" placeholder="Cari nama nabi atau sahabat..." />
                     <i class="fas fa-search"></i>
-                    <input type="text" id="sirahSearchInput" placeholder="Cari nama nabi, rasul, atau sahabat..." />
                     <button class="clear-search" id="sirahClearSearch" style="display: none;">
-                        <i class="fas fa-times"></i>
+                        <i class="fas fa-times-circle"></i>
                     </button>
-                </div>
-
-                <!-- Filter Tabs -->
+                </div>                <!-- Filter Tabs -->
                 <div class="filter-tabs" id="sirahFilterTabs">
                     <button class="filter-tab active" data-filter="all">
                         <i class="fas fa-list"></i> Semua
@@ -68,9 +66,14 @@ export default class SirahApp {
                                 <i class="fas fa-arrow-left"></i>
                             </button>
                             <h3 id="prophetName">Nama Nabi</h3>
-                            <button class="action-btn" id="prophetFavorite">
-                                <i class="far fa-heart"></i>
-                            </button>
+                            <div class="modal-actions">
+                                <button class="action-btn" id="prophetCopy">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button class="action-btn" id="prophetFavorite">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="modal-tabs" id="prophetTabs">
                             <button class="tab-btn active" data-tab="biodata">Biodata</button>
@@ -186,6 +189,12 @@ export default class SirahApp {
         const favoriteBtn = document.getElementById('prophetFavorite');
         if (favoriteBtn) {
             favoriteBtn.addEventListener('click', () => this.toggleFavorite());
+        }
+
+        // Copy button
+        const copyBtn = document.getElementById('prophetCopy');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => this.copyContent());
         }
 
         // Tab switching
@@ -547,6 +556,84 @@ export default class SirahApp {
         const isFavorite = this.favorites.some(f => f.id === this.currentProphet.id);
         btn.innerHTML = isFavorite ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
         btn.classList.toggle('active', isFavorite);
+    }
+
+    copyContent() {
+        if (!this.currentProphet) return;
+
+        const prophet = this.currentProphet;
+        let textContent = `${prophet.name}\n`;
+        textContent += `${prophet.arabicName}\n\n`;
+        
+        // Biodata
+        textContent += `BIODATA:\n`;
+        textContent += `Periode: ${prophet.period}\n`;
+        if (prophet.birthPlace) textContent += `Tempat Lahir: ${prophet.birthPlace}\n`;
+        if (prophet.father) textContent += `Ayah: ${prophet.father}\n`;
+        if (prophet.mother) textContent += `Ibu: ${prophet.mother}\n`;
+        if (prophet.age) textContent += `Usia: ${prophet.age}\n`;
+        if (prophet.tribe) textContent += `Suku: ${prophet.tribe}\n`;
+        if (prophet.mission) textContent += `Misi: ${prophet.mission}\n`;
+        textContent += `\nDeskripsi:\n${prophet.description}\n\n`;
+        
+        // Peristiwa Penting
+        if (prophet.events && prophet.events.length > 0) {
+            textContent += `PERISTIWA PENTING:\n`;
+            prophet.events.forEach((event, index) => {
+                textContent += `${index + 1}. ${event}\n`;
+            });
+            textContent += '\n';
+        }
+        
+        // Hikmah
+        if (prophet.lessons && prophet.lessons.length > 0) {
+            textContent += `HIKMAH & PELAJARAN:\n`;
+            prophet.lessons.forEach((lesson, index) => {
+                textContent += `${index + 1}. ${lesson}\n`;
+            });
+            textContent += '\n';
+        }
+        
+        // Referensi
+        if (prophet.haditsShahih && prophet.haditsShahih.length > 0) {
+            textContent += `HADITS SHAHIH:\n`;
+            prophet.haditsShahih.forEach((hadith, index) => {
+                textContent += `\nHadits ${index + 1}:\n`;
+                textContent += `${hadith.arabic}\n`;
+                textContent += `${hadith.latin}\n`;
+                textContent += `Artinya: ${hadith.translation}\n`;
+                textContent += `Sumber: ${hadith.source}\n`;
+            });
+            textContent += '\n';
+        }
+        
+        if (prophet.references && prophet.references.length > 0) {
+            textContent += `REFERENSI:\n`;
+            prophet.references.forEach((ref, index) => {
+                textContent += `${index + 1}. ${ref}\n`;
+            });
+        }
+
+        // Copy to clipboard
+        navigator.clipboard.writeText(textContent).then(() => {
+            this.showCopySuccess();
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            this.showToast('Gagal menyalin teks');
+        });
+    }
+
+    showCopySuccess() {
+        const copyBtn = document.getElementById('prophetCopy');
+        if (copyBtn) {
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = originalHTML;
+            }, 2000);
+        }
+        this.showToast('Teks berhasil disalin!');
     }
 
     loadFavorites() {
