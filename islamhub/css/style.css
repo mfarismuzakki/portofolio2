@@ -297,6 +297,11 @@ body::before {
 
 .bottom-nav-item.active {
   color: var(--primary-cyan);
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.bottom-nav-item.active i {
+  transform: scale(1.1);
 }
 
 /* ===== MORE APPS DROPDOWN ===== */
@@ -388,6 +393,27 @@ body::before {
   background: rgba(0, 255, 255, 0.1);
   border-color: var(--primary-cyan);
   transform: translateX(5px);
+}
+
+.more-app-item.active {
+  background: rgba(0, 255, 255, 0.15);
+  border-color: var(--primary-cyan);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.more-app-item.active .more-app-icon {
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(138, 43, 226, 0.3));
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+}
+
+.more-app-item.active .more-app-info h4 {
+  color: var(--primary-cyan);
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.more-app-item.active > i {
+  color: var(--primary-cyan);
+  opacity: 1;
 }
 
 .more-app-icon {

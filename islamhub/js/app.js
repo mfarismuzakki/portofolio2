@@ -173,6 +173,11 @@ class IslamHubApp {
             nav.classList.remove('active');
         });
         
+        // Remove active from dropdown items
+        document.querySelectorAll('.more-app-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
         // Show target app
         const targetApp = document.getElementById(`${appName}-app`);
         if (targetApp) {
@@ -183,6 +188,19 @@ class IslamHubApp {
         document.querySelectorAll(`.bottom-nav-item[data-app="${appName}"]`).forEach(nav => {
             nav.classList.add('active');
         });
+        
+        // If app is in dropdown (waris, qibla, sirah), activate 'More Apps' button
+        const dropdownApps = ['waris', 'qibla', 'sirah'];
+        if (dropdownApps.includes(appName)) {
+            const moreAppsBtn = document.getElementById('moreAppsBtn');
+            if (moreAppsBtn) {
+                moreAppsBtn.classList.add('active');
+            }
+            // Also activate the specific item in dropdown
+            document.querySelectorAll(`.more-app-item[data-app="${appName}"]`).forEach(item => {
+                item.classList.add('active');
+            });
+        }
         
         // Load app if not loaded yet
         if (!this.loadedApps.has(appName) && appName !== 'home') {
