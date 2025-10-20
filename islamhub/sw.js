@@ -1,11 +1,12 @@
 /* ===== IslamHub Service Worker ===== */
 
-const CACHE_NAME = 'islamhub-v1';
+const CACHE_NAME = 'islamhub-v1.1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/app.js',
+  '/islamhub/',
+  '/islamhub/index.html',
+  '/islamhub/css/style-modular.css',
+  '/islamhub/js/app.js',
+  '/islamhub/manifest.json',
   'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
