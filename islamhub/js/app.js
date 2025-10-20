@@ -621,31 +621,21 @@ class IslamHubApp {
         let deferredPrompt;
         const installButton = document.getElementById('installButton');
 
-        if (!installButton) {
-            console.log('Install button not found');
-            return;
-        }
+        if (!installButton) return;
 
         // Check if app is already installed (standalone mode)
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
                             window.navigator.standalone === true;
         
         if (isStandalone) {
-            console.log('App already running in standalone mode');
             installButton.style.display = 'none';
             return;
         }
 
-        console.log('Setting up PWA install button...');
-
         // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('beforeinstallprompt event fired! PWA is installable');
-            // Prevent the mini-infobar from appearing on mobile
             e.preventDefault();
-            // Stash the event so it can be triggered later
             deferredPrompt = e;
-            // Show install button
             installButton.style.display = 'inline-flex';
             installButton.innerHTML = '<i class="fas fa-download"></i><span>Install Aplikasi</span>';
         });
@@ -655,56 +645,43 @@ class IslamHubApp {
 
         // Handle install button click
         installButton.addEventListener('click', async () => {
-            console.log('Install button clicked');
-            
             if (!deferredPrompt) {
-                console.warn('No deferred prompt available');
-                console.log('Checking PWA criteria...');
-                
                 const issues = [];
+                const success = [];
                 
                 // Check service worker
                 if (!('serviceWorker' in navigator)) {
-                    issues.push('Browser tidak mendukung Service Worker');
+                    issues.push('❌ Browser tidak mendukung Service Worker');
                 } else {
                     const registrations = await navigator.serviceWorker.getRegistrations();
                     if (registrations.length === 0) {
-                        console.error('Service worker not registered');
-                        issues.push('Service Worker belum registered');
+                        issues.push('❌ Service Worker belum terdaftar');
                     } else {
-                        console.log('Service worker registered:', registrations.length);
-                        const sw = registrations[0];
-                        console.log('SW State:', sw.active?.state);
-                        console.log('SW Scope:', sw.scope);
+                        success.push('✅ Service Worker aktif');
                     }
                 }
                 
                 // Check manifest
                 const manifestLink = document.querySelector('link[rel="manifest"]');
                 if (!manifestLink) {
-                    console.error('Manifest link not found');
-                    issues.push('Manifest link tidak ditemukan');
+                    issues.push('❌ Manifest link tidak ditemukan');
                 } else {
-                    console.log('Manifest link exists:', manifestLink.href);
-                    
-                    // Fetch and validate manifest
                     try {
                         const response = await fetch(manifestLink.href);
                         const manifest = await response.json();
-                        console.log('Manifest content:', manifest);
                         
                         // Check required fields
                         if (!manifest.name && !manifest.short_name) {
-                            issues.push('Manifest: name/short_name missing');
+                            issues.push('❌ Manifest: name/short_name hilang');
                         }
                         if (!manifest.start_url) {
-                            issues.push('Manifest: start_url missing');
+                            issues.push('❌ Manifest: start_url hilang');
                         }
                         if (!manifest.display || manifest.display === 'browser') {
-                            issues.push('Manifest: display must be standalone/fullscreen');
+                            issues.push('❌ Manifest: display harus standalone');
                         }
                         if (!manifest.icons || manifest.icons.length === 0) {
-                            issues.push('Manifest: icons missing');
+                            issues.push('❌ Manifest: icons hilang');
                         } else {
                             const has192 = manifest.icons.some(icon => 
                                 icon.sizes.includes('192x192') || icon.sizes.includes('192')
@@ -713,96 +690,93 @@ class IslamHubApp {
                                 icon.sizes.includes('512x512') || icon.sizes.includes('512')
                             );
                             if (!has192 || !has512) {
-                                issues.push('Manifest: perlu icon 192x192 dan 512x512');
+                                issues.push('❌ Manifest: perlu icon 192x192 dan 512x512');
+                            } else {
+                                success.push('✅ Manifest valid dengan semua icon');
                             }
                         }
                         
-                        if (issues.length === 0) {
-                            console.log('Manifest valid');
+                        if (issues.filter(i => i.includes('Manifest')).length === 0 && !success.includes('✅ Manifest valid dengan semua icon')) {
+                            success.push('✅ Manifest valid');
                         }
                     } catch (error) {
-                        console.error('Failed to fetch manifest:', error);
-                        issues.push('Gagal load manifest.json');
+                        console.error('Manifest fetch error:', error);
+                        issues.push('❌ Gagal load manifest.json');
                     }
                 }
                 
                 // Check HTTPS
                 if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-                    console.warn('Not HTTPS');
-                    issues.push('Bukan HTTPS (butuh HTTPS untuk PWA)');
+                    issues.push('❌ Butuh HTTPS untuk install PWA');
                 } else {
-                    console.log('Using secure context');
+                    success.push('✅ Protokol aman (HTTPS)');
                 }
                 
                 // Check if already installed
                 if (window.matchMedia('(display-mode: standalone)').matches) {
-                    console.log('App already running in standalone mode');
-                    issues.push('Aplikasi sudah terinstall');
+                    this.showInstallDialog('Aplikasi sudah terinstall! 🎉\n\nBuka dari home screen atau app drawer Anda.', 'success');
+                    return;
                 }
                 
                 // Build message
                 let message = '';
-                if (issues.length > 0) {
-                    message += 'Status PWA:\n\n' + issues.join('\n') + '\n\n';
-                }
                 
-
-                try {
-                    this.showInstallDialog(message);
-                    console.log('✅ Dialog shown successfully');
-                } catch (error) {
-                    console.error('Error showing dialog:', error);
-                    // Fallback to alert if dialog fails
-                    alert(message);
+                if (issues.length > 0) {
+                    message = '⚠️ Install PWA Tidak Tersedia\n\n';
+                    message += 'Masalah yang ditemukan:\n' + issues.join('\n') + '\n\n';
+                    message += '💡 Solusi:\n';
+                    message += '• Coba refresh halaman (Ctrl+R atau Cmd+R)\n';
+                    message += '• Kunjungi situs 2-3 kali\n';
+                    message += '• Install manual dari menu browser:\n';
+                    message += '  Chrome: Menu (⋮) → Install IslamHub\n';
+                    message += '  Safari: Share → Add to Home Screen';
+                    this.showInstallDialog(message, 'error');
+                } else {
+                    message = '✨ PWA Siap Diinstall!\n\n';
+                    message += success.join('\n') + '\n\n';
+                    message += '📌 Cara Install:\n\n';
+                    message += '🖥️ Desktop (Chrome/Edge):\n';
+                    message += '• Cari icon install (⊕) di address bar\n';
+                    message += '• Atau: Menu → Install IslamHub\n\n';
+                    message += '📱 Mobile:\n';
+                    message += '• Android: Tap menu (⋮) → Install app\n';
+                    message += '• iOS Safari: Share → Add to Home Screen\n\n';
+                    message += '💡 Tip: Chrome biasanya butuh 2-3 kunjungan sebelum menawarkan install otomatis';
+                    this.showInstallDialog(message, 'info');
                 }
                 return;
             }
 
-            console.log('📱 Showing native install prompt...');
-            
             try {
-                // Show the install prompt
                 deferredPrompt.prompt();
-                
-                // Wait for the user to respond to the prompt
                 const { outcome } = await deferredPrompt.userChoice;
                 
-                console.log(`User response: ${outcome}`);
-                
                 if (outcome === 'accepted') {
-                    console.log('User accepted the install prompt');
-                    this.showInstallDialog('Terima kasih! Aplikasi sedang diinstall...', 'success');
+                    this.showInstallDialog('🎉 Berhasil!\n\nAplikasi IslamHub sedang diinstall.\nCek home screen atau app drawer Anda dalam beberapa detik.', 'success');
                 } else {
-                    console.log('User dismissed the install prompt');
+                    this.showInstallDialog('Install dibatalkan.\n\nAnda bisa install kapan saja dari menu browser atau klik tombol Install Aplikasi lagi.', 'info');
                 }
                 
-                // Clear the deferredPrompt
                 deferredPrompt = null;
                 installButton.style.display = 'none';
             } catch (error) {
-                console.error('Error showing install prompt:', error);
-                this.showInstallDialog('Gagal menampilkan prompt install.\n\nSilakan coba refresh halaman atau install manual dari menu browser.');
+                console.error('Install prompt error:', error);
+                this.showInstallDialog('❌ Gagal Install\n\nPrompt install tidak bisa ditampilkan.\n\n💡 Coba:\n• Refresh halaman (F5)\n• Install manual: Menu browser → Install IslamHub', 'error');
             }
         });
 
         // Handle app installed event
         window.addEventListener('appinstalled', () => {
-            console.log('PWA was installed successfully!');
             installButton.style.display = 'none';
             deferredPrompt = null;
-            this.showInstallDialog('Aplikasi berhasil diinstall! 🎉', 'success');
+            this.showInstallDialog('✅ Install Berhasil! 🎉\n\nIslamHub sudah terinstall di perangkat Anda.\n\nBuka dari home screen untuk pengalaman terbaik!', 'success');
         });
     }
     
     showInstallDialog(message, type = 'info') {
-        console.log('showInstallDialog called with type:', type);
-        
         // Remove existing dialog if any
         const existingDialog = document.querySelector('.install-dialog');
-        if (existingDialog) {
-            existingDialog.remove();
-            console.log('Removed existing dialog');
-        }
+        if (existingDialog) existingDialog.remove();
         
         // Create a more professional dialog instead of alert
         const dialog = document.createElement('div');
@@ -829,353 +803,397 @@ class IslamHubApp {
         const isInstallInstructions = message.includes('Alternatif Install');
         
         if (isInstallInstructions) {
-            // Special styling for install instructions
+            // SIMPLIFIED VERSION - Focus on readability
             dialog.innerHTML = `
-                <div class="install-dialog-content install-instructions" style="
-                    background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
-                    color: #ffffff;
-                    padding: 2.5rem;
-                    border-radius: 20px;
-                    max-width: 650px;
+                <div style="
+                    background: #1e1e2e;
+                    color: white;
+                    padding: 30px;
+                    border-radius: 15px;
+                    max-width: 550px;
                     width: 90%;
-                    max-height: 85vh;
+                    max-height: 80vh;
                     overflow-y: auto;
-                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-                    border: 2px solid rgba(0, 243, 255, 0.4);
                     position: relative;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+                    border: 2px solid #00f3ff;
                 ">
-                    <button class="dialog-close" onclick="this.closest('.install-dialog').remove()" style="
+                    <button onclick="this.closest('.install-dialog').remove()" style="
                         position: absolute;
-                        top: 1.5rem;
-                        right: 1.5rem;
+                        top: 15px;
+                        right: 15px;
                         background: rgba(255, 255, 255, 0.1);
-                        border: 1px solid rgba(255, 255, 255, 0.2);
+                        border: none;
                         color: #00f3ff;
-                        width: 40px;
-                        height: 40px;
+                        width: 35px;
+                        height: 35px;
                         border-radius: 50%;
                         cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 1.2rem;
-                        transition: all 0.3s ease;
-                        z-index: 10;
-                    ">
-                        <i class="fas fa-times"></i>
-                    </button>
+                        font-size: 20px;
+                        line-height: 35px;
+                        text-align: center;
+                    ">✕</button>
                     
-                    <div class="dialog-header" style="text-align: center; margin-bottom: 2rem;">
-                        <div class="dialog-icon-large" style="
-                            width: 80px;
-                            height: 80px;
-                            background: linear-gradient(135deg, #00f3ff, #00b8ff);
-                            border-radius: 50%;
+                    <h2 style="
+                        color: #00f3ff;
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin: 0 0 10px 0;
+                        text-align: center;
+                    ">Cara Install IslamHub</h2>
+                    
+                    <p style="
+                        color: rgba(255, 255, 255, 0.7);
+                        font-size: 14px;
+                        margin: 0 0 25px 0;
+                        text-align: center;
+                    ">Pilih metode sesuai perangkat Anda</p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="
+                            color: #00f3ff;
+                            font-size: 18px;
+                            font-weight: 600;
+                            margin: 0 0 15px 0;
                             display: flex;
                             align-items: center;
-                            justify-content: center;
-                            margin: 0 auto 1.5rem;
-                            font-size: 2.5rem;
-                            color: #0a0a1f;
-                            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.3);
+                            gap: 10px;
                         ">
-                            <i class="fas fa-download"></i>
-                        </div>
-                        <h2 style="
-                            font-size: 2rem;
-                            font-weight: 700;
-                            background: linear-gradient(135deg, #00f3ff, #ffffff);
-                            -webkit-background-clip: text;
-                            -webkit-text-fill-color: transparent;
-                            margin-bottom: 0.5rem;
-                        ">Cara Install IslamHub</h2>
-                        <p class="dialog-subtitle" style="
-                            font-size: 1rem;
-                            color: rgba(255, 255, 255, 0.7);
-                            margin: 0;
-                        ">Pilih metode sesuai perangkat Anda</p>
-                    </div>
-                    
-                    <div class="install-methods" style="display: flex; flex-direction: column; gap: 1.5rem;">
-                        <!-- Chrome Desktop -->
-                        <div class="install-method" style="
-                            background: rgba(255, 255, 255, 0.05);
+                            <span style="
+                                background: #4285f4;
+                                width: 35px;
+                                height: 35px;
+                                border-radius: 8px;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 18px;
+                            ">🌐</span>
+                            Chrome Desktop
+                        </h3>
+                        <div style="
+                            background: rgba(0, 243, 255, 0.05);
                             border: 1px solid rgba(0, 243, 255, 0.2);
-                            border-radius: 15px;
-                            padding: 1.5rem;
+                            border-radius: 10px;
+                            padding: 15px;
                         ">
-                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                                <div class="method-icon" style="
-                                    width: 50px;
-                                    height: 50px;
-                                    background: linear-gradient(135deg, #4285f4, #0d47a1);
-                                    border-radius: 12px;
+                            <div style="margin-bottom: 12px;">
+                                <div style="
                                     display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    font-size: 1.8rem;
-                                    color: white;
+                                    gap: 10px;
+                                    align-items: start;
                                 ">
-                                    <i class="fab fa-chrome"></i>
-                                </div>
-                                <h3 style="
-                                    font-size: 1.3rem;
-                                    font-weight: 600;
-                                    color: #00f3ff;
-                                    margin: 0;
-                                ">Chrome Desktop</h3>
-                            </div>
-                            <div class="method-steps" style="display: flex; flex-direction: column; gap: 1rem;">
-                                <div class="step" style="display: flex; gap: 1rem; align-items: start;">
-                                    <span class="step-number" style="
-                                        min-width: 30px;
-                                        height: 30px;
-                                        background: linear-gradient(135deg, #00f3ff, #00b8ff);
+                                    <span style="
+                                        background: #00f3ff;
+                                        color: #0a0a1f;
+                                        width: 24px;
+                                        height: 24px;
                                         border-radius: 50%;
-                                        display: flex;
+                                        display: inline-flex;
                                         align-items: center;
                                         justify-content: center;
                                         font-weight: 700;
-                                        color: #0a0a1f;
+                                        font-size: 14px;
                                         flex-shrink: 0;
                                     ">1</span>
-                                    <div class="step-content">
-                                        <strong style="color: #ffffff; display: block; margin-bottom: 0.25rem;">Cari icon install di address bar</strong>
-                                        <p style="color: rgba(255, 255, 255, 0.7); margin: 0; font-size: 0.9rem;">Look for ⊕ or 🖥️ icon on the right side</p>
+                                    <div style="flex: 1;">
+                                        <strong style="color: white; display: block; margin-bottom: 3px;">Cari icon install di address bar</strong>
+                                        <p style="color: rgba(255, 255, 255, 0.6); margin: 0; font-size: 13px;">Look for ⊕ or 🖥️ icon on the right side</p>
                                     </div>
                                 </div>
-                                <div class="step" style="display: flex; gap: 1rem; align-items: start;">
-                                    <span class="step-number" style="
-                                        min-width: 30px;
-                                        height: 30px;
-                                        background: linear-gradient(135deg, #00f3ff, #00b8ff);
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <div style="
+                                    display: flex;
+                                    gap: 10px;
+                                    align-items: start;
+                                ">
+                                    <span style="
+                                        background: #00f3ff;
+                                        color: #0a0a1f;
+                                        width: 24px;
+                                        height: 24px;
                                         border-radius: 50%;
-                                        display: flex;
+                                        display: inline-flex;
                                         align-items: center;
                                         justify-content: center;
                                         font-weight: 700;
-                                        color: #0a0a1f;
+                                        font-size: 14px;
                                         flex-shrink: 0;
                                     ">2</span>
-                                    <div class="step-content">
-                                        <strong style="color: #ffffff; display: block; margin-bottom: 0.25rem;">Atau via menu browser</strong>
-                                        <p style="color: rgba(255, 255, 255, 0.7); margin: 0; font-size: 0.9rem;">Menu (⋮) → "Install IslamHub..."</p>
+                                    <div style="flex: 1;">
+                                        <strong style="color: white; display: block; margin-bottom: 3px;">Atau via menu browser</strong>
+                                        <p style="color: rgba(255, 255, 255, 0.6); margin: 0; font-size: 13px;">Menu (⋮) → "Install IslamHub..."</p>
                                     </div>
                                 </div>
-                                <div class="step" style="display: flex; gap: 1rem; align-items: start;">
-                                    <span class="step-number" style="
-                                        min-width: 30px;
-                                        height: 30px;
-                                        background: linear-gradient(135deg, #00f3ff, #00b8ff);
+                            </div>
+                            <div>
+                                <div style="
+                                    display: flex;
+                                    gap: 10px;
+                                    align-items: start;
+                                ">
+                                    <span style="
+                                        background: #00f3ff;
+                                        color: #0a0a1f;
+                                        width: 24px;
+                                        height: 24px;
                                         border-radius: 50%;
-                                        display: flex;
+                                        display: inline-flex;
                                         align-items: center;
                                         justify-content: center;
                                         font-weight: 700;
-                                        color: #0a0a1f;
+                                        font-size: 14px;
                                         flex-shrink: 0;
                                     ">3</span>
-                                    <div class="step-content">
-                                        <strong style="color: #ffffff; display: block; margin-bottom: 0.25rem;">Alternatif: Create Shortcut</strong>
-                                        <p style="color: rgba(255, 255, 255, 0.7); margin: 0; font-size: 0.9rem;">Menu → More Tools → Create Shortcut<br>
-                                        ✓ Check "Open as window"</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                            </div>
-                        </div>
-                        
-                        <!-- Mobile Instructions -->
-                        <div class="install-method" style="
-                            background: rgba(255, 255, 255, 0.05);
-                            border: 1px solid rgba(0, 243, 255, 0.2);
-                            border-radius: 15px;
-                            padding: 1.5rem;
-                        ">
-                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                                <div class="method-icon" style="
-                                    width: 50px;
-                                    height: 50px;
-                                    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
-                                    border-radius: 12px;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    font-size: 1.8rem;
-                                    color: white;
-                                ">
-                                    <i class="fas fa-mobile-alt"></i>
-                                </div>
-                                <h3 style="
-                                    font-size: 1.3rem;
-                                    font-weight: 600;
-                                    color: #00f3ff;
-                                    margin: 0;
-                                ">Mobile (Android/iOS)</h3>
-                            </div>
-                            <div class="method-steps" style="display: flex; flex-direction: column; gap: 1rem;">
-                                <div class="step" style="display: flex; gap: 1rem; align-items: start;">
-                                    <span class="step-number" style="
-                                        min-width: 30px;
-                                        height: 30px;
-                                        background: linear-gradient(135deg, #00f3ff, #00b8ff);
-                                        border-radius: 50%;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        font-weight: 700;
-                                        color: #0a0a1f;
-                                        flex-shrink: 0;
-                                    ">1</span>
-                                    <div class="step-content">
-                                        <strong style="color: #ffffff; display: block; margin-bottom: 0.25rem;">Tap menu browser</strong>
-                                        <p style="color: rgba(255, 255, 255, 0.7); margin: 0; font-size: 0.9rem;">Tap (⋮) atau Share icon</p>
-                                    </div>
-                                </div>
-                                <div class="step" style="display: flex; gap: 1rem; align-items: start;">
-                                    <span class="step-number" style="
-                                        min-width: 30px;
-                                        height: 30px;
-                                        background: linear-gradient(135deg, #00f3ff, #00b8ff);
-                                        border-radius: 50%;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        font-weight: 700;
-                                        color: #0a0a1f;
-                                        flex-shrink: 0;
-                                    ">2</span>
-                                    <div class="step-content">
-                                        <strong style="color: #ffffff; display: block; margin-bottom: 0.25rem;">Install aplikasi</strong>
-                                        <p style="color: rgba(255, 255, 255, 0.7); margin: 0; font-size: 0.9rem;">Pilih "Tambahkan ke Layar Utama" atau "Install app"</p>
+                                    <div style="flex: 1;">
+                                        <strong style="color: white; display: block; margin-bottom: 3px;">Alternatif: Create Shortcut</strong>
+                                        <p style="color: rgba(255, 255, 255, 0.6); margin: 0; font-size: 13px;">Menu → More Tools → Create Shortcut<br>✓ Check "Open as window"</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="dialog-footer" style="
-                        margin-top: 2rem;
-                        padding-top: 1.5rem;
-                        border-top: 1px solid rgba(0, 243, 255, 0.2);
-                        text-align: center;
-                    ">
-                        <div class="pwa-requirements">
-                            <h4 style="
-                                font-size: 1.1rem;
-                                color: #00f3ff;
-                                margin-bottom: 1rem;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                gap: 0.5rem;
-                            "><i class="fas fa-check-circle"></i> PWA Requirements Terpenuhi</h4>
-                            <div class="requirements-list" style="
-                                display: flex;
-                                flex-wrap: wrap;
-                                gap: 0.75rem;
-                                justify-content: center;
-                                margin-bottom: 1rem;
-                            ">
-                                <span class="req-item" style="
-                                    background: rgba(0, 243, 255, 0.1);
-                                    border: 1px solid rgba(0, 243, 255, 0.3);
-                                    padding: 0.5rem 1rem;
-                                    border-radius: 20px;
-                                    font-size: 0.85rem;
-                                    color: rgba(255, 255, 255, 0.9);
-                                ">✅ HTTPS/Localhost</span>
-                                <span class="req-item" style="
-                                    background: rgba(0, 243, 255, 0.1);
-                                    border: 1px solid rgba(0, 243, 255, 0.3);
-                                    padding: 0.5rem 1rem;
-                                    border-radius: 20px;
-                                    font-size: 0.85rem;
-                                    color: rgba(255, 255, 255, 0.9);
-                                ">✅ Service Worker</span>
-                                <span class="req-item" style="
-                                    background: rgba(0, 243, 255, 0.1);
-                                    border: 1px solid rgba(0, 243, 255, 0.3);
-                                    padding: 0.5rem 1rem;
-                                    border-radius: 20px;
-                                    font-size: 0.85rem;
-                                    color: rgba(255, 255, 255, 0.9);
-                                ">✅ Manifest.json</span>
-                                <span class="req-item" style="
-                                    background: rgba(0, 243, 255, 0.1);
-                                    border: 1px solid rgba(0, 243, 255, 0.3);
-                                    padding: 0.5rem 1rem;
-                                    border-radius: 20px;
-                                    font-size: 0.85rem;
-                                    color: rgba(255, 255, 255, 0.9);
-                                ">✅ Icons Ready</span>
-                            </div>
-                            <p class="note" style="
-                                font-size: 0.9rem;
-                                color: rgba(255, 255, 255, 0.6);
-                                margin: 0;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                gap: 0.5rem;
-                            ">
-                                <i class="fas fa-info-circle"></i>
-                                Chrome may require 2-3 visits before showing install prompt
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="dialog-buttons" style="
-                        display: flex;
-                        justify-content: center;
-                        margin-top: 1.5rem;
-                    ">
-                        <button class="dialog-btn primary" onclick="this.closest('.install-dialog').remove()" style="
-                            background: linear-gradient(135deg, #00f3ff, #00b8ff);
-                            color: #0a0a1f;
-                            border: none;
-                            padding: 1rem 2.5rem;
-                            border-radius: 50px;
-                            font-size: 1.1rem;
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="
+                            color: #00f3ff;
+                            font-size: 18px;
                             font-weight: 600;
-                            cursor: pointer;
+                            margin: 0 0 15px 0;
                             display: flex;
                             align-items: center;
-                            gap: 0.75rem;
-                            transition: all 0.3s ease;
-                            box-shadow: 0 4px 15px rgba(0, 243, 255, 0.4);
-                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(0, 243, 255, 0.6)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 243, 255, 0.4)'">
-                            <i class="fas fa-check"></i> Mengerti
-                        </button>
+                            gap: 10px;
+                        ">
+                            <span style="
+                                background: #ff6b6b;
+                                width: 35px;
+                                height: 35px;
+                                border-radius: 8px;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 18px;
+                            ">📱</span>
+                            Mobile (Android/iOS)
+                        </h3>
+                        <div style="
+                            background: rgba(0, 243, 255, 0.05);
+                            border: 1px solid rgba(0, 243, 255, 0.2);
+                            border-radius: 10px;
+                            padding: 15px;
+                        ">
+                            <div style="margin-bottom: 12px;">
+                                <div style="
+                                    display: flex;
+                                    gap: 10px;
+                                    align-items: start;
+                                ">
+                                    <span style="
+                                        background: #00f3ff;
+                                        color: #0a0a1f;
+                                        width: 24px;
+                                        height: 24px;
+                                        border-radius: 50%;
+                                        display: inline-flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-weight: 700;
+                                        font-size: 14px;
+                                        flex-shrink: 0;
+                                    ">1</span>
+                                    <div style="flex: 1;">
+                                        <strong style="color: white; display: block; margin-bottom: 3px;">Tap menu browser</strong>
+                                        <p style="color: rgba(255, 255, 255, 0.6); margin: 0; font-size: 13px;">Tap (⋮) atau Share icon</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="
+                                    display: flex;
+                                    gap: 10px;
+                                    align-items: start;
+                                ">
+                                    <span style="
+                                        background: #00f3ff;
+                                        color: #0a0a1f;
+                                        width: 24px;
+                                        height: 24px;
+                                        border-radius: 50%;
+                                        display: inline-flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-weight: 700;
+                                        font-size: 14px;
+                                        flex-shrink: 0;
+                                    ">2</span>
+                                    <div style="flex: 1;">
+                                        <strong style="color: white; display: block; margin-bottom: 3px;">Install aplikasi</strong>
+                                        <p style="color: rgba(255, 255, 255, 0.6); margin: 0; font-size: 13px;">Pilih "Tambahkan ke Layar Utama" atau "Install app"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    
+                    <div style="
+                        padding: 15px;
+                        background: rgba(0, 243, 255, 0.1);
+                        border: 1px solid rgba(0, 243, 255, 0.3);
+                        border-radius: 10px;
+                        margin-bottom: 20px;
+                    ">
+                        <h4 style="
+                            color: #00f3ff;
+                            font-size: 15px;
+                            font-weight: 600;
+                            margin: 0 0 10px 0;
+                        ">✅ PWA Requirements Terpenuhi</h4>
+                        <div style="
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 8px;
+                            margin-bottom: 10px;
+                        ">
+                            <span style="
+                                background: rgba(0, 243, 255, 0.15);
+                                border: 1px solid rgba(0, 243, 255, 0.3);
+                                padding: 5px 12px;
+                                border-radius: 15px;
+                                font-size: 12px;
+                                color: white;
+                            ">✅ HTTPS</span>
+                            <span style="
+                                background: rgba(0, 243, 255, 0.15);
+                                border: 1px solid rgba(0, 243, 255, 0.3);
+                                padding: 5px 12px;
+                                border-radius: 15px;
+                                font-size: 12px;
+                                color: white;
+                            ">✅ Service Worker</span>
+                            <span style="
+                                background: rgba(0, 243, 255, 0.15);
+                                border: 1px solid rgba(0, 243, 255, 0.3);
+                                padding: 5px 12px;
+                                border-radius: 15px;
+                                font-size: 12px;
+                                color: white;
+                            ">✅ Manifest</span>
+                            <span style="
+                                background: rgba(0, 243, 255, 0.15);
+                                border: 1px solid rgba(0, 243, 255, 0.3);
+                                padding: 5px 12px;
+                                border-radius: 15px;
+                                font-size: 12px;
+                                color: white;
+                            ">✅ Icons</span>
+                        </div>
+                        <p style="
+                            color: rgba(255, 255, 255, 0.6);
+                            font-size: 12px;
+                            margin: 0;
+                        ">ℹ️ Chrome may require 2-3 visits before showing install prompt</p>
+                    </div>
+                    
+                    <button onclick="this.closest('.install-dialog').remove()" style="
+                        background: linear-gradient(135deg, #00f3ff, #00b8ff);
+                        color: #0a0a1f;
+                        border: none;
+                        padding: 12px 30px;
+                        border-radius: 25px;
+                        font-size: 16px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        width: 100%;
+                        box-shadow: 0 4px 15px rgba(0, 243, 255, 0.4);
+                    ">✓ Mengerti</button>
                 </div>
             `;
         } else {
             // Regular dialog for other messages
             const formattedMessage = message
                 .replace(/\n/g, '<br>')
-                .replace(/•/g, '&bull;')
-                .replace(/✅/g, '<span class="check-icon">✅</span>')
-                .replace(/❌/g, '<span class="cross-icon">❌</span>')
-                .replace(/⚠️/g, '<span class="warn-icon">⚠️</span>')
-                .replace(/ℹ️/g, '<span class="info-icon">ℹ️</span>')
-                .replace(/💡/g, '<span class="bulb-icon">💡</span>')
-                .replace(/📋/g, '<span class="clipboard-icon">📋</span>')
-                .replace(/🔍/g, '<span class="search-icon">🔍</span>');
+                .replace(/•/g, '&bull;');
             
             dialog.innerHTML = `
-                <div class="install-dialog-content ${type}">
-                    <button class="dialog-close" onclick="this.closest('.install-dialog').remove()">
-                        <i class="fas fa-times"></i>
+                <div style="
+                    position: relative;
+                    background: #1e1e2e;
+                    color: white;
+                    padding: 2rem;
+                    border-radius: 20px;
+                    max-width: 600px;
+                    width: 90%;
+                    max-height: 85vh;
+                    overflow-y: auto;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+                    border: 2px solid rgba(0, 243, 255, 0.3);
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+                ">
+                    <button onclick="this.closest('.install-dialog').remove()" style="
+                        position: absolute;
+                        top: 15px;
+                        right: 15px;
+                        background: rgba(255, 255, 255, 0.1);
+                        border: none;
+                        color: #00f3ff;
+                        width: 35px;
+                        height: 35px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        font-size: 20px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                        ✕
                     </button>
-                    <div class="dialog-icon">
-                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                    
+                    <div style="
+                        text-align: center;
+                        margin-bottom: 1.5rem;
+                    ">
+                        <div style="
+                            width: 60px;
+                            height: 60px;
+                            margin: 0 auto 1rem;
+                            background: ${type === 'success' ? 'linear-gradient(135deg, #00f3ff, #00b8ff)' : type === 'error' ? 'linear-gradient(135deg, #ff6b6b, #ee5a6f)' : 'linear-gradient(135deg, #00f3ff, #0d47a1)'};
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 30px;
+                        ">
+                            ${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}
+                        </div>
                     </div>
-                    <div class="dialog-message">${formattedMessage}</div>
-                    <div class="dialog-buttons">
-                        <button class="dialog-btn primary" onclick="this.closest('.install-dialog').remove()">
+                    
+                    <div style="
+                        color: white;
+                        font-size: 15px;
+                        line-height: 1.6;
+                        margin-bottom: 2rem;
+                        white-space: pre-wrap;
+                    ">${formattedMessage}</div>
+                    
+                    <div style="
+                        display: flex;
+                        justify-content: center;
+                    ">
+                        <button onclick="this.closest('.install-dialog').remove()" style="
+                            background: linear-gradient(135deg, #00f3ff, #00b8ff);
+                            color: #0a0a1f;
+                            border: none;
+                            padding: 12px 40px;
+                            border-radius: 25px;
+                            font-size: 16px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            box-shadow: 0 4px 15px rgba(0, 243, 255, 0.4);
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(0, 243, 255, 0.6)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 243, 255, 0.4)'">
                             Mengerti
                         </button>
                     </div>
@@ -1184,34 +1202,6 @@ class IslamHubApp {
         }
         
         document.body.appendChild(dialog);
-        console.log('✅ Dialog appended to body');
-        
-        // Force content visibility
-        const content = dialog.querySelector('.install-dialog-content');
-        if (content) {
-            content.style.cssText = `
-                position: relative !important;
-                background: var(--bg-card, #1e1e2e) !important;
-                padding: 2rem !important;
-                border-radius: 20px !important;
-                max-width: 600px !important;
-                width: 90% !important;
-                max-height: 85vh !important;
-                overflow-y: auto !important;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8) !important;
-                border: 2px solid rgba(0, 243, 255, 0.3) !important;
-                display: block !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                z-index: 1000000 !important;
-            `;
-            console.log('✅ Content styled inline');
-        }
-        
-        // Debug: Log element existence
-        console.log('Dialog element:', dialog);
-        console.log('Dialog computed style:', window.getComputedStyle(dialog));
-        console.log('Is dialog in body?', document.body.contains(dialog));
         
         // Add click outside to close
         dialog.addEventListener('click', (e) => {
