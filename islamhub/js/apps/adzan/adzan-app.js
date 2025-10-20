@@ -282,16 +282,26 @@ export default class AdzanApp {
         if (!this.nextPrayer) return;
         
         const now = new Date();
-        const [hours, minutes] = this.nextPrayer.time.split(':').map(Number);
-        const targetTime = new Date();
-        targetTime.setHours(hours, minutes, 0, 0);
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const currentSeconds = now.getSeconds();
         
-        if (targetTime <= now) {
-            targetTime.setDate(targetTime.getDate() + 1);
+        const [hours, minutes] = this.nextPrayer.time.split(':').map(Number);
+        const prayerMinutes = hours * 60 + minutes;
+        
+        // Calculate difference in minutes
+        let diffMinutes = prayerMinutes - currentMinutes;
+        if (diffMinutes < 0) {
+            diffMinutes += 1440; // Add 24 hours (1440 minutes) if prayer is tomorrow
         }
         
-        const diff = targetTime - now;
-        const totalSeconds = Math.floor(diff / 1000);
+        // Convert to total seconds
+        const totalSeconds = (diffMinutes * 60) - currentSeconds;
+        
+        // If negative or zero, recalculate next prayer
+        if (totalSeconds <= 0) {
+            this.calculateNextPrayer();
+            return;
+        }
         
         const hrs = Math.floor(totalSeconds / 3600);
         const mins = Math.floor((totalSeconds % 3600) / 60);
@@ -318,11 +328,6 @@ export default class AdzanApp {
                 countdown: countdown,
                 city: this.city
             });
-        }
-        
-        // Refresh prayer times if countdown reaches zero
-        if (totalSeconds <= 0) {
-            this.fetchPrayerTimes();
         }
         
         // Update sunnah prayers every minute

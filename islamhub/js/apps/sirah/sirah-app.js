@@ -574,7 +574,11 @@ export default class SirahApp {
         if (prophet.age) textContent += `Usia: ${prophet.age}\n`;
         if (prophet.tribe) textContent += `Suku: ${prophet.tribe}\n`;
         if (prophet.mission) textContent += `Misi: ${prophet.mission}\n`;
-        textContent += `\nDeskripsi:\n${prophet.description}\n\n`;
+        if (prophet.description) {
+            textContent += `\nDeskripsi:\n${prophet.description}\n\n`;
+        } else {
+            textContent += `\n`;
+        }
         
         // Peristiwa Penting
         if (prophet.events && prophet.events.length > 0) {

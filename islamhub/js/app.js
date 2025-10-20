@@ -57,12 +57,92 @@ class IslamHubApp {
     }
 
     setupNavigation() {
+        // Setup More Apps dropdown first (before bottom nav items)
+        const moreAppsBtn = document.getElementById('moreAppsBtn');
+        const moreAppsDropdown = document.getElementById('moreAppsDropdown');
+        const closeDropdown = document.getElementById('closeDropdown');
+        
+        console.log('Setup Navigation - Elements check:', {
+            btn: moreAppsBtn,
+            dropdown: moreAppsDropdown,
+            close: closeDropdown
+        });
+        
+        if (moreAppsDropdown) {
+            console.log('Dropdown styles:', {
+                position: getComputedStyle(moreAppsDropdown).position,
+                bottom: getComputedStyle(moreAppsDropdown).bottom,
+                zIndex: getComputedStyle(moreAppsDropdown).zIndex,
+                transform: getComputedStyle(moreAppsDropdown).transform,
+                visibility: getComputedStyle(moreAppsDropdown).visibility,
+                opacity: getComputedStyle(moreAppsDropdown).opacity,
+                display: getComputedStyle(moreAppsDropdown).display
+            });
+        }
+        
+        if (moreAppsBtn && moreAppsDropdown && closeDropdown) {
+            console.log('More Apps dropdown found, setting up...');
+            
+            // Remove any existing listeners by cloning and replacing
+            const newBtn = moreAppsBtn.cloneNode(true);
+            moreAppsBtn.parentNode.replaceChild(newBtn, moreAppsBtn);
+            
+            // Open dropdown
+            newBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('More Apps button clicked');
+                moreAppsDropdown.classList.toggle('show');
+            });
+            
+            // Close dropdown
+            closeDropdown.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Closing dropdown');
+                moreAppsDropdown.classList.remove('show');
+            });
+            
+            // Handle app selection from dropdown
+            const moreAppItems = document.querySelectorAll('.more-app-item');
+            console.log(`Found ${moreAppItems.length} more app items`);
+            
+            moreAppItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const appName = item.dataset.app;
+                    console.log(`Opening app from dropdown: ${appName}`);
+                    moreAppsDropdown.classList.remove('show');
+                    this.switchApp(appName);
+                });
+            });
+            
+            // Close on outside click
+            document.addEventListener('click', (e) => {
+                if (!moreAppsDropdown.contains(e.target) && !newBtn.contains(e.target)) {
+                    if (moreAppsDropdown.classList.contains('show')) {
+                        console.log('Clicked outside, closing dropdown');
+                        moreAppsDropdown.classList.remove('show');
+                    }
+                }
+            });
+        } else {
+            console.log('More Apps elements not found:', {
+                btn: !!moreAppsBtn,
+                dropdown: !!moreAppsDropdown,
+                close: !!closeDropdown
+            });
+        }
+        
         // Bottom navigation for all devices
-        const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
+        const bottomNavItems = document.querySelectorAll('.bottom-nav-item:not(#moreAppsBtn)');
         bottomNavItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 const appName = e.currentTarget.dataset.app;
-                this.switchApp(appName);
+                if (appName) {
+                    this.switchApp(appName);
+                }
             });
         });
     }
@@ -485,7 +565,7 @@ class IslamHubApp {
         const installButton = document.getElementById('installButton');
 
         if (!installButton) {
-            console.log('⚠️ Install button not found');
+            console.log('Install button not found');
             return;
         }
 
@@ -494,55 +574,46 @@ class IslamHubApp {
                             window.navigator.standalone === true;
         
         if (isStandalone) {
-            console.log('✅ App already running in standalone mode');
+            console.log('App already running in standalone mode');
             installButton.style.display = 'none';
             return;
         }
 
-        console.log('🔍 Checking PWA install eligibility...');
+        console.log('Checking PWA install eligibility...');
 
         // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('✅ beforeinstallprompt event fired!');
+            console.log('beforeinstallprompt event fired!');
             // Prevent the mini-infobar from appearing on mobile
             e.preventDefault();
             // Stash the event so it can be triggered later
             deferredPrompt = e;
             // Show install button
             installButton.style.display = 'inline-flex';
-            console.log('✅ PWA install button shown');
+            console.log('PWA install button shown');
         });
 
-        // Fallback: Show button after 2 seconds if criteria met but event not fired
-        setTimeout(() => {
-            if (!isStandalone && installButton.style.display === 'none') {
-                // Check if service worker is registered
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.getRegistration().then(registration => {
-                        if (registration) {
-                            console.log('ℹ️ Showing install button (fallback - SW registered)');
-                            installButton.style.display = 'inline-flex';
-                        }
-                    });
-                }
-            }
-        }, 3000);
+        // Show button immediately if not standalone
+        if (!isStandalone) {
+            console.log('Showing install button (available)');
+            installButton.style.display = 'inline-flex';
+        }
 
         // Handle install button click
         installButton.addEventListener('click', async () => {
             if (!deferredPrompt) {
-                console.log('⚠️ No deferred prompt, showing manual instructions');
+                console.log('No deferred prompt, showing manual instructions');
                 // If no install prompt, show info message
                 alert('Untuk menginstall aplikasi:\n\n' +
-                      '📱 Mobile Chrome: Menu (⋮) → "Tambahkan ke Layar Utama"\n' +
-                      '� Mobile Safari: Share → "Add to Home Screen"\n' +
-                      '�💻 Desktop Chrome: Klik icon ⊕ di address bar\n' +
-                      '💻 Desktop Edge: Menu → "Aplikasi" → "Install IslamHub"\n\n' +
+                      'Mobile Chrome: Menu (⋮) → "Tambahkan ke Layar Utama"\n' +
+                      'Mobile Safari: Share → "Add to Home Screen"\n' +
+                      'Desktop Chrome: Klik icon ⊕ di address bar\n' +
+                      'Desktop Edge: Menu → "Aplikasi" → "Install IslamHub"\n\n' +
                       'Pastikan menggunakan HTTPS dan browser mendukung PWA.');
                 return;
             }
 
-            console.log('🚀 Showing native install prompt...');
+            console.log('Showing native install prompt...');
             // Show the install prompt
             deferredPrompt.prompt();
             
@@ -550,9 +621,9 @@ class IslamHubApp {
             const { outcome } = await deferredPrompt.userChoice;
             
             if (outcome === 'accepted') {
-                console.log('✅ User accepted the install prompt');
+                console.log('User accepted the install prompt');
             } else {
-                console.log('❌ User dismissed the install prompt');
+                console.log('User dismissed the install prompt');
             }
             
             // Clear the deferredPrompt
@@ -562,7 +633,7 @@ class IslamHubApp {
 
         // Handle app installed event
         window.addEventListener('appinstalled', () => {
-            console.log('🎉 PWA was installed successfully!');
+            console.log('PWA was installed successfully!');
             installButton.style.display = 'none';
             deferredPrompt = null;
         });

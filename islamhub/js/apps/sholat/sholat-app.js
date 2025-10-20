@@ -462,29 +462,20 @@ export default class SholatApp {
     }
 
     showToast(message) {
-        // Remove existing toast if any
-        const existingToast = document.querySelector('.sholat-toast');
-        if (existingToast) {
-            existingToast.remove();
-        }
-
-        // Create toast
+        // Simple toast notification (same as Dzikir)
         const toast = document.createElement('div');
-        toast.className = 'sholat-toast';
-        toast.innerHTML = `
-            <i class="fas fa-check-circle"></i>
-            <span>${message}</span>
-        `;
+        toast.className = 'toast-notification';
+        toast.textContent = message;
         document.body.appendChild(toast);
 
-        // Show toast
-        setTimeout(() => toast.classList.add('show'), 100);
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100);
 
-        // Hide and remove toast
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
-        }, 2500);
+        }, 2000);
     }
 
     updateFavoriteButton() {

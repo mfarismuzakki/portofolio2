@@ -645,23 +645,57 @@
                 <i class="fas fa-hands"></i>
                 <span>Dzikir</span>
             </button>
-            <button class="bottom-nav-item" data-app="waris">
-                <i class="fas fa-calculator"></i>
-                <span>Waris</span>
-            </button>
-            <button class="bottom-nav-item" data-app="qibla">
-                <i class="fas fa-compass"></i>
-                <span>Qibla</span>
-            </button>
             <button class="bottom-nav-item" data-app="sholat">
                 <i class="fas fa-kaaba"></i>
                 <span>Sholat</span>
             </button>
-            <button class="bottom-nav-item" data-app="sirah">
-                <i class="fas fa-tree"></i>
-                <span>Sirah</span>
+            <button class="bottom-nav-item" id="moreAppsBtn">
+                <i class="fas fa-th"></i>
+                <span>Lainnya</span>
             </button>
         </nav>
+        
+        <!-- More Apps Dropdown -->
+        <div class="more-apps-dropdown" id="moreAppsDropdown">
+            <div class="more-apps-header">
+                <h3><i class="fas fa-th"></i> Aplikasi Lainnya</h3>
+                <button class="close-dropdown" id="closeDropdown">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="more-apps-list">
+                <button class="more-app-item" data-app="waris">
+                    <div class="more-app-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="more-app-info">
+                        <h4>Kalkulator Waris</h4>
+                        <p>Hitung pembagian warisan syar'i</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="more-app-item" data-app="qibla">
+                    <div class="more-app-icon">
+                        <i class="fas fa-compass"></i>
+                    </div>
+                    <div class="more-app-info">
+                        <h4>Arah Kiblat</h4>
+                        <p>Kompas digital arah kiblat</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="more-app-item" data-app="sirah">
+                    <div class="more-app-icon">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <div class="more-app-info">
+                        <h4>Sirah Nabi</h4>
+                        <p>Kisah para nabi dan rasul</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->
@@ -673,7 +707,7 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/islamhub/sw.js', { scope: '/islamhub/' })
                     .then(reg => {
-                        console.log('✅ Service Worker registered successfully', reg.scope);
+                        console.log('Service Worker registered successfully', reg.scope);
                         // Check for updates
                         reg.update();
                     })

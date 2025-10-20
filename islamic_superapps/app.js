@@ -49,7 +49,7 @@ class IslamicSuperApps {
             this.enableTestMode();
         }
         
-        console.log('✅ IslamHub initialized successfully');
+        console.log('IslamHub initialized successfully');
     }
 
     setupEventListeners() {
@@ -478,7 +478,7 @@ class IslamicSuperApps {
             this.switchApp('adzan');
         });
         
-        console.log('✅ Floating widget initialized', {
+        console.log('Floating widget initialized', {
             widget: !!this.floatingWidget,
             prayerName: !!this.widgetPrayerName,
             countdown: !!this.widgetCountdown
@@ -778,7 +778,7 @@ class IslamicSuperApps {
             const result = await deferredPrompt.userChoice;
             
             if (result.outcome === 'accepted') {
-                console.log('✅ User accepted install prompt');
+                console.log('User accepted install prompt');
             } else {
                 console.log('❌ User dismissed install prompt');
             }
