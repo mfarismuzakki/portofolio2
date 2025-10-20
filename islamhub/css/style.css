@@ -244,7 +244,7 @@ body::before {
   background: rgba(10, 10, 15, 0.98);
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(0, 255, 255, 0.2);
-  padding: 4px 2px;
+  padding: 3px 0;
   z-index: 1000;
   display: flex;
   justify-content: space-evenly;
@@ -275,23 +275,23 @@ body::before {
   background: transparent;
   border: none;
   color: var(--text-secondary);
-  font-size: 9px;
+  font-size: 8px;
   cursor: pointer;
-  padding: 4px 1px;
+  padding: 3px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1px;
   transition: all 0.3s ease;
-  flex: 1;
-  max-width: 80px;
+  flex: 1 1 0;
+  min-width: 0;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 
 .bottom-nav-item i {
-  font-size: 14px;
+  font-size: 13px;
   flex-shrink: 0;
 }
 
