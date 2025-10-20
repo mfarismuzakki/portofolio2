@@ -651,128 +651,130 @@ class IslamHubApp {
 
         // Handle install button click
         installButton.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                const issues = [];
-                const success = [];
-                
-                // Check service worker
-                if (!('serviceWorker' in navigator)) {
-                    issues.push('❌ Browser tidak mendukung Service Worker');
-                } else {
-                    const registrations = await navigator.serviceWorker.getRegistrations();
-                    if (registrations.length === 0) {
-                        issues.push('❌ Service Worker belum terdaftar');
+            // If prompt available, show it immediately
+            if (deferredPrompt) {
+                try {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    
+                    if (outcome === 'accepted') {
+                        localStorage.setItem('islamhub_installed', 'true');
+                        this.showInstallDialog('🎉 Berhasil!\n\nAplikasi IslamHub sedang diinstall.\nCek home screen atau app drawer Anda dalam beberapa detik.', 'success');
                     } else {
-                        success.push('✅ Service Worker aktif');
+                        this.showInstallDialog('Install dibatalkan.\n\nAnda bisa install kapan saja dari menu browser atau klik tombol Install Aplikasi lagi.', 'info');
                     }
-                }
-                
-                // Check manifest
-                const manifestLink = document.querySelector('link[rel="manifest"]');
-                if (!manifestLink) {
-                    issues.push('❌ Manifest link tidak ditemukan');
-                } else {
-                    try {
-                        const response = await fetch(manifestLink.href);
-                        const manifest = await response.json();
-                        
-                        // Check required fields
-                        if (!manifest.name && !manifest.short_name) {
-                            issues.push('❌ Manifest: name/short_name hilang');
-                        }
-                        if (!manifest.start_url) {
-                            issues.push('❌ Manifest: start_url hilang');
-                        }
-                        if (!manifest.display || manifest.display === 'browser') {
-                            issues.push('❌ Manifest: display harus standalone');
-                        }
-                        if (!manifest.icons || manifest.icons.length === 0) {
-                            issues.push('❌ Manifest: icons hilang');
-                        } else {
-                            const has192 = manifest.icons.some(icon => 
-                                icon.sizes.includes('192x192') || icon.sizes.includes('192')
-                            );
-                            const has512 = manifest.icons.some(icon => 
-                                icon.sizes.includes('512x512') || icon.sizes.includes('512')
-                            );
-                            if (!has192 || !has512) {
-                                issues.push('❌ Manifest: perlu icon 192x192 dan 512x512');
-                            } else {
-                                success.push('✅ Manifest valid dengan semua icon');
-                            }
-                        }
-                        
-                        if (issues.filter(i => i.includes('Manifest')).length === 0 && !success.includes('✅ Manifest valid dengan semua icon')) {
-                            success.push('✅ Manifest valid');
-                        }
-                    } catch (error) {
-                        console.error('Manifest fetch error:', error);
-                        issues.push('❌ Gagal load manifest.json');
-                    }
-                }
-                
-                // Check HTTPS
-                if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-                    issues.push('❌ Butuh HTTPS untuk install PWA');
-                } else {
-                    success.push('✅ Protokol aman (HTTPS)');
-                }
-                
-                // Check if already installed - only check if currently running in standalone
-                const currentlyInstalled = window.matchMedia('(display-mode: standalone)').matches;
-                if (currentlyInstalled) {
-                    this.showInstallDialog('Aplikasi sudah terinstall! 🎉\n\nAnda sedang menjalankan aplikasi dari home screen.', 'success');
-                    return;
-                }
-                
-                // Build message
-                let message = '';
-                
-                if (issues.length > 0) {
-                    message = '⚠️ Install PWA Tidak Tersedia\n\n';
-                    message += 'Masalah yang ditemukan:\n' + issues.join('\n') + '\n\n';
-                    message += '💡 Solusi:\n';
-                    message += '• Tutup dan buka browser lagi\n';
-                    message += '• Clear cache browser (Ctrl+Shift+Del)\n';
-                    message += '• Kunjungi situs 2-3 kali lagi\n';
-                    message += '• Install manual dari menu browser:\n';
-                    message += '  Chrome: Menu (⋮) → Install IslamHub\n';
-                    message += '  Safari: Share → Add to Home Screen';
-                    this.showInstallDialog(message, 'error');
-                } else {
-                    message = '✨ PWA Siap Diinstall!\n\n';
-                    message += success.join('\n') + '\n\n';
-                    message += '📌 Cara Install:\n\n';
-                    message += '🖥️ Desktop (Chrome/Edge):\n';
-                    message += '• Cari icon install (⊕) di address bar\n';
-                    message += '• Atau: Menu → Install IslamHub\n\n';
-                    message += '📱 Mobile:\n';
-                    message += '• Android: Tap menu (⋮) → Install app\n';
-                    message += '• iOS Safari: Share → Add to Home Screen\n\n';
-                    message += '💡 Catatan Penting:\n';
-                    message += 'Chrome butuh 2-3 kunjungan sebelum menawarkan install otomatis.\n';
-                    message += 'Jika baru uninstall, tutup browser dulu, lalu buka lagi dan kunjungi 2-3x.';
-                    this.showInstallDialog(message, 'info');
+                    
+                    deferredPrompt = null;
+                    installButton.style.display = 'none';
+                } catch (error) {
+                    console.error('Install prompt error:', error);
+                    this.showInstallDialog('❌ Gagal Install\n\nPrompt install tidak bisa ditampilkan.\n\n💡 Coba:\n• Tutup dan buka browser lagi\n• Clear cache browser\n• Kunjungi situs 2-3x lagi\n• Install manual: Menu browser → Install IslamHub', 'error');
                 }
                 return;
             }
-
-            try {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                
-                if (outcome === 'accepted') {
-                    localStorage.setItem('islamhub_installed', 'true');
-                    this.showInstallDialog('🎉 Berhasil!\n\nAplikasi IslamHub sedang diinstall.\nCek home screen atau app drawer Anda dalam beberapa detik.', 'success');
+            
+            // No prompt available - show instructions
+            const issues = [];
+            const success = [];
+            
+            // Check service worker
+            if (!('serviceWorker' in navigator)) {
+                issues.push('❌ Browser tidak mendukung Service Worker');
+            } else {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                if (registrations.length === 0) {
+                    issues.push('❌ Service Worker belum terdaftar');
                 } else {
-                    this.showInstallDialog('Install dibatalkan.\n\nAnda bisa install kapan saja dari menu browser atau klik tombol Install Aplikasi lagi.', 'info');
+                    success.push('✅ Service Worker aktif');
                 }
-                
-                deferredPrompt = null;
-                installButton.style.display = 'none';
-            } catch (error) {
-                console.error('Install prompt error:', error);
-                this.showInstallDialog('❌ Gagal Install\n\nPrompt install tidak bisa ditampilkan.\n\n💡 Coba:\n• Tutup dan buka browser lagi\n• Clear cache browser\n• Kunjungi situs 2-3x lagi\n• Install manual: Menu browser → Install IslamHub', 'error');
+            }
+            
+            // Check manifest
+            const manifestLink = document.querySelector('link[rel="manifest"]');
+            if (!manifestLink) {
+                issues.push('❌ Manifest link tidak ditemukan');
+            } else {
+                try {
+                    const response = await fetch(manifestLink.href);
+                    const manifest = await response.json();
+                    
+                    // Check required fields
+                    if (!manifest.name && !manifest.short_name) {
+                        issues.push('❌ Manifest: name/short_name hilang');
+                    }
+                    if (!manifest.start_url) {
+                        issues.push('❌ Manifest: start_url hilang');
+                    }
+                    if (!manifest.display || manifest.display === 'browser') {
+                        issues.push('❌ Manifest: display harus standalone');
+                    }
+                    if (!manifest.icons || manifest.icons.length === 0) {
+                        issues.push('❌ Manifest: icons hilang');
+                    } else {
+                        const has192 = manifest.icons.some(icon => 
+                            icon.sizes.includes('192x192') || icon.sizes.includes('192')
+                        );
+                        const has512 = manifest.icons.some(icon => 
+                            icon.sizes.includes('512x512') || icon.sizes.includes('512')
+                        );
+                        if (!has192 || !has512) {
+                            issues.push('❌ Manifest: perlu icon 192x192 dan 512x512');
+                        } else {
+                            success.push('✅ Manifest valid dengan semua icon');
+                        }
+                    }
+                    
+                    if (issues.filter(i => i.includes('Manifest')).length === 0 && !success.includes('✅ Manifest valid dengan semua icon')) {
+                        success.push('✅ Manifest valid');
+                    }
+                } catch (error) {
+                    console.error('Manifest fetch error:', error);
+                    issues.push('❌ Gagal load manifest.json');
+                }
+            }
+            
+            // Check HTTPS
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                issues.push('❌ Butuh HTTPS untuk install PWA');
+            } else {
+                success.push('✅ Protokol aman (HTTPS)');
+            }
+            
+            // Check if already installed - only check if currently running in standalone
+            const currentlyInstalled = window.matchMedia('(display-mode: standalone)').matches;
+            if (currentlyInstalled) {
+                this.showInstallDialog('Aplikasi sudah terinstall! 🎉\n\nAnda sedang menjalankan aplikasi dari home screen.', 'success');
+                return;
+            }
+            
+            // Build message
+            let message = '';
+            
+            if (issues.length > 0) {
+                message = '⚠️ Install PWA Tidak Tersedia\n\n';
+                message += 'Masalah yang ditemukan:\n' + issues.join('\n') + '\n\n';
+                message += '💡 Solusi:\n';
+                message += '• Tutup dan buka browser lagi\n';
+                message += '• Clear cache browser (Ctrl+Shift+Del)\n';
+                message += '• Kunjungi situs 2-3 kali lagi\n';
+                message += '• Install manual dari menu browser:\n';
+                message += '  Chrome: Menu (⋮) → Install IslamHub\n';
+                message += '  Safari: Share → Add to Home Screen';
+                this.showInstallDialog(message, 'error');
+            } else {
+                message = '✨ PWA Siap Diinstall!\n\n';
+                message += success.join('\n') + '\n\n';
+                message += '📌 Cara Install:\n\n';
+                message += '🖥️ Desktop (Chrome/Edge):\n';
+                message += '• Cari icon install (⊕) di address bar\n';
+                message += '• Atau: Menu → Install IslamHub\n\n';
+                message += '📱 Mobile:\n';
+                message += '• Android: Tap menu (⋮) → Install app\n';
+                message += '• iOS Safari: Share → Add to Home Screen\n\n';
+                message += '💡 Catatan Penting:\n';
+                message += 'Chrome butuh 2-3 kunjungan sebelum menawarkan install otomatis.\n';
+                message += 'Jika baru uninstall, tutup browser dulu, lalu buka lagi dan kunjungi 2-3x.';
+                this.showInstallDialog(message, 'info');
             }
         });
 
