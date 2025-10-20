@@ -110,46 +110,47 @@ const nabiPart1 = [
         title: 'Nabi \'Alaihissalam',
         category: 'nabi',
         subcategory: 'nabi',
-        period: 'tidak diketahui',
-        periodHijri: 'tidak diketahui',
-        birthPlace: 'tidak diketahui',
+        period: 'Disebutkan sebelum Nuh \'alaihissalam',
+        periodHijri: 'Sebelum tarikh',
+        birthPlace: 'Tidak disebutkan secara rinci dalam nash shahih',
         deathPlace: 'Diangkat ke tempat yang tinggi',
-        tribe: 'tidak diketahui',
-        father: 'tidak diketahui',
-        mother: 'tidak diketahui',
-        wife: ['tidak diketahui'],
-        children: ['tidak diketahui'],
-        profession: 'Nabi, penjahit pertama, ahli tulis-menulis',
-        qualities: ['Sabar', 'Tekun beribadah', 'Ahli tulis-menulis', 'Diangkat ke tempat tinggi', 'Shiddiq'],
-        biography: 'Nabi Idris \'alaihissalam adalah nabi kedua setelah Adam. Beliau dikenal sebagai orang pertama yang bisa menulis dengan pena dan menjahit pakaian. Allah mengangkatnya ke tempat yang tinggi sebagaimana disebutkan dalam Al-Quran. Beliau juga dikenal dengan kesabaran dan ketekunannya dalam beribadah, serta digelari sebagai Shiddiq karena kebenaran dan kejujurannya.',
+        tribe: 'Keturunan Adam \'alaihissalam',
+        father: 'Tidak disebutkan dalam nash shahih',
+        mother: 'Tidak disebutkan dalam nash shahih',
+        wife: ['Tidak disebutkan dalam nash shahih'],
+        children: ['Tidak disebutkan secara rinci dalam nash shahih'],
+        profession: 'Nabi',
+        qualities: ['Shiddiq (sangat jujur)', 'Diangkat ke tempat tinggi', 'Sabar'],
+        biography: 'Nabi Idris \'alaihissalam disebutkan dalam Al-Quran sebagai nabi yang shiddiq (sangat jujur) dan sabar. Allah mengangkatnya ke tempat yang tinggi (makanan \'aliyyan). Beliau termasuk nabi yang diberi kesabaran luar biasa bersama Ismail dan Dzulkifli. Detail kehidupan beliau tidak banyak dijelaskan dalam nash shahih. Wallahu a\'lam.',
         majorEvents: [
             {
-                event: 'Diangkat menjadi nabi',
-                year: 'Masa hidup',
-                description: 'Allah mengangkat Idris menjadi nabi untuk menyebarkan ajaran tauhid kepada kaumnya',
-                references: ['QS. Maryam: 56-57', 'QS. Al-Anbiya: 85-86']
+                event: 'Disebutkan sebagai nabi yang shiddiq',
+                year: 'Masa kenabian',
+                description: 'Idris disebutkan dalam Al-Quran sebagai nabi yang sangat jujur (shiddiq)',
+                references: ['QS. Maryam: 56']
             },
-
             {
-                event: 'Diangkat ke tempat tinggi',
-                year: 'Akhir hidup',
-                description: 'Allah mengangkat Idris ke tempat yang tinggi (makan \'aliy), ada yang berpendapat ke langit keempat',
-                references: ['QS. Maryam: 57', 'Riwayat Isra\' Mi\'raj']
+                event: 'Diangkat ke tempat yang tinggi',
+                year: 'Disebutkan dalam Al-Quran',
+                description: 'Allah mengangkat Idris ke tempat yang tinggi (makanan \'aliyyan)',
+                references: ['QS. Maryam: 57']
+            },
+            {
+                event: 'Disebutkan bersama nabi-nabi yang sabar',
+                year: 'Disebutkan dalam Al-Quran',
+                description: 'Idris disebutkan bersama Ismail dan Dzulkifli sebagai nabi-nabi yang memiliki kesabaran luar biasa',
+                references: ['QS. Al-Anbiya: 85-86']
             }
         ],
         lessons: [
-            'Keutamaan ilmu dan teknologi dalam Islam',
-            'Pentingnya kerja keras dan mengembangkan keterampilan',
-            'Keteladanan dalam beribadah dan mendekatkan diri kepada Allah',
-            'Kejujuran dan kebenaran dalam berkata dan bertindak'
+            'Pentingnya kejujuran (shiddiq) dalam kehidupan',
+            'Allah memuliakan hamba-hamba-Nya yang jujur dan sabar',
+            'Kesabaran adalah sifat para nabi pilihan Allah'
         ],
         references: [
             'Al-Quran: QS. Maryam: 56-57',
             'Al-Quran: QS. Al-Anbiya: 85-86',
-            'Shahih Bukhari: Kitab Ahadits al-Anbiya',
-            'Tafsir Ibn Katsir: Surah Maryam',
-            'Qishash al-Anbiya - Ibn Katsir',
-            'Al-Bidayah wan Nihayah - Ibn Katsir'
+            'Tafsir Ibn Katsir: Surah Maryam (disebutkan namanya dengan sifat shiddiq)'
         ],
         haditsShahih: []
     },
@@ -160,15 +161,15 @@ const nabiPart1 = [
         title: 'Nabi \'Alaihissalam',
         category: 'nabi',
         subcategory: 'nabi',
-        period: '950 tahun berdakwah (total hidup diperkirakan 1050 tahun)',
+        period: '950 tahun berdakwah',
         periodHijri: 'Sebelum perhitungan tarikh',
-        birthPlace: 'Mesopotamia (Irak kuno)',
+        birthPlace: 'Tidak disebutkan secara rinci dalam nash shahih',
         deathPlace: 'Setelah banjir besar',
-        tribe: 'Keturunan Syits bin Adam',
-        father: 'Lamak bin Matusalah',
-        mother: 'tidak diketahui',
-        wife: ['Waghilah (tidak beriman)', 'Nama istri yang beriman tidak disebutkan'],
-        children: ['Sam', 'Ham', 'Yafits', 'Kan\'an (tidak beriman)'],
+        tribe: 'Keturunan Adam \'alaihissalam',
+        father: 'Tidak disebutkan dalam nash shahih',
+        mother: 'Tidak disebutkan dalam nash shahih',
+        wife: ['Istri yang tidak beriman (nama tidak disebutkan)'],
+        children: ['Anak laki-laki yang beriman (tidak disebutkan jumlah pasti)', 'Anak yang tidak beriman'],
         profession: 'Nabi dan Rasul, tukang kayu (pembuat kapal)',
         qualities: ['Sabar dalam dakwah', 'Taat kepada Allah', 'Gigih', 'Shukur', 'Tawakkal'],
         biography: 'Nabi Nuh \'alaihissalam berdakwah selama 950 tahun kepada kaumnya yang menyembah berhala bernama Wadd, Suwa\', Yaghuts, Ya\'uq, dan Nasr. Setelah kaumnya tetap kafir dan mendustakan dakwahnya, Allah memerintahkan Nuh membuat kapal dan menurunkan banjir besar yang menenggelamkan orang-orang kafir, sementara Nuh dan pengikutnya diselamatkan.',

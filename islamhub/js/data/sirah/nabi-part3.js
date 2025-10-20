@@ -190,72 +190,42 @@ const nabiPart3 = [
         title: 'Ash-Shabur (Yang Sangat Sabar) \'Alaihissalam',
         category: 'nabi',
         subcategory: 'nabi',
-        period: '93 tahun (18 tahun sakit)',
-        periodHijri: 'Sekitar 1500 tahun sebelum hijrah',
-        birthPlace: 'Bashrah, Hauran (Suriah Selatan)',
-        deathPlace: 'Bashrah, Hauran',
-        tribe: 'Keturunan Esau bin Ishaq',
-        father: 'Mush bin Razih',
-        mother: 'tidak diketahui',
-        wife: ['Rahimah (Lia)'],
-        children: ['14 anak (7 laki-laki, 7 perempuan) yang kemudian diganti Allah'],
+        period: 'Disebutkan dalam Al-Quran',
+        periodHijri: 'Sebelum zaman Nabi Muhammad',
+        birthPlace: 'Tidak disebutkan secara rinci dalam nash shahih',
+        deathPlace: 'Tidak disebutkan dalam nash shahih',
+        tribe: 'Bani Israil',
+        father: 'Tidak disebutkan dalam nash shahih',
+        mother: 'Tidak disebutkan dalam nash shahih',
+        wife: ['Tidak disebutkan namanya dalam nash shahih'],
+        children: ['Dikembalikan keluarganya oleh Allah (tidak disebutkan jumlah pasti)'],
         profession: 'Nabi dan Rasul, peternak kaya',
         qualities: ['Sabar luar biasa', 'Syukur', 'Tawakkal', 'Zuhud', 'Tawakal', 'Ridha'],
-        biography: 'Nabi Ayyub \'alaihissalam dikenal sebagai simbol kesabaran tertinggi dalam menghadapi ujian. Beliau pernah menjadi orang terkaya di zamannya dengan ribuan ternak, namun Allah mengujinya dengan kehilangan harta, anak, dan kesehatan. Ayyub sakit selama 18 tahun tetapi tetap bersabar dan bersyukur kepada Allah.',
+        biography: 'Nabi Ayyub \'alaihissalam dikenal sebagai simbol kesabaran tertinggi dalam menghadapi ujian. Allah mengujinya dengan kehilangan harta, keluarga, dan kesehatan. Meski mengalami penyakit yang sangat parah, Ayyub tetap bersabar, bersyukur, dan tidak pernah mengeluh kepada Allah. Kisahnya menjadi teladan kesabaran dalam Al-Quran.',
         majorEvents: [
             {
-                event: 'Kehidupan sebagai orang kaya dan dermawan',
-                year: 'Masa muda hingga setengah baya',
-                description: 'Ayyub hidup sebagai orang terkaya dengan ribuan kambing, unta, sapi, dan kuda serta 14 anak',
-                references: ['Riwayat dalam kitab-kitab sirah']
-            },
-            {
                 event: 'Diangkat menjadi nabi',
-                year: 'Masa dewasa',
-                description: 'Allah mengangkat Ayyub menjadi nabi untuk berdakwah kepada kaumnya',
+                year: 'Disebutkan dalam Al-Quran',
+                description: 'Allah mengangkat Ayyub menjadi nabi dan beliau berdakwah kepada kaumnya',
                 references: ['QS. Al-An\'am: 84', 'QS. Al-Anbiya: 83']
             },
             {
-                event: 'Permulaan ujian: kehilangan harta',
-                year: 'Saat puncak kekayaan',
-                description: 'Harta benda Ayyub hilang satu per satu: ternak mati, gudang terbakar, kapal tenggelam',
-                references: ['Riwayat dalam Qishash al-Anbiya']
+                event: 'Diuji dengan kehilangan harta dan keluarga',
+                year: 'Masa ujian',
+                description: 'Allah menguji Ayyub dengan menghilangkan hartanya dan keluarganya sebagai ujian kesabaran',
+                references: ['QS. Al-Anbiya: 83', 'QS. Ash-Shad: 41']
             },
             {
-                event: 'Ujian kedua: kehilangan anak-anak',
-                year: 'Setelah kehilangan harta',
-                description: 'Ke-14 anak Ayyub meninggal dunia dalam berbagai musibah, rumah rubuh menimpa mereka',
-                references: ['Riwayat dalam kitab tarikh']
+                event: 'Diuji dengan penyakit yang sangat parah',
+                year: 'Masa ujian',
+                description: 'Syaitan menyentuh Ayyub dengan penderitaan dan penyakit, namun Ayyub tetap sabar',
+                references: ['QS. Ash-Shad: 41']
             },
             {
-                event: 'Ujian ketiga: sakit parah di seluruh tubuh',
-                year: 'Setelah kehilangan anak',
-                description: 'Ayyub diserang penyakit kulit yang parah di seluruh tubuh kecuali hati, mata, dan lidah untuk berdzikir',
-                references: ['QS. Ash-Shad: 41', 'riwayat dalam tafsir']
-            },
-            {
-                event: 'Diasingkan dari masyarakat',
-                year: 'Selama sakit',
-                description: 'Karena penyakitnya menular dan mengerikan, Ayyub diasingkan di luar kota di atas timbunan abu',
-                references: ['Riwayat dalam kitab sirah']
-            },
-            {
-                event: 'Kesetiaan istri Rahimah',
-                year: 'Selama 18 tahun sakit',
-                description: 'Istri Ayyub tetap setia merawat suami, bekerja sebagai pembantu untuk membiayai hidup mereka',
-                references: ['Riwayat dalam Qishash al-Anbiya']
-            },
-            {
-                event: 'Tetap bersyukur dan sabar',
+                event: 'Tetap sabar dan berdoa kepada Allah',
                 year: 'Sepanjang masa ujian',
-                description: 'Meski kehilangan segalanya, Ayyub tidak pernah mengeluh dan tetap berdzikir kepada Allah',
-                references: ['QS. Al-Anbiya: 83-84', 'QS. Ash-Shad: 44']
-            },
-            {
-                event: 'Doa Ayyub kepada Allah',
-                year: 'Setelah 18 tahun sakit',
-                description: 'Ayyub berdoa: "Bahwa aku telah ditimpa penyakit dan Engkau adalah Tuhan Yang Paling Penyayang"',
-                references: ['QS. Al-Anbiya: 83']
+                description: 'Ayyub tetap bersabar dan akhirnya berdoa: "Bahwa aku telah ditimpa penyakit dan Engkau adalah Tuhan Yang Paling Penyayang"',
+                references: ['QS. Al-Anbiya: 83-84', 'QS. Ash-Shad: 41']
             },
             {
                 event: 'Perintah Allah untuk menghentak tanah',
@@ -264,20 +234,14 @@ const nabiPart3 = [
                 references: ['QS. Ash-Shad: 42']
             },
             {
-                event: 'Kesembuhan total dan kembali muda',
-                year: 'Akhir ujian',
-                description: 'Setelah mandi dan minum air tersebut, Ayyub sembuh total dan kembali muda seperti semula',
-                references: ['QS. Ash-Shad: 43']
+                event: 'Dikembalikan keluarga dan harta berlipat ganda',
+                year: 'Setelah sembuh',
+                description: 'Allah menyembuhkan Ayyub dan mengembalikan keluarganya serta harta bendanya berlipat ganda sebagai rahmat',
+                references: ['QS. Ash-Shad: 43-44', 'QS. Al-Anbiya: 84']
             },
             {
-                event: 'Dikembalikan harta berlipat ganda',
-                year: 'Setelah sembuh',
-                description: 'Allah mengembalikan harta Ayyub berlipat ganda dari yang pernah dimilikinya',
-                references: ['QS. Ash-Shad: 43']
-            },
-            {
-                event: 'Dikaruniai anak-anak kembali',
-                year: 'Setelah sembuh',
+                event: 'Menjadi pelajaran bagi yang sabar',
+                year: 'Setelah ujian berakhir',
                 description: 'Allah memberikan Ayyub anak-anak lagi sebanyak yang pernah dimilikinya, bahkan lebih',
                 references: ['QS. Ash-Shad: 43']
             }
@@ -316,11 +280,11 @@ const nabiPart3 = [
         subcategory: 'nabi',
         period: 'Sezaman dengan Musa (sebelum Musa)',
         periodHijri: 'Sekitar 1400 tahun sebelum hijrah',
-        birthPlace: 'Madyan (Jordania/Arab Saudi Utara)',
+        birthPlace: 'Madyan',
         deathPlace: 'Madyan',
         tribe: 'Kaum Madyan',
-        father: 'Mikail bin Yasyjar',
-        mother: 'tidak diketahui',
+        father: 'Tidak disebutkan dalam nash shahih',
+        mother: 'Tidak disebutkan dalam nash shahih',
         wife: ['Putri Syu\'aib (yang menikah dengan Musa)'],
         children: ['Putri yang menikah dengan Musa', 'anak-anak lainnya'],
         profession: 'Nabi dan Rasul, pedagang',

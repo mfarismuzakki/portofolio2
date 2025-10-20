@@ -535,105 +535,54 @@ const nabiPart4 = [
         title: 'Nabi \'Alaihissalam',
         category: 'nabi',
         subcategory: 'nabi',
-        period: 'Abad ke-9 SM',
-        periodHijri: 'Sekitar 900 tahun sebelum hijrah',
-        birthPlace: 'Gilead (Palestina Timur)',
-        deathPlace: 'Diangkat ke langit hidup-hidup',
+        period: 'Disebutkan dalam Al-Quran',
+        periodHijri: 'Sebelum zaman Nabi Muhammad',
+        birthPlace: 'Tidak disebutkan secara rinci dalam nash shahih',
+        deathPlace: 'Disebutkan diangkat oleh Allah',
         tribe: 'Bani Israil',
-        father: 'Yasin',
-        mother: 'tidak diketahui',
-        wife: ['tidak diketahui'],
-        children: ['tidak diketahui'],
+        father: 'Tidak disebutkan dalam nash shahih',
+        mother: 'Tidak disebutkan dalam nash shahih',
+        wife: ['Tidak disebutkan dalam nash shahih'],
+        children: ['Tidak disebutkan dalam nash shahih'],
         profession: 'Nabi dan Rasul',
         qualities: ['Pemberani', 'Tegas dalam kebenaran', 'Zuhud', 'Kuat iman', 'Gigih berdakwah'],
-        biography: 'Nabi Ilyas \'alaihissalam diutus kepada Bani Israil yang menyembah berhala Ba\'al pada masa Raja Ahab. Beliau berdakwah dengan tegas menentang penyembahan berhala dan kemungkaran. Ilyas dikenal sangat keras dalam menegakkan kebenaran dan akhirnya diangkat Allah ke langit dalam keadaan hidup.',
+        biography: 'Nabi Ilyas \'alaihissalam disebutkan dalam Al-Quran sebagai salah satu nabi pilihan Allah yang diutus kepada Bani Israil. Beliau berdakwah menyeru kaumnya untuk meninggalkan penyembahan berhala dan kembali kepada Allah. Al-Quran menyebut beliau dengan salam dan pujian. Disebutkan juga bahwa Allah menyelamatkan beliau dan pengikutnya yang beriman.',
         majorEvents: [
             {
-                event: 'Diutus pada masa Raja Ahab',
-                year: 'Abad ke-9 SM',
-                description: 'Ilyas diutus kepada Bani Israil pada masa pemerintahan Raja Ahab yang menyembah Ba\'al',
-                references: ['QS. As-Saffat: 123']
+                event: 'Disebutkan sebagai nabi pilihan Allah',
+                year: 'Disebutkan dalam Al-Quran',
+                description: 'Ilyas disebutkan dalam Al-Quran sebagai salah satu nabi yang dipilih dan diberi salam oleh Allah',
+                references: ['QS. As-Saffat: 123-130', 'QS. Al-An\'am: 85']
             },
             {
-                event: 'Berdakwah menentang penyembahan Ba\'al',
+                event: 'Berdakwah menentang penyembahan berhala',
                 year: 'Masa kenabian',
-                description: 'Ilyas berdakwah keras menentang penyembahan Ba\'al (dewa badai dan kesuburan) yang dipromosikan Ratu Izebel',
-                references: ['QS. As-Saffat: 125']
+                description: 'Ilyas menyeru kaumnya: "Apakah kamu menyembah Ba\'al (berhala) dan meninggalkan Pencipta terbaik?"',
+                references: ['QS. As-Saffat: 125-126']
             },
             {
-                event: 'Konfrontasi dengan nabi-nabi Ba\'al',
-                year: 'Puncak dakwah',
-                description: 'Ilyas menghadapi 450 nabi Ba\'al di Gunung Karmel untuk membuktikan kebenaran Allah',
-                references: ['Riwayat dalam kitab-kitab sirah']
+                event: 'Kaumnya mendustakan dakwahnya',
+                year: 'Selama dakwah',
+                description: 'Kaum Ilyas mendustakan dakwahnya, sehingga mereka akan dihadapkan kepada azab',
+                references: ['QS. As-Saffat: 127']
             },
             {
-                event: 'Mukjizat api dari langit',
-                year: 'Saat kontes dengan nabi Ba\'al',
-                description: 'Allah menurunkan api dari langit membakar korban Ilyas, sementara Ba\'al tidak merespon nabi-nabinya',
-                references: ['Riwayat dalam Kitab Raja-raja']
-            },
-            {
-                event: 'Membunuh nabi-nabi Ba\'al',
-                year: 'Setelah mukjizat',
-                description: 'Setelah terbukti Allah Yang Maha Benar, Ilyas membunuh 450 nabi Ba\'al yang menyesatkan',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Doa meminta hujan setelah kemarau',
-                year: 'Setelah kemenangan',
-                description: 'Ilyas berdoa kepada Allah dan turunlah hujan lebat setelah kemarau panjang 3,5 tahun',
-                references: ['Riwayat dalam kitab sirah']
-            },
-            {
-                event: 'Diancam Ratu Izebel',
-                year: 'Setelah membunuh nabi Ba\'al',
-                description: 'Ratu Izebel mengancam akan membunuh Ilyas dalam 24 jam sebagai balas dendam',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Melarikan diri ke gunung',
-                year: 'Setelah diancam',
-                description: 'Ilyas melarikan diri ke gunung dan bersembunyi dalam gua karena takut ancaman Izebel',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Allah berbicara dengan suara lembut',
-                year: 'Saat di gua',
-                description: 'Allah tidak berbicara melalui angin ribut, gempa, atau api, tapi dengan suara lembut kepada Ilyas',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Menerima perintah melanjutkan dakwah',
-                year: 'Setelah Allah berbicara',
-                description: 'Allah memerintahkan Ilyas untuk terus berdakwah dan tidak takut kepada ancaman manusia',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Mendidik Alyasa\' sebagai penerus',
-                year: 'Masa akhir dakwah',
-                description: 'Ilyas mendidik Alyasa\' (Elisha) untuk menjadi penerusnya dalam berdakwah',
-                references: ['QS. Al-An\'am: 86', 'QS. Shad: 48']
-            },
-            {
-                event: 'Diangkat ke langit hidup-hidup',
-                year: 'Akhir hayat',
-                description: 'Ilyas diangkat Allah ke langit dalam keadaan hidup dengan kereta api dan kuda api',
-                references: ['Riwayat dalam sirah, QS. As-Saffat: 130']
+                event: 'Allah menyelamatkan Ilyas dan orang beriman',
+                year: 'Disebutkan dalam Al-Quran',
+                description: 'Allah menyelamatkan Ilyas dan orang-orang yang ikhlas beribadah kepada-Nya dari kaum yang durhaka',
+                references: ['QS. As-Saffat: 128-132']
             }
         ],
         lessons: [
-            'Keberanian dalam menegakkan tauhid meski menghadapi ancaman',
-            'Tidak boleh takut kepada penguasa zalim dalam menyampaikan kebenaran',
-            'Allah akan membantu hamba-Nya yang berjuang di jalan-Nya',
-            'Pentingnya mempersiapkan kader penerus dakwah',
-            'Mukjizat Allah sebagai bukti kebenaran risalah'
+            'Keberanian dalam menyeru kepada tauhid dan meninggalkan penyembahan berhala',
+            'Tidak boleh menyembah selain Allah Yang Maha Pencipta',
+            'Allah menyelamatkan hamba-hamba-Nya yang beriman',
+            'Kesabaran dalam berdakwah meski ditolak kaum'
         ],
         references: [
-            'Al-Quran: QS. As-Saffat: 123-130',
+            'Al-Quran: QS. As-Saffat: 123-132',
             'Al-Quran: QS. Al-An\'am: 85',
-            'Tafsir Ibn Katsir: Surah As-Saffat',
-            'Qishash al-Anbiya - Ibn Katsir',
-            'Riwayat dalam Kitab Raja-raja (Perjanjian Lama)'
+            'Tafsir Ibn Katsir: Surah As-Saffat (disebutkan dakwahnya menentang Ba\'al)'
         ],
         haditsShahih: []
     }

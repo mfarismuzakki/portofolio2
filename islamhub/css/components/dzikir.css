@@ -705,7 +705,8 @@ body.doa-modal-active {
 .modal-body {
     flex: 1;
     overflow-y: auto;
-    padding: 0;
+    padding: 1rem;
+    padding-bottom: 120px; /* Increased space for bottom navigation */
 }
 
 /* Modal body scrollbar - thin and at the edge */

@@ -21,6 +21,8 @@ export default class QiblaApp {
         this.qiblaDirection = 0;
         this.smoothingFactor = 0.8;
         this.isTracking = false;
+        this.isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        this.lastAlpha = null;
     }
 
     async init() {
@@ -290,9 +292,14 @@ export default class QiblaApp {
             }
         }
 
+        console.log('Starting compass...');
+        console.log('Device: ' + (this.isIOS ? 'iOS' : 'Android/Other'));
+        console.log('Qibla direction from North:', this.qiblaDirection.toFixed(2) + '°');
+
         // Start listening to device orientation
-        window.addEventListener('deviceorientationabsolute', (e) => this.handleOrientation(e), true);
-        window.addEventListener('deviceorientation', (e) => this.handleOrientation(e), true);
+        const orientationHandler = (e) => this.handleOrientation(e);
+        window.addEventListener('deviceorientationabsolute', orientationHandler, true);
+        window.addEventListener('deviceorientation', orientationHandler, true);
 
         this.isTracking = true;
         compassStatus.textContent = 'Kompas aktif';
@@ -303,17 +310,39 @@ export default class QiblaApp {
 
         let heading = null;
 
-        // Get compass heading
+        // Get compass heading based on device
         if (event.webkitCompassHeading !== undefined) {
-            // iOS
+            // iOS - webkitCompassHeading is already 0-360 with 0 = North
             heading = event.webkitCompassHeading;
+        } else if (event.absolute && event.alpha !== null) {
+            // Android with absolute orientation
+            // Alpha: 0 = North, increases clockwise
+            heading = event.alpha;
         } else if (event.alpha !== null) {
-            // Android
+            // Fallback: non-absolute orientation
+            // For devices without compass, alpha is relative
             heading = 360 - event.alpha;
         }
 
         if (heading !== null) {
+            // Normalize to 0-360
+            heading = (heading + 360) % 360;
+            
+            // Check for sudden jumps (more than 180°)
+            if (this.lastAlpha !== null) {
+                const diff = Math.abs(heading - this.lastAlpha);
+                if (diff > 180) {
+                    // Wrap around - take the shorter path
+                    if (heading > this.lastAlpha) {
+                        heading -= 360;
+                    } else {
+                        heading += 360;
+                    }
+                }
+            }
+            
             this.targetHeading = heading;
+            this.lastAlpha = heading;
         }
     }
 
@@ -346,10 +375,15 @@ export default class QiblaApp {
         const needle = document.getElementById('qiblaNeedle');
 
         if (compass) {
+            // Rotate compass ring opposite to device heading
+            // So North (N) points to actual north
             compass.style.transform = `rotate(${-this.currentHeading}deg)`;
         }
 
         if (needle && this.qiblaDirection !== 0) {
+            // Needle should point to qibla direction
+            // Qibla direction is already calculated as absolute bearing from North
+            // No need to add currentHeading here - compass ring already handles device rotation
             needle.style.transform = `rotate(${this.qiblaDirection}deg)`;
         }
     }
@@ -364,7 +398,11 @@ export default class QiblaApp {
 
     cleanup() {
         this.isTracking = false;
-        window.removeEventListener('deviceorientationabsolute', this.handleOrientation);
-        window.removeEventListener('deviceorientation', this.handleOrientation);
+        this.lastAlpha = null;
+        
+        // Remove event listeners properly
+        const orientationHandler = (e) => this.handleOrientation(e);
+        window.removeEventListener('deviceorientationabsolute', orientationHandler, true);
+        window.removeEventListener('deviceorientation', orientationHandler, true);
     }
 }

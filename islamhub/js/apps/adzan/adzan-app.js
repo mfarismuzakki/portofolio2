@@ -23,6 +23,10 @@ export default class AdzanApp {
         this.prayerTimes = {};
         this.nextPrayer = null;
         this.citySearchResults = [];
+        this.notificationEnabled = false;
+        this.notificationPermission = 'default';
+        this.scheduledNotifications = [];
+        this.searchDebounceTimer = null;
     }
 
     async init() {
@@ -33,6 +37,7 @@ export default class AdzanApp {
         this.startCountdown();
         this.setupEventListeners();
         this.updateClock();
+        await this.initNotifications();
     }
 
     async render() {
@@ -49,9 +54,14 @@ export default class AdzanApp {
                             <i class="fas fa-map-marker-alt"></i>
                             <span class="location-name" id="locationName">Jakarta, Indonesia</span>
                         </div>
-                        <button class="btn-change-location" id="btnChangeLocation">
-                            <i class="fas fa-edit"></i> Ubah Lokasi
-                        </button>
+                        <div class="location-actions">
+                            <button class="btn-notification" id="btnToggleNotification" title="Toggle Notifikasi">
+                                <i class="far fa-bell-slash"></i>
+                            </button>
+                            <button class="btn-change-location" id="btnChangeLocation">
+                                <i class="fas fa-edit"></i> Ubah Lokasi
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -121,6 +131,10 @@ export default class AdzanApp {
                             </div>
                             <div class="city-dropdown" id="cityDropdown" style="display: none;">
                                 <!-- Dynamic city list -->
+                            </div>
+                            <div class="gps-loader" id="gpsLoader" style="display: none;">
+                                <div class="loader-spinner"></div>
+                                <span>Mengambil lokasi GPS...</span>
                             </div>
                             <button class="btn-secondary" id="btnUseGPS">
                                 <i class="fas fa-location-arrow"></i> Gunakan GPS
@@ -195,6 +209,11 @@ export default class AdzanApp {
                 
                 // Update sunnah prayers recommendations
                 await this.updateSunnahPrayers();
+                
+                // Reschedule notifications if enabled
+                if (this.notificationEnabled) {
+                    this.scheduleNotifications();
+                }
             }
         } catch (error) {
             console.error('Failed to fetch prayer times:', error);
@@ -288,29 +307,25 @@ export default class AdzanApp {
         if (!this.nextPrayer) return;
         
         const now = new Date();
+        const nowHours = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
+        
         const [hours, minutes] = this.nextPrayer.time.split(':').map(Number);
+        const prayerHours = hours + minutes/60;
         
-        // Create target prayer time for today
-        const targetTime = new Date();
-        targetTime.setHours(hours, minutes, 0, 0);
-        
-        // Calculate time difference in milliseconds
-        let timeDiff = targetTime.getTime() - now.getTime();
-        
-        // If time has passed, add 24 hours
-        if (timeDiff < 0) {
-            targetTime.setDate(targetTime.getDate() + 1);
-            timeDiff = targetTime.getTime() - now.getTime();
+        // Calculate difference in hours
+        let diffHours = prayerHours - nowHours;
+        if (diffHours < 0) {
+            diffHours += 24; // Add 24 hours if prayer is tomorrow
         }
         
-        // If still negative or very close to 0 (within 2 seconds), recalculate next prayer
-        if (timeDiff <= 2000) {
+        // If very close to 0 (within 2 seconds), recalculate next prayer
+        if (diffHours < (2/3600)) {
             this.calculateNextPrayer();
             return;
         }
         
-        // Convert to hours, minutes, seconds
-        const totalSeconds = Math.floor(timeDiff / 1000);
+        // Convert to total seconds
+        const totalSeconds = Math.max(0, Math.round(diffHours * 3600));
         const hrs = Math.floor(totalSeconds / 3600);
         const mins = Math.floor((totalSeconds % 3600) / 60);
         const secs = totalSeconds % 60;
@@ -468,6 +483,14 @@ export default class AdzanApp {
             });
         }
         
+        // Toggle notification button
+        const btnToggleNotification = document.getElementById('btnToggleNotification');
+        if (btnToggleNotification) {
+            btnToggleNotification.addEventListener('click', () => {
+                this.toggleNotifications();
+            });
+        }
+        
         // Modal close
         const modalClose = document.getElementById('modalClose');
         if (modalClose) {
@@ -536,17 +559,31 @@ export default class AdzanApp {
         const loader = document.getElementById('citySearchLoader');
         if (!dropdown) return;
         
+        // Clear previous timer
+        if (this.searchDebounceTimer) {
+            clearTimeout(this.searchDebounceTimer);
+        }
+        
         if (value.length < 2) {
             dropdown.style.display = 'none';
             dropdown.innerHTML = '';
-            loader.style.display = 'none';
+            if (loader) loader.style.display = 'none';
             this.citySearchResults = [];
             return;
         }
         
-        // Show loader
-        loader.style.display = 'flex';
+        // Show loader immediately (user is still typing)
+        if (loader) loader.style.display = 'flex';
         dropdown.style.display = 'none';
+        
+        // Wait for user to finish typing (500ms delay)
+        this.searchDebounceTimer = setTimeout(async () => {
+            await this.performCitySearch(value, dropdown, loader);
+        }, 500);
+    }
+    
+    async performCitySearch(value, dropdown, loader) {
+        // No need to show loader again, already shown in handleCityInput
         
         try {
             const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(value)}&limit=10&addressdetails=1`;
@@ -656,6 +693,7 @@ export default class AdzanApp {
         
         const loader = document.getElementById('citySearchLoader');
         const dropdown = document.getElementById('cityDropdown');
+        const modal = document.getElementById('locationModal');
         
         try {
             // Show loader
@@ -671,17 +709,20 @@ export default class AdzanApp {
             if (loader) loader.style.display = 'none';
             
             if (data && data.length > 0) {
+                // Select city and close modal immediately
                 await this.selectCity(data[0]);
+                
+                // Clear input and hide modal
+                if (input) input.value = '';
+                if (modal) modal.classList.remove('show');
+                if (dropdown) {
+                    dropdown.style.display = 'none';
+                    dropdown.innerHTML = '';
+                }
+                this.citySearchResults = [];
             } else {
                 alert('Kota tidak ditemukan');
             }
-            
-            if (input) input.value = '';
-            if (dropdown) {
-                dropdown.style.display = 'none';
-                dropdown.innerHTML = '';
-            }
-            this.citySearchResults = [];
         } catch (error) {
             console.error('Failed to search city:', error);
             if (loader) loader.style.display = 'none';
@@ -694,6 +735,13 @@ export default class AdzanApp {
             alert('GPS tidak didukung di browser ini');
             return;
         }
+        
+        const gpsLoader = document.getElementById('gpsLoader');
+        const btnUseGPS = document.getElementById('btnUseGPS');
+        
+        // Show loader and disable button
+        if (gpsLoader) gpsLoader.style.display = 'flex';
+        if (btnUseGPS) btnUseGPS.disabled = true;
         
         navigator.geolocation.getCurrentPosition(
             async (position) => {
@@ -723,10 +771,22 @@ export default class AdzanApp {
                 await this.fetchPrayerTimes();
                 this.hideLocationModal();
                 this.updateLocationDisplay();
+                
+                // Hide loader and enable button
+                const gpsLoader = document.getElementById('gpsLoader');
+                const btnUseGPS = document.getElementById('btnUseGPS');
+                if (gpsLoader) gpsLoader.style.display = 'none';
+                if (btnUseGPS) btnUseGPS.disabled = false;
             },
             (error) => {
                 console.error('GPS error:', error);
                 alert('Gagal mengambil lokasi GPS');
+                
+                // Hide loader and enable button
+                const gpsLoader = document.getElementById('gpsLoader');
+                const btnUseGPS = document.getElementById('btnUseGPS');
+                if (gpsLoader) gpsLoader.style.display = 'none';
+                if (btnUseGPS) btnUseGPS.disabled = false;
             }
         );
     }
@@ -858,5 +918,184 @@ export default class AdzanApp {
     showError(message) {
         console.error(message);
         alert(message);
+    }
+
+    // ============= NOTIFICATION FEATURES =============
+    
+    async initNotifications() {
+        // Load notification state from localStorage
+        const savedState = localStorage.getItem('islamhub_adzan_notifications_enabled');
+        this.notificationEnabled = savedState === 'true';
+        
+        // Check permission
+        if ('Notification' in window) {
+            this.notificationPermission = Notification.permission;
+        }
+        
+        // Update button state
+        this.updateNotificationButton();
+        
+        // Schedule notifications if enabled
+        if (this.notificationEnabled && this.notificationPermission === 'granted') {
+            this.scheduleNotifications();
+        }
+    }
+    
+    updateNotificationButton() {
+        const btn = document.getElementById('btnToggleNotification');
+        if (!btn) return;
+        
+        const icon = btn.querySelector('i');
+        
+        if (this.notificationEnabled) {
+            btn.classList.add('active');
+            btn.title = 'Notifikasi Aktif - Klik untuk Menonaktifkan';
+            if (icon) icon.className = 'fas fa-bell';
+        } else {
+            btn.classList.remove('active');
+            btn.title = 'Notifikasi Nonaktif - Klik untuk Mengaktifkan';
+            if (icon) icon.className = 'far fa-bell-slash';
+        }
+    }
+    
+    async toggleNotifications() {
+        if (!('Notification' in window)) {
+            this.showNotificationPopup('Browser Anda tidak mendukung notifikasi', 'error');
+            return;
+        }
+        
+        // If currently disabled, enable it
+        if (!this.notificationEnabled) {
+            // Request permission if not granted
+            if (this.notificationPermission !== 'granted') {
+                const permission = await Notification.requestPermission();
+                this.notificationPermission = permission;
+                
+                if (permission !== 'granted') {
+                    this.showNotificationPopup('Izin notifikasi ditolak. Silakan aktifkan di pengaturan browser', 'error');
+                    return;
+                }
+            }
+            
+            // Enable notifications
+            this.notificationEnabled = true;
+            localStorage.setItem('islamhub_adzan_notifications_enabled', 'true');
+            this.scheduleNotifications();
+            this.showNotificationPopup('✓ Notifikasi waktu sholat diaktifkan', 'success');
+            
+        } else {
+            // Disable notifications
+            this.notificationEnabled = false;
+            localStorage.setItem('islamhub_adzan_notifications_enabled', 'false');
+            this.cancelScheduledNotifications();
+            this.showNotificationPopup('✗ Notifikasi waktu sholat dinonaktifkan', 'info');
+        }
+        
+        this.updateNotificationButton();
+    }
+    
+    showNotificationPopup(message, type = 'info') {
+        // Create popup element
+        const popup = document.createElement('div');
+        popup.className = `notification-popup ${type}`;
+        popup.innerHTML = `
+            <div class="popup-content">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(popup);
+        
+        // Show with animation
+        setTimeout(() => popup.classList.add('show'), 10);
+        
+        // Hide and remove after 3 seconds
+        setTimeout(() => {
+            popup.classList.remove('show');
+            setTimeout(() => popup.remove(), 300);
+        }, 3000);
+    }
+    
+    scheduleNotifications() {
+        // Cancel existing scheduled notifications
+        this.cancelScheduledNotifications();
+        
+        if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) {
+            console.warn('No prayer times available for scheduling notifications');
+            return;
+        }
+        
+        const now = new Date();
+        const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+        
+        prayers.forEach(prayer => {
+            const prayerTime = this.prayerTimes[prayer];
+            if (!prayerTime) return;
+            
+            // Parse prayer time
+            const [hours, minutes] = prayerTime.split(':').map(Number);
+            const prayerDate = new Date();
+            prayerDate.setHours(hours, minutes, 0, 0);
+            
+            // If prayer time has passed today, schedule for tomorrow
+            if (prayerDate <= now) {
+                prayerDate.setDate(prayerDate.getDate() + 1);
+            }
+            
+            const timeUntilPrayer = prayerDate.getTime() - now.getTime();
+            
+            // Schedule notification
+            const timeoutId = setTimeout(() => {
+                this.showPrayerNotification(prayer, prayerTime);
+                // Reschedule for next day
+                setTimeout(() => this.scheduleNotifications(), 1000);
+            }, timeUntilPrayer);
+            
+            this.scheduledNotifications.push(timeoutId);
+        });
+        
+        console.log(`Scheduled ${this.scheduledNotifications.length} prayer notifications`);
+    }
+    
+    cancelScheduledNotifications() {
+        this.scheduledNotifications.forEach(timeoutId => clearTimeout(timeoutId));
+        this.scheduledNotifications = [];
+    }
+    
+    showPrayerNotification(prayerName, prayerTime) {
+        if (!this.notificationEnabled || this.notificationPermission !== 'granted') {
+            return;
+        }
+        
+        const prayerNames = {
+            'Fajr': 'Subuh',
+            'Dhuhr': 'Dzuhur',
+            'Asr': 'Ashar',
+            'Maghrib': 'Maghrib',
+            'Isha': 'Isya'
+        };
+        
+        const title = `🕌 Waktu ${prayerNames[prayerName] || prayerName}`;
+        const body = `Sudah masuk waktu sholat ${prayerNames[prayerName] || prayerName} (${prayerTime})`;
+        
+        // Show notification
+        const notification = new Notification(title, {
+            body: body,
+            icon: './assets/icons/icon-192x192.png',
+            badge: './assets/icons/icon-96x96.png',
+            tag: `prayer-${prayerName}`,
+            requireInteraction: false,
+            silent: false
+        });
+        
+        // Auto close after 10 seconds
+        setTimeout(() => notification.close(), 10000);
+        
+        // Handle click
+        notification.onclick = () => {
+            window.focus();
+            notification.close();
+        };
     }
 }

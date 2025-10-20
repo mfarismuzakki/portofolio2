@@ -598,6 +598,449 @@ body::before {
   filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.6));
 }
 
+/* ===== INSTALL DIALOG ===== */
+.install-dialog {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(10px);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 999999 !important;
+  animation: dialogFadeIn 0.3s ease;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+@keyframes dialogFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.install-dialog-content {
+  background: var(--darker-bg);
+  border: 2px solid var(--primary-cyan);
+  border-radius: 20px;
+  padding: 40px 30px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 0 50px rgba(0, 255, 255, 0.4);
+  animation: dialogSlideUp 0.4s ease;
+  text-align: center;
+  position: relative;
+}
+
+/* Custom scrollbar for dialog */
+.install-dialog-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.install-dialog-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.install-dialog-content::-webkit-scrollbar-thumb {
+  background: var(--primary-cyan);
+  border-radius: 10px;
+}
+
+.install-dialog-content::-webkit-scrollbar-thumb:hover {
+  background: var(--electric-blue);
+}
+
+@keyframes dialogSlideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.install-dialog-content.success {
+  border-color: var(--matrix-green);
+  box-shadow: 0 0 50px rgba(0, 255, 65, 0.4);
+}
+
+.install-dialog-content.error {
+  border-color: #ff4444;
+  box-shadow: 0 0 50px rgba(255, 68, 68, 0.4);
+}
+
+.dialog-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.dialog-icon i {
+  color: var(--primary-cyan);
+  filter: drop-shadow(0 0 20px currentColor);
+}
+
+.install-dialog-content.success .dialog-icon i {
+  color: var(--matrix-green);
+}
+
+.install-dialog-content.error .dialog-icon i {
+  color: #ff4444;
+}
+
+.dialog-message {
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.dialog-message .check-icon,
+.dialog-message .cross-icon,
+.dialog-message .warn-icon,
+.dialog-message .info-icon,
+.dialog-message .bulb-icon,
+.dialog-message .clipboard-icon,
+.dialog-message .search-icon {
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 1.2em;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.dialog-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--primary-cyan);
+  transform: rotate(90deg);
+}
+
+.dialog-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dialog-btn {
+  background: var(--gradient-primary);
+  border: none;
+  color: var(--dark-bg);
+  padding: 12px 30px;
+  border-radius: 12px;
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.dialog-btn.secondary {
+  background: rgba(0, 255, 255, 0.1);
+  border: 2px solid var(--primary-cyan);
+  color: var(--primary-cyan);
+}
+
+.dialog-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+}
+
+.dialog-btn:active {
+  transform: translateY(0);
+}
+
+/* ===== INSTALL INSTRUCTIONS DIALOG ===== */
+.install-instructions {
+  max-width: 900px;
+  padding: 0;
+  text-align: left;
+}
+
+.dialog-header {
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 128, 255, 0.1));
+  padding: 40px 30px;
+  text-align: center;
+  border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+}
+
+.dialog-icon-large {
+  font-size: 4rem;
+  color: var(--primary-cyan);
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.6));
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.dialog-header h2 {
+  font-family: var(--font-primary);
+  font-size: 2rem;
+  color: var(--primary-cyan);
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.dialog-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.install-methods {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.install-method {
+  background: rgba(0, 255, 255, 0.03);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 25px;
+  transition: all 0.3s ease;
+}
+
+.install-method:hover {
+  background: rgba(0, 255, 255, 0.08);
+  border-color: rgba(0, 255, 255, 0.4);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.method-icon {
+  width: 60px;
+  height: 60px;
+  background: var(--gradient-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: var(--dark-bg);
+  margin-bottom: 15px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+}
+
+.method-icon.edge {
+  background: linear-gradient(135deg, #0078d4, #00bcf2);
+}
+
+.method-icon.mobile {
+  background: linear-gradient(135deg, var(--matrix-green), var(--primary-cyan));
+}
+
+.install-method h3 {
+  font-family: var(--font-primary);
+  font-size: 1.3rem;
+  color: var(--primary-cyan);
+  margin: 0 0 20px 0;
+  letter-spacing: 1px;
+}
+
+.method-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.step {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.step-number {
+  min-width: 35px;
+  height: 35px;
+  background: var(--primary-cyan);
+  color: var(--dark-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: var(--font-primary);
+  font-size: 1.1rem;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  margin-bottom: 5px;
+  font-family: var(--font-secondary);
+  font-weight: 600;
+}
+
+.step-content p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.dialog-footer {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 25px 30px;
+  border-top: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.pwa-requirements h4 {
+  font-family: var(--font-primary);
+  color: var(--matrix-green);
+  font-size: 1.1rem;
+  margin: 0 0 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pwa-requirements h4 i {
+  font-size: 1.3rem;
+  filter: drop-shadow(0 0 10px var(--matrix-green));
+}
+
+.requirements-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.req-item {
+  background: rgba(0, 255, 65, 0.1);
+  border: 1px solid rgba(0, 255, 65, 0.3);
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: var(--matrix-green);
+  font-family: var(--font-secondary);
+  font-weight: 500;
+}
+
+.pwa-requirements .note {
+  background: rgba(0, 255, 255, 0.05);
+  border-left: 3px solid var(--primary-cyan);
+  padding: 12px 15px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 15px 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pwa-requirements .note i {
+  color: var(--primary-cyan);
+  font-size: 1.2rem;
+}
+
+.install-instructions .dialog-buttons {
+  padding: 0 30px 30px 30px;
+}
+
+.install-instructions .dialog-btn {
+  padding: 15px 40px;
+  font-size: 1rem;
+}
+
+/* Responsive for install dialog */
+@media (max-width: 768px) {
+  .install-instructions {
+    max-width: 95%;
+  }
+  
+  .dialog-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .install-methods {
+    padding: 20px;
+  }
+  
+  .install-method {
+    padding: 20px;
+  }
+  
+  .method-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+  
+  .install-method h3 {
+    font-size: 1.1rem;
+  }
+  
+  .step {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .step-number {
+    min-width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
+  
+  .requirements-list {
+    flex-direction: column;
+  }
+  
+  .req-item {
+    display: block;
+    text-align: center;
+  }
+}
+
 .title-line {
   display: block;
   margin-bottom: 10px;

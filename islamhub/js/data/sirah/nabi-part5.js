@@ -8,117 +8,41 @@ const nabiPart5 = [
         title: 'Nabi \'Alaihissalam',
         category: 'nabi',
         subcategory: 'nabi',
-        period: 'Setelah Nabi Ilyas \'alaihissalam',
-        periodHijri: 'Jauh sebelum zaman Nabi Muhammad',
-        birthPlace: 'Tanah Suci (Palestina)',
-        deathPlace: 'Tanah Suci (Palestina)', 
+        period: 'Disebutkan dalam Al-Quran',
+        periodHijri: 'Sebelum zaman Nabi Muhammad',
+        birthPlace: 'Bani Israil',
+        deathPlace: 'Wallahu a\'lam', 
         tribe: 'Bani Israil',
-        father: 'tidak diketahui',
-        mother: 'tidak diketahui',
-        wife: ['tidak diketahui'],
-        children: ['tidak diketahui'],
-        profession: 'Nabi dan Rasul, petani',
-        qualities: ['Penerus Ilyas', 'Penyembuh', 'Penolong kaum', 'Sabar', 'Bijaksana'],
-        biography: 'Nabi Alyasa\' \'alaihissalam adalah murid dan penerus Nabi Ilyas. Beliau melanjutkan dakwah gurunya dalam menegakkan tauhid di kalangan Bani Israil. Alyasa\' dikenal dengan mukjizat-mukjizatnya dalam menyembuhkan orang sakit dan membantu kaum yang membutuhkan.',
+        father: 'Tidak disebutkan dalam nash shahih',
+        mother: 'Tidak disebutkan dalam nash shahih',
+        wife: ['Tidak disebutkan dalam nash shahih'],
+        children: ['Tidak disebutkan dalam nash shahih'],
+        profession: 'Nabi dan Rasul',
+        qualities: ['Disebutkan sebagai salah satu nabi pilihan Allah', 'Sabar', 'Berdakwah kepada Bani Israil'],
+        biography: 'Nabi Alyasa\' \'alaihissalam disebutkan dalam Al-Quran sebagai salah satu nabi pilihan Allah. Al-Quran menyebut namanya di antara para nabi yang diberi hidayah dan kebaikan. Detail kisah hidupnya tidak banyak dijelaskan dalam Al-Quran dan hadits shahih. Wallahu a\'lam.',
         majorEvents: [
             {
-                event: 'Dipilih sebagai murid Ilyas',
-                year: 'Masa muda',
-                description: 'Alyasa\' dipilih Ilyas sebagai murid dan penerusnya saat sedang membajak sawah dengan 12 pasang lembu',
+                event: 'Disebutkan sebagai nabi pilihan Allah',
+                year: 'Masa kenabian',
+                description: 'Alyasa\' disebutkan dalam Al-Quran sebagai salah satu nabi yang dipilih Allah dan diberi hidayah',
                 references: ['QS. Al-An\'am: 86', 'QS. Shad: 48']
             },
             {
-                event: 'Mengikuti dan belajar dari Ilyas',
-                year: 'Masa pembelajaran',
-                description: 'Alyasa\' mengikuti Ilyas kemana-mana dan belajar ilmu kenabian serta cara berdakwah',
-                references: ['Riwayat dalam kitab sirah']
-            },
-            {
-                event: 'Meminta dua kali lipat ruh Ilyas',
-                year: 'Menjelang Ilyas terangkat',
-                description: 'Sebelum Ilyas diangkat ke langit, Alyasa\' meminta dua kali lipat ruh dan kemampuan gurunya',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Menyaksikan Ilyas diangkat ke langit',
-                year: 'Saat peralihan kenabian',
-                description: 'Alyasa\' menyaksikan Ilyas diangkat ke langit dengan kereta api dan mewarisi jubahnya',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Diangkat menjadi nabi penerus Ilyas',
-                year: 'Setelah Ilyas terangkat',
-                description: 'Allah mengangkat Alyasa\' menjadi nabi untuk melanjutkan dakwah Ilyas kepada Bani Israil',
-                references: ['QS. Al-An\'am: 86', 'QS. Shad: 48']
-            },
-            {
-                event: 'Membelah sungai Yordan',
-                year: 'Awal kenabian',
-                description: 'Alyasa\' membelah sungai Yordan dengan jubah Ilyas sebagai mukjizat pertamanya',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Menyembuhkan air yang beracun',
+                event: 'Berdakwah kepada Bani Israil',
                 year: 'Masa kenabian',
-                description: 'Alyasa\' menyembuhkan mata air yang beracun di Jericho dengan menabur garam ke dalamnya',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Mukjizat minyak yang berlipat ganda',
-                year: 'Menolong janda miskin',
-                description: 'Alyasa\' membantu janda miskin dengan mukjizat minyak yang terus bertambah hingga bisa melunasi hutangnya',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Menghidupkan anak wanita Sunam',
-                year: 'Masa kenabian',
-                description: 'Alyasa\' menghidupkan kembali anak seorang wanita kaya dari Sunam yang telah meninggal',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Menyembuhkan Naaman dari kusta',
-                year: 'Dakwah kepada non-Israil',
-                description: 'Alyasa\' menyembuhkan panglima Aram bernama Naaman dari penyakit kusta dengan mandi 7 kali di Yordan',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Membuat kapak terapung',
-                year: 'Menolong anak nabi',
-                description: 'Ketika kapak anak nabi tenggelam di sungai, Alyasa\' melempar kayu dan membuat kapak itu terapung',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Memberitahu rencana musuh kepada raja Israil',
-                year: 'Saat perang dengan Aram',
-                description: 'Alyasa\' memberitahu raja Israil tentang rencana serangan raja Aram melalui wahyu Allah',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Membutakan tentara Aram',
-                year: 'Saat dikepung di Dotan',
-                description: 'Ketika tentara Aram mengepung Alyasa\' di Dotan, Allah membutakan mereka atas doa Alyasa\'',
-                references: ['Riwayat dalam sirah']
-            },
-            {
-                event: 'Meramalkan kelimpahan di Samaria',
-                year: 'Saat pengepungan Samaria',
-                description: 'Alyasa\' meramalkan bahwa pengepungan Samaria akan berakhir dan makanan akan melimpah keesokan harinya',
-                references: ['Riwayat dalam sirah']
+                description: 'Seperti nabi-nabi Bani Israil lainnya, Alyasa\' berdakwah menyeru kepada tauhid dan ketaatan kepada Allah',
+                references: ['Disebutkan dalam konteks para nabi Bani Israil']
             }
         ],
         lessons: [
-            'Pentingnya mencari guru yang baik dalam menuntut ilmu',
-            'Mukjizat Allah diberikan untuk membantu orang yang membutuhkan',
-            'Keberanian berdakwah kepada siapa saja tanpa memandang suku dan bangsa',
-            'Kepedulian sosial dalam membantu fakir miskin',
-            'Melanjutkan perjuangan generasi sebelumnya'
+            'Allah memilih para nabi dari kalangan Bani Israil untuk membimbing mereka',
+            'Pentingnya berpegang pada dakwah tauhid',
+            'Kita wajib beriman kepada semua nabi meskipun tidak mengetahui detail kisahnya'
         ],
         references: [
             'Al-Quran: QS. Al-An\'am: 86',
             'Al-Quran: QS. Shad: 48',
-            'Tafsir Ibn Katsir: Surah Al-An\'am',
-            'Qishash al-Anbiya - Ibn Katsir',
-            'Riwayat dalam Kitab Raja-raja (Perjanjian Lama)'
+            'Tafsir Ibn Katsir: Surah Al-An\'am (disebutkan namanya tanpa detail kisah shahih)'
         ],
         haditsShahih: []
     },
@@ -315,18 +239,18 @@ const nabiPart5 = [
             {
                 event: 'Mukjizat menurunkan hidangan dari langit',
                 year: 'Atas permintaan hawariun',
-                description: 'Isa memohon kepada Allah dan diturunkan hidangan dari langit untuk hawariun (murid-muridnya)',
+                description: 'Isa memohon kepada Allah dan diturunkan hidangan dari langit untuk hawariun (murid-muridnya yang beriman)',
                 references: ['QS. Al-Ma\'idah: 112-115']
             },
             {
-                event: 'Memilih 12 hawariun (murid khusus)',
+                event: 'Hawariun (murid-murid khusus) yang beriman',
                 year: 'Masa dakwah',
-                description: 'Isa memilih 12 orang murid khusus (hawariun) untuk membantu dakwahnya',
-                references: ['QS. As-Shaff: 14']
+                description: 'Isa memiliki murid-murid khusus yang disebut hawariun (penolong-penolong Allah) yang beriman dan membantu dakwahnya. Al-Quran tidak menyebutkan jumlah pasti hawariun',
+                references: ['QS. As-Shaff: 14', 'QS. Ali Imran: 52']
             },
             {
                 event: 'Berdakwah kepada Bani Israil',
-                year: 'Selama 3 tahun',
+                year: 'Masa kenabian',
                 description: 'Isa berdakwah kepada Bani Israil dengan ajaran kasih sayang dan membenarkan Taurat sebelumnya',
                 references: ['QS. Ali Imran: 50-51']
             },

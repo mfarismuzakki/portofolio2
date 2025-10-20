@@ -5,7 +5,8 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
-    padding-bottom: 140px; /* Add more space for bottom nav on mobile */
+    padding-bottom: 140px; /* Increased space for bottom nav on mobile */
+    min-height: 100vh;
 }
 
 /* ===== HEADER ===== */

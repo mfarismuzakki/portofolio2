@@ -4,6 +4,8 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem 1rem;
+    padding-bottom: 140px; /* Add space for bottom navigation */
+    min-height: 100vh;
 }
 
 .qibla-header {
