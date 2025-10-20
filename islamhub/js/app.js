@@ -623,7 +623,7 @@ class IslamHubApp {
 
         if (!installButton) return;
 
-        // Check if app is already installed (standalone mode)
+        // Check if app is currently running in standalone mode (actually installed and opened)
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
                             window.navigator.standalone === true;
         
@@ -632,12 +632,18 @@ class IslamHubApp {
             return;
         }
 
+        // Clear any stale install state when user visits (in case they uninstalled)
+        // This allows re-installation
+        localStorage.removeItem('islamhub_installed');
+
         // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             installButton.style.display = 'inline-flex';
             installButton.innerHTML = '<i class="fas fa-download"></i><span>Install Aplikasi</span>';
+            // Store that prompt is available
+            localStorage.setItem('islamhub_prompt_available', 'true');
         });
 
         // Show button by default (will show instructions if prompt not available)
@@ -712,9 +718,10 @@ class IslamHubApp {
                     success.push('✅ Protokol aman (HTTPS)');
                 }
                 
-                // Check if already installed
-                if (window.matchMedia('(display-mode: standalone)').matches) {
-                    this.showInstallDialog('Aplikasi sudah terinstall! 🎉\n\nBuka dari home screen atau app drawer Anda.', 'success');
+                // Check if already installed - only check if currently running in standalone
+                const currentlyInstalled = window.matchMedia('(display-mode: standalone)').matches;
+                if (currentlyInstalled) {
+                    this.showInstallDialog('Aplikasi sudah terinstall! 🎉\n\nAnda sedang menjalankan aplikasi dari home screen.', 'success');
                     return;
                 }
                 
@@ -725,8 +732,9 @@ class IslamHubApp {
                     message = '⚠️ Install PWA Tidak Tersedia\n\n';
                     message += 'Masalah yang ditemukan:\n' + issues.join('\n') + '\n\n';
                     message += '💡 Solusi:\n';
-                    message += '• Coba refresh halaman (Ctrl+R atau Cmd+R)\n';
-                    message += '• Kunjungi situs 2-3 kali\n';
+                    message += '• Tutup dan buka browser lagi\n';
+                    message += '• Clear cache browser (Ctrl+Shift+Del)\n';
+                    message += '• Kunjungi situs 2-3 kali lagi\n';
                     message += '• Install manual dari menu browser:\n';
                     message += '  Chrome: Menu (⋮) → Install IslamHub\n';
                     message += '  Safari: Share → Add to Home Screen';
@@ -741,7 +749,9 @@ class IslamHubApp {
                     message += '📱 Mobile:\n';
                     message += '• Android: Tap menu (⋮) → Install app\n';
                     message += '• iOS Safari: Share → Add to Home Screen\n\n';
-                    message += '💡 Tip: Chrome biasanya butuh 2-3 kunjungan sebelum menawarkan install otomatis';
+                    message += '💡 Catatan Penting:\n';
+                    message += 'Chrome butuh 2-3 kunjungan sebelum menawarkan install otomatis.\n';
+                    message += 'Jika baru uninstall, tutup browser dulu, lalu buka lagi dan kunjungi 2-3x.';
                     this.showInstallDialog(message, 'info');
                 }
                 return;
@@ -752,6 +762,7 @@ class IslamHubApp {
                 const { outcome } = await deferredPrompt.userChoice;
                 
                 if (outcome === 'accepted') {
+                    localStorage.setItem('islamhub_installed', 'true');
                     this.showInstallDialog('🎉 Berhasil!\n\nAplikasi IslamHub sedang diinstall.\nCek home screen atau app drawer Anda dalam beberapa detik.', 'success');
                 } else {
                     this.showInstallDialog('Install dibatalkan.\n\nAnda bisa install kapan saja dari menu browser atau klik tombol Install Aplikasi lagi.', 'info');
@@ -761,12 +772,13 @@ class IslamHubApp {
                 installButton.style.display = 'none';
             } catch (error) {
                 console.error('Install prompt error:', error);
-                this.showInstallDialog('❌ Gagal Install\n\nPrompt install tidak bisa ditampilkan.\n\n💡 Coba:\n• Refresh halaman (F5)\n• Install manual: Menu browser → Install IslamHub', 'error');
+                this.showInstallDialog('❌ Gagal Install\n\nPrompt install tidak bisa ditampilkan.\n\n💡 Coba:\n• Tutup dan buka browser lagi\n• Clear cache browser\n• Kunjungi situs 2-3x lagi\n• Install manual: Menu browser → Install IslamHub', 'error');
             }
         });
 
         // Handle app installed event
         window.addEventListener('appinstalled', () => {
+            localStorage.setItem('islamhub_installed', 'true');
             installButton.style.display = 'none';
             deferredPrompt = null;
             this.showInstallDialog('✅ Install Berhasil! 🎉\n\nIslamHub sudah terinstall di perangkat Anda.\n\nBuka dari home screen untuk pengalaman terbaik!', 'success');
