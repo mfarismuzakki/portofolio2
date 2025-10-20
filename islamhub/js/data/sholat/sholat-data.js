@@ -302,7 +302,7 @@ window.sholatData = [
     {
         id: 'adab_masuk_masjid',
         name: 'Adab Masuk Masjid',
-        category: 'syarat',
+        category: 'sunnah',
         type: 'adab',
         icon: '🕌',
         position: 'Sebelum sholat',
@@ -325,7 +325,7 @@ window.sholatData = [
     {
         id: 'adab_keluar_masjid',
         name: 'Adab Keluar Masjid',
-        category: 'syarat',
+        category: 'sunnah',
         type: 'adab',
         icon: '🚪',
         position: 'Setelah sholat',
