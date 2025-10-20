@@ -543,15 +543,6 @@ class IslamHubApp {
             installButton.style.display = 'none';
             deferredPrompt = null;
         });
-
-        // Show button after a delay (for testing/fallback)
-        // This ensures button is visible even if beforeinstallprompt doesn't fire
-        setTimeout(() => {
-            if (installButton.style.display === 'none') {
-                installButton.style.display = 'inline-flex';
-                console.log('Install button shown (fallback)');
-            }
-        }, 2000);
     }
 }
 
