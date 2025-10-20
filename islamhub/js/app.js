@@ -485,41 +485,64 @@ class IslamHubApp {
         const installButton = document.getElementById('installButton');
 
         if (!installButton) {
-            console.log('Install button not found');
+            console.log('⚠️ Install button not found');
             return;
         }
 
         // Check if app is already installed (standalone mode)
-        if (window.matchMedia('(display-mode: standalone)').matches || 
-            window.navigator.standalone === true) {
-            console.log('App is running in standalone mode');
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                            window.navigator.standalone === true;
+        
+        if (isStandalone) {
+            console.log('✅ App already running in standalone mode');
             installButton.style.display = 'none';
             return;
         }
 
+        console.log('🔍 Checking PWA install eligibility...');
+
         // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('✅ beforeinstallprompt event fired!');
             // Prevent the mini-infobar from appearing on mobile
             e.preventDefault();
             // Stash the event so it can be triggered later
             deferredPrompt = e;
             // Show install button
             installButton.style.display = 'inline-flex';
-            console.log('PWA install prompt available');
+            console.log('✅ PWA install button shown');
         });
+
+        // Fallback: Show button after 2 seconds if criteria met but event not fired
+        setTimeout(() => {
+            if (!isStandalone && installButton.style.display === 'none') {
+                // Check if service worker is registered
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistration().then(registration => {
+                        if (registration) {
+                            console.log('ℹ️ Showing install button (fallback - SW registered)');
+                            installButton.style.display = 'inline-flex';
+                        }
+                    });
+                }
+            }
+        }, 3000);
 
         // Handle install button click
         installButton.addEventListener('click', async () => {
             if (!deferredPrompt) {
+                console.log('⚠️ No deferred prompt, showing manual instructions');
                 // If no install prompt, show info message
                 alert('Untuk menginstall aplikasi:\n\n' +
-                      '📱 Mobile: Buka menu browser → "Tambahkan ke Layar Utama"\n' +
-                      '💻 Desktop Chrome: Klik icon install di address bar\n' +
-                      '💻 Desktop Edge: Klik menu → "Aplikasi" → "Install IslamHub"\n\n' +
-                      'Atau gunakan browser yang mendukung PWA installation.');
+                      '📱 Mobile Chrome: Menu (⋮) → "Tambahkan ke Layar Utama"\n' +
+                      '� Mobile Safari: Share → "Add to Home Screen"\n' +
+                      '�💻 Desktop Chrome: Klik icon ⊕ di address bar\n' +
+                      '💻 Desktop Edge: Menu → "Aplikasi" → "Install IslamHub"\n\n' +
+                      'Pastikan menggunakan HTTPS dan browser mendukung PWA.');
                 return;
             }
 
+            console.log('🚀 Showing native install prompt...');
             // Show the install prompt
             deferredPrompt.prompt();
             
@@ -527,9 +550,9 @@ class IslamHubApp {
             const { outcome } = await deferredPrompt.userChoice;
             
             if (outcome === 'accepted') {
-                console.log('User accepted the install prompt');
+                console.log('✅ User accepted the install prompt');
             } else {
-                console.log('User dismissed the install prompt');
+                console.log('❌ User dismissed the install prompt');
             }
             
             // Clear the deferredPrompt
@@ -539,7 +562,7 @@ class IslamHubApp {
 
         // Handle app installed event
         window.addEventListener('appinstalled', () => {
-            console.log('PWA was installed');
+            console.log('🎉 PWA was installed successfully!');
             installButton.style.display = 'none';
             deferredPrompt = null;
         });
