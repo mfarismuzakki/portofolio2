@@ -2,12 +2,12 @@
   "name": "IslamHub - Aplikasi Islam Terpadu",
   "short_name": "IslamHub",
   "description": "Platform terpadu aplikasi Islam: Adzan, Dzikir, Waris, Qibla, Tata Cara Sholat, dan Sirah Nabi",
-  "start_url": "/",
+  "start_url": "/islamhub/",
   "display": "standalone",
   "background_color": "#0a0a0f",
   "theme_color": "#00ffff",
   "orientation": "portrait-primary",
-  "scope": "/",
+  "scope": "/islamhub/",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
