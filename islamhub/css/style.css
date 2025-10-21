@@ -1,4 +1,5 @@
 /* ===== IslamHub - Islamic SuperApps Platform ===== */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Scheherazade+New:wght@700&display=swap');
 /* Styling based on islamhub_backup with Cyber Islamic Theme */
 
 /* ===== CSS VARIABLES ===== */
@@ -1170,29 +1171,32 @@ body::before {
   gap: 8px;
 }
 
-.hadith-arabic {
-  font-family: 'Scheherazade New', 'Amiri', 'Times New Roman', serif;
-  font-size: 1.1rem;
-  line-height: 1.8;
+.hadith-ticker .hadith-arabic {
+  font-family: 'Amiri', 'Scheherazade New', 'Times New Roman', serif;
+  font-size: 1.6rem;
+  line-height: 2.0;
   color: var(--primary-cyan);
   text-align: center;
   direction: ltr;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  text-shadow: 0 0 14px rgba(0,255,255,.25);
 }
 
-.hadith-indonesia {
-  font-size: 1rem;
-  line-height: 1.6;
+.hadith-ticker .hadith-indonesia {
+  font-size: 1.05rem;
+  line-height: 1.7;
   color: var(--text-primary);
   font-style: italic;
   text-align: center;
 }
 
-.hadith-reference {
-  font-size: 0.85rem;
+.hadith-ticker .hadith-reference {
+  font-size: 0.95rem;
   color: var(--text-secondary);
-  font-weight: 600;
+  font-weight: 700;
   text-align: center;
+  letter-spacing: .5px;
   font-family: var(--font-primary);
 }
 
@@ -1268,17 +1272,23 @@ body::before {
 
 .progress-bar {
   flex: 1;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
   overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--gradient-primary);
-  width: 0;
-  border-radius: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary-cyan) 0%, rgba(0, 255, 255, 0.8) 50%, var(--primary-cyan) 100%);
+  border-radius: 12px;
+  transition: width 0.1s ease-out;
+  position: relative;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 @keyframes progressGrow {

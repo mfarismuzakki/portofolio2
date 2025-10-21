@@ -245,6 +245,7 @@ export default class AdzanApp {
         
         let nextPrayer = null;
         let minDiff = Infinity;
+        let allPrayersPassed = true;
         
         for (const [name, time] of Object.entries(this.prayerTimes)) {
             if (name === 'Syuruq') continue; // Skip sunrise
@@ -255,6 +256,11 @@ export default class AdzanApp {
             // Calculate difference in minutes
             let diff = prayerTime - currentTime;
             
+            // Check if this prayer hasn't passed yet today
+            if (diff > 0) {
+                allPrayersPassed = false;
+            }
+            
             // If prayer time has passed today, it's tomorrow (add 24 hours)
             if (diff <= 0) {
                 diff += 1440; // 24 hours = 1440 minutes
@@ -264,6 +270,22 @@ export default class AdzanApp {
             if (diff < minDiff) {
                 minDiff = diff;
                 nextPrayer = { name, time, diff };
+            }
+        }
+        
+        // If all prayers have passed (after Isya), reload with tomorrow's times
+        if (allPrayersPassed && this.prayerTimes['Isya']) {
+            const [isyaHours, isyaMinutes] = this.prayerTimes['Isya'].split(':').map(Number);
+            const isyaTime = isyaHours * 60 + isyaMinutes;
+            
+            // Only reload if we're past Isya (to get tomorrow's actual times)
+            // and haven't reloaded recently (check if next prayer time is still today's schedule)
+            if (currentTime > isyaTime) {
+                // Check if we're using tomorrow's calculation (diff > 1000 minutes means it's using today's time + 24h)
+                if (minDiff > 300) { // More than 5 hours suggests we need fresh data
+                    this.loadPrayerTimes();
+                    return;
+                }
             }
         }
         
@@ -983,6 +1005,9 @@ export default class AdzanApp {
             this.scheduleNotifications();
             this.showNotificationPopup('✓ Notifikasi waktu sholat diaktifkan', 'success');
             
+            // Show welcome notification to confirm it's working
+            this.showWelcomeNotification();
+            
         } else {
             // Disable notifications
             this.notificationEnabled = false;
@@ -1027,7 +1052,8 @@ export default class AdzanApp {
         }
         
         const now = new Date();
-        const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+        // Use Indonesian names to match prayerTimes keys
+        const prayers = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
         
         prayers.forEach(prayer => {
             const prayerTime = this.prayerTimes[prayer];
@@ -1091,6 +1117,31 @@ export default class AdzanApp {
         
         // Auto close after 10 seconds
         setTimeout(() => notification.close(), 10000);
+        
+        // Handle click
+        notification.onclick = () => {
+            window.focus();
+            notification.close();
+        };
+    }
+    
+    showWelcomeNotification() {
+        if (this.notificationPermission !== 'granted') return;
+        
+        const title = '🕌 IslamHub - Notifikasi Aktif';
+        const body = `Anda akan menerima notifikasi saat waktu sholat tiba. Semoga istiqomah dalam ibadah 🤲`;
+        
+        const notification = new Notification(title, {
+            body: body,
+            icon: './assets/icons/icon-192x192.png',
+            badge: './assets/icons/icon-96x96.png',
+            tag: 'welcome',
+            requireInteraction: false,
+            silent: false
+        });
+        
+        // Auto close after 8 seconds
+        setTimeout(() => notification.close(), 8000);
         
         // Handle click
         notification.onclick = () => {
