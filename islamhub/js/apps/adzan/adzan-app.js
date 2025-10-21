@@ -1002,6 +1002,10 @@ export default class AdzanApp {
             // Enable notifications
             this.notificationEnabled = true;
             localStorage.setItem('islamhub_adzan_notifications_enabled', 'true');
+            
+            // Update button state immediately
+            this.updateNotificationButton();
+            
             this.scheduleNotifications();
             this.showNotificationPopup('✓ Notifikasi waktu sholat diaktifkan', 'success');
             
@@ -1012,11 +1016,13 @@ export default class AdzanApp {
             // Disable notifications
             this.notificationEnabled = false;
             localStorage.setItem('islamhub_adzan_notifications_enabled', 'false');
+            
+            // Update button state immediately
+            this.updateNotificationButton();
+            
             this.cancelScheduledNotifications();
             this.showNotificationPopup('✗ Notifikasi waktu sholat dinonaktifkan', 'info');
         }
-        
-        this.updateNotificationButton();
     }
     
     showNotificationPopup(message, type = 'info') {
@@ -1089,64 +1095,94 @@ export default class AdzanApp {
         this.scheduledNotifications = [];
     }
     
-    showPrayerNotification(prayerName, prayerTime) {
+    async showPrayerNotification(prayerName, prayerTime) {
         if (!this.notificationEnabled || this.notificationPermission !== 'granted') {
             return;
         }
         
         const prayerNames = {
-            'Fajr': 'Subuh',
-            'Dhuhr': 'Dzuhur',
-            'Asr': 'Ashar',
+            'Subuh': 'Subuh',
+            'Dzuhur': 'Dzuhur',
+            'Ashar': 'Ashar',
             'Maghrib': 'Maghrib',
-            'Isha': 'Isya'
+            'Isya': 'Isya'
         };
         
-        const title = `🕌 Waktu ${prayerNames[prayerName] || prayerName}`;
-        const body = `Sudah masuk waktu sholat ${prayerNames[prayerName] || prayerName} (${prayerTime})`;
+        const displayName = prayerNames[prayerName] || prayerName;
+        const title = `🕌 Waktu ${displayName}`;
+        const body = `Sudah masuk waktu sholat ${displayName} (${prayerTime})`;
         
-        // Show notification
-        const notification = new Notification(title, {
+        const options = {
             body: body,
             icon: './assets/icons/icon-192x192.png',
             badge: './assets/icons/icon-96x96.png',
             tag: `prayer-${prayerName}`,
-            requireInteraction: false,
-            silent: false
-        });
-        
-        // Auto close after 10 seconds
-        setTimeout(() => notification.close(), 10000);
-        
-        // Handle click
-        notification.onclick = () => {
-            window.focus();
-            notification.close();
+            requireInteraction: true,
+            silent: false,
+            vibrate: [500, 200, 500, 200, 500]
         };
+        
+        // Try Service Worker first (better for mobile)
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                await registration.showNotification(title, options);
+                return;
+            } catch (error) {
+                console.log('Service Worker notification failed, using fallback:', error);
+            }
+        }
+        
+        // Fallback to regular Notification API
+        try {
+            const notification = new Notification(title, options);
+            setTimeout(() => notification.close(), 10000);
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+        } catch (error) {
+            console.error('Prayer notification failed:', error);
+        }
     }
     
-    showWelcomeNotification() {
+    async showWelcomeNotification() {
         if (this.notificationPermission !== 'granted') return;
         
         const title = '🕌 IslamHub - Notifikasi Aktif';
         const body = `Anda akan menerima notifikasi saat waktu sholat tiba. Semoga istiqomah dalam ibadah 🤲`;
         
-        const notification = new Notification(title, {
+        const options = {
             body: body,
             icon: './assets/icons/icon-192x192.png',
             badge: './assets/icons/icon-96x96.png',
             tag: 'welcome',
             requireInteraction: false,
-            silent: false
-        });
-        
-        // Auto close after 8 seconds
-        setTimeout(() => notification.close(), 8000);
-        
-        // Handle click
-        notification.onclick = () => {
-            window.focus();
-            notification.close();
+            silent: false,
+            vibrate: [200, 100, 200]
         };
+        
+        // Try Service Worker first (better for mobile)
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                await registration.showNotification(title, options);
+                return;
+            } catch (error) {
+                console.log('Service Worker notification failed, using fallback:', error);
+            }
+        }
+        
+        // Fallback to regular Notification API
+        try {
+            const notification = new Notification(title, options);
+            setTimeout(() => notification.close(), 8000);
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+        } catch (error) {
+            console.error('Notification failed:', error);
+        }
     }
 }
