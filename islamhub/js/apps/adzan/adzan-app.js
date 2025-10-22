@@ -248,7 +248,8 @@ export default class AdzanApp {
         let allPrayersPassed = true;
         
         for (const [name, time] of Object.entries(this.prayerTimes)) {
-            if (name === 'Syuruq') continue; // Skip sunrise
+            // Include Syuruq in countdown calculation (it's a time marker, not a prayer)
+            // We only skip it for notifications
             
             const [hours, minutes] = time.split(':').map(Number);
             const prayerTime = hours * 60 + minutes;
@@ -256,8 +257,8 @@ export default class AdzanApp {
             // Calculate difference in minutes
             let diff = prayerTime - currentTime;
             
-            // Check if this prayer hasn't passed yet today
-            if (diff > 0) {
+            // Check if this prayer hasn't passed yet today (skip Syuruq for "all passed" check)
+            if (diff > 0 && name !== 'Syuruq') {
                 allPrayersPassed = false;
             }
             
@@ -266,7 +267,7 @@ export default class AdzanApp {
                 diff += 1440; // 24 hours = 1440 minutes
             }
             
-            // Find the prayer with minimum difference (closest upcoming prayer)
+            // Find the prayer with minimum difference (closest upcoming prayer/time)
             if (diff < minDiff) {
                 minDiff = diff;
                 nextPrayer = { name, time, diff };
@@ -1070,21 +1071,26 @@ export default class AdzanApp {
             const prayerDate = new Date();
             prayerDate.setHours(hours, minutes, 0, 0);
             
-            // If prayer time has passed today, schedule for tomorrow
-            if (prayerDate <= now) {
-                prayerDate.setDate(prayerDate.getDate() + 1);
+            // Schedule notification 5 minutes BEFORE prayer time
+            const notificationDate = new Date(prayerDate.getTime() - 5 * 60 * 1000);
+            
+            // If notification time has passed today, schedule for tomorrow
+            if (notificationDate <= now) {
+                notificationDate.setDate(notificationDate.getDate() + 1);
             }
             
-            const timeUntilPrayer = prayerDate.getTime() - now.getTime();
+            const timeUntilNotification = notificationDate.getTime() - now.getTime();
             
-            // Schedule notification
-            const timeoutId = setTimeout(() => {
-                this.showPrayerNotification(prayer, prayerTime);
-                // Reschedule for next day
-                setTimeout(() => this.scheduleNotifications(), 1000);
-            }, timeUntilPrayer);
-            
-            this.scheduledNotifications.push(timeoutId);
+            // Only schedule if within next 24 hours
+            if (timeUntilNotification > 0 && timeUntilNotification <= 24 * 60 * 60 * 1000) {
+                const timeoutId = setTimeout(() => {
+                    this.showPrayerNotification(prayer, prayerTime);
+                    // Reschedule for next day
+                    setTimeout(() => this.scheduleNotifications(), 1000);
+                }, timeUntilNotification);
+                
+                this.scheduledNotifications.push(timeoutId);
+            }
         });
         
         console.log(`Scheduled ${this.scheduledNotifications.length} prayer notifications`);
@@ -1110,7 +1116,7 @@ export default class AdzanApp {
         
         const displayName = prayerNames[prayerName] || prayerName;
         const title = `🕌 Waktu ${displayName}`;
-        const body = `Sudah masuk waktu sholat ${displayName} (${prayerTime})`;
+        const body = `⏰ 5 menit lagi waktu sholat ${displayName} (${prayerTime}). Bersiaplah untuk sholat.`;
         
         const options = {
             body: body,
