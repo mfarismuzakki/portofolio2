@@ -602,14 +602,14 @@ function scheduleNotifications(prayerTimes, usedTomorrow) {
     // Calculate milliseconds until notification
     let hoursUntilNotification = notificationTime - nowHours;
     
-    // If notification time has passed today, skip (don't schedule for yesterday)
-    if (hoursUntilNotification <= 0 && !usedTomorrow) {
-      return;
+    // If using tomorrow's times, add 24 hours
+    if (usedTomorrow) {
+      hoursUntilNotification += 24;
     }
     
-    // If using tomorrow's times, don't add extra 24 hours
-    if (hoursUntilNotification <= 0 && usedTomorrow) {
-      hoursUntilNotification += 24;
+    // If notification time has passed today and not using tomorrow, skip
+    if (hoursUntilNotification <= 0 && !usedTomorrow) {
+      return;
     }
 
     const msUntilNotification = hoursUntilNotification * 60 * 60 * 1000;
