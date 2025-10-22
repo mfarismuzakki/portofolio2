@@ -108,10 +108,45 @@ self.addEventListener('notificationclick', event => {
         }
         // If not open, open new window
         if (clients.openWindow) {
-          return clients.openWindow('https://mfarismuzakki.id/adzan_realtime/');
+          const dataUrl = event.notification.data?.url || 'https://mfarismuzakki.id/adzan_realtime/';
+          return clients.openWindow(dataUrl);
         }
       })
     );
+  }
+});
+
+// Handle messages from main thread (keep service worker alive for mobile)
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'KEEP_ALIVE') {
+    // Respond to keep service worker active
+    event.ports[0]?.postMessage({ success: true });
+  }
+  
+  // Handle prayer notification requests
+  if (event.data && event.data.type === 'SCHEDULE_NOTIFICATION') {
+    const { prayerName, prayerKey, delay } = event.data;
+    
+    // Use setTimeout in service worker for better mobile reliability
+    setTimeout(() => {
+      self.registration.showNotification(`🕌 Waktu Sholat ${prayerName}`, {
+        body: `⏰ 5 menit lagi waktu sholat ${prayerName}. Bersiaplah untuk sholat.`,
+        icon: '/images/_logo.png',
+        badge: '/_favicon.png',
+        tag: `prayer-${prayerKey}`,
+        requireInteraction: true,
+        silent: false,
+        vibrate: [500, 200, 500, 200, 500],
+        renotify: true,
+        timestamp: Date.now(),
+        data: {
+          prayer: prayerKey,
+          url: 'https://mfarismuzakki.id/adzan_realtime/'
+        }
+      }).catch(err => {
+        console.error('SW notification error:', err);
+      });
+    }, delay);
   }
 });
 

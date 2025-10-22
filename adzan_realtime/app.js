@@ -466,6 +466,7 @@ function updateLiveInfo(){
   const nowHours = nowParts.h + nowParts.m/60 + nowParts.s/3600;
   let nextKey = null; let minDiff = Infinity;
   
+  // First, try to find next prayer today
   for(const k of Object.keys(_perPrayerNorm)){
     const t = _perPrayerNorm[k];
     if(isNaN(t)) continue;
@@ -474,7 +475,16 @@ function updateLiveInfo(){
     const diff = t - nowHours;
     if(diff > 0 && diff < minDiff){ minDiff = diff; nextKey = k; }
   }
-  if(!nextKey){ nextKey = 'fajr'; }
+  
+  // If no prayer found today (all prayers passed), next is Fajr tomorrow
+  if(!nextKey){ 
+    nextKey = 'fajr';
+    // Add 24 hours to minDiff for tomorrow's Fajr
+    const fajrTime = _perPrayerNorm['fajr'];
+    if(!isNaN(fajrTime)) {
+      minDiff = (24 - nowHours) + fajrTime; // Time until tomorrow's Fajr
+    }
+  }
 
   document.querySelectorAll('#prayTable tbody tr').forEach(tr=>{
     const key = tr.getAttribute('data-prayer');
@@ -488,6 +498,7 @@ function updateLiveInfo(){
     
     if(key === nextKey){
       let diffHours = t - nowHours;
+      // If it's tomorrow's prayer (negative diff means we need to add 24 hours)
       if(diffHours < 0) diffHours += 24;
       const diffSec = Math.max(0, Math.round(diffHours * 3600));
       infoCell.textContent = formatHMS(diffSec);
@@ -526,7 +537,7 @@ function updateLiveInfo(){
       infoCell.style.fontWeight = '700';
       infoCell.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.8)';
     } else {
-      // Check if time has passed for all prayers
+      // Check if time has passed for this prayer
       if(t <= nowHours) {
         infoCell.textContent = 'Selesai';
       } else {
@@ -619,22 +630,35 @@ function scheduleNotifications(prayerTimes, usedTomorrow) {
       const timeoutId = setTimeout(async () => {
         const prayerName = prayerDisplayNames[prayerKey] || prayerKey;
         
-        // Use Service Worker for better Android compatibility
+        // Get absolute URL for icons
+        const baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+        const iconUrl = baseUrl + '../images/_logo.png';
+        const badgeUrl = baseUrl + '../_favicon.png';
+        
+        // Use Service Worker for better mobile compatibility (especially Android)
         if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
           try {
             const registration = await navigator.serviceWorker.ready;
+            
+            // Send message to keep service worker alive (important for mobile)
+            navigator.serviceWorker.controller.postMessage({
+              type: 'KEEP_ALIVE'
+            });
+            
             await registration.showNotification(`🕌 Waktu Sholat ${prayerName}`, {
               body: `⏰ 5 menit lagi waktu sholat ${prayerName}. Bersiaplah untuk sholat.`,
-              icon: '../images/_logo.png',
-              badge: '../_favicon.png',
+              icon: iconUrl,
+              badge: badgeUrl,
               tag: `prayer-${prayerKey}`,
               requireInteraction: true,
               silent: false,
               vibrate: [500, 200, 500, 200, 500],
+              renotify: true,
+              timestamp: Date.now(),
               actions: [
                 {
                   action: 'open',
-                  title: '📖 Buka Aplikasi'
+                  title: '📖 Buka'
                 },
                 {
                   action: 'dismiss', 
@@ -644,16 +668,20 @@ function scheduleNotifications(prayerTimes, usedTomorrow) {
               data: {
                 prayer: prayerKey,
                 time: prayerTime,
-                url: 'https://mfarismuzakki.id/adzan_realtime/'
+                url: window.location.href
               }
             });
+            
+            // Log for debugging
+            console.log(`Notification scheduled for ${prayerName} in ${Math.round(hoursUntilNotification * 60)} minutes`);
           } catch (error) {
+            console.error('Service Worker notification failed:', error);
             // Fallback to regular notification
-            createFallbackNotification(prayerName, prayerKey);
+            createFallbackNotification(prayerName, prayerKey, iconUrl, badgeUrl);
           }
         } else {
           // Fallback for browsers without service worker
-          createFallbackNotification(prayerName, prayerKey);
+          createFallbackNotification(prayerName, prayerKey, iconUrl, badgeUrl);
         }
         
         // Vibrate for mobile devices
@@ -664,33 +692,39 @@ function scheduleNotifications(prayerTimes, usedTomorrow) {
 
       window.notificationTimeouts.push(timeoutId);
       
-      // Log for debugging
+      // Log scheduled notification
+      const scheduledTime = new Date(Date.now() + msUntilNotification);
+      console.log(`Scheduled ${prayerDisplayNames[prayerKey]} notification at ${scheduledTime.toLocaleTimeString('id-ID')}`);
     }
   });
 }
 
 // Fallback notification function for compatibility
-function createFallbackNotification(prayerName, prayerKey) {
-  const notification = new Notification(`🕌 Waktu Sholat ${prayerName}`, {
-    body: `⏰ 5 menit lagi waktu sholat ${prayerName}. Bersiaplah untuk sholat.`,
-    icon: '../images/_logo.png',
-    badge: '../_favicon.png',
-    tag: `prayer-${prayerKey}`,
-    requireInteraction: true,
-    silent: false
-  });
+function createFallbackNotification(prayerName, prayerKey, iconUrl, badgeUrl) {
+  try {
+    const notification = new Notification(`🕌 Waktu Sholat ${prayerName}`, {
+      body: `⏰ 5 menit lagi waktu sholat ${prayerName}. Bersiaplah untuk sholat.`,
+      icon: iconUrl,
+      badge: badgeUrl,
+      tag: `prayer-${prayerKey}`,
+      requireInteraction: true,
+      silent: false,
+      renotify: true
+    });
 
-  // Auto close notification after 15 seconds for Android compatibility
-  setTimeout(() => {
-    notification.close();
-  }, 15000);
+    // Auto close notification after 30 seconds for mobile compatibility
+    setTimeout(() => {
+      notification.close();
+    }, 30000);
 
-  // Handle notification click
-  notification.onclick = function() {
-    window.open('https://mfarismuzakki.id/adzan_realtime/', '_blank');
-    window.focus();
-    notification.close();
-  };
+    // Handle notification click
+    notification.onclick = function() {
+      window.focus();
+      notification.close();
+    };
+  } catch (error) {
+    console.error('Fallback notification failed:', error);
+  }
 }
 
 async function getCoordsFromCity(cityName){
@@ -1070,14 +1104,17 @@ document.getElementById('btnNotification').addEventListener('click', async () =>
         
         await showCustomAlert(
           'Notifikasi Diaktifkan',
-          'Pengingat sholat berhasil diaktifkan! Anda akan mendapat notifikasi 5 menit sebelum setiap waktu sholat.',
+          'Pengingat sholat berhasil diaktifkan! Anda akan mendapat notifikasi 5 menit sebelum setiap waktu sholat.\n\nTIPS untuk Android: Install aplikasi dengan "Add to Home Screen" agar notifikasi lebih andal.',
           'fa-check-circle'
         );
+        
+        // Log for debugging
+        console.log('Notifications enabled. Scheduled notifications:', window.notificationTimeouts?.length || 0);
         
       } else if (permission === 'denied') {
         const isAndroid = /Android/i.test(navigator.userAgent);
         const message = isAndroid 
-          ? 'Izin notifikasi ditolak. Untuk Android:\n\n1. Buka Chrome Settings (tiga titik)\n2. Pilih "Site settings" atau "Setelan situs"\n3. Pilih "Notifications" atau "Notifikasi"\n4. Cari situs ini dan ubah ke "Allow"\n\nAtau install aplikasi sebagai PWA dengan tombol "Add to Home Screen"'
+          ? 'Izin notifikasi ditolak. Untuk Android:\n\n1. Buka Chrome Settings (⋮ tiga titik)\n2. Pilih "Site settings" atau "Setelan situs"\n3. Pilih "Notifications"\n4. Cari situs ini dan ubah ke "Allow"\n5. Atau install sebagai PWA (Add to Home Screen) untuk notifikasi yang lebih andal'
           : 'Izin notifikasi ditolak. Silakan buka pengaturan browser dan izinkan notifikasi untuk situs ini.';
           
         await showCustomAlert(
@@ -1797,6 +1834,42 @@ function debugFloatingWidget() {
 // Expose to window for debugging
 window.forceShowFloatingWidget = forceShowFloatingWidget;
 window.debugFloatingWidget = debugFloatingWidget;
+
+// Keep service worker alive and handle visibility change for mobile notifications
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    // App went to background - ensure notifications stay active
+    console.log('App backgrounded - notifications should continue');
+    
+    // Send keep-alive to service worker
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+        type: 'KEEP_ALIVE',
+        timestamp: Date.now()
+      });
+    }
+  } else {
+    // App came to foreground - refresh prayer times if needed
+    console.log('App foregrounded - checking prayer times');
+    
+    // Reschedule notifications in case any were missed
+    if (isNotificationEnabled && _perPrayerNorm && Object.keys(_perPrayerNorm).length > 0) {
+      scheduleNotifications(_perPrayerNorm, false);
+    }
+  }
+});
+
+// Periodic keep-alive for service worker (every 2 minutes)
+if ('serviceWorker' in navigator) {
+  setInterval(() => {
+    if (navigator.serviceWorker.controller && isNotificationEnabled) {
+      navigator.serviceWorker.controller.postMessage({
+        type: 'KEEP_ALIVE',
+        timestamp: Date.now()
+      });
+    }
+  }, 120000); // 2 minutes
+}
 
 function addFloatingWidgetClickHandler() {
   if (floatingWidget) {
