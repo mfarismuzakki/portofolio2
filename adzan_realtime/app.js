@@ -5,18 +5,6 @@ function D2R(d){return (d*Math.PI)/180;}
 function R2D(r){return (r*180)/Math.PI;}
 function fixAngle(a){return a - 360*Math.floor(a/360);} 
 function fixHour(a){return a - 24*Math.floor(a/24);} 
-function dsin(d){
-  return Math.sin(D2R(d));
-}
-
-function updateNext(times){
-  try{ if(countdownTimer) clearTimeout(countdownTimer); }catch(e){}
-}
-
-function D2R(d){return (d*Math.PI)/180;}
-function R2D(r){return (r*180)/Math.PI;}
-function fixAngle(a){return a - 360*Math.floor(a/360);} 
-function fixHour(a){return a - 24*Math.floor(a/24);} 
 function dsin(d){return Math.sin(D2R(d));}
 function dcos(d){return Math.cos(D2R(d));}
 function dtan(d){return Math.tan(D2R(d));}
@@ -85,10 +73,25 @@ async function fetchTimingsFromAladhan(date, lat, lon, methodKey){
     const rlat = Math.round(lat*1000)/1000; const rlon = Math.round(lon*1000)/1000;
     const cacheKey = `timings:${year}-${month}-${day}:${rlat},${rlon}:m${methodId}`;
     const cached = localStorage.getItem(cacheKey);
-    if(cached){ try{ return JSON.parse(cached); }catch(e){} }
+    if(cached){ 
+      try{ 
+        const parsed = JSON.parse(cached);
+        console.log('Using cached prayer times');
+        return parsed;
+      }catch(e){
+        console.warn('Failed to parse cached data, will fetch fresh');
+      } 
+    }
+    console.log('Fetching prayer times from Aladhan API...');
     const url = `https://api.aladhan.com/v1/timings/${Math.floor(dt.getTime()/1000)}?latitude=${lat}&longitude=${lon}&method=${methodId}`;
-    const res = await fetch(url);
-    if(!res.ok) throw new Error('Aladhan fetch failed');
+    const res = await fetch(url, { 
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+    if(!res.ok) {
+      console.warn(`Aladhan API returned status ${res.status}`);
+      throw new Error('Aladhan fetch failed');
+    }
     const body = await res.json();
     if(body && body.code===200 && body.data && body.data.timings){
       const t = body.data.timings;
@@ -107,11 +110,17 @@ async function fetchTimingsFromAladhan(date, lat, lon, methodKey){
       };
       const timezone = (body.data.meta && body.data.meta.timezone) ? body.data.meta.timezone : null;
       const hijri = body.data.date && body.data.date.hijri ? body.data.date.hijri : null;
-      try{ localStorage.setItem(cacheKey, JSON.stringify({timings: out, timezone: timezone, hijri: hijri})); }catch(e){}
+      try{ localStorage.setItem(cacheKey, JSON.stringify({timings: out, timezone: timezone, hijri: hijri})); }catch(e){
+        console.warn('Failed to cache prayer times:', e);
+      }
+      console.log('Successfully fetched prayer times from API');
       return {timings: out, timezone: timezone, hijri: hijri};
+    } else {
+      console.warn('Unexpected API response format:', body);
+      throw new Error('Invalid API response');
     }
   }catch(err){
-    console.warn('Aladhan API failed, falling back to local calc',err);
+    console.warn('Aladhan API failed, will use local calculation:', err.message);
   }
   return null;
 }
@@ -262,6 +271,7 @@ function renderPrayers(){
   function formatOffset(off){ return 'GMT'+(off>=0?'+':'')+off; }
   document.getElementById("tzname").textContent = formatOffset(clientTzOffset);
   (async ()=>{
+    try {
       function pad(n){return n<10?('0'+n):n}
       function formatHMS(s){
         if(s<=0) return '00:00:00';
@@ -283,9 +293,17 @@ function renderPrayers(){
         if(apiTimezone && !currentTimeZone) {
           currentTimeZone = apiTimezone;
         }
-      } else {
-        if(apiResp && typeof apiResp === 'object' && apiResp.fajr!==undefined){ times = apiResp; }
-        else times = getPrayerTimes(now,currentLat,currentLon,zoneOffset,currentMethod);
+      }
+      
+      // If API failed or returned invalid data, use local calculation
+      if(!times || typeof times !== 'object' || !times.fajr) {
+        console.log('Using local prayer time calculation');
+        times = getPrayerTimes(now,currentLat,currentLon,zoneOffset,currentMethod);
+      }
+      
+      // Final validation - ensure we have valid prayer times
+      if(!times || typeof times !== 'object' || !times.fajr) {
+        throw new Error('Failed to calculate prayer times');
       }
       try{
         const gdate = (currentTimeZone || apiTimezone)
@@ -457,6 +475,33 @@ function renderPrayers(){
       
       // Schedule notifications for prayer times
       scheduleNotifications(norm, usedTomorrow);
+    } catch(err) {
+      console.error('Error rendering prayers:', err);
+      // Use fallback calculation even on error
+      try {
+        console.log('Attempting fallback with local calculation...');
+        const fallbackTimes = getPrayerTimes(now, currentLat, currentLon, zoneOffset, currentMethod);
+        if(fallbackTimes && typeof fallbackTimes === 'object') {
+          const tbody = document.querySelector('#prayTable tbody');
+          tbody.innerHTML = '';
+          for(let k of Object.keys(prayNames)){
+            const displayTime = floatToTime(fallbackTimes[k]);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${prayNames[k]}</td><td class="time">${displayTime}</td><td class="small">--:--:--</td>`;
+            tbody.appendChild(tr);
+          }
+          console.log('Using fallback local calculation');
+        } else {
+          throw new Error('Fallback also failed');
+        }
+      } catch(fallbackErr) {
+        console.error('Fallback failed:', fallbackErr);
+        const tbody = document.querySelector('#prayTable tbody');
+        if(tbody) {
+          tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:20px;color:#ff9800;">⚠️ Tidak dapat memuat waktu sholat.<br>Mohon periksa koneksi internet Anda.</td></tr>';
+        }
+      }
+    }
   })();
 }
 

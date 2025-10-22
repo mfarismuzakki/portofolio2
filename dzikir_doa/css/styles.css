@@ -465,7 +465,7 @@ img.loaded {
 }
 
 .location-badge i {
-    color: #29b6f6;
+    color: #00ffff;
     font-size: 12px;
 }
 
@@ -475,7 +475,7 @@ img.loaded {
 }
 
 .location-badge span:hover {
-    color: #29b6f6;
+    color: #00ffff;
     transform: translateY(-1px);
 }
 
@@ -488,7 +488,10 @@ img.loaded {
 
 .location-notice-icon {
     font-size: 28px;
-    color: #ff5722;
+    background: linear-gradient(135deg, #00ffff, #ff9800);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .location-notice-text {
@@ -509,7 +512,7 @@ img.loaded {
 }
 
 .location-setup-btn {
-    background: linear-gradient(135deg, #ff5722, #d32f2f);
+    background: linear-gradient(135deg, #00d4ff, #0096ff);
     border: none;
     border-radius: 8px;
     padding: 10px 16px;
@@ -525,9 +528,9 @@ img.loaded {
 }
 
 .location-setup-btn:hover {
-    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    background: linear-gradient(135deg, #00b8e6, #0080e6);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 87, 34, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
 }
 
 /* Time Recommendation Banner */
@@ -623,6 +626,11 @@ img.loaded {
 
 .rec-icon {
     font-size: 32px;
+    background: linear-gradient(135deg, #00ffff, #00d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.3));
 }
 
 .rec-title {
@@ -793,6 +801,11 @@ img.loaded {
     font-size: 48px;
     margin-bottom: 16px;
     display: block;
+    background: linear-gradient(135deg, #00ffff, #00d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
 }
 
 .category-title {
@@ -1242,12 +1255,15 @@ img.loaded {
 }
 
 .doa-copy:hover {
-    color: #4fc3f7;
-    background: rgba(79, 195, 247, 0.1);
+    color: #00ffff;
+    background: rgba(0, 255, 255, 0.1);
+    border-color: rgba(0, 255, 255, 0.3);
 }
 
 .doa-share:hover {
     color: #00ffff;
+    background: rgba(0, 255, 255, 0.1);
+    border-color: rgba(0, 255, 255, 0.3);
 }
 
 .doa-content {

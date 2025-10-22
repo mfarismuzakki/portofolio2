@@ -35,6 +35,7 @@ export default class AdzanApp {
         await this.loadSavedLocation();
         await this.fetchPrayerTimes();
         this.startCountdown();
+        this.updateCountdown(); // Initial countdown display
         this.setupEventListeners();
         this.updateClock();
         await this.initNotifications();
@@ -240,65 +241,46 @@ export default class AdzanApp {
     }
 
     calculateNextPrayer() {
+        if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) return;
+        
         const now = new Date();
-        const currentTime = now.getHours() * 60 + now.getMinutes();
+        const nowHours = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
         
         let nextPrayer = null;
         let minDiff = Infinity;
-        let allPrayersPassed = true;
         
         for (const [name, time] of Object.entries(this.prayerTimes)) {
-            // Include Syuruq in countdown calculation (it's a time marker, not a prayer)
-            // We only skip it for notifications
+            // Skip Syuruq for next prayer calculation (it's not a prayer time)
+            if (name === 'Syuruq') continue;
             
             const [hours, minutes] = time.split(':').map(Number);
-            const prayerTime = hours * 60 + minutes;
+            const prayerHours = hours + minutes/60;
             
-            // Calculate difference in minutes
-            let diff = prayerTime - currentTime;
-            
-            // Check if this prayer hasn't passed yet today (skip Syuruq for "all passed" check)
-            if (diff > 0 && name !== 'Syuruq') {
-                allPrayersPassed = false;
-            }
+            // Calculate difference in hours
+            let diff = prayerHours - nowHours;
             
             // If prayer time has passed today, it's tomorrow (add 24 hours)
             if (diff <= 0) {
-                diff += 1440; // 24 hours = 1440 minutes
+                diff += 24;
             }
             
-            // Find the prayer with minimum difference (closest upcoming prayer/time)
+            // Find the prayer with minimum difference (closest upcoming prayer)
             if (diff < minDiff) {
                 minDiff = diff;
-                nextPrayer = { name, time, diff };
+                nextPrayer = { name, time };
             }
         }
         
-        // If all prayers have passed (after Isya), reload with tomorrow's times
-        if (allPrayersPassed && this.prayerTimes['Isya']) {
-            const [isyaHours, isyaMinutes] = this.prayerTimes['Isya'].split(':').map(Number);
-            const isyaTime = isyaHours * 60 + isyaMinutes;
-            
-            // Only reload if we're past Isya (to get tomorrow's actual times)
-            // and haven't reloaded recently (check if next prayer time is still today's schedule)
-            if (currentTime > isyaTime) {
-                // Check if we're using tomorrow's calculation (diff > 1000 minutes means it's using today's time + 24h)
-                if (minDiff > 300) { // More than 5 hours suggests we need fresh data
-                    this.loadPrayerTimes();
-                    return;
-                }
-            }
-        }
-        
-        this.nextPrayer = nextPrayer;
-        this.updateNextPrayerDisplay();
-        
-        // Highlight next prayer in grid
-        document.querySelectorAll('.prayer-time-card').forEach(card => {
-            card.classList.remove('next-prayer');
-        });
-        
+        // Only update if we found a next prayer
         if (nextPrayer) {
+            this.nextPrayer = nextPrayer;
+            this.updateNextPrayerDisplay();
+            
+            // Highlight next prayer in grid
+            document.querySelectorAll('.prayer-time-card').forEach(card => {
+                card.classList.remove('next-prayer');
+            });
+            
             const nextCard = document.querySelector(`[data-prayer="${nextPrayer.name}"]`);
             if (nextCard) {
                 nextCard.classList.add('next-prayer');
@@ -327,29 +309,61 @@ export default class AdzanApp {
     }
 
     updateCountdown() {
-        if (!this.nextPrayer) return;
+        if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) return;
         
         const now = new Date();
         const nowHours = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
         
-        const [hours, minutes] = this.nextPrayer.time.split(':').map(Number);
-        const prayerHours = hours + minutes/60;
+        // Recalculate next prayer every time (like adzan_realtime does)
+        let nextKey = null;
+        let minDiff = Infinity;
         
-        // Calculate difference in hours
-        let diffHours = prayerHours - nowHours;
-        
-        // If very close to 0 or negative (within 2 seconds or passed), recalculate next prayer
-        if (diffHours < (2/3600)) {
-            this.calculateNextPrayer();
-            return;
+        for (const [name, time] of Object.entries(this.prayerTimes)) {
+            // Skip Syuruq for next prayer calculation
+            if (name === 'Syuruq') continue;
+            
+            const [hours, minutes] = time.split(':').map(Number);
+            const prayerHours = hours + minutes/60;
+            
+            let diff = prayerHours - nowHours;
+            
+            // If negative, it's tomorrow
+            if (diff <= 0) {
+                diff += 24;
+            }
+            
+            if (diff < minDiff) {
+                minDiff = diff;
+                nextKey = name;
+            }
         }
         
-        // If difference is negative (shouldn't happen after recalculation), add 24 hours
-        if (diffHours < 0) {
+        // If we found a different next prayer, update it
+        if (nextKey && (!this.nextPrayer || this.nextPrayer.name !== nextKey)) {
+            this.nextPrayer = { name: nextKey, time: this.prayerTimes[nextKey] };
+            this.updateNextPrayerDisplay();
+            
+            // Update highlight
+            document.querySelectorAll('.prayer-time-card').forEach(card => {
+                card.classList.remove('next-prayer');
+            });
+            const nextCard = document.querySelector(`[data-prayer="${nextKey}"]`);
+            if (nextCard) {
+                nextCard.classList.add('next-prayer');
+            }
+        }
+        
+        if (!this.nextPrayer) return;
+        
+        // Calculate countdown
+        const [hours, minutes] = this.nextPrayer.time.split(':').map(Number);
+        const prayerHours = hours + minutes/60;
+        let diffHours = prayerHours - nowHours;
+        
+        if (diffHours <= 0) {
             diffHours += 24;
         }
         
-        // Convert to total seconds
         const totalSeconds = Math.max(0, Math.round(diffHours * 3600));
         const hrs = Math.floor(totalSeconds / 3600);
         const mins = Math.floor((totalSeconds % 3600) / 60);
@@ -357,12 +371,13 @@ export default class AdzanApp {
         
         const countdown = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         
+        // Update countdown display
         const countdownEl = document.getElementById('countdownTimer');
         if (countdownEl) {
             countdownEl.textContent = countdown;
         }
         
-        // Update home widget
+        // Update widgets
         if (this.mainApp) {
             this.mainApp.updateHomeWidget({
                 prayerName: this.nextPrayer.name,
@@ -371,11 +386,13 @@ export default class AdzanApp {
                 city: this.city
             });
             
-            this.mainApp.updateFloatingWidget({
-                prayerName: this.nextPrayer.name,
-                countdown: countdown,
-                city: this.city
-            });
+            if (this.mainApp.updateFloatingWidget) {
+                this.mainApp.updateFloatingWidget({
+                    prayerName: this.nextPrayer.name,
+                    countdown: countdown,
+                    city: this.city
+                });
+            }
         }
         
         // Update sunnah prayers every minute
@@ -491,10 +508,10 @@ export default class AdzanApp {
     updateHomeWidget() {
         if (!this.mainApp || !this.nextPrayer) return;
         
+        // Just update the prayer info, countdown will be updated by updateCountdown()
         this.mainApp.updateHomeWidget({
             prayerName: this.nextPrayer.name,
             prayerTime: this.nextPrayer.time,
-            countdown: '--:--:--',
             city: this.city
         });
     }
