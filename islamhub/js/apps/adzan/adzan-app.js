@@ -337,14 +337,16 @@ export default class AdzanApp {
         
         // Calculate difference in hours
         let diffHours = prayerHours - nowHours;
-        if (diffHours < 0) {
-            diffHours += 24; // Add 24 hours if prayer is tomorrow
-        }
         
-        // If very close to 0 (within 2 seconds), recalculate next prayer
+        // If very close to 0 or negative (within 2 seconds or passed), recalculate next prayer
         if (diffHours < (2/3600)) {
             this.calculateNextPrayer();
             return;
+        }
+        
+        // If difference is negative (shouldn't happen after recalculation), add 24 hours
+        if (diffHours < 0) {
+            diffHours += 24;
         }
         
         // Convert to total seconds
