@@ -429,13 +429,16 @@ export default class AdzanApp {
 
     updateDate(hijri) {
         const now = new Date();
-        const dateString = now.toLocaleDateString('id-ID', { 
+        let dateString = now.toLocaleDateString('id-ID', { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
         });
-        
+        // Ganti Minggu menjadi Ahad
+        if (dateString.startsWith('Minggu')) {
+            dateString = dateString.replace('Minggu', 'Ahad');
+        }
         let fullDate = dateString;
         
         if (hijri && hijri.month) {
