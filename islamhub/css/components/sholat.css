@@ -599,21 +599,103 @@
 
 /* ===== TIPS & WARNING ===== */
 .sholat-tips {
-    background: rgba(0, 255, 0, 0.05);
-    border-left-color: #00ff00;
+    background: rgba(0, 255, 100, 0.08);
+    border-left: 3px solid #00ff64;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
 }
 
 .sholat-tips h4 {
-    color: #00ff00;
+    color: #00ff64;
+    margin-bottom: 1rem;
+}
+
+.sholat-tips p,
+.sholat-tips ul li {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
 }
 
 .sholat-warning {
-    background: rgba(255, 165, 0, 0.05);
-    border-left-color: #FFA500;
+    background: rgba(255, 165, 0, 0.08);
+    border-left: 3px solid #FFA500;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
 }
 
-.sholat-warning h4 {
-    color: #FFA500;
+.sholat-warning p,
+.sholat-warning ul li {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+}
+
+/* Benefit Section */
+.sholat-benefit {
+    background: rgba(0, 255, 100, 0.08);
+    border-left: 3px solid #00ff64;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.sholat-benefit h4 {
+    color: #00ff64;
+    margin-bottom: 1rem;
+}
+
+.sholat-benefit p {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Reference Section */
+.sholat-reference {
+    background: rgba(2550, 193, 7, 0.08);
+    border-left: 3px solid #ffc107;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0;
+    margin-bottom: 1rem;
+}
+
+.sholat-warning p,
+.sholat-warning ul li {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+}
+
+/* Benefit Section */
+.sholat-benefit {
+    background: rgba(0, 255, 100, 0.08);
+    border-left: 3px solid #00ff64;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.sholat-benefit h4 {
+    color: #00ff64;
+    margin-bottom: 1rem;
+}
+
+.sholat-benefit p {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Reference Section */
+.sholat-reference {
+    background: rgba(255, 193, 7, 0.08);
+    border-left: 3px solid #ffc107;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 1.5rem;
 }
 
 .sholat-detail-section ul {
@@ -631,8 +713,9 @@
     content: '✓';
     position: absolute;
     left: 0;
-    color: var(--cyan);
+    color: var(--primary-cyan);
     font-weight: bold;
+    font-size: 1.1rem;
 }
 
 /* ===== EMPTY STATE ===== */
