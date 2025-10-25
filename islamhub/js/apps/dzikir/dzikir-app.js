@@ -15,6 +15,8 @@ export default class DzikirApp {
         this.searchQuery = '';
         this.currentFilter = 'semua';
         this.currentView = 'home'; // 'home', 'category', 'favorites'
+        this.isPlayingPlaylist = false;
+        this.playlistIndex = 0;
     }
 
     async init() {
@@ -109,6 +111,9 @@ export default class DzikirApp {
                                 <button class="action-btn" id="doaCopy">
                                     <i class="fas fa-copy"></i>
                                 </button>
+                                <button class="action-btn" id="doaAudio" title="Putar Audio">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
                                 <button class="action-btn" id="doaFavorite">
                                     <i class="far fa-heart"></i>
                                 </button>
@@ -117,6 +122,39 @@ export default class DzikirApp {
                         <div class="modal-body" id="doaContent">
                             <!-- Doa content here -->
                         </div>
+                        
+                        <!-- Audio Player -->
+                        <div class="audio-player" id="audioPlayer" style="display: none;">
+                            <div class="audio-info" id="audioInfo">
+                                <span class="audio-doa-name" id="audioDoaName">Memuat audio...</span>
+                                <span class="audio-playlist-counter" id="audioPlaylistCounter" style="display: none;"></span>
+                            </div>
+                            <div class="audio-controls">
+                                <button class="audio-btn audio-nav-btn" id="audioPrev" style="display: none;" title="Audio Sebelumnya">
+                                    <i class="fas fa-step-backward"></i>
+                                </button>
+                                <button class="audio-btn" id="audioPlayPause">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button class="audio-btn audio-nav-btn" id="audioNext" style="display: none;" title="Audio Selanjutnya">
+                                    <i class="fas fa-step-forward"></i>
+                                </button>
+                                <div class="audio-progress">
+                                    <div class="audio-progress-bar">
+                                        <div class="audio-progress-fill" id="audioProgressFill"></div>
+                                    </div>
+                                    <div class="audio-time">
+                                        <span id="audioCurrentTime">0:00</span>
+                                        <span id="audioDuration">0:00</span>
+                                    </div>
+                                </div>
+                                <button class="audio-btn" id="audioClose">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <audio id="doaAudioElement" preload="metadata"></audio>
+                        </div>
+                        
                         <div class="modal-footer">
                             <div class="navigation-buttons">
                                 <button class="nav-btn" id="prevDoa" disabled>
@@ -506,8 +544,14 @@ export default class DzikirApp {
 
         title.textContent = category.title;
         
-        // Hide favorite and copy buttons when showing list
-        if (modalActions) modalActions.style.display = 'none';
+        // Show only audio button in category view, hide copy and favorite
+        const copyBtn = document.getElementById('doaCopy');
+        const favoriteBtn = document.getElementById('doaFavorite');
+        const audioBtn = document.getElementById('doaAudio');
+        if (copyBtn) copyBtn.style.display = 'none';
+        if (favoriteBtn) favoriteBtn.style.display = 'none';
+        if (audioBtn) audioBtn.style.display = 'flex';
+        if (modalActions) modalActions.style.display = 'flex';
 
         // Create doa list HTML - NO FAVORITE BUTTONS HERE (only in detail)
         content.innerHTML = `
@@ -527,8 +571,12 @@ export default class DzikirApp {
             </div>
         `;
 
-        // Hide footer navigation when showing list
+        // Hide footer navigation and floating counter when showing list
         if (footer) footer.style.display = 'none';
+        
+        // Hide floating counter button in category view
+        const floatingCounter = document.body.querySelector('.counter-restore-btn');
+        if (floatingCounter) floatingCounter.style.display = 'none';
 
         // Add click listeners to each doa item
         document.querySelectorAll('.doa-item').forEach(item => {
@@ -556,6 +604,19 @@ export default class DzikirApp {
         const content = document.getElementById('doaContent');
         const title = document.getElementById('doaTitle');
         const footer = modal.querySelector('.modal-footer');
+        
+        // Check if audio is available for this doa
+        const audioPath = this.getAudioPath(doa);
+        const hasAudio = audioPath !== null;
+        
+        // Show all action buttons in detail view
+        const copyBtn = document.getElementById('doaCopy');
+        const favoriteBtn = document.getElementById('doaFavorite');
+        const audioBtn = document.getElementById('doaAudio');
+        if (copyBtn) copyBtn.style.display = 'flex';
+        if (favoriteBtn) favoriteBtn.style.display = 'flex';
+        // Only show audio button if audio is available
+        if (audioBtn) audioBtn.style.display = hasAudio ? 'flex' : 'none';
 
         title.textContent = doa.title;
 
@@ -1040,6 +1101,10 @@ export default class DzikirApp {
             doaBack.addEventListener('click', () => {
                 // If viewing doa detail, go back to list
                 if (this.currentDoaIndex >= 0) {
+                    // Hide floating counter when going back to category list
+                    const floatingCounter = document.body.querySelector('.counter-restore-btn');
+                    if (floatingCounter) floatingCounter.style.display = 'none';
+                    
                     this.showCategoryDoa(this.currentCategory.id);
                 } else {
                     // If viewing list, close modal
@@ -1081,6 +1146,236 @@ export default class DzikirApp {
                 this.showNextDoa();
             }
         });
+        
+        // Audio player controls
+        this.setupAudioPlayer();
+    }
+    
+    setupAudioPlayer() {
+        const audioBtn = document.getElementById('doaAudio');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const audioElement = document.getElementById('doaAudioElement');
+        const playPauseBtn = document.getElementById('audioPlayPause');
+        const closeBtn = document.getElementById('audioClose');
+        const prevBtn = document.getElementById('audioPrev');
+        const nextBtn = document.getElementById('audioNext');
+        const progressFill = document.getElementById('audioProgressFill');
+        const currentTimeEl = document.getElementById('audioCurrentTime');
+        const durationEl = document.getElementById('audioDuration');
+        const audioDoaName = document.getElementById('audioDoaName');
+        const playlistCounter = document.getElementById('audioPlaylistCounter');
+        
+        if (audioBtn) {
+            audioBtn.addEventListener('click', () => {
+                // Check if we're in category list view or detail view
+                if (this.currentDoaIndex === -1 && this.currentCategory) {
+                    // Category view - play all doa sequentially
+                    this.playlistIndex = 0;
+                    this.isPlayingPlaylist = true;
+                    
+                    // Show playlist controls
+                    if (prevBtn) prevBtn.style.display = 'flex';
+                    if (nextBtn) nextBtn.style.display = 'flex';
+                    if (playlistCounter) playlistCounter.style.display = 'block';
+                    
+                    this.playNextInPlaylist();
+                } else if (this.currentDoa) {
+                    // Detail view - play single doa
+                    this.isPlayingPlaylist = false;
+                    
+                    // Hide playlist controls
+                    if (prevBtn) prevBtn.style.display = 'none';
+                    if (nextBtn) nextBtn.style.display = 'none';
+                    if (playlistCounter) playlistCounter.style.display = 'none';
+                    
+                    const audioPath = this.getAudioPath(this.currentDoa);
+                    
+                    if (audioElement && audioPath) {
+                        audioElement.src = audioPath;
+                        if (audioPlayer) audioPlayer.style.display = 'block';
+                        if (audioDoaName) audioDoaName.textContent = this.currentDoa.title;
+                        audioElement.play();
+                        if (playPauseBtn) {
+                            playPauseBtn.querySelector('i').className = 'fas fa-pause';
+                        }
+                    } else {
+                        this.showToast('Audio belum tersedia untuk doa ini');
+                    }
+                }
+            });
+        }
+        
+        if (playPauseBtn && audioElement) {
+            playPauseBtn.addEventListener('click', () => {
+                if (audioElement.paused) {
+                    audioElement.play();
+                    playPauseBtn.querySelector('i').className = 'fas fa-pause';
+                } else {
+                    audioElement.pause();
+                    playPauseBtn.querySelector('i').className = 'fas fa-play';
+                }
+            });
+        }
+        
+        // Prev button for playlist
+        if (prevBtn && audioElement) {
+            prevBtn.addEventListener('click', () => {
+                if (this.isPlayingPlaylist && this.playlistIndex > 1) {
+                    this.playlistIndex -= 2; // Go back 2 because playNextInPlaylist will increment
+                    this.playNextInPlaylist();
+                }
+            });
+        }
+        
+        // Next button for playlist
+        if (nextBtn && audioElement) {
+            nextBtn.addEventListener('click', () => {
+                if (this.isPlayingPlaylist) {
+                    this.playNextInPlaylist();
+                }
+            });
+        }
+        
+        if (closeBtn && audioPlayer && audioElement) {
+            closeBtn.addEventListener('click', () => {
+                audioElement.pause();
+                audioElement.currentTime = 0;
+                audioPlayer.style.display = 'none';
+                this.isPlayingPlaylist = false;
+                
+                // Hide playlist controls
+                if (prevBtn) prevBtn.style.display = 'none';
+                if (nextBtn) nextBtn.style.display = 'none';
+                if (playlistCounter) playlistCounter.style.display = 'none';
+                
+                if (playPauseBtn) {
+                    playPauseBtn.querySelector('i').className = 'fas fa-play';
+                }
+            });
+        }
+        
+        if (audioElement) {
+            // Update progress bar
+            audioElement.addEventListener('timeupdate', () => {
+                if (audioElement.duration) {
+                    const progress = (audioElement.currentTime / audioElement.duration) * 100;
+                    if (progressFill) progressFill.style.width = `${progress}%`;
+                    
+                    if (currentTimeEl) {
+                        currentTimeEl.textContent = this.formatTime(audioElement.currentTime);
+                    }
+                }
+            });
+            
+            // Update duration
+            audioElement.addEventListener('loadedmetadata', () => {
+                if (durationEl) {
+                    durationEl.textContent = this.formatTime(audioElement.duration);
+                }
+            });
+            
+            // Auto-pause icon when audio ends
+            audioElement.addEventListener('ended', () => {
+                if (playPauseBtn) {
+                    playPauseBtn.querySelector('i').className = 'fas fa-play';
+                }
+                
+                // If playing playlist, play next doa
+                if (this.isPlayingPlaylist) {
+                    this.playNextInPlaylist();
+                }
+            });
+        }
+    }
+    
+    playNextInPlaylist() {
+        if (!this.currentCategory || !this.currentCategory.doa) return;
+        
+        const audioElement = document.getElementById('doaAudioElement');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playPauseBtn = document.getElementById('audioPlayPause');
+        const audioDoaName = document.getElementById('audioDoaName');
+        const playlistCounter = document.getElementById('audioPlaylistCounter');
+        const prevBtn = document.getElementById('audioPrev');
+        const nextBtn = document.getElementById('audioNext');
+        
+        if (this.playlistIndex >= this.currentCategory.doa.length) {
+            // Playlist finished
+            this.isPlayingPlaylist = false;
+            this.playlistIndex = 0;
+            if (audioPlayer) audioPlayer.style.display = 'none';
+            if (playPauseBtn) playPauseBtn.querySelector('i').className = 'fas fa-play';
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+            if (playlistCounter) playlistCounter.style.display = 'none';
+            this.showToast('Selesai memutar semua dzikir');
+            return;
+        }
+        
+        const doa = this.currentCategory.doa[this.playlistIndex];
+        const audioPath = this.getAudioPath(doa);
+        const currentNum = this.playlistIndex + 1;
+        const total = this.currentCategory.doa.length;
+        
+        // Update playlist counter
+        if (playlistCounter) {
+            playlistCounter.textContent = `${currentNum} / ${total}`;
+        }
+        
+        // Update prev button state
+        if (prevBtn) {
+            prevBtn.disabled = currentNum === 1;
+            prevBtn.style.opacity = currentNum === 1 ? '0.3' : '1';
+        }
+        
+        // Update next button state
+        if (nextBtn) {
+            nextBtn.disabled = currentNum === total;
+            nextBtn.style.opacity = currentNum === total ? '0.3' : '1';
+        }
+        
+        if (audioElement && audioPath) {
+            audioElement.src = audioPath;
+            if (audioPlayer) audioPlayer.style.display = 'block';
+            if (audioDoaName) audioDoaName.textContent = doa.title;
+            
+            audioElement.play().then(() => {
+                if (playPauseBtn) {
+                    playPauseBtn.querySelector('i').className = 'fas fa-pause';
+                }
+                this.playlistIndex++;
+            }).catch(err => {
+                console.error('Audio play error:', err);
+                // Skip to next if current fails
+                this.playlistIndex++;
+                this.playNextInPlaylist();
+            });
+        } else {
+            // Skip to next if audio not found
+            console.log(`Audio not found for: ${doa.title}`);
+            this.playlistIndex++;
+            this.playNextInPlaylist();
+        }
+    }
+    
+    getAudioPath(doa) {
+        if (!doa || !doa.id) return null;
+        
+        // Check if doa has audio property defined
+        if (doa.audio) {
+            return doa.audio;
+        }
+        
+        // If no audio property, return null (audio not available)
+        return null;
+    }
+    
+    formatTime(seconds) {
+        if (!seconds || isNaN(seconds)) return '0:00';
+        
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
     showToast(message) {

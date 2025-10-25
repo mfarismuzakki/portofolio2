@@ -26,6 +26,8 @@ export default class AdzanApp {
         this.notificationEnabled = false;
         this.notificationPermission = 'default';
         this.scheduledNotifications = [];
+        this.notificationCheckInterval = null;
+        this.lastNotificationCheck = {};
         this.searchDebounceTimer = null;
     }
 
@@ -592,6 +594,15 @@ export default class AdzanApp {
                 }
             });
         }
+        
+        // Handle visibility change to reschedule notifications when app becomes visible
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && this.notificationEnabled) {
+                console.log('App became visible, checking notification schedule...');
+                // Reschedule if needed
+                this.scheduleNotifications();
+            }
+        });
     }
 
     showLocationModal() {
@@ -1089,6 +1100,10 @@ export default class AdzanApp {
             return;
         }
         
+        // Save prayer times to localStorage for service worker access
+        localStorage.setItem('islamhub_prayer_times', JSON.stringify(this.prayerTimes));
+        localStorage.setItem('islamhub_notification_scheduled_at', new Date().toISOString());
+        
         const now = new Date();
         // Use Indonesian names to match prayerTimes keys
         const prayers = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
@@ -1121,15 +1136,79 @@ export default class AdzanApp {
                 }, timeUntilNotification);
                 
                 this.scheduledNotifications.push(timeoutId);
+                
+                console.log(`Scheduled notification for ${prayer} at ${notificationDate.toLocaleTimeString()} (in ${Math.round(timeUntilNotification / 60000)} minutes)`);
             }
         });
         
-        console.log(`Scheduled ${this.scheduledNotifications.length} prayer notifications`);
+        // Set up a periodic check every minute to ensure notifications aren't missed
+        // This is a fallback in case setTimeout fails
+        if (this.notificationCheckInterval) {
+            clearInterval(this.notificationCheckInterval);
+        }
+        
+        this.notificationCheckInterval = setInterval(() => {
+            this.checkPendingNotifications();
+        }, 60000); // Check every minute
+        
+        console.log(`Scheduled ${this.scheduledNotifications.length} prayer notifications with fallback checker`);
     }
     
     cancelScheduledNotifications() {
         this.scheduledNotifications.forEach(timeoutId => clearTimeout(timeoutId));
         this.scheduledNotifications = [];
+        
+        if (this.notificationCheckInterval) {
+            clearInterval(this.notificationCheckInterval);
+            this.notificationCheckInterval = null;
+        }
+    }
+    
+    checkPendingNotifications() {
+        if (!this.notificationEnabled || this.notificationPermission !== 'granted') {
+            return;
+        }
+        
+        if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) {
+            return;
+        }
+        
+        const now = new Date();
+        const currentMinute = `${now.getHours()}:${now.getMinutes()}`;
+        const prayers = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
+        
+        prayers.forEach(prayer => {
+            const prayerTime = this.prayerTimes[prayer];
+            if (!prayerTime) return;
+            
+            // Parse prayer time
+            const [hours, minutes] = prayerTime.split(':').map(Number);
+            const prayerDate = new Date();
+            prayerDate.setHours(hours, minutes, 0, 0);
+            
+            // Calculate notification time (5 minutes before)
+            const notificationDate = new Date(prayerDate.getTime() - 5 * 60 * 1000);
+            const notificationMinute = `${notificationDate.getHours()}:${notificationDate.getMinutes()}`;
+            
+            // Check if current time matches notification time
+            if (currentMinute === notificationMinute) {
+                // Check if we haven't already sent this notification today
+                const checkKey = `${prayer}-${now.toDateString()}`;
+                if (!this.lastNotificationCheck[checkKey]) {
+                    console.log(`Fallback notification triggered for ${prayer}`);
+                    this.showPrayerNotification(prayer, prayerTime);
+                    this.lastNotificationCheck[checkKey] = true;
+                    
+                    // Clean up old check keys (keep only today's)
+                    const todayStr = now.toDateString();
+                    Object.keys(this.lastNotificationCheck).forEach(key => {
+                        if (!key.endsWith(todayStr)) {
+                            delete this.lastNotificationCheck[key];
+                        }
+                    });
+                }
+            }
+        });
     }
     
     async showPrayerNotification(prayerName, prayerTime) {
