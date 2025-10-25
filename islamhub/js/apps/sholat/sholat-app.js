@@ -371,7 +371,7 @@ export default class SholatApp {
             textContent += `\nDalil:\n${this.currentItem.dalil}\n`;
         }
         
-        if (this.currentItem.tips && this.currentItem.tips.length > 0) {
+        if (this.currentItem.tips && Array.isArray(this.currentItem.tips) && this.currentItem.tips.length > 0) {
             textContent += `\nTips:\n`;
             this.currentItem.tips.forEach((tip, index) => {
                 textContent += `${index + 1}. ${tip}\n`;
@@ -388,6 +388,9 @@ export default class SholatApp {
     }
 
     showCopySuccess() {
+        // Show toast first
+        this.showToast('Teks berhasil disalin!');
+        
         const copyBtn = document.getElementById('sholatCopyBtn');
         if (copyBtn) {
             const originalHTML = copyBtn.innerHTML;
@@ -399,7 +402,6 @@ export default class SholatApp {
                 copyBtn.innerHTML = originalHTML;
             }, 2000);
         }
-        this.showToast('Teks berhasil disalin!');
     }
 
     // Favorites functionality
@@ -462,19 +464,26 @@ export default class SholatApp {
     }
 
     showToast(message) {
+        console.log('showToast called:', message);
         // Simple toast notification (same as Dzikir)
         const toast = document.createElement('div');
         toast.className = 'toast-notification';
         toast.textContent = message;
+        toast.style.zIndex = '10001'; // Ensure it's above everything
         document.body.appendChild(toast);
+        console.log('Toast element created and added to body', toast);
 
         setTimeout(() => {
             toast.classList.add('show');
+            console.log('Toast show class added');
         }, 100);
 
         setTimeout(() => {
             toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300);
+            setTimeout(() => {
+                toast.remove();
+                console.log('Toast removed');
+            }, 300);
         }, 2000);
     }
 
