@@ -1178,10 +1178,10 @@ body.doa-modal-active .counter-section {
 /* Modal Footer */
 .modal-footer {
     padding: 0.75rem 1rem;
-    padding-bottom: 1rem;
+    padding-bottom: 80px; /* Space untuk bottom navigation */
     background: rgba(10, 10, 15, 0.98);
     border-top: 2px solid rgba(0, 255, 255, 0.3);
-    margin-bottom: 10px; /* Minimal space */
+    margin-bottom: 0;
 }
 
 .navigation-buttons {
