@@ -597,6 +597,22 @@
     font-weight: 600;
 }
 
+.variation-note {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(0, 255, 255, 0.05);
+    border-left: 3px solid rgba(0, 255, 255, 0.3);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+}
+
+.variation-note i {
+    color: var(--primary-cyan);
+    margin-right: 0.5rem;
+}
+
 /* ===== TIPS & WARNING ===== */
 .sholat-tips {
     background: rgba(0, 255, 100, 0.08);
@@ -734,6 +750,30 @@
 
 .empty-state p {
     font-size: 1.1rem;
+}
+
+/* ===== LOADING PLACEHOLDER ===== */
+.loading-placeholder {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--primary-cyan);
+    grid-column: 1 / -1;
+}
+
+.loading-placeholder i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    animation: spin 1s linear infinite;
+}
+
+.loading-placeholder p {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* ===== RESPONSIVE ===== */

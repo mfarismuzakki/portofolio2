@@ -707,7 +707,7 @@ body.doa-modal-active {
 .audio-player {
     background: rgba(0, 255, 255, 0.08);
     border-top: 1px solid rgba(0, 255, 255, 0.2);
-    padding: 1rem;
+    padding: 0.75rem 1rem !important;
     position: fixed;
     bottom: 70px; /* Dempet dengan bottom navigation */
     left: 0;
@@ -718,7 +718,7 @@ body.doa-modal-active {
 }
 
 .audio-info {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem !important;
     text-align: center;
 }
 
@@ -739,9 +739,10 @@ body.doa-modal-active {
 }
 
 .audio-controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-direction: row !important;
 }
 
 .audio-btn {
@@ -772,6 +773,15 @@ body.doa-modal-active {
 
 .audio-btn i {
     font-size: 1rem;
+}
+
+.audio-play-btn {
+    width: 50px;
+    height: 50px;
+}
+
+.audio-play-btn i {
+    font-size: 1.2rem;
 }
 
 .audio-nav-btn {
@@ -1177,11 +1187,11 @@ body.doa-modal-active .counter-section {
 
 /* Modal Footer */
 .modal-footer {
-    padding: 0.75rem 1rem;
-    padding-bottom: 1rem;
+    padding: 0.5rem 0.75rem;
+    padding-bottom: 0.75rem;
     background: rgba(10, 10, 15, 0.98);
     border-top: 2px solid rgba(0, 255, 255, 0.3);
-    margin-bottom: 10px; /* Minimal space */
+    margin-bottom: 10px;
 }
 
 .navigation-buttons {
@@ -1189,24 +1199,31 @@ body.doa-modal-active .counter-section {
     justify-content: space-between;
     gap: 0.5rem;
     flex-wrap: nowrap;
+    align-items: center;
 }
 
 .nav-btn {
-    flex: 0 0 auto; /* Don't grow or shrink, fit content */
-    padding: 0.4rem 0.6rem; /* Very compact padding */
+    flex: 0 0 auto;
+    padding: 0.5rem 0.75rem !important;
     background: rgba(0, 255, 255, 0.1);
     border: 1px solid rgba(0, 255, 255, 0.3);
     color: var(--primary-cyan);
     border-radius: 6px;
-    font-size: 0.75rem; /* Smaller font */
+    font-size: 0.8rem !important;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
+    flex-direction: row !important;
     align-items: center;
     justify-content: center;
-    gap: 0.25rem;
+    gap: 0.3rem !important;
     white-space: nowrap;
+}
+
+.nav-btn i {
+    font-size: 0.75rem !important;
+    display: inline-block;
 }
 
 .nav-btn:hover:not(:disabled) {
@@ -1222,16 +1239,6 @@ body.doa-modal-active .counter-section {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.3);
-}
-
-.nav-btn:hover:not(:disabled) {
-    background: rgba(0, 255, 255, 0.2);
-    transform: translateY(-2px);
-}
-
-.nav-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
 }
 
 /* Responsive */
@@ -1542,23 +1549,23 @@ body.doa-modal-active .counter-section {
     }
 
     .modal-footer {
-        padding: 1rem;
-        padding-bottom: 1.25rem;
+        padding: 0.75rem;
+        padding-bottom: 1rem;
         margin-bottom: 15px;
     }
 
     .navigation-buttons {
-        gap: 0.75rem;
+        gap: 0.5rem;
     }
 
     .nav-btn {
-        padding: 0.75rem 0.75rem;
-        font-size: 0.85rem;
-        gap: 0.375rem;
+        padding: 0.625rem 0.75rem !important;
+        font-size: 0.8rem !important;
+        gap: 0.3rem !important;
     }
 
     .nav-btn i {
-        font-size: 0.85rem;
+        font-size: 0.75rem !important;
     }
 }
 

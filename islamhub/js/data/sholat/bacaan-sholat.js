@@ -102,20 +102,59 @@ Ya Allah, limpahkanlah sholawat kepada Muhammad dan keluarga Muhammad sebagaiman
         type: 'sunnah',
         icon: '🤲',
         position: 'Setelah takbiratul ihram, sebelum membaca Al-Fatihah',
-        arabic: `سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَٰهَ غَيْرُكَ`,
-        latin: `Subhanakallahuma wa bihamdika wa tabarakasmuka wa ta'ala jadduka wa la ilaha ghairuk`,
-        translation: `Maha Suci Engkau ya Allah, dengan memuji-Mu, Maha Berkah nama-Mu, Maha Tinggi keagungan-Mu, dan tidak ada Tuhan selain Engkau`,
+        variations: [
+            {
+                number: 1,
+                arabic: `سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَٰهَ غَيْرُكَ`,
+                latin: `Subhanakallahuma wa bihamdika wa tabarakasmuka wa ta'ala jadduka wa la ilaha ghairuk`,
+                translation: `Maha Suci Engkau ya Allah, dengan memuji-Mu, Maha Berkah nama-Mu, Maha Tinggi keagungan-Mu, dan tidak ada Tuhan selain Engkau`,
+                note: 'Doa iftitah yang paling umum dan sering digunakan'
+            },
+            {
+                number: 2,
+                arabic: `وَجَّهْتُ وَجْهِيَ لِلَّذِي فَطَرَ السَّمَاوَاتِ وَالْأَرْضَ حَنِيفًا وَمَا أَنَا مِنَ الْمُشْرِكِينَ. إِنَّ صَلَاتِي وَنُسُكِي وَمَحْيَايَ وَمَمَاتِي لِلَّهِ رَبِّ الْعَالَمِينَ لَا شَرِيكَ لَهُ وَبِذَٰلِكَ أُمِرْتُ وَأَنَا مِنَ الْمُسْلِمِينَ`,
+                latin: `Wajjahtu wajhiya lilladzii fataras samawati wal ardha hanifan wa ma ana minal musyrikin. Inna shalati wa nusuki wa mahyaya wa mamati lillahi rabbil 'alamin, la syarika lahu wa bidzalika umirtu wa ana minal muslimin`,
+                translation: `Aku hadapkan wajahku kepada Dzat yang menciptakan langit dan bumi dengan condong kepada agama yang benar, dan aku bukanlah termasuk orang-orang yang musyrik. Sesungguhnya sholatku, ibadahku, hidupku dan matiku hanyalah untuk Allah Tuhan semesta alam, tidak ada sekutu bagi-Nya. Dan dengan yang demikian itulah aku diperintahkan, dan aku termasuk orang-orang yang muslim`,
+                note: 'Iftitah yang panjang, sering untuk sholat malam'
+            },
+            {
+                number: 3,
+                arabic: `اللَّهُمَّ بَاعِدْ بَيْنِي وَبَيْنَ خَطَايَايَ كَمَا بَاعَدْتَ بَيْنَ الْمَشْرِقِ وَالْمَغْرِبِ. اللَّهُمَّ نَقِّنِي مِنْ خَطَايَايَ كَمَا يُنَقَّى الثَّوْبُ الْأَبْيَضُ مِنَ الدَّنَسِ. اللَّهُمَّ اغْسِلْنِي مِنْ خَطَايَايَ بِالثَّلْجِ وَالْمَاءِ وَالْبَرَدِ`,
+                latin: `Allahumma ba'id baini wa baina khatayaya kama ba'adta bainal masyriq wal maghrib. Allahumma naqqini min khatayaya kama yunaqqa tsawbul abyadu minad danas. Allahummaghsilni min khatayaya bitstsalji wal ma'i wal barad`,
+                translation: `Ya Allah, jauhkanlah antara aku dengan dosa-dosaku sebagaimana Engkau jauhkan antara timur dan barat. Ya Allah, bersihkanlah aku dari dosa-dosaku sebagaimana dibersihkan kain putih dari kotoran. Ya Allah, cucilah aku dari dosa-dosaku dengan salju, air, dan embun beku`,
+                note: 'Iftitah penuh permohonan ampun'
+            },
+            {
+                number: 4,
+                arabic: `اللَّهُ أَكْبَرُ كَبِيرًا، وَالْحَمْدُ لِلَّهِ كَثِيرًا، وَسُبْحَانَ اللَّهِ بُكْرَةً وَأَصِيلًا`,
+                latin: `Allahu akbaru kabira, walhamdulillahi katsira, wa subhanallahi bukratan wa ashila`,
+                translation: `Allah Maha Besar dengan sebesar-besarnya, segala puji bagi Allah dengan pujian yang banyak, dan Maha Suci Allah pada pagi dan petang`,
+                note: 'Iftitah yang ringkas dan penuh tasbih'
+            }
+        ],
         ruling: 'Sunnah Muakkad',
         dalil: [
             {
                 source: 'Hadits',
-                reference: 'HR. Abu Dawud 775, Tirmidzi 243',
-                arabic: 'كَانَ رَسُولُ اللَّهِ ﷺ إِذَا قَامَ إِلَى الصَّلَاةِ قَالَ...',
-                translation: 'Rasulullah ﷺ apabila berdiri untuk sholat mengucapkan...'
+                reference: 'HR. Abu Dawud 775, Tirmidzi 243 - Shahih',
+                arabic: 'كَانَ رَسُولُ اللَّهِ ﷺ إِذَا قَامَ إِلَى الصَّلَاةِ قَالَ: سُبْحَانَكَ اللَّهُمَّ...',
+                translation: 'Rasulullah ﷺ apabila berdiri untuk sholat mengucapkan: Subhanakallahumma...'
+            },
+            {
+                source: 'Hadits', 
+                reference: 'HR. Muslim 771',
+                arabic: 'وَجَّهْتُ وَجْهِيَ لِلَّذِي فَطَرَ السَّمَاوَاتِ وَالْأَرْضَ',
+                translation: 'Aku hadapkan wajahku kepada Dzat yang menciptakan langit dan bumi'
+            },
+            {
+                source: 'Hadits',
+                reference: 'HR. Bukhari 744, Muslim 598',
+                arabic: 'اللَّهُمَّ بَاعِدْ بَيْنِي وَبَيْنَ خَطَايَايَ',
+                translation: 'Ya Allah, jauhkanlah antara aku dengan dosa-dosaku'
             }
         ],
-        tips: 'Baca dalam hati atau dengan suara pelan, khusyuk meresapi maknanya',
-        commonMistakes: 'Jangan membaca terlalu lama hingga menunda Al-Fatihah'
+        tips: 'Pilih salah satu variasi sesuai situasi. Boleh bergantian. Baca dengan khusyuk',
+        commonMistakes: 'Jangan terlalu lama membaca iftitah, segera lanjut ke Al-Fatihah'
     },
     {
         id: 'taawudz',
@@ -248,28 +287,48 @@ Ya Allah, limpahkanlah sholawat kepada Muhammad dan keluarga Muhammad sebagaiman
                 arabic: `سُبْحَانَ رَبِّيَ الْأَعْلَى`,
                 latin: `Subhana rabbiy al-a'la`,
                 translation: `Maha Suci Tuhanku Yang Maha Tinggi`,
-                frequency: 'Minimal 3 kali'
+                frequency: 'Minimal 3 kali',
+                note: 'Dzikir paling dasar dan utama'
             },
             {
                 number: 2,
                 arabic: `سُبْحَانَ رَبِّيَ الْأَعْلَى وَبِحَمْدِهِ`,
                 latin: `Subhana rabbiy al-a'la wa bihamdih`,
                 translation: `Maha Suci Tuhanku Yang Maha Tinggi dengan segala puji bagi-Nya`,
-                frequency: '3 kali atau lebih'
+                frequency: '3 kali atau lebih',
+                note: 'Tambahan pujian dalam tasbih'
             },
             {
                 number: 3,
                 arabic: `سُبُّوحٌ قُدُّوسٌ رَبُّ الْمَلَائِكَةِ وَالرُّوحِ`,
                 latin: `Subbuhun quddusun rabbul malaikati war-ruh`,
                 translation: `Maha Suci, Maha Kudus, Tuhan para malaikat dan ruh`,
-                frequency: 'Kadang-kadang'
+                frequency: 'Kadang-kadang',
+                note: 'Dzikir untuk variasi'
             },
             {
                 number: 4,
                 arabic: `اللَّهُمَّ لَكَ سَجَدْتُ وَبِكَ آمَنْتُ وَلَكَ أَسْلَمْتُ، سَجَدَ وَجْهِي لِلَّذِي خَلَقَهُ وَصَوَّرَهُ وَشَقَّ سَمْعَهُ وَبَصَرَهُ تَبَارَكَ اللَّهُ أَحْسَنُ الْخَالِقِينَ`,
                 latin: `Allahumma laka sajadtu wa bika amantu wa laka aslamtu. Sajada wajhiya lilladzii khalaqahu wa shawwarahu wa syaqqa sam'ahu wa basharahu. Tabarakallahu ahsanul khaliqin`,
                 translation: `Ya Allah, kepada-Mu aku sujud, kepada-Mu aku beriman, dan kepada-Mu aku berserah diri. Wajahku sujud kepada Dzat yang menciptakannya, membentuknya, dan membelah pendengarannya dan penglihatannya. Maha Berkah Allah, sebaik-baik Pencipta`,
-                frequency: 'Sesekali, dzikir yang panjang'
+                frequency: 'Sesekali',
+                note: 'Dzikir yang lebih panjang dan mendalam'
+            },
+            {
+                number: 5,
+                arabic: `اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ، دِقَّهُ وَجِلَّهُ، وَأَوَّلَهُ وَآخِرَهُ، وَعَلَانِيَتَهُ وَسِرَّهُ`,
+                latin: `Allahummaghfir li dzanbi kullahu, diqqahu wa jillahu, wa awwalahu wa akhirahu, wa 'alaniyatahu wa sirrahu`,
+                translation: `Ya Allah, ampunilah dosaku semuanya, yang kecil dan yang besar, yang awal dan yang akhir, yang terang-terangan dan yang tersembunyi`,
+                frequency: 'Untuk istighfar',
+                note: 'Doa ampunan menyeluruh'
+            },
+            {
+                number: 6,
+                arabic: `اللَّهُمَّ إِنِّي أَعُوذُ بِرِضَاكَ مِنْ سَخَطِكَ، وَبِمُعَافَاتِكَ مِنْ عُقُوبَتِكَ، وَأَعُوذُ بِكَ مِنْكَ لَا أُحْصِي ثَنَاءً عَلَيْكَ أَنْتَ كَمَا أَثْنَيْتَ عَلَى نَفْسِكَ`,
+                latin: `Allahumma inni a'udzu bi ridhaka min sakhatika, wa bi mu'afatika min 'uqubatika, wa a'udzu bika minka la uhshi tsana'an 'alaika anta kama atsnaita 'ala nafsika`,
+                translation: `Ya Allah, sesungguhnya aku berlindung dengan keridhaan-Mu dari kemurkaan-Mu, dan dengan ampunan-Mu dari siksaan-Mu, dan aku berlindung kepada-Mu dari-Mu. Aku tidak dapat menghitung pujian kepada-Mu, Engkau sebagaimana Engkau memuji diri-Mu sendiri`,
+                frequency: 'Untuk perlindungan',
+                note: 'Doa agung memohon perlindungan Allah'
             }
         ],
         ruling: 'Sunnah Muakkad',
@@ -285,10 +344,22 @@ Ya Allah, limpahkanlah sholawat kepada Muhammad dan keluarga Muhammad sebagaiman
                 reference: 'HR. Muslim 771',
                 arabic: 'سَجَدَ وَجْهِي لِلَّذِي خَلَقَهُ وَصَوَّرَهُ وَشَقَّ سَمْعَهُ وَبَصَرَهُ',
                 translation: 'Wajahku sujud kepada Dzat yang menciptakannya, membentuknya, dan membelah pendengarannya dan penglihatannya'
+            },
+            {
+                source: 'Hadits',
+                reference: 'HR. Muslim 483',
+                arabic: 'أَقْرَبُ مَا يَكُونُ الْعَبْدُ إِلَى رَبِّهِ وَهُوَ سَاجِدٌ فَأَكْثِرُوا الدُّعَاءَ',
+                translation: 'Seorang hamba paling dekat kepada Tuhannya ketika ia sedang sujud, maka perbanyaklah doa'
+            },
+            {
+                source: 'Hadits',
+                reference: 'HR. Muslim 486',
+                arabic: 'أَعُوذُ بِرِضَاكَ مِنْ سَخَطِكَ',
+                translation: 'Aku berlindung dengan keridhaan-Mu dari kemurkaan-Mu'
             }
         ],
-        tips: 'Sujud adalah posisi terdekat dengan Allah, perbanyak dzikir dan doa. Variasi sesuai sunnah',
-        commonMistakes: 'Jangan tergesa-gesa, manfaatkan waktu sujud untuk bermunajat kepada Allah'
+        tips: 'Sujud adalah posisi terdekat dengan Allah, perbanyak dzikir dan doa. Pilih variasi sesuai situasi. Boleh juga menambahkan doa pribadi dengan bahasa sendiri',
+        commonMistakes: 'Jangan tergesa-gesa, manfaatkan waktu sujud untuk bermunajat kepada Allah. Jangan hanya dzikir tasbih saja tanpa berdoa'
     },
     {
         id: 'doa_duduk_antara_sujud',
@@ -342,30 +413,38 @@ Ya Allah, limpahkanlah sholawat kepada Muhammad dan keluarga Muhammad sebagaiman
     // ===== DOA-DOA TAMBAHAN DALAM SHOLAT =====
     {
         id: 'doa_qunut',
-        name: 'Doa Qunut',
+        name: 'Doa Qunut Witir',
         category: 'bacaan',
         type: 'sunnah',
         icon: '🤲',
-        position: 'Rakaat kedua sholat Subuh atau sholat Witir',
+        position: 'Sholat Witir setelah ruku\' rakaat terakhir',
         variations: [
             {
                 number: 1,
                 arabic: `اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ، وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لِي فِيمَا أَعْطَيْتَ، وَقِنِي شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، إِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ`,
                 latin: `Allahummahdini fiman hadaita, wa 'afini fiman 'afaita, wa tawallani fiman tawallaita, wa barik li fima a'thaita, wa qini syarra ma qadhaita, fa innaka taqdhi wa la yuqdha 'alaika, innahu la yadzillu man walaita, wa la ya'izzu man 'adaita, tabarakta rabbana wa ta'alaita`,
-                translation: `Ya Allah, berilah aku petunjuk sebagaimana Engkau beri petunjuk kepada orang-orang yang telah Engkau beri petunjuk. Berilah aku kesehatan sebagaimana Engkau beri kesehatan kepada orang-orang yang telah Engkau beri kesehatan. Pimpinlah aku sebagaimana Engkau pimpin orang-orang yang telah Engkau pimpin. Berkatilah bagiku apa yang telah Engkau berikan kepadaku. Peliharalah aku dari keburukan apa yang telah Engkau tetapkan. Sesungguhnya Engkau yang memutuskan dan tidak ada yang memutuskan atas-Mu. Sesungguhnya tidak akan hina orang yang Engkau pimpin dan tidak akan mulia orang yang Engkau musuhi. Maha Berkah Engkau wahai Tuhan kami dan Maha Tinggi`
+                translation: `Ya Allah, berilah aku petunjuk sebagaimana Engkau beri petunjuk kepada orang-orang yang telah Engkau beri petunjuk. Berilah aku kesehatan sebagaimana Engkau beri kesehatan kepada orang-orang yang telah Engkau beri kesehatan. Pimpinlah aku sebagaimana Engkau pimpin orang-orang yang telah Engkau pimpin. Berkatilah bagiku apa yang telah Engkau berikan kepadaku. Peliharalah aku dari keburukan apa yang telah Engkau tetapkan. Sesungguhnya Engkau yang memutuskan dan tidak ada yang memutuskan atas-Mu. Sesungguhnya tidak akan hina orang yang Engkau pimpin dan tidak akan mulia orang yang Engkau musuhi. Maha Berkah Engkau wahai Tuhan kami dan Maha Tinggi`,
+                note: 'Doa qunut yang diajarkan Nabi ﷺ'
+            },
+            {
+                number: 2,
+                arabic: `اللَّهُمَّ إِنَّا نَسْتَعِينُكَ وَنَسْتَغْفِرُكَ وَنَسْتَهْدِيكَ وَنُؤْمِنُ بِكَ وَنَتُوبُ إِلَيْكَ وَنَتَوَكَّلُ عَلَيْكَ وَنُثْنِي عَلَيْكَ الْخَيْرَ كُلَّهُ، نَشْكُرُكَ وَلَا نَكْفُرُكَ وَنَخْلَعُ وَنَتْرُكُ مَنْ يَفْجُرُكَ`,
+                latin: `Allahumma inna nasta'inuka wa nastaghfiruka wa nastahdika wa nu'minu bika wa natubu ilaika wa natawakkalu 'alaika wa nutsni 'alaikal khaira kullahu. Nasyku ruka wa la nakfuruka wa nakhla'u wa natruku man yafjuruka`,
+                translation: `Ya Allah, sesungguhnya kami memohon pertolongan-Mu, memohon ampunan-Mu, memohon petunjuk-Mu, beriman kepada-Mu, bertaubat kepada-Mu, bertawakkal kepada-Mu, dan memuji-Mu dengan segala kebaikan. Kami bersyukur kepada-Mu dan tidak kufur kepada-Mu, serta meninggalkan dan memisahkan diri dari orang yang durhaka kepada-Mu`,
+                note: 'Tambahan doa qunut dari atsar sahabat'
             }
         ],
-        ruling: 'Sunnah pada waktu-waktu tertentu',
+        ruling: 'Sunnah dalam sholat Witir',
         dalil: [
             {
                 source: 'Hadits',
-                reference: 'HR. Abu Dawud 1425, Tirmidzi 464',
-                arabic: 'عَلَّمَنِي رَسُولُ اللَّهِ ﷺ الْقُنُوتَ',
-                translation: 'Rasulullah ﷺ mengajarkan kepadaku qunut'
+                reference: 'HR. Abu Dawud 1425, Tirmidzi 464, An-Nasa\'i 1745 - Hasan',
+                arabic: 'عَلَّمَنِي رَسُولُ اللَّهِ ﷺ الْقُنُوتَ فِي الْوِتْرِ',
+                translation: 'Rasulullah ﷺ mengajarkan kepadaku qunut dalam (sholat) Witir'
             }
         ],
-        tips: 'Dibaca setelah bangkit dari ruku\' pada rakaat kedua Subuh atau rakaat terakhir Witir',
-        commonMistakes: 'Jangan selalu dibaca setiap sholat, hanya pada waktu-waktu tertentu'
+        tips: 'PENTING: Qunut hanya disunnahkan dalam sholat Witir. Tidak ada qunut dalam sholat Subuh menurut pemahaman Salafush Shalih. Dibaca setelah bangkit dari ruku\' rakaat terakhir',
+        commonMistakes: 'Jangan membaca qunut di sholat Subuh - ini tidak ada dasarnya dari Nabi ﷺ dan sahabat'
     },
     {
         id: 'doa_setelah_tasyahud',
@@ -457,89 +536,5 @@ Ya Allah, limpahkanlah sholawat kepada Muhammad dan keluarga Muhammad sebagaiman
         ],
         tips: 'Dzikir ini sangat dianjurkan, dibaca sambil duduk di tempat sholat',
         commonMistakes: 'Jangan langsung pergi setelah salam, sempatkan untuk berdzikir'
-    },
-    {
-        id: 'doa_iftitah_tambahan',
-        name: 'Variasi Doa Iftitah Lainnya',
-        category: 'bacaan',
-        type: 'sunnah',
-        icon: '🤲',
-        position: 'Setelah takbiratul ihram, sebelum membaca Al-Fatihah',
-        variations: [
-            {
-                number: 1,
-                arabic: `وَجَّهْتُ وَجْهِيَ لِلَّذِي فَطَرَ السَّمَاوَاتِ وَالْأَرْضَ حَنِيفًا وَمَا أَنَا مِنَ الْمُشْرِكِينَ. إِنَّ صَلَاتِي وَنُسُكِي وَمَحْيَايَ وَمَمَاتِي لِلَّهِ رَبِّ الْعَالَمِينَ لَا شَرِيكَ لَهُ وَبِذَٰلِكَ أُمِرْتُ وَأَنَا مِنَ الْمُسْلِمِينَ`,
-                latin: `Wajjahtu wajhiya lilladzii fataras samawati wal ardha hanifan wa ma ana minal musyrikin. Inna shalati wa nusuki wa mahyaya wa mamati lillahi rabbil 'alamin, la syarika lahu wa bidzalika umirtu wa ana minal muslimin`,
-                translation: `Aku hadapkan wajahku kepada Dzat yang menciptakan langit dan bumi dengan condong kepada agama yang benar, dan aku bukanlah termasuk orang-orang yang musyrik. Sesungguhnya sholatku, ibadahku, hidupku dan matiku hanyalah untuk Allah Tuhan semesta alam, tidak ada sekutu bagi-Nya. Dan dengan yang demikian itulah aku diperintahkan, dan aku termasuk orang-orang yang muslim`
-            },
-            {
-                number: 2,
-                arabic: `اللَّهُمَّ بَاعِدْ بَيْنِي وَبَيْنَ خَطَايَايَ كَمَا بَاعَدْتَ بَيْنَ الْمَشْرِقِ وَالْمَغْرِبِ. اللَّهُمَّ نَقِّنِي مِنْ خَطَايَايَ كَمَا يُنَقَّى الثَّوْبُ الْأَبْيَضُ مِنَ الدَّنَسِ. اللَّهُمَّ اغْسِلْنِي مِنْ خَطَايَايَ بِالثَّلْجِ وَالْمَاءِ وَالْبَرَدِ`,
-                latin: `Allahumma ba'id baini wa baina khatayaya kama ba'adta bainal masyriq wal maghrib. Allahumma naqqini min khatayaya kama yunaqqa tsawbul abyadu minad danas. Allahummaghsilni min khatayaya bitstsalji wal ma'i wal barad`,
-                translation: `Ya Allah, jauhkanlah antara aku dengan dosa-dosaku sebagaimana Engkau jauhkan antara timur dan barat. Ya Allah, bersihkanlah aku dari dosa-dosaku sebagaimana dibersihkan kain putih dari kotoran. Ya Allah, cucilah aku dari dosa-dosaku dengan salju, air, dan embun beku`
-            }
-        ],
-        ruling: 'Sunnah',
-        dalil: [
-            {
-                source: 'Hadits', 
-                reference: 'HR. Muslim 771',
-                arabic: 'وَجَّهْتُ وَجْهِيَ لِلَّذِي فَطَرَ السَّمَاوَاتِ وَالْأَرْضَ',
-                translation: 'Aku hadapkan wajahku kepada Dzat yang menciptakan langit dan bumi'
-            },
-            {
-                source: 'Hadits',
-                reference: 'HR. Bukhari 744, Muslim 598',
-                arabic: 'اللَّهُمَّ بَاعِدْ بَيْنِي وَبَيْنَ خَطَايَايَ',
-                translation: 'Ya Allah, jauhkanlah antara aku dengan dosa-dosaku'
-            }
-        ],
-        tips: 'Variasi doa iftitah ini bisa digunakan bergantian sesuai sunnah Nabi ﷺ',
-        commonMistakes: 'Jangan terlalu lama membaca iftitah, segera lanjut ke Al-Fatihah'
-    },
-    {
-        id: 'doa_dalam_sujud',
-        name: 'Doa-doa dalam Sujud',
-        category: 'bacaan',
-        type: 'sunnah',
-        icon: '🤲',
-        position: 'Ketika sujud, setelah dzikir tasbih',
-        variations: [
-            {
-                number: 1,
-                arabic: `اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ، دِقَّهُ وَجِلَّهُ، وَأَوَّلَهُ وَآخِرَهُ، وَعَلَانِيَتَهُ وَسِرَّهُ`,
-                latin: `Allahummaghfir li dzanbi kullahu, diqqahu wa jillahu, wa awwalahu wa akhirahu, wa 'alaniyatahu wa sirrahu`,
-                translation: `Ya Allah, ampunilah dosaku semuanya, yang kecil dan yang besar, yang awal dan yang akhir, yang terang-terangan dan yang tersembunyi`
-            },
-            {
-                number: 2,
-                arabic: `اللَّهُمَّ إِنِّي أَعُوذُ بِرِضَاكَ مِنْ سَخَطِكَ، وَبِمُعَافَاتِكَ مِنْ عُقُوبَتِكَ، وَأَعُوذُ بِكَ مِنْكَ لَا أُحْصِي ثَنَاءً عَلَيْكَ أَنْتَ كَمَا أَثْنَيْتَ عَلَى نَفْسِكَ`,
-                latin: `Allahumma inni a'udzu bi ridhaka min sakhatika, wa bi mu'afatika min 'uqubatika, wa a'udzu bika minka la uhshi tsana'an 'alaika anta kama atsnaita 'ala nafsika`,
-                translation: `Ya Allah, sesungguhnya aku berlindung dengan keridhaan-Mu dari kemurkaan-Mu, dan dengan ampunan-Mu dari siksaan-Mu, dan aku berlindung kepada-Mu dari-Mu. Aku tidak dapat menghitung pujian kepada-Mu, Engkau sebagaimana Engkau memuji diri-Mu sendiri`
-            },
-            {
-                number: 3,
-                arabic: `رَبِّ أَعِنِّي وَلَا تُعِنْ عَلَيَّ، وَانْصُرْنِي وَلَا تَنْصُرْ عَلَيَّ، وَامْكُرْ لِي وَلَا تَمْكُرْ عَلَيَّ، وَاهْدِنِي وَيَسِّرِ الْهُدَى لِي، وَانْصُرْنِي عَلَى مَنْ بَغَى عَلَيَّ`,
-                latin: `Rabbi a'inni wa la tu'in 'alayya, wanshurni wa la tanshur 'alayya, wamkur li wa la tamkur 'alayya, wahdini wa yassir huda li, wanshurni 'ala man bagha 'alayya`,
-                translation: `Ya Tuhanku, tolonglah aku dan jangan menolong musuhku atasku, menangkanlah aku dan jangan menangkan musuhku atasku, buatlah rencana untukku dan jangan buat rencana yang merugikanku, berilah aku petunjuk dan mudahkanlah petunjuk bagiku, dan menangkanlah aku atas orang yang berbuat aniaya kepadaku`
-            }
-        ],
-        ruling: 'Sunnah',
-        dalil: [
-            {
-                source: 'Hadits',
-                reference: 'HR. Muslim 483',
-                arabic: 'أَقْرَبُ مَا يَكُونُ الْعَبْدُ إِلَى رَبِّهِ وَهُوَ سَاجِدٌ فَأَكْثِرُوا الدُّعَاءَ',
-                translation: 'Seorang hamba paling dekat kepada Tuhannya ketika ia sedang sujud, maka perbanyaklah doa'
-            },
-            {
-                source: 'Hadits',
-                reference: 'HR. Muslim 486',
-                arabic: 'أَعُوذُ بِرِضَاكَ مِنْ سَخَطِكَ',
-                translation: 'Aku berlindung dengan keridhaan-Mu dari kemurkaan-Mu'
-            }
-        ],
-        tips: 'Manfaatkan sujud untuk berdoa, posisi paling dekat dengan Allah',
-        commonMistakes: 'Jangan hanya dzikir saja, perbanyak doa pribadi dalam sujud'
     }
 ];

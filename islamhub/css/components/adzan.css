@@ -364,7 +364,7 @@
 
 /* Modal */
 .modal {
-  display: none;
+  display: none !important;
   position: fixed;
   top: 0;
   left: 0;
@@ -378,7 +378,7 @@
 }
 
 .modal.show {
-  display: flex;
+  display: flex !important;
 }
 
 .modal-content {

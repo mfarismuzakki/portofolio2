@@ -16,6 +16,10 @@ export default class SholatApp {
 
     async init() {
         console.log('Initializing Sholat App...');
+        
+        // Show loading state
+        this.showLoading();
+        
         await this.loadData();
         this.setupEventListeners();
         this.displayContent();
@@ -236,6 +240,7 @@ export default class SholatApp {
                                 ${v.arabic ? `<p class="sholat-detail-arabic">${v.arabic}</p>` : ''}
                                 ${v.latin ? `<p class="sholat-detail-latin">${v.latin}</p>` : ''}
                                 ${v.translation ? `<p class="sholat-detail-translation">"${v.translation}"</p>` : ''}
+                                ${v.note ? `<p class="variation-note"><i class="fas fa-info-circle"></i> ${v.note}</p>` : ''}
                             </div>
                         `).join('')}
                     </div>
@@ -581,6 +586,18 @@ export default class SholatApp {
     truncate(text, length) {
         if (!text) return '';
         return text.length > length ? text.substring(0, length) + '...' : text;
+    }
+
+    showLoading() {
+        const container = document.getElementById('sholatContentGrid');
+        if (container) {
+            container.innerHTML = `
+                <div class="loading-placeholder">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Memuat data sholat...</p>
+                </div>
+            `;
+        }
     }
 
     showError(message) {

@@ -20,7 +20,7 @@ const doaCollection = {
         repetition: 1,
         category: "ayat",
         subcategory: "perlindungan",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_001.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_001.mp3",
       },
       {
         id: "pagi_002",
@@ -33,7 +33,7 @@ const doaCollection = {
         hadistText: "Ketiga surat (surat Al-Ikhlas, Al-Falaq dan An-Naas) dinamakan Al-Mu'awwidzaat, lihat pula Fathul Baari 9/62.",
         repetition: 3,
         category: "surat",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_002.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_002.mp3",
       },
       {
         id: "pagi_003",
@@ -46,7 +46,7 @@ const doaCollection = {
         hadistText: "Ketiga surat (surat Al-Ikhlas, Al-Falaq dan An-Naas) dinamakan Al-Mu'awwidzaat, lihat pula Fathul Baari 9/62.",
         repetition: 3,
         category: "surat",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_003.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_003.mp3",
       },
       {
         id: "pagi_004",
@@ -59,7 +59,7 @@ const doaCollection = {
         hadistText: "Ketiga surat (surat Al-Ikhlas, Al-Falaq dan An-Naas) dinamakan Al-Mu'awwidzaat, lihat pula Fathul Baari 9/62.",
         repetition: 3,
         category: "surat",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_004.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_004.mp3",
       },
       {
         id: "pagi_005",
@@ -72,7 +72,7 @@ const doaCollection = {
         hadistText: "Dari Ibnu Mas'ud radhiyallahu 'anhu, bahwa Nabi shallallahu 'alaihi wa sallam ketika pagi membaca doa di atas.",
         repetition: 1,
         category: "doa",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_005.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_005.mp3",
       },
       {
         id: "pagi_006",
@@ -85,7 +85,7 @@ const doaCollection = {
         hadistText: "Dari Abu Hurairah radhiyallahu 'anhu, beliau berkata: Ketika masuk waktu pagi, Nabi shallallahu 'alaihi wa sallam biasa membaca dzikir pagi dan ketika sore beliau membaca dzikir sore.",
         repetition: 1,
         category: "doa",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_006.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_006.mp3",
       },
       {
         id: "pagi_007",
@@ -98,7 +98,7 @@ const doaCollection = {
         hadistText: "Dari Syaddad bin Aus radhiyallahu 'anhu bahwa Nabi shallallahu 'alaihi wa sallam bersabda: 'Sayyidul Istighfar adalah bacaan: (doa di atas).' Dinamakan Sayyidul Istighfar, karena bacaan istighfar di atas adalah lafal istighfar yang paling mulia dibandingkan lafal istighfar lainnya.",
         repetition: 1,
         category: "istighfar",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_007.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_007.mp3",
       },
       {
         id: "pagi_008",
@@ -111,7 +111,7 @@ const doaCollection = {
         hadistText: "Dari 'Abdullah bin Khubaib radhiyallahu 'anhu berkata: Rasulullah ﷺ bersabda kepadaku: 'Bacalah!' Aku berkata: 'Apa yang harus kubaca?' Beliau bersabda: 'Bacalah Qul Huwa Allahu Ahad dan Mu'awwidzatain (Surat Al-Falaq dan An-Naas) di sore dan pagi hari masing-masing tiga kali, niscaya akan mencukupimu dari segala sesuatu.'",
         repetition: 3,
         category: "doa",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_008.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_008.mp3",
       },
       {
         id: "pagi_009",
@@ -124,7 +124,7 @@ const doaCollection = {
         hadistText: "Dari Abu Hurairah radhiyallahu 'anhu, bahwa Abu Bakar Ash-Shiddiq radhiyallahu 'anhu berkata kepada Rasulullah ﷺ: 'Ya Rasulullah, perintahkanlah kepadaku sesuatu yang akan aku ucapkan di pagi dan petang hari.' Beliau bersabda: 'Ucapkanlah: Allāhumma 'ālimal-ghaybi wasy-syahādati... hingga akhir doa, di pagi dan petang hari.'",
         repetition: 1,
         category: "doa",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_009.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_009.mp3",
       },
       {
         id: "pagi_010",
@@ -137,7 +137,7 @@ const doaCollection = {
         hadistText: "Dari Abdullah bin Umar radhiyallahu 'anhuma berkata: Rasulullah ﷺ tidak pernah meninggalkan doa-doa ini ketika pagi dan petang. (Doa di atas)",
         repetition: 3,
         category: "doa",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_010.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_010.mp3",
       },
       {
         id: "pagi_011",
@@ -150,7 +150,7 @@ const doaCollection = {
         hadistText: "Dari Utsman bin Affan radhiyallahu 'anhu berkata: Rasulullah ﷺ bersabda: 'Tidaklah seorang hamba yang mengucapkan (doa di atas) ketika pagi hari, melainkan tidak akan membahayakan sesuatu apapun hingga sore hari. Dan tidaklah dia mengucapkannya ketika sore hari, melainkan tidak akan membahayakan sesuatu apapun hingga pagi hari.'",
         repetition: 3,
         category: "doa",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_011.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_011.mp3",
       },
       {
         id: "pagi_012",
@@ -163,7 +163,7 @@ const doaCollection = {
         hadistText: "Dari Abu Sa'id Al-Khudri radhiyallahu 'anhu berkata: Rasulullah ﷺ bersabda: 'Barangsiapa berkata ketika pagi: Radhītu billāhi rabban wa bil islāmi dīnan wa bi muhammadin rasūlan, maka aku akan menjadi penjaminnya untuk masuk surga.'",
         repetition: 3,
         category: "doa",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_012.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_012.mp3",
       },
       {
         id: "pagi_013",
@@ -177,7 +177,7 @@ const doaCollection = {
         repetition: 1,
         category: "doa",
         subcategory: "aqidah",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_013.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_013.mp3",
       },
       {
         id: "pagi_014",
@@ -191,7 +191,7 @@ const doaCollection = {
         repetition: 1,
         category: "doa",
         subcategory: "ilmu",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_014.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_014.mp3",
       },
       {
         id: "pagi_015",
@@ -205,7 +205,7 @@ const doaCollection = {
         repetition: 3,
         category: "doa",
         subcategory: "perlindungan",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_015.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_015.mp3",
       },
       {
         id: "pagi_016",
@@ -218,7 +218,7 @@ const doaCollection = {
         hadistText: "Dari Abu Hurairah radhiyallahu 'anhu, Rasulullah ﷺ bersabda: 'Barangsiapa yang mengucapkan: Subhānallāhi wa bihamdih, dalam sehari 100 kali, dosanya akan diampuni meskipun sebanyak buih di lautan.'",
         repetition: 100,
         category: "dzikir",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_016.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_016.mp3",
       },
       {
         id: "pagi_017",
@@ -231,7 +231,7 @@ const doaCollection = {
         hadistText: "Dari Abdullah bin Umar رضي الله عنهما, ia berkata: 'Kami menghitung Rasulullah ﷺ dalam satu majelis sebanyak 100 kali mengucapkan: Rabbi'ghfir lī wa tub 'alayya, innaka anta't-tawwābu'r-rahīm (Ya Tuhanku, ampunilah aku dan terimalah taubatku. Sesungguhnya Engkau Maha Penerima taubat lagi Maha Penyayang).' Dan dari Al-Agharr al-Muzaniy رضي الله عنه bahwa Rasulullah ﷺ bersabda: 'Sesungguhnya diriku merasa berkabut, dan sesungguhnya aku beristighfar kepada Allah dalam sehari sebanyak 100 kali.' (HR. Muslim no. 2702)",
         repetition: 100,
         category: "istighfar",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_pagi_017.mp3",
+        audio: "assets/audio/dzikir/dzikir_pagi_017.mp3",
       }
     ]
   },
@@ -253,7 +253,7 @@ const doaCollection = {
         hadistText: "Dari Ubay bin Ka'ab رضي الله عنه, bahwa suatu ketika ada seorang jin yang mencuri kebun kurmanya. Jin itu beliau tangkap, untuk dilaporkan kepada Nabi shallallahu 'alaihi wa sallam. Jin itupun memelas agar dilepaskan. Sebagai gantinya, dia memberikan satu wirid kepada Ubay. Jin itu mengatakan: (dzikir di atas). Barangsiapa yang membacanya ketika sore maka dia akan dilindungi dari (gangguan) kami sampai pagi. Barangsiapa yang membacanya ketika pagi maka dia akan dilindungi dari (gangguan) kami sampai sore. Kemudian, Ubay mendatangi Nabi shallallahu 'alaihi wa sallam dan menceritakan kejadian yang dia jumpai. Nabi shallallahu 'alaihi wa sallam bersabda: 'Si makhluk jelek itu benar.' (maksud makhluk jelek adalah jin tersebut). (HR. An Nasa'i dan At Thabrani dan dishahihkan Al Albani).",
         repetition: 1,
         category: "ayat",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_001.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_001.mp3",
       },
       {
         id: "sore_002",
@@ -266,7 +266,7 @@ const doaCollection = {
         hadistText: "Ketiga surat (surat Al-Ikhlas, Al-Falaq dan An-Naas) dinamakan Al-Mu'awwidzaat, lihat pula Fathul Baari 9/62.",
         repetition: 3,
         category: "surat",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_002.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_002.mp3",
       },
       {
         id: "sore_003",
@@ -279,7 +279,7 @@ const doaCollection = {
         hadistText: "Ketiga surat (surat Al-Ikhlas, Al-Falaq dan An-Naas) dinamakan Al-Mu'awwidzaat, lihat pula Fathul Baari 9/62.",
         repetition: 3,
         category: "surat",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_003.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_003.mp3",
       },
       {
         id: "sore_004",
@@ -292,7 +292,7 @@ const doaCollection = {
         hadistText: "Ketiga surat (surat Al-Ikhlas, Al-Falaq dan An-Naas) dinamakan Al-Mu'awwidzaat, lihat pula Fathul Baari 9/62.",
         repetition: 3,
         category: "surat",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_004.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_004.mp3",
       },
       {
         id: "sore_005",
@@ -305,7 +305,7 @@ const doaCollection = {
         hadistText: "Dari Ibnu Mas'ud رضي الله عنه, bahwa Nabi shallallahu 'alaihi wa sallam ketika sore membaca doa di atas.",
         repetition: 1,
         category: "doa",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_005.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_005.mp3",
       },
       {
         id: "sore_006",
@@ -318,7 +318,7 @@ const doaCollection = {
         hadistText: "Dari Abu Hurairah رضي الله عنه, beliau berkata: Ketika masuk waktu pagi, Nabi shallallahu 'alaihi wa sallam biasa membaca dzikir pagi dan ketika sore beliau membaca dzikir sore.",
         repetition: 1,
         category: "doa",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_006.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_006.mp3",
       },
       {
         id: "sore_007",
@@ -330,7 +330,7 @@ const doaCollection = {
         reference: "HR. Al-Bukhari no. 6306",
         repetition: 1,
         category: "doa",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_007.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_007.mp3",
       },
       {
         id: "sore_008",
@@ -343,7 +343,7 @@ const doaCollection = {
         hadistText: "Dari Abdurrahman bin Abi Bakrah, bahwa dia bertanya kepada bapaknya: Wahai ayahku, aku selalu mendengar engkau membaca dzikir ini, dan engkau mengulanginya 3x setiap pagi dan 3x setiap sore. Kemudian Abu Bakrah رضي الله عنه mengatakan: Aku mendengar Rasulullah shallallahu 'alaihi wa sallam membaca doa ini, dan aku senang meniru sunnah beliau.",
         repetition: 3,
         category: "perlindungan",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_008.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_008.mp3",
       },
       {
         id: "sore_009",
@@ -356,7 +356,7 @@ const doaCollection = {
         hadistText: "Dari Abu Hurairah radhiyallahu 'anhu, bahwa Abu Bakar Ash-Shiddiq radhiyallahu 'anhu berkata kepada Rasulullah ﷺ: 'Ya Rasulullah, perintahkanlah kepadaku sesuatu yang akan aku ucapkan di pagi dan petang hari.' Beliau bersabda: 'Ucapkanlah: Allāhumma 'ālimal-ghaybi wasy-syahādati... hingga akhir doa, di pagi dan petang hari.'",
         repetition: 1,
         category: "doa",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_009.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_009.mp3",
       },
       {
         id: "sore_010",
@@ -369,7 +369,7 @@ const doaCollection = {
         hadistText: "Dari Abdullah bin Umar radhiyallahu 'anhuma berkata: Rasulullah ﷺ tidak pernah meninggalkan doa-doa ini ketika pagi dan petang.",
         repetition: 1,
         category: "doa",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_010.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_010.mp3",
       },
       {
         id: "sore_011",
@@ -382,7 +382,7 @@ const doaCollection = {
         hadistText: "Dari Utsman bin Affan radhiyallahu 'anhu berkata: Rasulullah ﷺ bersabda: 'Tidaklah seorang hamba yang mengucapkan (doa di atas) ketika sore hari, melainkan tidak akan membahayakan sesuatu apapun hingga pagi hari.'",
         repetition: 3,
         category: "perlindungan",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_011.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_011.mp3",
       },
       {
         id: "sore_012",
@@ -395,7 +395,7 @@ const doaCollection = {
         hadistText: "Dari Abu Sa'id Al-Khudri radhiyallahu 'anhu berkata: Rasulullah ﷺ bersabda: 'Barangsiapa berkata ketika sore: Radhītu billāhi rabban wa bil islāmi dīnan wa bi muhammadin rasūlan, maka aku akan menjadi penjaminnya untuk masuk surga.'",
         repetition: 3,
         category: "keimanan",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_012.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_012.mp3",
       },
       {
         id: "sore_013",
@@ -409,7 +409,7 @@ const doaCollection = {
         repetition: 1,
         category: "doa",
         subcategory: "aqidah",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_013.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_013.mp3",
       },
       {
         id: "sore_014",
@@ -423,7 +423,7 @@ const doaCollection = {
         repetition: 3,
         category: "doa",
         subcategory: "perlindungan",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_014.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_014.mp3",
       },
       {
         id: "sore_015",
@@ -436,7 +436,7 @@ const doaCollection = {
         hadistText: "Dari Abu Hurairah radhiyallahu 'anhu, Rasulullah ﷺ bersabda: 'Barangsiapa yang mengucapkan: Subhānallāhi wa bihamdih, dalam sehari 100 kali, dosanya akan diampuni meskipun sebanyak buih di lautan.'",
         repetition: 100,
         category: "tasbih",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_015.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_015.mp3",
       },
       {
         id: "sore_016",
@@ -449,7 +449,7 @@ const doaCollection = {
         hadistText: "Dari Abdullah bin Umar رضي الله عنهما, ia berkata: 'Kami menghitung Rasulullah ﷺ dalam satu majelis sebanyak 100 kali mengucapkan: Rabbi'ghfir lī wa tub 'alayya, innaka anta't-tawwābu'r-rahīm (Ya Tuhanku, ampunilah aku dan terimalah taubatku. Sesungguhnya Engkau Maha Penerima taubat lagi Maha Penyayang).' Dan dari Al-Agharr al-Muzaniy رضي الله عنه bahwa Rasulullah ﷺ bersabda: 'Sesungguhnya diriku merasa berkabut, dan sesungguhnya aku beristighfar kepada Allah dalam sehari sebanyak 100 kali.' (HR. Muslim no. 2702)",
         repetition: 100,
         category: "istighfar",
-        audio: "/islamhub/assets/audio/dzikir/dzikir_sore_016.mp3",
+        audio: "assets/audio/dzikir/dzikir_sore_016.mp3",
       }
     ]
   },
