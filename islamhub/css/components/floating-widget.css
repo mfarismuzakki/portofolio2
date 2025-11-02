@@ -1,7 +1,7 @@
 /* ===== FLOATING PRAYER WIDGET ===== */
 .floating-prayer-widget {
   position: fixed;
-  bottom: 90px;
+  bottom: 160px; /* Raised higher to not cover audio player */
   right: 20px;
   background: rgba(10, 10, 15, 0.95);
   backdrop-filter: blur(20px);
@@ -10,7 +10,7 @@
   padding: 15px 20px;
   min-width: 200px;
   box-shadow: var(--shadow-glow);
-  z-index: 999;
+  z-index: 30; /* Lower than audio player */
   display: none;
   opacity: 0;
   transition: opacity 0.3s ease;

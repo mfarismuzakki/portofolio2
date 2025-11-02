@@ -2,7 +2,7 @@
 .adzan-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding-bottom: 140px; /* Add space for bottom navigation */
+  padding-bottom: 20px;
   min-height: 100vh;
 }
 

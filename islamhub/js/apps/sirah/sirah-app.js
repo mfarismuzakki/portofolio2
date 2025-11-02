@@ -261,10 +261,17 @@ export default class SirahApp {
                 ? biography.substring(0, 150) + '...' 
                 : biography;
             
-            const categoryBadge = `<span class="category-badge category-${prophet.category}">${categoryLabel}</span>`;
-            const subcategoryBadge = prophet.subcategory 
-                ? `<span class="subcategory-badge">${prophet.subcategory.replace(/_/g, ' ')}</span>` 
-                : '';
+            // Build badges - only show category badge once, combine with subcategory if exists
+            let badges = '';
+            if (prophet.subcategory) {
+                // If has subcategory, show both category and subcategory
+                const categoryBadge = `<span class="category-badge category-${prophet.category}">${categoryLabel}</span>`;
+                const subcategoryBadge = `<span class="subcategory-badge">${prophet.subcategory.replace(/_/g, ' ')}</span>`;
+                badges = categoryBadge + subcategoryBadge;
+            } else {
+                // If no subcategory, only show category badge once
+                badges = `<span class="category-badge category-${prophet.category}">${categoryLabel}</span>`;
+            }
             
             // Delete button for favorite view
             const deleteBtn = isInFavoriteView 
@@ -288,8 +295,7 @@ export default class SirahApp {
                         ${prophet.period ? `<p class="prophet-period">${prophet.period}</p>` : ''}
                     </div>
                     <div class="prophet-badges">
-                        ${categoryBadge}
-                        ${subcategoryBadge}
+                        ${badges}
                     </div>
                     ${preview ? `<p class="prophet-preview">${preview}</p>` : ''}
                 </div>

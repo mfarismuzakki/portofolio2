@@ -10,6 +10,9 @@ export default class AdzanApp {
         this.updateInterval = null;
         this.countdownInterval = null;
         
+        // Get base path for assets
+        this.basePath = this._getBasePath();
+        
         // Default Jakarta
         this.lat = -6.2088;
         this.lon = 106.8456;
@@ -34,11 +37,11 @@ export default class AdzanApp {
     async init() {
         console.log('Initializing Adzan App...');
         await this.render();
+        this.setupEventListeners(); // Setup event listeners after render
         await this.loadSavedLocation();
         await this.fetchPrayerTimes();
         this.startCountdown();
         this.updateCountdown(); // Initial countdown display
-        this.setupEventListeners();
         this.updateClock();
         await this.initNotifications();
     }
@@ -113,11 +116,11 @@ export default class AdzanApp {
                 </div>
 
                 <!-- Location Modal -->
-                <div class="modal" id="locationModal">
+                <div class="modal" id="locationModal" style="display: none;">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h3>Ubah Lokasi</h3>
-                            <button class="modal-close" id="modalClose">
+                            <button class="modal-close" id="modalClose" type="button">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
@@ -547,13 +550,36 @@ export default class AdzanApp {
             });
         }
         
-        // Modal close
+        // Modal close button
         const modalClose = document.getElementById('modalClose');
         if (modalClose) {
-            modalClose.addEventListener('click', () => {
+            modalClose.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 this.hideLocationModal();
             });
         }
+        
+        // Modal backdrop close (click outside)
+        const modal = document.getElementById('locationModal');
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                // Only close if clicking directly on the modal backdrop, not the content
+                if (e.target === modal) {
+                    this.hideLocationModal();
+                }
+            });
+        }
+        
+        // ESC key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('locationModal');
+                if (modal && modal.classList.contains('show')) {
+                    this.hideLocationModal();
+                }
+            }
+        });
         
         // Search city
         const btnSearchCity = document.getElementById('btnSearchCity');
@@ -606,16 +632,29 @@ export default class AdzanApp {
     }
 
     showLocationModal() {
+        console.log('Opening location modal...');
         const modal = document.getElementById('locationModal');
         if (modal) {
             modal.classList.add('show');
+            // Clear previous search results
+            const cityDropdown = document.getElementById('cityDropdown');
+            if (cityDropdown) {
+                cityDropdown.style.display = 'none';
+                cityDropdown.innerHTML = '';
+            }
         }
     }
 
     hideLocationModal() {
+        console.log('Closing location modal...');
         const modal = document.getElementById('locationModal');
         if (modal) {
             modal.classList.remove('show');
+            // Clear input
+            const cityInput = document.getElementById('cityInput');
+            if (cityInput) {
+                cityInput.value = '';
+            }
         }
     }
 
@@ -1230,8 +1269,8 @@ export default class AdzanApp {
         
         const options = {
             body: body,
-            icon: './assets/icons/icon-192x192.png',
-            badge: './assets/icons/icon-96x96.png',
+            icon: `${this.basePath}/assets/icons/icon-192x192.png`,
+            badge: `${this.basePath}/assets/icons/icon-96x96.png`,
             tag: `prayer-${prayerName}`,
             requireInteraction: true,
             silent: false,
@@ -1270,8 +1309,8 @@ export default class AdzanApp {
         
         const options = {
             body: body,
-            icon: './assets/icons/icon-192x192.png',
-            badge: './assets/icons/icon-96x96.png',
+            icon: `${this.basePath}/assets/icons/icon-192x192.png`,
+            badge: `${this.basePath}/assets/icons/icon-96x96.png`,
             tag: 'welcome',
             requireInteraction: false,
             silent: false,
@@ -1300,5 +1339,12 @@ export default class AdzanApp {
         } catch (error) {
             console.error('Notification failed:', error);
         }
+    }
+
+    _getBasePath() {
+        // Get base path for assets - handles subdirectory deployment
+        const path = window.location.pathname;
+        const base = path.substring(0, path.lastIndexOf('/'));
+        return base || '';
     }
 }

@@ -46,8 +46,15 @@ class IslamHubApp {
         // Initialize home widget with saved data
         this.initializeHomeWidget();
         
-        // Show floating widget on home
-        this.updateFloatingWidgetVisibility('home');
+        // Check if we should restore last active app
+        const lastActiveApp = localStorage.getItem('islamhub_last_active_app');
+        if (lastActiveApp && lastActiveApp !== 'home') {
+            console.log('Restoring last active app:', lastActiveApp);
+            await this.switchApp(lastActiveApp);
+        } else {
+            // Show floating widget on home
+            this.updateFloatingWidgetVisibility('home');
+        }
         
         // Setup floating widget toggle
         this.setupFloatingWidgetToggle();
@@ -228,8 +235,8 @@ class IslamHubApp {
             nav.classList.add('active');
         });
         
-        // If app is in dropdown (waris, qibla, sirah), activate 'More Apps' button
-        const dropdownApps = ['waris', 'qibla', 'sirah'];
+        // If app is in dropdown (waris, qibla, sirah, sholat), activate 'More Apps' button
+        const dropdownApps = ['waris', 'qibla', 'sirah', 'sholat'];
         if (dropdownApps.includes(appName)) {
             const moreAppsBtn = document.getElementById('moreAppsBtn');
             if (moreAppsBtn) {
@@ -248,6 +255,16 @@ class IslamHubApp {
         
         this.currentApp = appName;
         
+        // Update body class untuk footer visibility
+        if (appName === 'home') {
+            document.body.classList.add('home-active');
+        } else {
+            document.body.classList.remove('home-active');
+        }
+        
+        // Save last active app to localStorage
+        localStorage.setItem('islamhub_last_active_app', appName);
+        
         // Reset to main page of the app if already active or switching to it
         if (appName === 'dzikir') {
             // Reset dzikir app to main page
@@ -258,6 +275,11 @@ class IslamHubApp {
             // Reset sirah app to main page
             if (window.sirahApp) {
                 window.sirahApp.resetToMainPage();
+            }
+        } else if (appName === 'alquran') {
+            // Reset alquran app to main page
+            if (window.alquranApp) {
+                window.alquranApp.resetToHome();
             }
         }
         
@@ -285,6 +307,7 @@ class IslamHubApp {
             const appFiles = {
                 'adzan': 'adzan-app.js',
                 'dzikir': 'dzikir-app.js',
+                'alquran': 'alquran-app.js',
                 'waris': 'waris-app.js',
                 'qibla': 'qibla-app.js',
                 'sholat': 'sholat-app.js',
@@ -300,6 +323,7 @@ class IslamHubApp {
             const folderMap = {
                 'adzan': 'adzan',
                 'dzikir': 'dzikir',
+                'alquran': 'alquran',
                 'waris': 'kalkulator',
                 'qibla': 'qibla',
                 'sholat': 'sholat',
@@ -319,6 +343,8 @@ class IslamHubApp {
             // Store app instances globally for reset functionality
             if (appName === 'dzikir') {
                 window.dzikirApp = appInstance;
+            } else if (appName === 'alquran') {
+                window.alquranApp = appInstance;
             } else if (appName === 'sirah') {
                 window.sirahApp = appInstance;
             } else if (appName === 'waris') {

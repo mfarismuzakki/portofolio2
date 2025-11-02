@@ -8,7 +8,7 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
-    padding-bottom: 120px; /* Add space for bottom nav on mobile */
+    padding-bottom: 20px;
 }
 
 /* Back Button */

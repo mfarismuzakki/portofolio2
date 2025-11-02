@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Arabic Quran Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -89,11 +92,11 @@
 
                     <div class="hero-stats">
                         <div class="stat-item">
-                            <span class="stat-number" data-target="6">6</span>
+                            <span class="stat-number" data-target="8">8</span>
                             <span class="stat-label">Aplikasi Tersedia</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-number" data-target="2">2</span>
+                            <span class="stat-number" data-target="1">1</span>
                             <span class="stat-label">Segera Hadir</span>
                         </div>
                     </div>
@@ -116,6 +119,15 @@
                         </div>
                         <h3>Waktu Adzan</h3>
                         <p>Jadwal waktu sholat real-time dengan countdown otomatis</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('alquran')">
+                        <div class="app-badge beta">UJICOBA</div>
+                        <div class="app-icon">
+                            <i class="fas fa-book-quran"></i>
+                        </div>
+                        <h3>Al-Qur'an</h3>
+                        <p>Mushaf digital dengan audio per halaman dan fitur hafalan</p>
                     </div>
 
                     <div class="app-card" onclick="window.islamHub.switchApp('dzikir')">
@@ -145,31 +157,22 @@
                         <p>Temukan arah kiblat dengan kompas digital</p>
                     </div>
 
-                    <div class="app-card" onclick="window.islamHub.switchApp('sholat')">
-                        <div class="app-badge beta">UJICOBA</div>
-                        <div class="app-icon">
-                            <i class="fas fa-kaaba"></i>
-                        </div>
-                        <h3>Tata Cara Sholat</h3>
-                        <p>Panduan lengkap gerakan dan bacaan sholat</p>
-                    </div>
-
                     <div class="app-card" onclick="window.islamHub.switchApp('sirah')">
                         <div class="app-badge beta">UJICOBA</div>
                         <div class="app-icon">
                             <i class="fas fa-tree"></i>
                         </div>
                         <h3>Sirah Nabi</h3>
-                        <p>Kisah kehidupan para nabi dan rasul</p>
+                        <p>Kisah kehidupan para nabi, rasul, dan sahabat</p>
                     </div>
 
-                    <div class="app-card coming-soon">
-                        <div class="app-badge soon">SEGERA</div>
+                    <div class="app-card" onclick="window.islamHub.switchApp('sholat')">
+                        <div class="app-badge live">LIVE</div>
                         <div class="app-icon">
-                            <i class="fas fa-book-quran"></i>
+                            <i class="fas fa-mosque"></i>
                         </div>
-                        <h3>Tafsir Al-Quran</h3>
-                        <p>Tafsir lengkap 30 juz Al-Quran dari berbagai ulama</p>
+                        <h3>Tata Cara Sholat</h3>
+                        <p>Panduan lengkap tata cara sholat dengan bacaan dan dalil</p>
                     </div>
 
                     <div class="app-card coming-soon">
@@ -196,6 +199,14 @@
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
                     <p>Memuat aplikasi Dzikir...</p>
+                </div>
+            </div>
+
+            <!-- Al-Quran Component -->
+            <div id="alquran-app" class="app-component" data-app="alquran">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat Al-Qur'an Digital...</p>
                 </div>
             </div>
 
@@ -522,7 +533,7 @@
                 <div class="sholat-container">
                     <!-- Header -->
                     <div class="sholat-header">
-                        <h2><i class="fas fa-mosque"></i> Tata Cara Sholat</h2>
+                        <h2><i class="fas fa-kaaba"></i> Tata Cara Sholat</h2>
                         <p>Panduan lengkap rukun, bacaan, dan sunnah sholat berdasarkan Al-Quran & Hadits</p>
                     </div>
 
@@ -650,13 +661,13 @@
                 <i class="fas fa-mosque"></i>
                 <span>Adzan</span>
             </button>
+            <button class="bottom-nav-item" data-app="alquran">
+                <i class="fas fa-book-quran"></i>
+                <span>Al-Qur'an</span>
+            </button>
             <button class="bottom-nav-item" data-app="dzikir">
                 <i class="fas fa-hands"></i>
                 <span>Dzikir</span>
-            </button>
-            <button class="bottom-nav-item" data-app="sholat">
-                <i class="fas fa-kaaba"></i>
-                <span>Sholat</span>
             </button>
             <button class="bottom-nav-item" id="moreAppsBtn">
                 <i class="fas fa-th"></i>
@@ -673,6 +684,16 @@
                 </button>
             </div>
             <div class="more-apps-list">
+                <button class="more-app-item" data-app="sholat">
+                    <div class="more-app-icon">
+                        <i class="fas fa-kaaba"></i>
+                    </div>
+                    <div class="more-app-info">
+                        <h4>Tata Cara Sholat</h4>
+                        <p>Panduan gerakan dan bacaan sholat</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
                 <button class="more-app-item" data-app="waris">
                     <div class="more-app-icon">
                         <i class="fas fa-calculator"></i>
@@ -708,6 +729,10 @@
     </div>
 
     <!-- Scripts -->
+    <!-- Al-Quran Data Scripts -->
+    <script src="js/data/alquran/quran-data.js"></script>
+    <script src="js/data/alquran/quran-verses.js"></script>
+    
     <script type="module" src="js/app.js"></script>
     
     <!-- PWA Registration -->
@@ -721,11 +746,11 @@
                         reg.update();
                     })
                     .catch(err => {
-                        console.error('❌ Service Worker registration failed:', err);
+                        console.error('Service Worker registration failed:', err);
                     });
             });
         } else {
-            console.log('⚠️ Service Worker not supported or file protocol');
+            console.log('Service Worker not supported or file protocol');
         }
     </script>
 </body>
