@@ -54,6 +54,8 @@ class IslamHubApp {
         } else {
             // Show floating widget on home
             this.updateFloatingWidgetVisibility('home');
+            // Set data-current-app to 'home' by default
+            document.body.setAttribute('data-current-app', 'home');
         }
         
         // Setup floating widget toggle
@@ -64,6 +66,9 @@ class IslamHubApp {
         
         // Setup PWA install button
         this.setupInstallButton();
+        
+        // Setup cache management and update notifications
+        this.setupCacheManagement();
     }
     
     async registerServiceWorker() {
@@ -1202,6 +1207,179 @@ class IslamHubApp {
                 }
             }, 5000);
         }
+    }
+
+    // Cache Management Methods
+    setupCacheManagement() {
+        const APP_VERSION = '1.2.0';
+        const STORAGE_VERSION_KEY = 'islamhub_app_version';
+        
+        // Check version and show update notification if needed
+        this.checkForUpdates(APP_VERSION, STORAGE_VERSION_KEY);
+        
+        // Setup clear cache button
+        const clearCacheBtn = document.getElementById('clearCacheBtn');
+        if (clearCacheBtn) {
+            clearCacheBtn.addEventListener('click', async () => {
+                await this.clearAllCache();
+            });
+        }
+        
+        // Setup update notification buttons
+        const updateNowBtn = document.getElementById('updateNowBtn');
+        const updateLaterBtn = document.getElementById('updateLaterBtn');
+        
+        if (updateNowBtn) {
+            updateNowBtn.addEventListener('click', async () => {
+                await this.clearAllCache();
+            });
+        }
+        
+        if (updateLaterBtn) {
+            updateLaterBtn.addEventListener('click', () => {
+                this.hideUpdateNotification();
+            });
+        }
+    }
+    
+    checkForUpdates(currentVersion, storageKey) {
+        const savedVersion = localStorage.getItem(storageKey);
+        
+        if (!savedVersion || savedVersion !== currentVersion) {
+            console.log('New version detected:', currentVersion, 'Previous:', savedVersion);
+            this.showUpdateNotification(currentVersion);
+            // Don't save version yet - only after update is applied
+        }
+    }
+    
+    showUpdateNotification(version) {
+        const notification = document.getElementById('updateNotification');
+        if (notification) {
+            notification.classList.add('show');
+            notification.classList.remove('hidden');
+        }
+    }
+    
+    hideUpdateNotification() {
+        const notification = document.getElementById('updateNotification');
+        if (notification) {
+            notification.classList.remove('show');
+            notification.classList.add('hidden');
+        }
+    }
+    
+    async clearAllCache() {
+        const loadingOverlay = this.showCacheLoadingOverlay();
+        
+        try {
+            console.log('Starting cache clearing process...');
+            
+            // 1. Unregister all service workers
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (let registration of registrations) {
+                    await registration.unregister();
+                    console.log('Service worker unregistered');
+                }
+            }
+            
+            // 2. Clear all caches
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                await Promise.all(
+                    cacheNames.map(cacheName => {
+                        console.log('Deleting cache:', cacheName);
+                        return caches.delete(cacheName);
+                    })
+                );
+            }
+            
+            // 3. Clear localStorage (but keep user preferences)
+            const preserveKeys = ['islamhub_settings', 'islamhub_location'];
+            const localStorageBackup = {};
+            preserveKeys.forEach(key => {
+                const value = localStorage.getItem(key);
+                if (value) localStorageBackup[key] = value;
+            });
+            localStorage.clear();
+            Object.keys(localStorageBackup).forEach(key => {
+                localStorage.setItem(key, localStorageBackup[key]);
+            });
+            
+            // Save new version
+            localStorage.setItem('islamhub_app_version', '1.2.0');
+            
+            // 4. Clear sessionStorage
+            sessionStorage.clear();
+            
+            // 5. Clear IndexedDB (if any)
+            if ('indexedDB' in window) {
+                const dbs = await indexedDB.databases();
+                dbs.forEach(db => {
+                    if (db.name && db.name.includes('islamhub')) {
+                        indexedDB.deleteDatabase(db.name);
+                        console.log('Deleted IndexedDB:', db.name);
+                    }
+                });
+            }
+            
+            console.log('Cache cleared successfully');
+            
+            // Show success message briefly
+            if (loadingOverlay) {
+                const message = loadingOverlay.querySelector('p');
+                if (message) {
+                    message.textContent = '✓ Cache berhasil dihapus! Memuat ulang...';
+                }
+            }
+            
+            // Reload page after short delay
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 1500);
+            
+        } catch (error) {
+            console.error('Error clearing cache:', error);
+            if (loadingOverlay) loadingOverlay.remove();
+            this.showDialog('error', 'Gagal membersihkan cache. Silakan coba lagi.');
+        }
+    }
+    
+    showCacheLoadingOverlay() {
+        const overlay = document.createElement('div');
+        overlay.className = 'cache-loading-overlay';
+        overlay.innerHTML = `
+            <div class="cache-loading-content">
+                <i class="fas fa-sync-alt fa-spin" style="font-size: 3rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
+                <h3 style="color: var(--primary-cyan); margin-bottom: 10px;">Membersihkan Cache...</h3>
+                <p style="color: rgba(255, 255, 255, 0.8);">Mohon tunggu sebentar</p>
+            </div>
+        `;
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 31, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+        `;
+        
+        const content = overlay.querySelector('.cache-loading-content');
+        content.style.cssText = `
+            text-align: center;
+            padding: 40px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+        `;
+        
+        document.body.appendChild(overlay);
+        return overlay;
     }
 }
 

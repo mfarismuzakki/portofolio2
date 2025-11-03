@@ -2,7 +2,7 @@
 
 // IMPORTANT: Update version setiap kali push update!
 // Format: islamhub-v[major].[minor].[patch]-[timestamp]
-const CACHE_VERSION = '1.2.1';
+const CACHE_VERSION = '1.2.0-20251103';
 const CACHE_NAME = `islamhub-v${CACHE_VERSION}`;
 
 // Strategi: Network First untuk HTML/JS/CSS, Cache First untuk assets statis
@@ -11,6 +11,7 @@ const urlsToCache = [
   '/islamhub/index.html',
   '/islamhub/manifest.json',
   'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap',
+  'https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;500;600;700&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
@@ -72,10 +73,19 @@ self.addEventListener('fetch', (event) => {
     url.pathname.endsWith('.css') ||
     url.pathname.endsWith('.js') ||
     url.pathname === '/islamhub/' ||
-    url.pathname === '/islamhub/index.html'
+    url.pathname === '/islamhub/index.html' ||
+    url.pathname.includes('/js/') ||
+    url.pathname.includes('/css/')
   ) {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, {
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      })
         .then(response => {
           // Cache response baru
           const responseClone = response.clone();

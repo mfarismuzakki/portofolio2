@@ -7,7 +7,7 @@
     <meta name="description" content="Platform terpadu aplikasi Islam: Adzan, Dzikir, Waris, Qibla, Tata Cara Sholat, dan Sirah Nabi">
     
     <!-- Cache Control - Force revalidation -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     
@@ -24,7 +24,7 @@
     
     <!-- Styles -->
         <!-- Styles - Modular CSS Architecture -->
-    <link rel="stylesheet" href="css/style-modular.css">
+    <link rel="stylesheet" href="css/style-modular.css?v=1.2.0">
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
@@ -44,6 +44,27 @@
             </div>
             <h3>IslamHub</h3>
             <p>Memuat aplikasi...</p>
+        </div>
+    </div>
+    
+    <!-- Update Available Notification -->
+    <div class="update-notification" id="updateNotification" style="display: none;">
+        <div class="update-content">
+            <div class="update-icon">
+                <i class="fas fa-sync-alt"></i>
+            </div>
+            <div class="update-text">
+                <h4>Versi Baru Tersedia!</h4>
+                <p>Aplikasi telah diperbarui. Bersihkan cache untuk mendapatkan fitur terbaru.</p>
+            </div>
+            <div class="update-actions">
+                <button class="update-btn-primary" id="updateNowBtn">
+                    <i class="fas fa-download"></i> Update Sekarang
+                </button>
+                <button class="update-btn-secondary" id="updateLaterBtn">
+                    <i class="fas fa-times"></i> Nanti
+                </button>
+            </div>
         </div>
     </div>
 
@@ -106,12 +127,22 @@
                         </div>
                     </div>
                     
-                    <!-- Install Button -->
+                    <!-- Install & Cache Management Buttons -->
                     <div class="install-section">
                         <button class="install-btn" id="installButton" style="display: none;">
                             <i class="fas fa-download"></i>
                             <span>Install Aplikasi</span>
                         </button>
+                        <button class="clear-cache-btn" id="clearCacheBtn" title="Bersihkan cache untuk mendapatkan versi terbaru">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>Bersihkan Cache</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Cache Management Info -->
+                    <div class="cache-info">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Klik <strong>Bersihkan Cache</strong> untuk mendapatkan versi terbaru aplikasi jika ada fitur atau update yang belum muncul</p>
                     </div>
                 </div>
 
@@ -653,6 +684,13 @@
                         <p>2025 Muhammad Faris Muzakki & Istri Tercinta (Lulusan Terbaik Imam Muhammad bin Saud University Jurusan Syariah Tahun 2022)</p>
                     </div>
                 </div>
+                
+                <div class="footer-section version-section">
+                    <div class="footer-icon-text">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Versi 1.2.0</p>
+                    </div>
+                </div>
             </div>
         </footer>
 
@@ -738,17 +776,38 @@
     <script src="js/data/alquran/quran-data.js"></script>
     <script src="js/data/alquran/quran-verses.js"></script>
     
-    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/app.js?v=1.2.0"></script>
     
     <!-- PWA Registration -->
     <script>
         if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/islamhub/sw.js', { scope: '/islamhub/' })
+                // Unregister old service worker first
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                    for (let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+                
+                // Register new service worker
+                navigator.serviceWorker.register('/islamhub/sw.js?v=1.2.0', { scope: '/islamhub/' })
                     .then(reg => {
                         console.log('Service Worker registered successfully', reg.scope);
-                        // Check for updates
+                        // Force update immediately
                         reg.update();
+                        
+                        // Listen for updates
+                        reg.addEventListener('updatefound', () => {
+                            const newWorker = reg.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'activated') {
+                                    // Force page reload when new SW is activated
+                                    if (confirm('Versi baru tersedia! Reload halaman untuk menggunakan versi terbaru?')) {
+                                        window.location.reload(true);
+                                    }
+                                }
+                            });
+                        });
                     })
                     .catch(err => {
                         console.error('Service Worker registration failed:', err);

@@ -20,7 +20,8 @@ export default class AlQuranApp {
         this.settings = this._loadJSON('alquran_settings', {
             hideTransliteration: true,
             hideTranslation: false,
-            arabicFont: 'uthmani',
+            arabicFont: 'amiri',
+            arabicFontSize: 1.2,
             autoPlayNext: false,
             autoRepeat: 1,
             hideLastRead: false,
@@ -49,6 +50,36 @@ export default class AlQuranApp {
         await this.render();
         this.setupEventListeners();
         this._updateLastRead(this.currentPage);
+        this._applyFontSettings();
+    }
+
+    // Apply font settings to all Arabic text elements
+    _applyFontSettings() {
+        const fontSize = this.settings.arabicFontSize || 1.8;
+        const fontFamily = this.settings.arabicFont || 'uthmanic';
+        
+        // Apply font size via CSS custom property
+        document.documentElement.style.setProperty('--arabic-font-size', `${fontSize}rem`);
+        
+        // Apply font family class to all Arabic text elements
+        const arabicSelectors = [
+            '.arabic-text',
+            '.verse-arabic',
+            '.verse-arabic-inline',
+            '.basmalah-arabic'
+        ];
+        
+        arabicSelectors.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+                // Remove existing font classes
+                el.classList.remove('uthmanic', 'amiri', 'scheherazade', 'uthmani', 'naskh', 'kufi');
+                // Add new font class
+                el.classList.add(fontFamily);
+                // Apply font size
+                el.style.fontSize = `${fontSize}rem`;
+            });
+        });
     }
 
     // Reset to home page
@@ -1399,62 +1430,115 @@ export default class AlQuranApp {
         modal.className = 'modal';
         
         modal.innerHTML = `
-            <div class="modal-content">
+            <div class="modal-content settings-modal-content">
                 <div class="modal-header">
                     <h3><i class="fas fa-cog"></i> Pengaturan</h3>
                     <button class="close-btn" data-close>×</button>
                 </div>
                 <div class="modal-body">
                     <div class="settings-panel">
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <i class="fas fa-eye-slash"></i>
-                                <span>Sembunyikan Transliterasi</span>
+                        <!-- Font Settings Section -->
+                        <div class="settings-section">
+                            <h4 class="settings-section-title">
+                                <i class="fas fa-font"></i> Pengaturan Teks Arab
+                            </h4>
+                            
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-text-height"></i>
+                                    <span>Ukuran Teks Arab</span>
+                                </div>
+                                <div class="font-size-control">
+                                    <button class="font-btn" data-font-action="decrease"><i class="fas fa-minus"></i></button>
+                                    <span class="font-size-display" id="fontSizeDisplay">${this.settings.arabicFontSize || 1.2}rem</span>
+                                    <button class="font-btn" data-font-action="increase"><i class="fas fa-plus"></i></button>
+                                </div>
                             </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="set_hide_translit" ${this.settings.hideTransliteration ? 'checked' : ''}>
-                                <span class="toggle-slider"></span>
-                            </label>
+                            
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-font"></i>
+                                    <span>Jenis Font Arab</span>
+                                </div>
+                                <select id="arabicFontSelect" class="font-select">
+                                    <option value="amiri" ${(this.settings.arabicFont || 'amiri') === 'amiri' ? 'selected' : ''}>Amiri Quran (Default)</option>
+                                    <option value="uthmanic" ${this.settings.arabicFont === 'uthmanic' ? 'selected' : ''}>Uthmanic Hafs</option>
+                                    <option value="scheherazade" ${this.settings.arabicFont === 'scheherazade' ? 'selected' : ''}>Scheherazade New</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <i class="fas fa-language"></i>
-                                <span>Sembunyikan Terjemahan</span>
+
+                        <!-- Display Settings Section -->
+                        <div class="settings-section">
+                            <h4 class="settings-section-title">
+                                <i class="fas fa-eye"></i> Tampilan
+                            </h4>
+                            
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-eye-slash"></i>
+                                    <span>Sembunyikan Transliterasi</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="set_hide_translit" ${this.settings.hideTransliteration ? 'checked' : ''}>
+                                    <span class="toggle-slider"></span>
+                                </label>
                             </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="set_hide_trans" ${this.settings.hideTranslation ? 'checked' : ''}>
-                                <span class="toggle-slider"></span>
-                            </label>
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-language"></i>
+                                    <span>Sembunyikan Terjemahan</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="set_hide_trans" ${this.settings.hideTranslation ? 'checked' : ''}>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <i class="fas fa-forward"></i>
-                                <span>Auto-play halaman berikutnya</span>
+
+                        <!-- Feature Settings Section -->
+                        <div class="settings-section">
+                            <h4 class="settings-section-title">
+                                <i class="fas fa-sliders-h"></i> Fitur
+                            </h4>
+                            
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-forward"></i>
+                                    <span>Auto-play halaman berikutnya</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="set_autoplay" ${this.settings.autoPlayNext ? 'checked' : ''}>
+                                    <span class="toggle-slider"></span>
+                                </label>
                             </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="set_autoplay" ${this.settings.autoPlayNext ? 'checked' : ''}>
-                                <span class="toggle-slider"></span>
-                            </label>
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-book-reader"></i>
+                                    <span>Sembunyikan Lanjutkan Bacaan</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="set_hide_lastread" ${this.settings.hideLastRead ? 'checked' : ''}>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-brain"></i>
+                                    <span>Sembunyikan Fitur Hafalan</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="set_hide_memorization" ${this.settings.hideMemorization ? 'checked' : ''}>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <i class="fas fa-book-reader"></i>
-                                <span>Sembunyikan Lanjutkan Bacaan</span>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="set_hide_lastread" ${this.settings.hideLastRead ? 'checked' : ''}>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <i class="fas fa-brain"></i>
-                                <span>Sembunyikan Fitur Hafalan</span>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="set_hide_memorization" ${this.settings.hideMemorization ? 'checked' : ''}>
-                                <span class="toggle-slider"></span>
-                            </label>
+
+                        <!-- Reset Button -->
+                        <div class="settings-section">
+                            <button class="settings-reset-btn" id="resetSettings">
+                                <i class="fas fa-undo"></i> Reset ke Default
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1511,6 +1595,73 @@ export default class AlQuranApp {
                 this.render();
             }
         });
+        
+        // Font size controls
+        const fontSizeDisplay = document.getElementById('fontSizeDisplay');
+        const fontBtns = modal.querySelectorAll('[data-font-action]');
+        
+        fontBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const action = btn.dataset.fontAction;
+                let currentSize = this.settings.arabicFontSize || 1.8;
+                
+                if (action === 'increase' && currentSize < 3.5) {
+                    currentSize += 0.1;
+                } else if (action === 'decrease' && currentSize > 1.0) {
+                    currentSize -= 0.1;
+                }
+                
+                currentSize = Math.round(currentSize * 10) / 10; // Round to 1 decimal
+                this.settings.arabicFontSize = currentSize;
+                this._saveJSON('alquran_settings', this.settings);
+                
+                // Update display
+                fontSizeDisplay.textContent = `${currentSize}rem`;
+                
+                // Apply settings
+                this._applyFontSettings();
+            });
+        });
+        
+        // Font family select
+        const arabicFontSelect = document.getElementById('arabicFontSelect');
+        if (arabicFontSelect) {
+            arabicFontSelect.addEventListener('change', (e) => {
+                this.settings.arabicFont = e.target.value;
+                this._saveJSON('alquran_settings', this.settings);
+                this._applyFontSettings();
+            });
+        }
+        
+        // Reset settings button
+        const resetBtn = document.getElementById('resetSettings');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                if (confirm('Apakah Anda yakin ingin mereset semua pengaturan ke default?')) {
+                    this.settings = {
+                        hideTransliteration: true,
+                        hideTranslation: false,
+                        arabicFont: 'amiri',
+                        arabicFontSize: 1.2,
+                        autoPlayNext: false,
+                        autoRepeat: 1,
+                        hideLastRead: false,
+                        hideMemorization: false
+                    };
+                    this._saveJSON('alquran_settings', this.settings);
+                    modal.remove();
+                    this._showSettingsModal(); // Reopen with updated values
+                    this._applyFontSettings();
+                    
+                    if (this.readMode === 'surah' && this.currentSurahData) {
+                        this.renderSurahMode();
+                    } else {
+                        this.render();
+                    }
+                }
+            });
+        }
     }
 
     _showMemorizationProgress() {
@@ -2272,6 +2423,9 @@ export default class AlQuranApp {
         // Set up verse tracking for updating floating header with current surah and page
         this._setupJuzVerseTracking(juz.number);
         
+        // Apply font settings to all Arabic text elements
+        this._applyFontSettings();
+        
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'instant' });
     }
@@ -2683,6 +2837,9 @@ export default class AlQuranApp {
                 }
             });
         });
+        
+        // Apply font settings to all Arabic text elements
+        this._applyFontSettings();
     }
     
     _setupVerseTracking(surahNumber) {

@@ -68,22 +68,22 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
   margin: 3.5rem 0 0 0;
   padding-bottom: 3.5rem;
   border-bottom: 1px solid rgba(0, 255, 255, 0.1);
 }
 
-/* Install Button */
-.install-btn {
+/* Install Button & Clear Cache Button - Shared Styles */
+.install-btn,
+.install-section .clear-cache-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
   padding: 1rem 2.5rem;
-  background: linear-gradient(135deg, 
-    rgba(0, 255, 255, 0.1) 0%, 
-    rgba(0, 200, 255, 0.08) 100%);
-  border: 2px solid rgba(0, 255, 255, 0.4);
   border-radius: 50px;
   color: #ffffff;
   font-size: 1rem;
@@ -93,12 +93,20 @@
   font-family: var(--font-primary);
   letter-spacing: 1px;
   text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Install Button */
+.install-btn {
+  background: linear-gradient(135deg, 
+    rgba(0, 255, 255, 0.1) 0%, 
+    rgba(0, 200, 255, 0.08) 100%);
+  border: 2px solid rgba(0, 255, 255, 0.4);
   box-shadow: 
     0 4px 20px rgba(0, 255, 255, 0.2),
     0 0 40px rgba(0, 255, 255, 0.15),
     inset 0 0 20px rgba(0, 255, 255, 0.05);
-  position: relative;
-  overflow: hidden;
 }
 
 .install-btn::before {
@@ -143,6 +151,108 @@
 .install-btn i {
   font-size: 1.2rem;
   filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.6));
+}
+
+/* Clear Cache Button */
+.install-section .clear-cache-btn {
+  background: linear-gradient(135deg, 
+    rgba(138, 43, 226, 0.1) 0%, 
+    rgba(128, 0, 255, 0.08) 100%);
+  border: 2px solid rgba(138, 43, 226, 0.4);
+  box-shadow: 
+    0 4px 20px rgba(138, 43, 226, 0.2),
+    0 0 40px rgba(138, 43, 226, 0.15),
+    inset 0 0 20px rgba(138, 43, 226, 0.05);
+}
+
+.install-section .clear-cache-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(138, 43, 226, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.install-section .clear-cache-btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.install-section .clear-cache-btn:hover {
+  background: linear-gradient(135deg, 
+    rgba(138, 43, 226, 0.2) 0%, 
+    rgba(128, 0, 255, 0.15) 100%);
+  border-color: rgba(138, 43, 226, 0.8);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    0 8px 30px rgba(138, 43, 226, 0.4),
+    0 0 60px rgba(138, 43, 226, 0.3),
+    inset 0 0 30px rgba(138, 43, 226, 0.1);
+  color: #b370ff;
+  text-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
+}
+
+.install-section .clear-cache-btn:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 
+    0 4px 20px rgba(138, 43, 226, 0.3),
+    inset 0 0 20px rgba(138, 43, 226, 0.1);
+}
+
+.install-section .clear-cache-btn i {
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 8px rgba(138, 43, 226, 0.6));
+}
+
+/* Cache Info */
+.cache-info {
+  width: 100%;
+  max-width: 800px;
+  margin: 1.5rem auto 0;
+  padding: 1rem 1.5rem;
+  background: rgba(138, 43, 226, 0.08);
+  border: 1px solid rgba(138, 43, 226, 0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  animation: fadeIn 0.5s ease;
+}
+
+.cache-info i {
+  color: #b370ff;
+  font-size: 1.2rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.cache-info p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+  text-align: left;
+}
+
+.cache-info strong {
+  color: #b370ff;
+  font-weight: 600;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Apps Grid */
@@ -304,5 +414,66 @@
     width: 60px;
     height: 60px;
     font-size: 2rem;
+  }
+  
+  /* Responsive buttons */
+  .install-section {
+    gap: 0.75rem;
+    padding-bottom: 2.5rem;
+  }
+  
+  .install-btn,
+  .install-section .clear-cache-btn {
+    padding: 0.85rem 1.5rem;
+    font-size: 0.85rem;
+    gap: 0.5rem;
+  }
+  
+  .install-btn i,
+  .install-section .clear-cache-btn i {
+    font-size: 1rem;
+  }
+  
+  .cache-info {
+    padding: 0.9rem 1.2rem;
+    gap: 0.8rem;
+  }
+  
+  .cache-info i {
+    font-size: 1.1rem;
+  }
+  
+  .cache-info p {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Stack buttons vertically on very small screens */
+  .install-section {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .install-btn,
+  .install-section .clear-cache-btn {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.9rem 1.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .cache-info {
+    padding: 0.8rem 1rem;
+    gap: 0.7rem;
+    margin: 1rem auto 0;
+  }
+  
+  .cache-info i {
+    font-size: 1rem;
+  }
+  
+  .cache-info p {
+    font-size: 0.8rem;
   }
 }
