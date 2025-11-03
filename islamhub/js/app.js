@@ -81,20 +81,16 @@ class IslamHubApp {
                 
                 console.log('Service Worker registered successfully:', registration.scope);
                 
-                // Check for updates every 30 seconds
+                // Check for updates every 5 minutes instead of 30 seconds
                 setInterval(() => {
                     registration.update();
-                }, 30000);
+                }, 300000);
                 
                 // Listen for messages from service worker (cache updated)
                 navigator.serviceWorker.addEventListener('message', (event) => {
                     if (event.data && event.data.type === 'CACHE_UPDATED') {
                         console.log('Cache updated to version:', event.data.version);
-                        // Auto reload tanpa prompt untuk seamless update
-                        setTimeout(() => {
-                            console.log('Reloading page to apply updates...');
-                            window.location.reload();
-                        }, 1000);
+                        // Don't auto-reload, let user decide via update notification
                     }
                 });
                 
@@ -1244,11 +1240,20 @@ class IslamHubApp {
     
     checkForUpdates(currentVersion, storageKey) {
         const savedVersion = localStorage.getItem(storageKey);
+        const updateShown = localStorage.getItem('islamhub_update_notification_shown');
         
         if (!savedVersion || savedVersion !== currentVersion) {
             console.log('New version detected:', currentVersion, 'Previous:', savedVersion);
-            this.showUpdateNotification(currentVersion);
-            // Don't save version yet - only after update is applied
+            
+            // Save version immediately to prevent infinite loops
+            localStorage.setItem(storageKey, currentVersion);
+            
+            // Only show notification if this is truly a new version (not first visit) 
+            // and we haven't shown it in this session
+            if (savedVersion && !updateShown) {
+                localStorage.setItem('islamhub_update_notification_shown', 'true');
+                this.showUpdateNotification(currentVersion);
+            }
         }
     }
     
@@ -1273,6 +1278,9 @@ class IslamHubApp {
         
         try {
             console.log('Starting cache clearing process...');
+            
+            // First, hide any update notifications to stop the loop
+            this.hideUpdateNotification();
             
             // 1. Unregister all service workers
             if ('serviceWorker' in navigator) {
@@ -1306,8 +1314,9 @@ class IslamHubApp {
                 localStorage.setItem(key, localStorageBackup[key]);
             });
             
-            // Save new version
+            // Save current version and clear notification flags
             localStorage.setItem('islamhub_app_version', '1.2.0');
+            localStorage.removeItem('islamhub_update_notification_shown');
             
             // 4. Clear sessionStorage
             sessionStorage.clear();
@@ -1381,12 +1390,40 @@ class IslamHubApp {
         document.body.appendChild(overlay);
         return overlay;
     }
+    
+    // Emergency function to stop update loops
+    emergencyReset() {
+        console.log('Emergency reset initiated...');
+        
+        // Clear all update-related localStorage
+        localStorage.setItem('islamhub_app_version', '1.2.0');
+        localStorage.removeItem('islamhub_update_notification_shown');
+        localStorage.removeItem('islamhub_last_active_app');
+        
+        // Hide any notification
+        this.hideUpdateNotification();
+        
+        // Unregister all service workers
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                registrations.forEach(registration => registration.unregister());
+            });
+        }
+        
+        console.log('Emergency reset completed. Refreshing page...');
+        setTimeout(() => {
+            window.location.reload(true);
+        }, 1000);
+    }
 }
 
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     window.islamHub = new IslamHubApp();
     window.islamHub.init();
+    
+    // Make emergency reset globally available
+    window.emergencyReset = () => window.islamHub.emergencyReset();
 });
 
 // Export for use in other modules
