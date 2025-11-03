@@ -1207,7 +1207,7 @@ class IslamHubApp {
 
     // Cache Management Methods
     setupCacheManagement() {
-        const APP_VERSION = '1.2.0';
+        const APP_VERSION = '1.2.1';
         const STORAGE_VERSION_KEY = 'islamhub_app_version';
         
         // Check version and show update notification if needed
@@ -1315,7 +1315,7 @@ class IslamHubApp {
             });
             
             // Save current version and clear notification flags
-            localStorage.setItem('islamhub_app_version', '1.2.0');
+            localStorage.setItem('islamhub_app_version', '1.2.1');
             localStorage.removeItem('islamhub_update_notification_shown');
             
             // 4. Clear sessionStorage
@@ -1396,7 +1396,7 @@ class IslamHubApp {
         console.log('Emergency reset initiated...');
         
         // Clear all update-related localStorage
-        localStorage.setItem('islamhub_app_version', '1.2.0');
+        localStorage.setItem('islamhub_app_version', '1.2.1');
         localStorage.removeItem('islamhub_update_notification_shown');
         localStorage.removeItem('islamhub_last_active_app');
         

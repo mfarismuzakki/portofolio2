@@ -24,7 +24,7 @@
     
     <!-- Styles -->
         <!-- Styles - Modular CSS Architecture -->
-    <link rel="stylesheet" href="css/style-modular.css?v=1.2.0">
+    <link rel="stylesheet" href="css/style-modular.css?v=1.2.1">
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
@@ -688,7 +688,7 @@
                 <div class="footer-section version-section">
                     <div class="footer-icon-text">
                         <i class="fas fa-info-circle"></i>
-                        <p>Versi 1.2.0</p>
+                        <p>Versi 1.2.1</p>
                     </div>
                 </div>
             </div>
@@ -776,7 +776,7 @@
     <script src="js/data/alquran/quran-data.js"></script>
     <script src="js/data/alquran/quran-verses.js"></script>
     
-    <script type="module" src="js/app.js?v=1.2.0"></script>
+    <script type="module" src="js/app.js?v=1.2.1"></script>
     
     <!-- PWA Registration -->
     <script>
@@ -790,7 +790,7 @@
                 });
                 
                 // Register new service worker
-                navigator.serviceWorker.register('/islamhub/sw.js?v=1.2.0', { scope: '/islamhub/' })
+                navigator.serviceWorker.register('/islamhub/sw.js?v=1.2.1', { scope: '/islamhub/' })
                     .then(reg => {
                         console.log('Service Worker registered successfully', reg.scope);
                         // Force update immediately
@@ -815,6 +815,27 @@
             });
         } else {
             console.log('Service Worker not supported or file protocol');
+        }
+        
+        // Emergency fix for update loop
+        if (localStorage.getItem('islamhub_emergency_reset') === 'true') {
+            console.log('Emergency reset activated');
+            localStorage.clear();
+            sessionStorage.clear();
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                    registrations.forEach(reg => reg.unregister());
+                });
+            }
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => caches.delete(name));
+                });
+            }
+            localStorage.setItem('islamhub_app_version', '1.2.1');
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 2000);
         }
     </script>
 </body>

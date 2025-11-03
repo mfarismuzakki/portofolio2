@@ -2,7 +2,7 @@
 
 // IMPORTANT: Update version setiap kali push update!
 // Format: islamhub-v[major].[minor].[patch]-[timestamp]
-const CACHE_VERSION = '1.2.0-20251103';
+const CACHE_VERSION = '1.2.1-20251103';
 const CACHE_NAME = `islamhub-v${CACHE_VERSION}`;
 
 // Strategi: Network First untuk HTML/JS/CSS, Cache First untuk assets statis
@@ -47,7 +47,9 @@ self.addEventListener('activate', (event) => {
       );
     }).then(() => {
       console.log('All old caches deleted, claiming clients...');
-      // Force reload all tabs to get fresh content
+      // Don't force reload - let user decide via update notification
+      // Commenting out the auto-refresh message that was causing loops
+      /*
       return self.clients.matchAll().then(clients => {
         clients.forEach(client => {
           console.log('Posting refresh message to client');
@@ -57,6 +59,7 @@ self.addEventListener('activate', (event) => {
           });
         });
       });
+      */
     })
   );
   // Take control immediately
