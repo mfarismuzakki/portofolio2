@@ -1874,9 +1874,13 @@ export default class AlQuranApp {
 
     async readSurah(surahNumber) {
         try {
+            // Show inline loader
+            this._showInlineLoader('Memuat Surat...');
+            
             // Get surah info from QURAN_SURAHS
             const surah = typeof QURAN_SURAHS !== 'undefined' ? QURAN_SURAHS.find(s => s.number === surahNumber) : null;
             if (!surah) {
+                this._hideInlineLoader();
                 throw new Error('Data surat tidak ditemukan');
             }
             
@@ -1888,6 +1892,10 @@ export default class AlQuranApp {
             // Load all pages that contain this surah
             let surahDescription = '';
             for (let pageNum = startPage; pageNum <= endPage; pageNum++) {
+                // Update loader progress
+                const progress = Math.round(((pageNum - startPage + 1) / (endPage - startPage + 1)) * 100);
+                this._updateInlineLoader(`Memuat Surat... ${progress}%`);
+                
                 const pageData = await this.loadPageData(pageNum);
                 
                 if (pageData && pageData.surahs) {
@@ -1910,6 +1918,7 @@ export default class AlQuranApp {
             }
             
             if (allVerses.length === 0) {
+                this._hideInlineLoader();
                 throw new Error('Surat belum tersedia');
             }
             
@@ -1935,7 +1944,11 @@ export default class AlQuranApp {
             
             await this.renderSurahMode();
             
+            // Hide loader after render
+            this._hideInlineLoader();
+            
         } catch (error) {
+            this._hideInlineLoader();
             console.error('Error loading surah:', error);
             this._notify('Gagal memuat surat. Data belum tersedia.', 'error');
         }
@@ -1943,17 +1956,28 @@ export default class AlQuranApp {
 
     async readJuz(juzNumber) {
         try {
+            // Show inline loader
+            this._showInlineLoader('Memuat Juz...');
+            
             // Get juz info
             const juz = typeof QURAN_JUZ !== 'undefined' ? QURAN_JUZ.find(j => j.number === juzNumber) : null;
             if (!juz) {
+                this._hideInlineLoader();
                 throw new Error('Data juz tidak ditemukan');
             }
             
             // Load all pages in this juz
             const allVerses = [];
             const surahsInJuz = new Set();
+            const totalPages = juz.endPage - juz.startPage + 1;
+            let loadedPages = 0;
             
             for (let pageNum = juz.startPage; pageNum <= juz.endPage; pageNum++) {
+                // Update loader progress
+                loadedPages++;
+                const progress = Math.round((loadedPages / totalPages) * 100);
+                this._updateInlineLoader(`Memuat Juz... ${progress}%`);
+                
                 const pageData = await this.loadPageData(pageNum);
                 
                 if (pageData && pageData.surahs) {
@@ -1974,6 +1998,7 @@ export default class AlQuranApp {
             }
             
             if (allVerses.length === 0) {
+                this._hideInlineLoader();
                 throw new Error('Juz belum tersedia');
             }
             
@@ -1995,7 +2020,11 @@ export default class AlQuranApp {
             
             await this.renderJuzMode();
             
+            // Hide loader after render
+            this._hideInlineLoader();
+            
         } catch (error) {
+            this._hideInlineLoader();
             console.error('Error loading juz:', error);
             this._notify('Gagal memuat juz. Data belum tersedia.', 'error');
         }
@@ -4448,6 +4477,50 @@ export default class AlQuranApp {
             console.error('Error downloading offline resources:', error);
             modalBody.innerHTML = originalContent;
             this._notify(`Gagal mengunduh ${isAudio ? 'audio' : 'data'} offline`, 'error');
+        }
+    }
+
+    // Inline Loader Methods
+    _showInlineLoader(message = 'Memuat...') {
+        // Remove existing loader if any
+        this._hideInlineLoader();
+        
+        const loader = document.createElement('div');
+        loader.className = 'alquran-inline-loader';
+        loader.id = 'alquranInlineLoader';
+        loader.innerHTML = `
+            <div class="inline-loader-content">
+                <div class="inline-loader-spinner">
+                    <i class="fas fa-book-quran fa-spin"></i>
+                </div>
+                <p class="inline-loader-message">${message}</p>
+                <div class="inline-loader-progress">
+                    <div class="inline-loader-progress-bar"></div>
+                </div>
+            </div>
+        `;
+        
+        this.container.appendChild(loader);
+        
+        // Trigger animation
+        setTimeout(() => loader.classList.add('show'), 10);
+    }
+
+    _updateInlineLoader(message) {
+        const loader = document.getElementById('alquranInlineLoader');
+        if (loader) {
+            const messageEl = loader.querySelector('.inline-loader-message');
+            if (messageEl) {
+                messageEl.textContent = message;
+            }
+        }
+    }
+
+    _hideInlineLoader() {
+        const loader = document.getElementById('alquranInlineLoader');
+        if (loader) {
+            loader.classList.remove('show');
+            setTimeout(() => loader.remove(), 300);
         }
     }
 }

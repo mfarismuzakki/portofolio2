@@ -5826,6 +5826,112 @@
     }
 }
 
+/* Inline Loader */
+.alquran-inline-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 31, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.alquran-inline-loader.show {
+    opacity: 1;
+}
+
+.inline-loader-content {
+    text-align: center;
+    background: linear-gradient(145deg, rgba(20, 20, 50, 0.95), rgba(30, 30, 70, 0.95));
+    border: 2px solid;
+    border-image: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple)) 1;
+    border-radius: 20px;
+    padding: 40px 50px;
+    box-shadow: 0 20px 60px rgba(0, 255, 255, 0.4);
+    min-width: 300px;
+}
+
+.inline-loader-spinner {
+    margin-bottom: 25px;
+}
+
+.inline-loader-spinner i {
+    font-size: 4rem;
+    color: var(--primary-cyan);
+    text-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+    animation: loaderPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loaderPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+.inline-loader-message {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.inline-loader-progress {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.inline-loader-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-cyan), var(--primary-purple), var(--primary-cyan));
+    background-size: 200% 100%;
+    border-radius: 10px;
+    animation: progressShine 2s linear infinite;
+    width: 100%;
+}
+
+@keyframes progressShine {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .inline-loader-content {
+        padding: 30px 40px;
+        min-width: 280px;
+        max-width: 90%;
+    }
+    
+    .inline-loader-spinner i {
+        font-size: 3rem;
+    }
+    
+    .inline-loader-message {
+        font-size: 1.1rem;
+    }
+}
+
+
 
 
 
