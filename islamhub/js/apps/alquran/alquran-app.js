@@ -138,7 +138,7 @@ export default class AlQuranApp {
             <button class="nav-btn" data-action="juzList"><i class="fas fa-bookmark"></i><span>Daftar Juz</span></button>
             <button class="nav-btn" data-action="pageList"><i class="fas fa-file"></i><span>Buka Halaman</span></button>
             <button class="nav-btn" data-action="bookmarks"><i class="fas fa-heart"></i><span>Tersimpan</span></button>
-            <button class="nav-btn" data-action="progress"><i class="fas fa-brain"></i><span>Progress Hafalan</span></button>
+            <button class="nav-btn" data-action="offline"><i class="fas fa-download"></i><span>Mode Offline</span></button>
             <button class="nav-btn" data-action="settings"><i class="fas fa-cog"></i><span>Pengaturan</span></button>
         `;
         
@@ -209,6 +209,7 @@ export default class AlQuranApp {
                 else if (action === 'juzList') this._showJuzList();
                 else if (action === 'pageList') this._showPageJumpModal();
                 else if (action === 'bookmarks') this._showBookmarksModal();
+                else if (action === 'offline') this._showOfflineModal();
                 else if (action === 'progress') this._showMemorizationProgress();
                 else if (action === 'settings') this._showSettingsModal();
             });
@@ -1050,11 +1051,28 @@ export default class AlQuranApp {
         }
         
         // Event listener untuk tombol "Baca Surat"
-        modal.querySelectorAll('.surah-row-btn').forEach(btn=>btn.addEventListener('click', (e)=>{ 
+        modal.querySelectorAll('.surah-row-btn').forEach(btn=>btn.addEventListener('click', async (e)=>{ 
             e.stopPropagation();
             const surahNum = parseInt(btn.dataset.surah);
-            this.readSurah(surahNum); 
-            modal.remove();
+            
+            // Show loading state in modal
+            const modalContent = modal.querySelector('.modal-content');
+            const originalContent = modalContent.innerHTML;
+            modalContent.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
+                    <p style="color: var(--text-primary); font-size: 1.1rem;">Memuat surat...</p>
+                </div>
+            `;
+            
+            try {
+                await this.readSurah(surahNum);
+                modal.remove();
+            } catch (error) {
+                // Restore original content if error
+                modalContent.innerHTML = originalContent;
+                this._notify('Gagal memuat surat', 'error');
+            }
         }));
         
         // Event listener untuk tombol "Lompat ke Ayat"
@@ -1130,10 +1148,26 @@ export default class AlQuranApp {
         });
         
         // Juz card click handlers
-        modal.querySelectorAll('.juz-card').forEach(c=>c.addEventListener('click', ()=>{ 
+        modal.querySelectorAll('.juz-card').forEach(c=>c.addEventListener('click', async ()=>{ 
             const juzNum = parseInt(c.querySelector('.juz-number').textContent);
-            this.readJuz(juzNum); 
-            modal.remove(); 
+            
+            // Show loading state
+            const modalContent = modal.querySelector('.modal-content');
+            const originalContent = modalContent.innerHTML;
+            modalContent.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
+                    <p style="color: var(--text-primary); font-size: 1.1rem;">Memuat juz...</p>
+                </div>
+            `;
+            
+            try {
+                await this.readJuz(juzNum);
+                modal.remove();
+            } catch (error) {
+                modalContent.innerHTML = originalContent;
+                this._notify('Gagal memuat juz', 'error');
+            }
         }));
     }
 
@@ -1188,11 +1222,26 @@ export default class AlQuranApp {
         
         // Click verse bookmark to navigate
         modal.querySelectorAll('.verse-bookmark').forEach(el => {
-            el.addEventListener('click', (e) => {
+            el.addEventListener('click', async (e) => {
                 if (!e.target.closest('.remove-bookmark')) {
                     const surahNum = parseInt(el.dataset.surah);
                     const verseNum = parseInt(el.dataset.verse);
-                    this.readSurah(surahNum).then(() => {
+                    
+                    // Show loading state
+                    const modalContent = modal.querySelector('.modal-content');
+                    const originalContent = modalContent.innerHTML;
+                    modalContent.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
+                            <p style="color: var(--text-primary); font-size: 1.1rem;">Memuat surat...</p>
+                        </div>
+                    `;
+                    
+                    try {
+                        await this.readSurah(surahNum);
+                        modal.remove();
+                        
+                        // After modal is removed and surah is loaded, scroll to verse
                         setTimeout(() => {
                             const verseEl = document.querySelector(`[data-verse-number="${verseNum}"]`);
                             if (verseEl) {
@@ -1203,8 +1252,10 @@ export default class AlQuranApp {
                                 }, 2000);
                             }
                         }, 300);
-                    });
-                    modal.remove();
+                    } catch (error) {
+                        modalContent.innerHTML = originalContent;
+                        this._notify('Gagal memuat surat', 'error');
+                    }
                 }
             });
         });
@@ -3925,4 +3976,478 @@ export default class AlQuranApp {
 
     // placeholder for future online content
     async loadOnlineContent() { this._notify('Fitur muat konten online akan segera tersedia','info'); }
+
+    // Offline Mode Modal
+    _showOfflineModal() {
+        const existingModal = document.getElementById('offlineModal');
+        if (existingModal) existingModal.remove();
+
+        // Check offline status
+        const offlineData = this._loadJSON('alquran_offline_status', {
+            downloaded: false,
+            progress: 0,
+            totalPages: 604,
+            downloadedPages: 0,
+            downloadDate: null,
+            audioDownloaded: false,
+            audioProgress: 0,
+            audioDownloadedPages: 0
+        });
+
+        const modal = document.createElement('div');
+        modal.id = 'offlineModal';
+        modal.className = 'modal';
+        
+        let statusHTML = '';
+        if (offlineData.downloaded) {
+            const audioStatus = offlineData.audioDownloaded 
+                ? '<span class="audio-status-badge downloaded"><i class="fas fa-check"></i> Audio Tersedia</span>'
+                : '<span class="audio-status-badge not-downloaded"><i class="fas fa-times"></i> Audio Belum Diunduh</span>';
+                
+            statusHTML = `
+                <div class="offline-status downloaded">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Mode Offline Aktif</h3>
+                    <p>Semua halaman Al-Quran sudah diunduh</p>
+                    ${audioStatus}
+                    <p class="offline-date">Diunduh: ${new Date(offlineData.downloadDate).toLocaleDateString('id-ID')}</p>
+                </div>
+            `;
+        } else if (offlineData.progress > 0 && offlineData.progress < 100) {
+            statusHTML = `
+                <div class="offline-status downloading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <h3>Sedang Mengunduh...</h3>
+                    <div class="offline-progress-bar">
+                        <div class="offline-progress-fill" style="width: ${offlineData.progress}%"></div>
+                    </div>
+                    <p>${offlineData.downloadedPages} / ${offlineData.totalPages} halaman (${offlineData.progress}%)</p>
+                </div>
+            `;
+        } else {
+            statusHTML = `
+                <div class="offline-status not-downloaded">
+                    <i class="fas fa-cloud-download-alt"></i>
+                    <h3>Mode Offline Belum Aktif</h3>
+                    <p>Unduh konten Al-Quran untuk akses offline</p>
+                </div>
+            `;
+        }
+
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-wifi-slash"></i> Mode Offline</h2>
+                    <button class="modal-close" data-close><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    ${statusHTML}
+                    
+                    <div class="offline-info">
+                        <h4><i class="fas fa-info-circle"></i> Tentang Mode Offline</h4>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> Akses Al-Quran tanpa internet</li>
+                            <li><i class="fas fa-mobile-alt"></i> Hemat kuota data</li>
+                            <li><i class="fas fa-bolt"></i> Loading lebih cepat</li>
+                            <li><i class="fas fa-exclamation-triangle"></i> Pastikan penyimpanan mencukupi</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="offline-sections">
+                        <!-- Teks Al-Quran Card -->
+                        <div class="offline-card">
+                            <div class="offline-card-header">
+                                <i class="fas fa-book-quran offline-card-icon"></i>
+                                <div class="offline-card-title">
+                                    <h4>Teks Al-Quran</h4>
+                                    <p>Mushaf Lengkap</p>
+                                </div>
+                            </div>
+                            
+                            ${offlineData.downloaded ? `
+                                <div class="offline-card-status downloaded">
+                                    <i class="fas fa-check-circle"></i>
+                                    Sudah Diunduh
+                                </div>
+                            ` : `
+                                <div class="offline-card-status not-downloaded">
+                                    <i class="fas fa-cloud-download-alt"></i>
+                                    Belum Diunduh
+                                </div>
+                            `}
+                            
+                            <ul class="offline-card-features">
+                                <li><i class="fas fa-check"></i> 604 halaman mushaf</li>
+                                <li><i class="fas fa-check"></i> Terjemahan Kemenag RI</li>
+                                <li><i class="fas fa-check"></i> Tafsir lengkap</li>
+                            </ul>
+                            
+                            <div class="offline-card-size">
+                                <i class="fas fa-hdd"></i>
+                                <span>~50MB</span>
+                            </div>
+                            
+                            ${!offlineData.downloaded ? `
+                                <div class="offline-card-action">
+                                    <button id="btnDownloadText">
+                                        <i class="fas fa-download"></i>
+                                        <span>Unduh Teks Al-Quran</span>
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <!-- Audio Murottal Card -->
+                        <div class="offline-card">
+                            <div class="offline-card-header">
+                                <i class="fas fa-volume-up offline-card-icon"></i>
+                                <div class="offline-card-title">
+                                    <h4>Audio Murottal</h4>
+                                    <p>Qari Mishary Alafasy</p>
+                                </div>
+                            </div>
+                            
+                            ${offlineData.audioDownloaded ? `
+                                <div class="offline-card-status downloaded">
+                                    <i class="fas fa-check-circle"></i>
+                                    Audio Tersedia
+                                </div>
+                            ` : `
+                                <div class="offline-card-status not-downloaded">
+                                    <i class="fas fa-times-circle"></i>
+                                    Audio Belum Diunduh
+                                </div>
+                            `}
+                            
+                            <ul class="offline-card-features">
+                                <li><i class="fas fa-check"></i> 604 file audio halaman</li>
+                                <li><i class="fas fa-check"></i> Qari Mishary Rashid Alafasy</li>
+                                <li><i class="fas fa-check"></i> Kualitas tinggi MP3</li>
+                            </ul>
+                            
+                            <div class="offline-card-size">
+                                <i class="fas fa-hdd"></i>
+                                <span>~2.5GB</span>
+                            </div>
+                            
+                            ${!offlineData.audioDownloaded ? `
+                                <div class="offline-card-action">
+                                    <button id="btnDownloadAudio">
+                                        <i class="fas fa-download"></i>
+                                        <span>Unduh Audio Murottal</span>
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    ${offlineData.downloaded || offlineData.audioDownloaded ? `
+                        <div class="offline-actions">
+                            ${offlineData.downloaded ? `
+                                <button class="btn-redownload-offline" id="btnRedownloadOffline">
+                                    <i class="fas fa-sync"></i>
+                                    Unduh Ulang Teks
+                                </button>
+                            ` : ''}
+                            <button class="btn-delete-offline" id="btnDeleteOffline">
+                                <i class="fas fa-trash"></i>
+                                Hapus Semua Data
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+        modal.style.setProperty('display', 'flex', 'important');
+
+        // Close handlers
+        modal.querySelector('[data-close]').addEventListener('click', () => modal.remove());
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.remove();
+        });
+
+        // Download Text button handler
+        const btnDownloadText = modal.querySelector('#btnDownloadText');
+        if (btnDownloadText) {
+            btnDownloadText.addEventListener('click', async () => {
+                const confirmed = await this._showCustomConfirm({
+                    title: 'Unduh Teks Al-Quran',
+                    message: 'Unduh semua 604 halaman mushaf dengan terjemahan dan tafsir untuk akses offline?',
+                    icon: 'book-quran',
+                    size: '~50MB',
+                    confirmText: 'Unduh Sekarang',
+                    cancelText: 'Batal'
+                });
+                
+                if (confirmed) {
+                    await this._downloadOfflineResources(modal, 'text');
+                }
+            });
+        }
+
+        // Download Audio button handler
+        const btnDownloadAudio = modal.querySelector('#btnDownloadAudio');
+        if (btnDownloadAudio) {
+            btnDownloadAudio.addEventListener('click', async () => {
+                const confirmed = await this._showCustomConfirm({
+                    title: 'Unduh Audio Murottal',
+                    message: 'Unduh 604 file audio murottal halaman Al-Quran oleh Qari Mishary Rashid Alafasy?',
+                    icon: 'volume-up',
+                    size: '~2.5GB',
+                    confirmText: 'Unduh Audio',
+                    cancelText: 'Batal',
+                    warning: 'Pastikan koneksi internet stabil dan penyimpanan cukup'
+                });
+                
+                if (confirmed) {
+                    await this._downloadOfflineResources(modal, 'audio');
+                }
+            });
+        }
+
+        // Redownload button handler
+        const btnRedownload = modal.querySelector('#btnRedownloadOffline');
+        if (btnRedownload) {
+            btnRedownload.addEventListener('click', async () => {
+                const confirmed = await this._showCustomConfirm({
+                    title: 'Unduh Ulang Teks',
+                    message: 'Unduh ulang semua data teks Al-Quran? Data lama akan ditimpa.',
+                    icon: 'sync',
+                    size: '~50MB',
+                    confirmText: 'Unduh Ulang',
+                    cancelText: 'Batal'
+                });
+                
+                if (confirmed) {
+                    await this._downloadOfflineResources(modal, 'text');
+                }
+            });
+        }
+
+        // Delete button handler
+        const btnDelete = modal.querySelector('#btnDeleteOffline');
+        if (btnDelete) {
+            btnDelete.addEventListener('click', async () => {
+                const confirmed = await this._showCustomConfirm({
+                    title: 'Hapus Data Offline',
+                    message: 'Hapus semua data offline Al-Quran? Anda akan memerlukan koneksi internet untuk mengakses kembali.',
+                    icon: 'trash',
+                    confirmText: 'Hapus',
+                    cancelText: 'Batal',
+                    warning: 'Tindakan ini tidak dapat dibatalkan',
+                    isDanger: true
+                });
+                
+                if (confirmed) {
+                    localStorage.removeItem('alquran_offline_status');
+                    this._notify('Data offline dihapus', 'success');
+                    modal.remove();
+                    this._showOfflineModal(); // Refresh modal
+                }
+            });
+        }
+    }
+
+    // Custom Confirmation Dialog
+    async _showCustomConfirm(options) {
+        return new Promise((resolve) => {
+            const confirmDialog = document.createElement('div');
+            confirmDialog.className = 'custom-confirm-overlay';
+            
+            const iconColor = options.isDanger ? '#ff3366' : 'var(--primary-cyan)';
+            
+            confirmDialog.innerHTML = `
+                <div class="custom-confirm-dialog">
+                    <div class="custom-confirm-icon" style="color: ${iconColor}">
+                        <i class="fas fa-${options.icon}"></i>
+                    </div>
+                    <h3 class="custom-confirm-title">${options.title}</h3>
+                    <p class="custom-confirm-message">${options.message}</p>
+                    ${options.size ? `
+                        <div class="custom-confirm-size">
+                            <i class="fas fa-hdd"></i> ${options.size}
+                        </div>
+                    ` : ''}
+                    ${options.warning ? `
+                        <div class="custom-confirm-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            ${options.warning}
+                        </div>
+                    ` : ''}
+                    <div class="custom-confirm-actions">
+                        <button class="custom-confirm-cancel" id="customConfirmCancel">
+                            <i class="fas fa-times"></i>
+                            ${options.cancelText || 'Batal'}
+                        </button>
+                        <button class="custom-confirm-ok ${options.isDanger ? 'danger' : ''}" id="customConfirmOk">
+                            <i class="fas fa-check"></i>
+                            ${options.confirmText || 'OK'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(confirmDialog);
+            
+            // Show with animation
+            setTimeout(() => confirmDialog.classList.add('show'), 10);
+            
+            // Button handlers
+            document.getElementById('customConfirmOk').addEventListener('click', () => {
+                confirmDialog.classList.remove('show');
+                setTimeout(() => {
+                    confirmDialog.remove();
+                    resolve(true);
+                }, 200);
+            });
+            
+            document.getElementById('customConfirmCancel').addEventListener('click', () => {
+                confirmDialog.classList.remove('show');
+                setTimeout(() => {
+                    confirmDialog.remove();
+                    resolve(false);
+                }, 200);
+            });
+            
+            // Close on overlay click
+            confirmDialog.addEventListener('click', (e) => {
+                if (e.target === confirmDialog) {
+                    confirmDialog.classList.remove('show');
+                    setTimeout(() => {
+                        confirmDialog.remove();
+                        resolve(false);
+                    }, 200);
+                }
+            });
+        });
+    }
+
+    async _downloadOfflineResources(modal, type = 'text') {
+        const modalBody = modal.querySelector('.modal-body');
+        const originalContent = modalBody.innerHTML;
+
+        const totalPages = 604;
+        let downloadedPages = 0;
+        
+        const isAudio = type === 'audio';
+        const downloadTitle = isAudio ? 'Mengunduh Audio Murottal...' : 'Mengunduh Teks Al-Quran...';
+        const downloadIcon = isAudio ? 'music' : 'book-quran';
+
+        // Update UI to show progress
+        modalBody.innerHTML = `
+            <div class="offline-downloading">
+                <i class="fas fa-${downloadIcon} fa-spin" style="font-size: 3rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
+                <h3>${downloadTitle}</h3>
+                <div class="offline-progress-bar">
+                    <div class="offline-progress-fill" id="offlineProgressFill" style="width: 0%"></div>
+                </div>
+                <p id="offlineProgressText">0 / ${totalPages} halaman (0%)</p>
+                <p class="offline-download-note">Mohon jangan tutup aplikasi</p>
+            </div>
+        `;
+
+        const progressFill = document.getElementById('offlineProgressFill');
+        const progressText = document.getElementById('offlineProgressText');
+
+        try {
+            if (isAudio) {
+                // Download audio files
+                for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+                    try {
+                        // Construct audio URL (Mishary Alafasy - Page)
+                        const paddedPage = String(pageNum).padStart(3, '0');
+                        const audioUrl = `assets/audio/alquran/verses/${paddedPage}.mp3`;
+                        
+                        // Fetch and cache audio
+                        const response = await fetch(audioUrl);
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        
+                        // Cache will store it automatically via service worker
+                        await response.blob();
+                        
+                        downloadedPages++;
+
+                        const progress = Math.round((downloadedPages / totalPages) * 100);
+                        
+                        // Update progress UI
+                        if (progressFill) progressFill.style.width = `${progress}%`;
+                        if (progressText) progressText.textContent = `${downloadedPages} / ${totalPages} halaman (${progress}%)`;
+
+                        // Save progress
+                        const currentStatus = this._loadJSON('alquran_offline_status') || {};
+                        this._saveJSON('alquran_offline_status', {
+                            ...currentStatus,
+                            audioDownloaded: downloadedPages === totalPages,
+                            audioProgress: progress,
+                            audioDownloadedPages: downloadedPages,
+                            audioDownloadDate: new Date().toISOString()
+                        });
+
+                        // Small delay to prevent overwhelming the system
+                        await new Promise(resolve => setTimeout(resolve, 15));
+                    } catch (error) {
+                        console.error(`Error downloading audio page ${pageNum}:`, error);
+                    }
+                }
+            } else {
+                // Download text data
+                for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+                    try {
+                        // Load page data (this will cache it)
+                        await this.loadPageData(pageNum);
+                        downloadedPages++;
+
+                        const progress = Math.round((downloadedPages / totalPages) * 100);
+                        
+                        // Update progress UI
+                        if (progressFill) progressFill.style.width = `${progress}%`;
+                        if (progressText) progressText.textContent = `${downloadedPages} / ${totalPages} halaman (${progress}%)`;
+
+                        // Save progress
+                        const currentStatus = this._loadJSON('alquran_offline_status') || {};
+                        this._saveJSON('alquran_offline_status', {
+                            ...currentStatus,
+                            downloaded: downloadedPages === totalPages,
+                            progress: progress,
+                            totalPages: totalPages,
+                            downloadedPages: downloadedPages,
+                            downloadDate: new Date().toISOString()
+                        });
+
+                        // Small delay to prevent overwhelming the system
+                        await new Promise(resolve => setTimeout(resolve, 10));
+                    } catch (error) {
+                        console.error(`Error downloading page ${pageNum}:`, error);
+                    }
+                }
+            }
+
+            // Success!
+            const successIcon = isAudio ? 'volume-up' : 'book-quran';
+            const successTitle = isAudio ? 'Audio Berhasil Diunduh!' : 'Teks Berhasil Diunduh!';
+            const successMessage = isAudio 
+                ? 'Semua audio murottal sudah tersimpan. Anda sekarang bisa mendengarkan Al-Quran secara offline.'
+                : 'Semua halaman Al-Quran sudah tersimpan. Anda sekarang bisa membaca Al-Quran tanpa koneksi internet.';
+            
+            modalBody.innerHTML = `
+                <div class="offline-success">
+                    <i class="fas fa-${successIcon}" style="font-size: 3rem; color: var(--success-color); margin-bottom: 20px;"></i>
+                    <h3>${successTitle}</h3>
+                    <p>${successMessage}</p>
+                    <button class="btn-primary" onclick="this.closest('.modal').remove()">
+                        <i class="fas fa-check"></i> Selesai
+                    </button>
+                </div>
+            `;
+
+            this._notify(`${isAudio ? 'Audio' : 'Teks'} offline berhasil diunduh!`, 'success');
+
+        } catch (error) {
+            console.error('Error downloading offline resources:', error);
+            modalBody.innerHTML = originalContent;
+            this._notify(`Gagal mengunduh ${isAudio ? 'audio' : 'data'} offline`, 'error');
+        }
+    }
 }

@@ -776,66 +776,102 @@
     <script src="js/data/alquran/quran-data.js"></script>
     <script src="js/data/alquran/quran-verses.js"></script>
     
+        <!-- Main App Script -->
     <script type="module" src="js/app.js?v=1.2.1"></script>
+
+    <!-- Auto-fix for update loop - runs before everything -->
+    <script>
+        // Immediate fix for existing users with old service worker
+        (function() {
+            const currentVersion = '1.2.1';
+            const savedVersion = localStorage.getItem('islamhub_app_version');
+            const loopDetection = sessionStorage.getItem('islamhub_loop_reload_count');
+            const loopCount = parseInt(loopDetection || '0');
+            
+            // Detect if we're in a reload loop (more than 2 reloads in this session)
+            if (loopCount > 2) {
+                console.log('Loop detected! Auto-fixing...');
+                
+                // Clear everything
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Unregister all service workers
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(registrations => {
+                        registrations.forEach(reg => {
+                            reg.unregister();
+                            console.log('Old service worker unregistered');
+                        });
+                    });
+                }
+                
+                // Clear all caches
+                if ('caches' in window) {
+                    caches.keys().then(names => {
+                        names.forEach(name => {
+                            caches.delete(name);
+                            console.log('Cache deleted:', name);
+                        });
+                    });
+                }
+                
+                // Set new version and reset counter
+                localStorage.setItem('islamhub_app_version', currentVersion);
+                sessionStorage.setItem('islamhub_loop_reload_count', '0');
+                
+                // Final reload with clean slate
+                setTimeout(() => {
+                    window.location.reload(true);
+                }, 500);
+                
+                return;
+            }
+            
+            // Increment reload counter
+            sessionStorage.setItem('islamhub_loop_reload_count', (loopCount + 1).toString());
+            
+            // If version changed, prepare for clean update
+            if (savedVersion && savedVersion !== currentVersion) {
+                console.log('Version change detected, preparing update...');
+                localStorage.setItem('islamhub_app_version', currentVersion);
+                localStorage.removeItem('islamhub_update_notification_shown');
+            }
+        })();
+    </script>
+
     
     <!-- PWA Registration -->
     <script>
         if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
-            window.addEventListener('load', () => {
-                // Unregister old service worker first
-                navigator.serviceWorker.getRegistrations().then(registrations => {
+            window.addEventListener('load', async () => {
+                try {
+                    // Unregister ALL old service workers first (IMPORTANT!)
+                    const registrations = await navigator.serviceWorker.getRegistrations();
                     for (let registration of registrations) {
-                        registration.unregister();
+                        await registration.unregister();
+                        console.log('Unregistered old service worker');
                     }
-                });
-                
-                // Register new service worker
-                navigator.serviceWorker.register('/islamhub/sw.js?v=1.2.1', { scope: '/islamhub/' })
-                    .then(reg => {
-                        console.log('Service Worker registered successfully', reg.scope);
-                        // Force update immediately
-                        reg.update();
-                        
-                        // Listen for updates
-                        reg.addEventListener('updatefound', () => {
-                            const newWorker = reg.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'activated') {
-                                    // Force page reload when new SW is activated
-                                    if (confirm('Versi baru tersedia! Reload halaman untuk menggunakan versi terbaru?')) {
-                                        window.location.reload(true);
-                                    }
-                                }
-                            });
-                        });
-                    })
-                    .catch(err => {
-                        console.error('Service Worker registration failed:', err);
+                    
+                    // Wait a bit to ensure cleanup
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
+                    // Register new service worker
+                    const reg = await navigator.serviceWorker.register('/islamhub/sw.js?v=1.2.1', { 
+                        scope: '/islamhub/',
+                        updateViaCache: 'none' // Don't cache the service worker file
                     });
+                    
+                    console.log('Service Worker registered successfully', reg.scope);
+                    
+                    // No auto-reload listeners - let user decide via update notification
+                    
+                } catch (err) {
+                    console.error('Service Worker registration failed:', err);
+                }
             });
         } else {
             console.log('Service Worker not supported or file protocol');
-        }
-        
-        // Emergency fix for update loop
-        if (localStorage.getItem('islamhub_emergency_reset') === 'true') {
-            console.log('Emergency reset activated');
-            localStorage.clear();
-            sessionStorage.clear();
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(registrations => {
-                    registrations.forEach(reg => reg.unregister());
-                });
-            }
-            if ('caches' in window) {
-                caches.keys().then(names => {
-                    names.forEach(name => caches.delete(name));
-                });
-            }
-            localStorage.setItem('islamhub_app_version', '1.2.1');
-            setTimeout(() => {
-                window.location.reload(true);
-            }, 2000);
         }
     </script>
 </body>
