@@ -1,35 +1,39 @@
 /* ===== IslamHub Service Worker ===== */
 
-const CACHE_NAME = 'islamhub-v1.1';
+// IMPORTANT: Update version setiap kali push update!
+// Format: islamhub-v[major].[minor].[patch]-[timestamp]
+const CACHE_VERSION = '1.2.1';
+const CACHE_NAME = `islamhub-v${CACHE_VERSION}`;
+
+// Strategi: Network First untuk HTML/JS/CSS, Cache First untuk assets statis
 const urlsToCache = [
   '/islamhub/',
   '/islamhub/index.html',
-  '/islamhub/css/style-modular.css',
-  '/islamhub/js/app.js',
   '/islamhub/manifest.json',
   'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
-// Install event - cache assets
+// Install event - cache assets & force update
 self.addEventListener('install', (event) => {
-  console.log('Service Worker installing...');
+  console.log(`Service Worker ${CACHE_VERSION} installing...`);
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Opened cache');
+        console.log('Opened cache:', CACHE_NAME);
         return cache.addAll(urlsToCache);
       })
       .catch((error) => {
         console.error('Cache installation failed:', error);
       })
   );
+  // Skip waiting agar SW baru langsung aktif
   self.skipWaiting();
 });
 
-// Activate event - clean up old caches
+// Activate event - clean up old caches & force refresh
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker activating...');
+  console.log(`Service Worker ${CACHE_VERSION} activating...`);
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -40,43 +44,76 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
+    }).then(() => {
+      console.log('All old caches deleted, claiming clients...');
+      // Force reload all tabs to get fresh content
+      return self.clients.matchAll().then(clients => {
+        clients.forEach(client => {
+          console.log('Posting refresh message to client');
+          client.postMessage({
+            type: 'CACHE_UPDATED',
+            version: CACHE_VERSION
+          });
+        });
+      });
     })
   );
+  // Take control immediately
   return self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - Network First untuk code, Cache First untuk assets
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+  
+  // Network First untuk HTML, CSS, JS (selalu ambil yang terbaru)
+  if (
+    url.pathname.endsWith('.html') ||
+    url.pathname.endsWith('.css') ||
+    url.pathname.endsWith('.js') ||
+    url.pathname === '/islamhub/' ||
+    url.pathname === '/islamhub/index.html'
+  ) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Cache response baru
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseClone);
+          });
+          return response;
+        })
+        .catch(() => {
+          // Fallback ke cache jika offline
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+  
+  // Cache First untuk assets statis (fonts, icons, audio)
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Cache hit - return response
         if (response) {
           return response;
         }
 
-        // Clone the request
         const fetchRequest = event.request.clone();
-
         return fetch(fetchRequest).then((response) => {
-          // Check if valid response
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
 
-          // Clone the response
           const responseToCache = response.clone();
-
-          // Cache the fetched response
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
 
           return response;
         }).catch(() => {
-          // Return offline page if available
-          return caches.match('/index.html');
+          return caches.match('/islamhub/index.html');
         });
       })
   );

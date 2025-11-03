@@ -208,3 +208,47 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* ===== RESPONSIVE - MOBILE ===== */
+@media (max-width: 768px) {
+  .bottom-navigation {
+    padding: 8px 0;
+  }
+  
+  .bottom-nav-item {
+    padding: 6px 8px;
+    min-width: 50px;
+    font-size: 10px;
+  }
+  
+  .bottom-nav-item i {
+    font-size: 18px;
+  }
+  
+  .app-content {
+    padding: 15px;
+    padding-bottom: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bottom-navigation {
+    padding: 6px 0;
+  }
+  
+  .bottom-nav-item {
+    padding: 5px 6px;
+    min-width: 45px;
+    font-size: 9px;
+    gap: 2px;
+  }
+  
+  .bottom-nav-item i {
+    font-size: 16px;
+  }
+  
+  .app-content {
+    padding: 10px;
+    padding-bottom: 70px;
+  }
+}

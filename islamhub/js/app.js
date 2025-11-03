@@ -76,8 +76,22 @@ class IslamHubApp {
                 
                 console.log('Service Worker registered successfully:', registration.scope);
                 
-                // Check for updates on page load
-                registration.update();
+                // Check for updates every 30 seconds
+                setInterval(() => {
+                    registration.update();
+                }, 30000);
+                
+                // Listen for messages from service worker (cache updated)
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data && event.data.type === 'CACHE_UPDATED') {
+                        console.log('Cache updated to version:', event.data.version);
+                        // Auto reload tanpa prompt untuk seamless update
+                        setTimeout(() => {
+                            console.log('Reloading page to apply updates...');
+                            window.location.reload();
+                        }, 1000);
+                    }
+                });
                 
                 // Listen for updates
                 registration.addEventListener('updatefound', () => {
@@ -86,14 +100,14 @@ class IslamHubApp {
                     
                     newWorker.addEventListener('statechange', () => {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            console.log('New Service Worker installed, refresh to update');
-                            // Optionally show a notification to the user
-                            if (confirm('Update aplikasi tersedia. Refresh sekarang?')) {
-                                window.location.reload();
-                            }
+                            console.log('New Service Worker installed');
+                            // Will trigger reload via message listener above
                         }
                     });
                 });
+                
+                // Initial update check
+                registration.update();
             } catch (error) {
                 console.error('Service Worker registration failed:', error);
             }
@@ -261,6 +275,9 @@ class IslamHubApp {
         } else {
             document.body.classList.remove('home-active');
         }
+        
+        // Update body data attribute untuk app-specific styling (hide floating widget on alquran)
+        document.body.setAttribute('data-current-app', appName);
         
         // Save last active app to localStorage
         localStorage.setItem('islamhub_last_active_app', appName);

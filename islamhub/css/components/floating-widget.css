@@ -1,7 +1,7 @@
 /* ===== FLOATING PRAYER WIDGET ===== */
 .floating-prayer-widget {
   position: fixed;
-  bottom: 160px; /* Raised higher to not cover audio player */
+  bottom: 80px; /* Original position */
   right: 20px;
   background: rgba(10, 10, 15, 0.95);
   backdrop-filter: blur(20px);
@@ -10,11 +10,17 @@
   padding: 15px 20px;
   min-width: 200px;
   box-shadow: var(--shadow-glow);
-  z-index: 30; /* Lower than audio player */
+  z-index: 30;
   display: none;
   opacity: 0;
   transition: opacity 0.3s ease;
   animation: bounce 2s ease-in-out infinite;
+}
+
+/* Hide widget when Al-Quran app is active to avoid blocking audio player */
+body[data-current-app="alquran"] .floating-prayer-widget,
+body[data-current-app="alquran"] .widget-restore-btn {
+  display: none !important;
 }
 
 .widget-content {
@@ -103,7 +109,7 @@
 /* Widget Restore Button */
 .widget-restore-btn {
   position: fixed;
-  bottom: 90px;
+  bottom: 80px; /* Original position - same as expanded widget */
   right: 20px;
   width: 50px;
   height: 50px;

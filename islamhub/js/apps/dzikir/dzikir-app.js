@@ -544,13 +544,16 @@ export default class DzikirApp {
 
         title.textContent = category.title;
         
-        // Show only audio button in category view, hide copy and favorite
+        // Check if category has any audio
+        const hasAudio = category.doa.some(doa => doa.audio);
+        
+        // Show only audio button in category view if audio exists, hide copy and favorite
         const copyBtn = document.getElementById('doaCopy');
         const favoriteBtn = document.getElementById('doaFavorite');
         const audioBtn = document.getElementById('doaAudio');
         if (copyBtn) copyBtn.style.display = 'none';
         if (favoriteBtn) favoriteBtn.style.display = 'none';
-        if (audioBtn) audioBtn.style.display = 'flex';
+        if (audioBtn) audioBtn.style.display = hasAudio ? 'flex' : 'none';
         if (modalActions) modalActions.style.display = 'flex';
 
         // Create doa list HTML - NO FAVORITE BUTTONS HERE (only in detail)

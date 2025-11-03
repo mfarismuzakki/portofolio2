@@ -854,8 +854,6 @@ export default class AlQuranApp {
         else { navigator.clipboard.writeText(url).then(()=> this._notify('Link halaman disalin ke clipboard','success')); }
     }
 
-    playVerseAudio(surah, verse) { this._notify('Audio per-ayat akan segera tersedia', 'info'); }
-
     copyVerse(surah, verse) {
         const versesData = typeof getVersesByPage === 'function' ? getVersesByPage(this.currentPage) : { verses: [] };
         const v = (versesData.verses || []).find(x => String(x.surah)===String(surah) && String(x.verse)===String(verse));
@@ -946,35 +944,28 @@ export default class AlQuranApp {
         html.push('</div>');
         
         if (typeof QURAN_SURAHS !== 'undefined') {
-            html.push('<div class="surah-grid" id="surahGridList">');
+            html.push('<div class="surah-list-simple" id="surahListSimple">');
             for (const s of QURAN_SURAHS) {
                 html.push(`
-                    <div class="surah-card" data-number="${s.number}" data-start="${s.startPage}" data-name="${s.name.toLowerCase()}">
-                        <div class="surah-card-header">
-                            <div class="surah-number-badge">
-                                <span class="surah-number">${s.number}</span>
+                    <div class="surah-row" data-number="${s.number}" data-name="${s.name.toLowerCase()}" data-arabic="${s.nameArabic}">
+                        <div class="surah-row-number">${s.number}</div>
+                        <div class="surah-row-content">
+                            <div class="surah-row-names">
+                                <span class="surah-row-latin">${s.name}</span>
+                                <span class="surah-row-arabic">${s.nameArabic}</span>
                             </div>
-                            <div class="surah-names">
-                                <h4 class="surah-name-latin">${s.name}</h4>
-                                <p class="surah-name-arabic">${s.nameArabic}</p>
+                            <div class="surah-row-meta">
+                                <span class="surah-row-info">${s.revelation}</span>
+                                <span class="surah-row-divider">•</span>
+                                <span class="surah-row-info">${s.verses} ayat</span>
                             </div>
                         </div>
-                        <div class="surah-meta">
-                            <span class="meta-item"><i class="fas fa-bookmark"></i> ${s.verses} ayat</span>
-                            <span class="meta-divider">•</span>
-                            <span class="meta-item"><i class="fas fa-map-marker-alt"></i> ${s.revelation}</span>
-                        </div>
-                        <div class="surah-pages">
-                            <i class="fas fa-file-alt"></i> Halaman ${s.startPage} - ${s.endPage}
-                        </div>
-                        <div class="surah-actions">
-                            <button class="btn-read-surah" data-number="${s.number}" title="Baca Surat">
+                        <div class="surah-row-actions">
+                            <button class="surah-row-btn" data-surah="${s.number}" title="Baca ${s.name}">
                                 <i class="fas fa-book-open"></i>
-                                <span>Baca</span>
                             </button>
-                            <button class="btn-jump-verse" data-number="${s.number}" data-verses="${s.verses}" title="Lompat ke Ayat">
-                                <i class="fas fa-location-arrow"></i>
-                                <span>Ayat</span>
+                            <button class="surah-row-btn-verse" data-surah="${s.number}" data-total-verses="${s.verses}" title="Lompat ke ayat">
+                                <i class="fas fa-list-ol"></i>
                             </button>
                         </div>
                     </div>
@@ -1011,34 +1002,35 @@ export default class AlQuranApp {
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
                 const query = e.target.value.toLowerCase();
-                const cards = modal.querySelectorAll('.surah-card');
-                cards.forEach(card => {
-                    const name = card.dataset.name;
-                    const number = card.dataset.number;
-                    if (name.includes(query) || number.includes(query)) {
-                        card.style.display = '';
+                const rows = modal.querySelectorAll('.surah-row');
+                rows.forEach(row => {
+                    const name = row.dataset.name;
+                    const arabic = row.dataset.arabic;
+                    const number = row.dataset.number;
+                    if (name.includes(query) || arabic.includes(query) || number.includes(query)) {
+                        row.style.display = '';
                     } else {
-                        card.style.display = 'none';
+                        row.style.display = 'none';
                     }
                 });
             });
-            // Focus on search input
-            setTimeout(() => searchInput.focus(), 100);
+            // Don't auto-focus on mobile to prevent keyboard popup
+            // setTimeout(() => searchInput.focus(), 100);
         }
         
         // Event listener untuk tombol "Baca Surat"
-        modal.querySelectorAll('.btn-read-surah').forEach(btn=>btn.addEventListener('click', (e)=>{ 
+        modal.querySelectorAll('.surah-row-btn').forEach(btn=>btn.addEventListener('click', (e)=>{ 
             e.stopPropagation();
-            const surahNum = parseInt(btn.dataset.number);
+            const surahNum = parseInt(btn.dataset.surah);
             this.readSurah(surahNum); 
             modal.remove();
         }));
         
         // Event listener untuk tombol "Lompat ke Ayat"
-        modal.querySelectorAll('.btn-jump-verse').forEach(btn=>btn.addEventListener('click', (e)=>{ 
+        modal.querySelectorAll('.surah-row-btn-verse').forEach(btn=>btn.addEventListener('click', (e)=>{ 
             e.stopPropagation();
-            const surahNum = parseInt(btn.dataset.number);
-            const totalVerses = parseInt(btn.dataset.verses);
+            const surahNum = parseInt(btn.dataset.surah);
+            const totalVerses = parseInt(btn.dataset.totalVerses);
             this._showVerseJumpModal(surahNum, totalVerses);
         }));
     }
@@ -1273,11 +1265,11 @@ export default class AlQuranApp {
                     modal.querySelector('#btnGoToPage').click();
                 }
             });
-            // Focus and select
-            setTimeout(() => {
-                input.focus();
-                input.select();
-            }, 100);
+            // Don't auto-focus on mobile to prevent keyboard popup
+            // setTimeout(() => {
+            //     input.focus();
+            //     input.select();
+            // }, 100);
         }
     }
 
@@ -1375,8 +1367,8 @@ export default class AlQuranApp {
                     modal.querySelector('#btnJumpToVerse').click();
                 }
             });
-            // Focus on input
-            setTimeout(() => input.focus(), 100);
+            // Don't auto-focus on mobile to prevent keyboard popup
+            // setTimeout(() => input.focus(), 100);
         }
     }
 
@@ -2029,15 +2021,16 @@ export default class AlQuranApp {
             const isMemorized = verseProgress[verseKey] && verseProgress[verseKey].level === 4;
             
             if (this.viewMode === 'reading') {
-                // Reading mode - hanya Arab dengan nomor ayat Arab
+                // Reading mode - hanya Arab dengan nomor ayat Arab, clickable untuk play audio
                 const arabicNumber = this._toArabicNumber(verse.number);
                 verseEl.className = 'verse-item-reading';
+                verseEl.dataset.playVerse = verseKey; // Add play verse data attribute
                 verseEl.innerHTML = `
                     <span class="verse-arabic-inline ${this.settings.arabicFont}">${verse.arabic}</span>
                     <span class="verse-number-ornament">&#xFD3F;${arabicNumber}&#xFD3E;</span>
                 `;
             } else {
-                // Translation mode - lengkap
+                // Translation mode - lengkap dengan tombol play audio
                 verseEl.className = 'verse-item-clean';
                 verseEl.innerHTML = `
                     <div class="verse-number-badge">${verse.number}</div>
@@ -2045,6 +2038,7 @@ export default class AlQuranApp {
                     ${!this.settings.hideTransliteration ? `<div class="verse-transliteration">${verse.transliteration}</div>` : ''}
                     ${!this.settings.hideTranslation ? `<div class="verse-translation">${verse.translation}</div>` : ''}
                     <div class="verse-actions-inline">
+                        <button class="verse-btn-inline" data-play-verse-audio="${verseKey}" title="Putar Audio Ayat"><i class="fas fa-play-circle"></i></button>
                         <button class="verse-btn-inline" data-copy-verse="${verseKey}" title="Salin Ayat"><i class="fas fa-copy"></i></button>
                         <button class="verse-btn-inline" data-bookmark-verse="${verseKey}" title="Bookmark"><i class="${isBookmarked ? 'fas' : 'far'} fa-bookmark"></i></button>
                         ${!this.settings.hideMemorization ? `<button class="verse-btn-inline" data-memorize-verse="${verseKey}" title="Tandai Hafal"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
@@ -2163,6 +2157,15 @@ export default class AlQuranApp {
         
         // Verse actions (only in translation mode)
         if (this.viewMode === 'translation') {
+            // Play verse audio button
+            document.querySelectorAll('[data-play-verse-audio]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const verseKey = btn.dataset.playVerseAudio;
+                    const [surahNum, verseNum] = verseKey.split(':').map(Number);
+                    this.playVerseAudio(surahNum, verseNum);
+                });
+            });
+            
             // Copy verse
             document.querySelectorAll('[data-copy-verse]').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -2213,6 +2216,15 @@ export default class AlQuranApp {
                     if (verse && verse.tafsir) {
                         this._showTafsirModal(verse.surahName, verseNum, verse.tafsir);
                     }
+                });
+            });
+        } else {
+            // Reading mode - clicking verse shows play popup
+            document.querySelectorAll('[data-play-verse]').forEach(verseEl => {
+                verseEl.addEventListener('click', (e) => {
+                    const verseKey = verseEl.dataset.playVerse;
+                    const [surahNum, verseNum] = verseKey.split(':').map(n => parseInt(n));
+                    this._showVersePlayPopup(e, surahNum, verseNum, verseEl);
                 });
             });
         }
@@ -2427,6 +2439,7 @@ export default class AlQuranApp {
             const verseEl = document.createElement('div');
             verseEl.dataset.verseNumber = verse.number; // Add data attribute for jumping
             verseEl.dataset.pageNumber = versePage; // Add page number for tracking
+            verseEl.dataset.surahNumber = surah.number; // Add surah number for audio highlighting
             
             const verseKey = `${surah.number}:${verse.number}`;
             const isBookmarked = this.verseBookmarks.includes(verseKey);
@@ -2434,15 +2447,16 @@ export default class AlQuranApp {
             const isMemorized = verseProgress[verseKey] && verseProgress[verseKey].level === 4;
             
             if (this.viewMode === 'reading') {
-                // Reading mode - hanya Arab dengan nomor ayat Arab
+                // Reading mode - hanya Arab dengan nomor ayat Arab, clickable untuk play audio
                 const arabicNumber = this._toArabicNumber(verse.number);
                 verseEl.className = 'verse-item-reading';
+                verseEl.dataset.playVerse = verseKey; // Add play verse data attribute
                 verseEl.innerHTML = `
                     <span class="verse-arabic-inline ${this.settings.arabicFont}">${verse.arabic}</span>
                     <span class="verse-number-ornament">&#xFD3F;${arabicNumber}&#xFD3E;</span>
                 `;
             } else {
-                // Translation mode - lengkap
+                // Translation mode - lengkap dengan tombol play audio
                 verseEl.className = 'verse-item-clean';
                 verseEl.innerHTML = `
                     <div class="verse-number-badge">${verse.number}</div>
@@ -2450,6 +2464,7 @@ export default class AlQuranApp {
                     ${!this.settings.hideTransliteration ? `<div class="verse-transliteration">${verse.transliteration}</div>` : ''}
                     ${!this.settings.hideTranslation ? `<div class="verse-translation">${verse.translation}</div>` : ''}
                     <div class="verse-actions-inline">
+                        <button class="verse-btn-inline" data-play-verse-audio="${verse.number}" title="Putar Audio Ayat"><i class="fas fa-play-circle"></i></button>
                         <button class="verse-btn-inline" data-copy-verse="${verse.number}" title="Salin Ayat"><i class="fas fa-copy"></i></button>
                         <button class="verse-btn-inline" data-bookmark-verse="${verse.number}" title="Bookmark"><i class="${isBookmarked ? 'fas' : 'far'} fa-bookmark"></i></button>
                         ${!this.settings.hideMemorization ? `<button class="verse-btn-inline" data-memorize-verse="${verse.number}" title="Tandai Hafal"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
@@ -2592,6 +2607,14 @@ export default class AlQuranApp {
         
         // Verse actions (only in translation mode)
         if (this.viewMode === 'translation') {
+            // Play verse audio button
+            this.container.querySelectorAll('[data-play-verse-audio]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const verseNum = parseInt(btn.dataset.playVerseAudio);
+                    this.playVerseAudio(surah.number, verseNum);
+                });
+            });
+            
             this.container.querySelectorAll('[data-copy-verse]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const verseNum = parseInt(btn.dataset.copyVerse);
@@ -2626,6 +2649,15 @@ export default class AlQuranApp {
                     if (verse && verse.tafsir) {
                         this._showTafsirModal(verse, surah);
                     }
+                });
+            });
+        } else {
+            // Reading mode - clicking verse shows play popup
+            this.container.querySelectorAll('[data-play-verse]').forEach(verseEl => {
+                verseEl.addEventListener('click', (e) => {
+                    const verseKey = verseEl.dataset.playVerse;
+                    const [surahNum, verseNum] = verseKey.split(':').map(n => parseInt(n));
+                    this._showVersePlayPopup(e, surahNum, verseNum, verseEl);
                 });
             });
         }
@@ -2878,18 +2910,36 @@ export default class AlQuranApp {
                         <div class="sidebar-item-title">${surah.name}</div>
                         <div class="sidebar-item-meta">${surah.nameArabic} • ${surah.verses} ayat</div>
                     </div>
-                    <i class="fas fa-chevron-right"></i>
+                    <div class="sidebar-item-actions">
+                        <button class="sidebar-item-btn" data-read-surah="${surah.number}" title="Baca surat">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="sidebar-item-btn" data-verse-jump="${surah.number}" data-total-verses="${surah.verses}" title="Lompat ke ayat">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                    </div>
                 </div>
             `;
         }
         container.innerHTML = html;
 
-        // Add click handlers
-        container.querySelectorAll('[data-surah]').forEach(item => {
-            item.addEventListener('click', () => {
-                const surahNum = parseInt(item.dataset.surah);
+        // Add click handlers for read surah
+        container.querySelectorAll('[data-read-surah]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const surahNum = parseInt(btn.dataset.readSurah);
                 this.readSurah(surahNum);
                 this.toggleSidebar();
+            });
+        });
+
+        // Add click handlers for verse jump
+        container.querySelectorAll('[data-verse-jump]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const surahNum = parseInt(btn.dataset.verseJump);
+                const totalVerses = parseInt(btn.dataset.totalVerses);
+                this._showVerseJumpModal(surahNum, totalVerses);
             });
         });
 
@@ -3164,7 +3214,16 @@ export default class AlQuranApp {
         const currentTimeEl = document.getElementById('audioCurrentTime');
         const durationEl = document.getElementById('audioDuration');
         
-        // Remove old event listeners by cloning elements (clean approach)
+        // Remove old event listeners if they exist
+        if (this.audioHandlers) {
+            if (this.audioHandlers.prev) prevBtn?.removeEventListener('click', this.audioHandlers.prev);
+            if (this.audioHandlers.next) nextBtn?.removeEventListener('click', this.audioHandlers.next);
+        }
+        
+        // Initialize handlers object
+        this.audioHandlers = this.audioHandlers || {};
+        
+        // Setup event listeners only once for static buttons
         if (!this.audioListenersAttached) {
             this.audioListenersAttached = true;
             
@@ -3185,35 +3244,34 @@ export default class AlQuranApp {
                 }
             });
             
-            // Previous page button
-            prevBtn?.addEventListener('click', () => {
-                console.log('Prev clicked, current page:', this.currentAudioPage);
-                if (this.currentAudioPage > 1) {
-                    this.currentAudioPage--;
-                    this._playPage(this.currentAudioSurah, this.currentAudioPage);
-                } else {
-                    this._notify('Sudah di halaman pertama', 'info');
-                }
-            });
-            
-            // Next page button
-            nextBtn?.addEventListener('click', () => {
-                console.log('Next clicked, current page:', this.currentAudioPage);
-                if (this.currentAudioPage < 604) {
-                    this.currentAudioPage++;
-                    this._playPage(this.currentAudioSurah, this.currentAudioPage);
-                } else {
-                    this._notify('Sudah di halaman terakhir', 'info');
-                }
-            });
-            
-            // Close button
+            // Close button - tutup audio player tanpa error dan hapus highlight
             closeBtn?.addEventListener('click', () => {
-                audioElement.pause();
-                audioElement.src = '';
-                document.getElementById('quranAudioPlayer').style.display = 'none';
-                playPauseBtn.querySelector('i').className = 'fas fa-play';
-                this.isPlaying = false;
+                try {
+                    // Set flag to prevent error notification on close
+                    this.isClosingAudio = true;
+                    
+                    audioElement.pause();
+                    audioElement.src = '';
+                    document.getElementById('quranAudioPlayer').style.display = 'none';
+                    if (playPauseBtn && playPauseBtn.querySelector('i')) {
+                        playPauseBtn.querySelector('i').className = 'fas fa-play';
+                    }
+                    this.isPlaying = false;
+                    
+                    // Remove verse highlight
+                    document.querySelectorAll('.verse-item-reading.playing-audio, .verse-item-clean.playing-audio').forEach(el => {
+                        el.classList.remove('playing-audio');
+                    });
+                    this.currentPlayingVerse = null;
+                    
+                    // Reset flag after a short delay
+                    setTimeout(() => {
+                        this.isClosingAudio = false;
+                    }, 100);
+                } catch (e) {
+                    console.error('Error closing audio:', e);
+                    this.isClosingAudio = false;
+                }
             });
             
             // Time update
@@ -3230,35 +3288,104 @@ export default class AlQuranApp {
                 if (durationEl) durationEl.textContent = this._formatTime(audioElement.duration);
             });
             
-            // Audio ended - play next page if autoplay enabled
+            // Audio ended - handle both page and verse mode
             audioElement?.addEventListener('ended', () => {
-                console.log('Audio ended, current page:', this.currentAudioPage, 'autoPlayNext:', this.settings.autoPlayNext);
+                console.log('Audio ended, playing verse:', this.currentPlayingVerse, 'current page:', this.currentAudioPage, 'autoPlayNext:', this.settings.autoPlayNext);
                 
-                // Check if autoPlayNext is enabled
-                if (this.settings.autoPlayNext && this.currentAudioPage < 604) {
-                    // Auto-play next page
+                // Check if we're in verse mode
+                if (this.currentPlayingVerse) {
+                    const { surah, verse } = this.currentPlayingVerse;
+                    const surahInfo = typeof QURAN_SURAHS !== 'undefined' ? QURAN_SURAHS.find(s => s.number === surah) : null;
+                    const totalVerses = surahInfo ? surahInfo.verses : 286;
+                    
+                    if (this.settings.autoPlayNext && verse < totalVerses) {
+                        // Auto-play next verse
+                        this.playVerseAudio(surah, verse + 1);
+                    } else {
+                        // Stop at current verse
+                        playPauseBtn.querySelector('i').className = 'fas fa-play';
+                        this.isPlaying = false;
+                        // Removed notifications for verse mode
+                    }
+                } else if (this.settings.autoPlayNext && this.currentAudioPage < 604) {
+                    // Page mode - auto-play next page
                     this.currentAudioPage++;
                     this._playPage(this.currentAudioSurah, this.currentAudioPage);
                 } else {
                     // Stop at current page
                     playPauseBtn.querySelector('i').className = 'fas fa-play';
                     this.isPlaying = false;
-                    if (this.currentAudioPage >= 604) {
-                        this._notify('Selesai memutar Al-Qur\'an', 'success');
-                    } else {
-                        this._notify('Audio selesai', 'info');
-                    }
+                    // Removed notifications for page mode
                 }
             });
             
             // Audio error handling
             audioElement?.addEventListener('error', (e) => {
+                // Don't show error notification if we're closing the audio player
+                if (this.isClosingAudio || this.isLoadingNewAudio) {
+                    return;
+                }
+                
                 console.error('Audio error:', e);
                 playPauseBtn.querySelector('i').className = 'fas fa-play';
                 this.isPlaying = false;
                 this._notify('Audio belum tersedia untuk halaman ini', 'error');
             });
         }
+        
+        // Always setup/update prev and next handlers (they change based on mode)
+        // Previous button - handle both page and verse mode
+        this.audioHandlers.prev = () => {
+            // Check if we're in verse mode
+            if (this.currentPlayingVerse) {
+                const { surah, verse } = this.currentPlayingVerse;
+                if (verse > 1) {
+                    // Play previous verse in same surah
+                    this.playVerseAudio(surah, verse - 1);
+                } else {
+                    this._notify('Sudah di ayat pertama surat ini', 'info');
+                }
+            } else {
+                // Page mode
+                console.log('Prev clicked, current page:', this.currentAudioPage);
+                if (this.currentAudioPage > 1) {
+                    this.currentAudioPage--;
+                    this._playPage(this.currentAudioSurah, this.currentAudioPage);
+                } else {
+                    this._notify('Sudah di halaman pertama', 'info');
+                }
+            }
+        };
+        
+        // Next button - handle both page and verse mode
+        this.audioHandlers.next = () => {
+            // Check if we're in verse mode
+            if (this.currentPlayingVerse) {
+                const { surah, verse } = this.currentPlayingVerse;
+                const surahInfo = typeof QURAN_SURAHS !== 'undefined' ? QURAN_SURAHS.find(s => s.number === surah) : null;
+                const totalVerses = surahInfo ? surahInfo.verses : 286; // fallback to max
+                
+                if (verse < totalVerses) {
+                    // Play next verse in same surah
+                    this.playVerseAudio(surah, verse + 1);
+                } else {
+                    this._notify('Sudah di ayat terakhir surat ini', 'info');
+                }
+            } else {
+                // Page mode
+                console.log('Next clicked, current page:', this.currentAudioPage);
+                if (this.currentAudioPage < 604) {
+                    this.currentAudioPage++;
+                    this._playPage(this.currentAudioSurah, this.currentAudioPage);
+                } else {
+                    this._notify('Sudah di halaman terakhir', 'info');
+                }
+            }
+        };
+        
+        // Attach the new handlers
+        prevBtn?.addEventListener('click', this.audioHandlers.prev);
+        nextBtn?.addEventListener('click', this.audioHandlers.next);
     }
 
     _playPage(surah, pageNumber) {
@@ -3270,7 +3397,12 @@ export default class AlQuranApp {
         
         if (!audioElement) return;
         
+        // Set flag to prevent error notification while loading new audio
+        this.isLoadingNewAudio = true;
+        
         this.currentAudioPage = pageNumber;
+        // Clear verse mode when playing page audio
+        this.currentPlayingVerse = null;
         
         // Get all surahs in this page - IMPORTANT: Update currentAudioSurah
         let displayText = '';
@@ -3333,6 +3465,9 @@ export default class AlQuranApp {
             }
             this.isPlaying = true;
             
+            // Reset loading flag after successful play
+            this.isLoadingNewAudio = false;
+            
             // Update duration again after play starts (fallback)
             setTimeout(updateDuration, 200);
         }).catch(err => {
@@ -3341,6 +3476,7 @@ export default class AlQuranApp {
                 playPauseBtn.querySelector('i').className = 'fas fa-play';
             }
             this.isPlaying = false;
+            this.isLoadingNewAudio = false; // Reset flag on error
             this._notify('Gagal memutar audio halaman ' + pageNumber, 'error');
         });
     }
@@ -3391,6 +3527,243 @@ export default class AlQuranApp {
         // Convert Western numerals to Arabic-Indic numerals
         const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
         return String(num).split('').map(digit => arabicNumerals[parseInt(digit)] || digit).join('');
+    }
+
+    // Audio per ayat functionality
+    async fetchSurahAudioData(surahNumber) {
+        try {
+            const response = await fetch(`https://equran.id/api/v2/surat/${surahNumber}`);
+            if (!response.ok) throw new Error('Failed to fetch audio data');
+            const data = await response.json();
+            return data.data;
+        } catch (error) {
+            console.error('Error fetching surah audio data:', error);
+            return null;
+        }
+    }
+
+    async playVerseAudio(surahNumber, verseNumber) {
+        try {
+            // Show and setup audio player UI
+            const audioPlayer = document.getElementById('quranAudioPlayer');
+            const audioElement = document.getElementById('quranAudioElement');
+            const audioInfo = document.getElementById('audioSurahName');
+            const playPauseBtn = document.getElementById('audioPlayPause');
+            
+            if (!audioPlayer || !audioElement) {
+                this._notify('Audio player tidak tersedia', 'error');
+                return;
+            }
+
+            // Show audio player
+            audioPlayer.style.display = 'block';
+            
+            // Setup audio controls if not already done
+            if (!this.audioSetupDone) {
+                const surahInfo = typeof QURAN_SURAHS !== 'undefined' ? QURAN_SURAHS.find(s => s.number === surahNumber) : null;
+                if (surahInfo) {
+                    this._setupAudioControls(surahInfo);
+                    this.audioSetupDone = true;
+                }
+            }
+
+            // Removed notification: this._notify('Memuat audio ayat...', 'info');
+
+            const surahStr = String(surahNumber).padStart(3, '0');
+            const verseStr = String(verseNumber).padStart(3, '0');
+            const localPath = `${this.basePath}/assets/audio/alquran/verses/${surahStr}/${surahStr}_${verseStr}.mp3`;
+
+            // Set flag to prevent error notification while loading new audio
+            this.isLoadingNewAudio = true;
+            
+            // Stop any currently playing audio
+            audioElement.pause();
+            audioElement.src = '';
+
+            // Attempt to load local file (race between canplay and error)
+            const tryLocal = await new Promise((resolve) => {
+                let settled = false;
+                const testAudio = new Audio(localPath);
+                testAudio.preload = 'metadata';
+
+                const onCanPlay = () => { if (settled) return; settled = true; cleanup(); resolve({ok: true}); };
+                const onError = () => { if (settled) return; settled = true; cleanup(); resolve({ok: false}); };
+                const timeout = setTimeout(() => { if (settled) return; settled = true; cleanup(); resolve({ok: false, timeout: true}); }, 3000);
+
+                function cleanup() {
+                    try { testAudio.removeEventListener('canplay', onCanPlay); } catch(e){}
+                    try { testAudio.removeEventListener('error', onError); } catch(e){}
+                    try { clearTimeout(timeout); } catch(e){}
+                    try { testAudio.pause(); testAudio.src = ''; } catch(e){}
+                }
+
+                testAudio.addEventListener('canplay', onCanPlay);
+                testAudio.addEventListener('error', onError);
+                try { testAudio.load(); } catch(e) { onError(); }
+            });
+
+            let audioSrc = null;
+            let surahName = '';
+
+            if (tryLocal.ok) {
+                // Use local file
+                audioSrc = localPath;
+                const surahInfo = typeof QURAN_SURAHS !== 'undefined' ? QURAN_SURAHS.find(s => s.number === surahNumber) : null;
+                surahName = surahInfo ? surahInfo.name : `QS ${surahNumber}`;
+            } else {
+                // Fallback to online source (equran.id)
+                if (!this.surahAudioCache) this.surahAudioCache = {};
+                if (!this.surahAudioCache[surahNumber]) {
+                    const audioData = await this.fetchSurahAudioData(surahNumber);
+                    if (!audioData) {
+                        this._notify('Gagal memuat data audio', 'error');
+                        audioPlayer.style.display = 'none';
+                        this.isLoadingNewAudio = false; // Reset flag
+                        return;
+                    }
+                    this.surahAudioCache[surahNumber] = audioData;
+                }
+
+                const surahData = this.surahAudioCache[surahNumber];
+                const verseObj = (surahData.ayat || []).find(a => Number(a.nomorAyat) === Number(verseNumber));
+                if (!verseObj || !verseObj.audio || !verseObj.audio['05']) {
+                    this._notify('Audio ayat tidak tersedia', 'error');
+                    audioPlayer.style.display = 'none';
+                    this.isLoadingNewAudio = false; // Reset flag
+                    return;
+                }
+                
+                audioSrc = verseObj.audio['05'];
+                surahName = surahData.namaLatin || surahData.nama || `QS ${surahNumber}`;
+            }
+
+            // Set audio source and play
+            audioElement.src = audioSrc;
+            
+            // Update audio info display
+            if (audioInfo) {
+                audioInfo.textContent = `${surahName} - Ayat ${verseNumber}`;
+            }
+
+            // Store current playing verse for highlighting
+            this.currentPlayingVerse = { surah: surahNumber, verse: verseNumber };
+            
+            // Remove previous highlight
+            document.querySelectorAll('.verse-item-reading.playing-audio').forEach(el => {
+                el.classList.remove('playing-audio');
+            });
+            document.querySelectorAll('.verse-item-clean.playing-audio').forEach(el => {
+                el.classList.remove('playing-audio');
+            });
+            
+            // Highlight current verse
+            const verseKey = `${surahNumber}:${verseNumber}`;
+            const verseElements = document.querySelectorAll(`[data-play-verse="${verseKey}"], [data-verse-number="${verseNumber}"][data-surah-number="${surahNumber}"]`);
+            verseElements.forEach(el => {
+                el.classList.add('playing-audio');
+            });
+
+            try {
+                await audioElement.play();
+                this.isPlaying = true;
+                if (playPauseBtn && playPauseBtn.querySelector('i')) {
+                    playPauseBtn.querySelector('i').className = 'fas fa-pause';
+                }
+                // Removed notification: this._notify(`Memutar ${surahName} ayat ${verseNumber}`, 'success');
+                
+                // Reset loading flag after successful play
+                this.isLoadingNewAudio = false;
+            } catch (err) {
+                console.error('Error playing verse audio:', err);
+                this._notify('Gagal memutar audio ayat', 'error');
+                audioPlayer.style.display = 'none';
+                // Remove highlight on error
+                verseElements.forEach(el => {
+                    el.classList.remove('playing-audio');
+                });
+                // Reset loading flag
+                this.isLoadingNewAudio = false;
+            }
+            
+            // Remove highlight when audio ends
+            audioElement.addEventListener('ended', () => {
+                verseElements.forEach(el => {
+                    el.classList.remove('playing-audio');
+                });
+                this.currentPlayingVerse = null;
+            }, { once: true });
+
+        } catch (error) {
+            console.error('Error playing verse audio:', error);
+            this._notify('Gagal memutar audio ayat', 'error');
+            // Reset loading flag on error
+            this.isLoadingNewAudio = false;
+        }
+    }
+
+    _showVersePlayPopup(event, surahNumber, verseNumber, verseElement) {
+        // Remove any existing popup
+        const existingPopup = document.querySelector('.verse-play-popup');
+        if (existingPopup) existingPopup.remove();
+
+        // Create popup
+        const popup = document.createElement('div');
+        popup.className = 'verse-play-popup';
+        
+        // Get surah info
+        const surahInfo = typeof QURAN_SURAHS !== 'undefined' ? QURAN_SURAHS.find(s => s.number === surahNumber) : null;
+        const surahName = surahInfo ? surahInfo.name : `Surah ${surahNumber}`;
+        
+        popup.innerHTML = `
+            <div class="verse-play-popup-content">
+                <div class="verse-play-info">
+                    <div class="verse-play-title">${surahName} • Ayat ${verseNumber}</div>
+                </div>
+                <div class="verse-play-actions">
+                    <button class="verse-play-btn" id="versePlayPopupBtn">
+                        <i class="fas fa-play"></i>
+                        Putar
+                    </button>
+                    <button class="verse-play-close" id="versePlayPopupClose">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(popup);
+        
+        // Show popup with animation (fixed at bottom)
+        setTimeout(() => popup.classList.add('show'), 10);
+        
+        // Play button handler
+        document.getElementById('versePlayPopupBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.playVerseAudio(surahNumber, verseNumber);
+            popup.classList.remove('show');
+            setTimeout(() => popup.remove(), 200);
+        });
+        
+        // Close button handler
+        document.getElementById('versePlayPopupClose').addEventListener('click', (e) => {
+            e.stopPropagation();
+            popup.classList.remove('show');
+            setTimeout(() => popup.remove(), 200);
+        });
+        
+        // Close popup when clicking outside
+        const closePopup = (e) => {
+            if (!popup.contains(e.target) && e.target !== verseElement) {
+                popup.classList.remove('show');
+                setTimeout(() => popup.remove(), 200);
+                document.removeEventListener('click', closePopup);
+            }
+        };
+        
+        // Delay the listener to prevent immediate close
+        setTimeout(() => {
+            document.addEventListener('click', closePopup);
+        }, 100);
     }
 
     // placeholder for future online content
