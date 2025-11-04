@@ -1299,6 +1299,8 @@ class IslamHubApp {
     }
     
     async showCacheClearDialog() {
+        console.log('📋 showCacheClearDialog() called');
+        
         return new Promise((resolve) => {
             const modal = document.createElement('div');
             modal.className = 'modal cache-clear-modal';
