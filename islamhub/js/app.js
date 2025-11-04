@@ -1207,8 +1207,6 @@ class IslamHubApp {
 
     // Cache Management Methods
     setupCacheManagement() {
-        console.log('=== setupCacheManagement CALLED ===');
-        
         const APP_VERSION = '1.2.1';
         const STORAGE_VERSION_KEY = 'islamhub_app_version';
         
@@ -1218,16 +1216,12 @@ class IslamHubApp {
         // Setup clear cache button with setTimeout to ensure DOM is ready
         setTimeout(() => {
             const clearCacheBtn = document.getElementById('clearCacheBtn');
-            console.log('Looking for clearCacheBtn (after timeout):', clearCacheBtn);
             
             if (clearCacheBtn) {
-                console.log('✓ Clear cache button FOUND');
-                
                 // Direct onclick assignment (more reliable than addEventListener)
                 clearCacheBtn.onclick = async (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('🔥 CLEAR CACHE BUTTON CLICKED!');
                     
                     // Store original button content
                     const originalHTML = clearCacheBtn.innerHTML;
@@ -1249,10 +1243,6 @@ class IslamHubApp {
                         clearCacheBtn.innerHTML = originalHTML;
                     }
                 };
-                
-                console.log('✓ Clear cache button onclick ATTACHED successfully');
-            } else {
-                console.error('✗ Clear cache button NOT FOUND in DOM!');
             }
         }, 500);
         
@@ -1271,8 +1261,6 @@ class IslamHubApp {
                 this.hideUpdateNotification();
             });
         }
-        
-        console.log('=== setupCacheManagement COMPLETED ===');
     }
     
     checkForUpdates(currentVersion, storageKey) {
@@ -1311,8 +1299,6 @@ class IslamHubApp {
     }
     
     async showCacheClearDialog() {
-        console.log('📋 showCacheClearDialog() called');
-        
         return new Promise((resolve) => {
             const modal = document.createElement('div');
             modal.className = 'modal cache-clear-modal';
@@ -1330,8 +1316,6 @@ class IslamHubApp {
                 justify-content: center !important;
                 padding: 20px !important;
             `;
-            
-            console.log('Creating cache clear dialog modal...');
             
             modal.innerHTML = `
                 <div class="modal-content" style="max-width: 500px; width: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 20px; padding: 0; display: flex; flex-direction: column; max-height: 90vh;">
@@ -1387,10 +1371,7 @@ class IslamHubApp {
                 </div>
             `;
             
-            console.log('✓ Modal HTML created, appending to body...');
             document.body.appendChild(modal);
-            console.log('✓ Modal appended to body. Modal display:', modal.style.display);
-            console.log('✓ Modal z-index:', modal.style.zIndex);
             
             // Add hover effects
             const cacheOptions = modal.querySelectorAll('.cache-option');
@@ -1415,23 +1396,18 @@ class IslamHubApp {
             const btnConfirm = modal.querySelector('#btnConfirmClear');
             const checkboxQuran = modal.querySelector('#clearQuranCache');
             
-            console.log('Buttons found:', { btnClose, btnCancel, btnConfirm, checkboxQuran });
-            
             // Close button (X)
             btnClose.addEventListener('click', () => {
-                console.log('Close button (X) clicked');
                 modal.remove();
                 resolve(false);
             });
             
             btnCancel.addEventListener('click', () => {
-                console.log('Cancel button clicked');
                 modal.remove();
                 resolve(false);
             });
             
             btnConfirm.addEventListener('click', () => {
-                console.log('Confirm button clicked');
                 const clearQuran = checkboxQuran.checked;
                 modal.remove();
                 resolve({
@@ -1450,21 +1426,15 @@ class IslamHubApp {
     }
 
     async clearAllCache() {
-        console.log('🚀 clearAllCache() method called');
-        
         try {
             // Show selection dialog
             const shouldClear = await this.showCacheClearDialog();
-            console.log('Dialog result:', shouldClear);
             
             if (!shouldClear) {
-                console.log('User cancelled cache clearing');
                 return;
             }
             
             const loadingOverlay = this.showCacheLoadingOverlay();
-            
-            console.log('Starting cache clearing process...');
             
             // First, hide any update notifications to stop the loop
             this.hideUpdateNotification();

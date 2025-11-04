@@ -1846,24 +1846,34 @@ export default class AlQuranApp {
             const pageStr = String(pageNumber).padStart(3, '0');
             const storageKey = `alquran_page_${pageStr}`;
             
-            // Check if data exists in localStorage (offline mode)
+            // PRIORITY: Check if data exists in localStorage first (offline-first approach)
             const offlineData = localStorage.getItem(storageKey);
             if (offlineData) {
                 try {
                     return JSON.parse(offlineData);
                 } catch (e) {
-                    console.warn('Failed to parse offline data, fetching from network:', e);
+                    console.warn('Failed to parse cached data, will re-fetch:', e);
+                    // Remove corrupted data
+                    localStorage.removeItem(storageKey);
                 }
             }
             
-            // Fetch from network if not in localStorage
+            // Only fetch from network if NOT in cache
             const response = await fetch(`${this.basePath}/js/data/alquran/pages/Page${pageStr}.json`);
             
             if (!response.ok) {
-                throw new Error(`Page ${pageNumber} not found`);
+                throw new Error(`Page ${pageNumber} not found (HTTP ${response.status})`);
             }
             
             const pageData = await response.json();
+            
+            // Auto-save to localStorage for future offline use
+            try {
+                localStorage.setItem(storageKey, JSON.stringify(pageData));
+            } catch (e) {
+                console.warn('Failed to save page to cache (storage might be full):', e);
+            }
+            
             return pageData;
         } catch (error) {
             console.error(`Error loading page ${pageNumber}:`, error);
