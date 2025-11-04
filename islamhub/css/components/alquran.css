@@ -2833,16 +2833,16 @@
 .verse-item-clean .verse-arabic {
     font-family: 'Amiri Quran', 'Uthmanic Hafs', 'KFGQPC Uthmani', serif;
     font-size: 1.2rem;
-    line-height: 2.5;
+    line-height: 2.0; /* Reduced from 2.5 to match page mode */
     text-align: right;
     color: var(--text-primary);
-    margin-bottom: 18px;
+    margin-bottom: 10px; /* Reduced from 18px */
     margin-top: 25px; /* Beri ruang untuk nomor badge di atas */
     margin-left: 0; /* Hapus margin kiri */
     margin-right: 0; /* Hapus margin kanan */
     direction: rtl;
-    word-spacing: 0.1em;
-    letter-spacing: 0.02em;
+    word-spacing: 0.05em; /* Reduced from 0.1em to match page mode */
+    letter-spacing: 0.01em; /* Reduced from 0.02em to match page mode */
     font-weight: 400;
 }
 
@@ -3232,19 +3232,19 @@
     box-shadow: 0 2px 8px rgba(0, 255, 255, 0.25);
 }
 
-/* Arabic text in reading mode - large, continuous, justified */
+/* Arabic text in reading mode - compact like page mode */
 .verse-arabic-inline {
-    font-family: 'Uthmanic Hafs', 'KFGQPC Uthmani', 'Amiri Quran', serif !important;
-    font-size: 1.75rem;
-    line-height: 1.8;
+    font-family: 'Amiri Quran', 'Uthmanic Hafs', 'KFGQPC Uthmani', serif !important;
+    font-size: 1.2rem; /* Same as page mode */
+    line-height: 2.0; /* Same as page mode */
     color: var(--text-primary);
     font-weight: 400;
-    letter-spacing: 0;
-    word-spacing: 0;
+    letter-spacing: 0.01em; /* Same as page mode */
+    word-spacing: 0.05em; /* Same as page mode */
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     direction: rtl;
-    text-align: justify;
-    text-align-last: justify;
+    text-align: right; /* Changed from justify to right like page mode */
+    margin-bottom: 10px;
 }
 
 .verse-item-reading:hover .verse-arabic-inline {
