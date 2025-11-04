@@ -382,10 +382,11 @@
 .verse-item {
     background: rgba(255, 255, 255, 0.02);
     border-radius: 12px;
-    padding: 25px 6px; /* Padding sangat kecil kiri-kanan */
+    padding: 18px 6px; /* Reduced from 25px to 18px */
     border: 1px solid rgba(0, 255, 255, 0.1);
     transition: all 0.3s ease;
     position: relative;
+    margin-bottom: 8px; /* Reduced spacing between verses */
 }
 
 .verse-item:hover {
@@ -412,19 +413,19 @@
 
 .verse-content {
     margin-right: 50px;
-    margin-bottom: 15px;
+    margin-bottom: 8px; /* Reduced from 15px to 8px */
 }
 
 .arabic-text {
     font-size: 1.2rem;
-    line-height: 2.4;
+    line-height: 2.0; /* Reduced from 2.4 to 2.0 - more compact like Quran.com */
     text-align: right;
     color: var(--text-primary);
     font-family: 'Amiri Quran', 'Uthmanic Hafs', 'KFGQPC Uthmani', serif;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Reduced from 15px to 10px */
     direction: rtl;
-    word-spacing: 0.1em;
-    letter-spacing: 0.02em;
+    word-spacing: 0.05em; /* Reduced from 0.1em */
+    letter-spacing: 0.01em; /* Reduced from 0.02em */
 }
 
 /* Arabic Font Families */
@@ -467,18 +468,18 @@
 }
 
 .transliteration-text {
-    font-size: 1.1rem;
+    font-size: 1rem; /* Reduced from 1.1rem */
     color: var(--text-secondary);
     font-style: italic;
-    margin-bottom: 10px;
-    line-height: 1.6;
+    margin-bottom: 8px; /* Reduced from 10px */
+    line-height: 1.5; /* Reduced from 1.6 */
     font-family: var(--font-secondary);
 }
 
 .translation-text {
-    font-size: 1rem;
+    font-size: 0.95rem; /* Reduced from 1rem */
     color: var(--text-primary);
-    line-height: 1.7;
+    line-height: 1.6; /* Reduced from 1.7 */
     font-family: var(--font-secondary);
 }
 

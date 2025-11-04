@@ -1207,19 +1207,54 @@ class IslamHubApp {
 
     // Cache Management Methods
     setupCacheManagement() {
+        console.log('=== setupCacheManagement CALLED ===');
+        
         const APP_VERSION = '1.2.1';
         const STORAGE_VERSION_KEY = 'islamhub_app_version';
         
         // Check version and show update notification if needed
         this.checkForUpdates(APP_VERSION, STORAGE_VERSION_KEY);
         
-        // Setup clear cache button
-        const clearCacheBtn = document.getElementById('clearCacheBtn');
-        if (clearCacheBtn) {
-            clearCacheBtn.addEventListener('click', async () => {
-                await this.clearAllCache();
-            });
-        }
+        // Setup clear cache button with setTimeout to ensure DOM is ready
+        setTimeout(() => {
+            const clearCacheBtn = document.getElementById('clearCacheBtn');
+            console.log('Looking for clearCacheBtn (after timeout):', clearCacheBtn);
+            
+            if (clearCacheBtn) {
+                console.log('✓ Clear cache button FOUND');
+                
+                // Direct onclick assignment (more reliable than addEventListener)
+                clearCacheBtn.onclick = async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🔥 CLEAR CACHE BUTTON CLICKED!');
+                    
+                    // Store original button content
+                    const originalHTML = clearCacheBtn.innerHTML;
+                    
+                    // Disable button to prevent double clicks
+                    clearCacheBtn.disabled = true;
+                    clearCacheBtn.style.opacity = '0.6';
+                    clearCacheBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Memproses...</span>';
+                    
+                    try {
+                        await this.clearAllCache();
+                    } catch (error) {
+                        console.error('Error in clear cache button:', error);
+                        this.showDialog('error', 'Gagal membersihkan cache: ' + error.message);
+                    } finally {
+                        // Always reset button state
+                        clearCacheBtn.disabled = false;
+                        clearCacheBtn.style.opacity = '1';
+                        clearCacheBtn.innerHTML = originalHTML;
+                    }
+                };
+                
+                console.log('✓ Clear cache button onclick ATTACHED successfully');
+            } else {
+                console.error('✗ Clear cache button NOT FOUND in DOM!');
+            }
+        }, 500);
         
         // Setup update notification buttons
         const updateNowBtn = document.getElementById('updateNowBtn');
@@ -1236,6 +1271,8 @@ class IslamHubApp {
                 this.hideUpdateNotification();
             });
         }
+        
+        console.log('=== setupCacheManagement COMPLETED ===');
     }
     
     checkForUpdates(currentVersion, storageKey) {
@@ -1274,21 +1311,40 @@ class IslamHubApp {
     }
     
     async showCacheClearDialog() {
+        console.log('📋 showCacheClearDialog() called');
+        
         return new Promise((resolve) => {
             const modal = document.createElement('div');
             modal.className = 'modal cache-clear-modal';
-            modal.style.display = 'flex';
-            modal.style.zIndex = '10000';
+            modal.style.cssText = `
+                display: flex !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background: rgba(0, 0, 0, 0.85) !important;
+                backdrop-filter: blur(10px) !important;
+                z-index: 99999 !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 20px !important;
+            `;
+            
+            console.log('Creating cache clear dialog modal...');
             
             modal.innerHTML = `
-                <div class="modal-content" style="max-width: 500px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 20px; padding: 0;">
-                    <div class="modal-header" style="background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(138, 43, 226, 0.1)); padding: 25px; border-bottom: 1px solid rgba(0, 255, 255, 0.2);">
+                <div class="modal-content" style="max-width: 500px; width: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 20px; padding: 0; display: flex; flex-direction: column; max-height: 90vh;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(138, 43, 226, 0.1)); padding: 25px; border-bottom: 1px solid rgba(0, 255, 255, 0.2); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
                         <h3 style="margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 12px;">
                             <i class="fas fa-trash-alt" style="color: var(--primary-cyan);"></i>
                             Hapus Cache
                         </h3>
+                        <button id="btnCloseModal" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: rgba(255, 255, 255, 0.8); width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s;" onmouseover="this.style.background='rgba(255, 0, 0, 0.2)'; this.style.borderColor='rgba(255, 0, 0, 0.5)'; this.style.color='#ff5555';" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'; this.style.color='rgba(255, 255, 255, 0.8)';">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
-                    <div class="modal-body" style="padding: 30px;">
+                    <div class="modal-body" style="padding: 30px; overflow-y: auto; flex: 1;">
                         <p style="margin-bottom: 25px; color: rgba(255, 255, 255, 0.9); line-height: 1.6;">
                             Pilih data yang ingin dihapus:
                         </p>
@@ -1320,18 +1376,21 @@ class IslamHubApp {
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer" style="display: flex; gap: 10px; padding: 20px 30px; background: rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0 0 18px 18px;">
-                        <button id="btnCancelClear" style="flex: 1; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-                            Batal
+                    <div class="modal-footer" style="display: flex; gap: 10px; padding: 20px 30px; background: rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0 0 18px 18px; flex-shrink: 0;">
+                        <button id="btnCancelClear" style="flex: 1; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='rgba(255, 255, 255, 0.15)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.transform='translateY(0)';">
+                            <i class="fas fa-times-circle"></i> Batal
                         </button>
-                        <button id="btnConfirmClear" style="flex: 1; padding: 12px 24px; background: linear-gradient(135deg, #00ffff, #8a2be2); color: #000; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-                            Hapus Cache
+                        <button id="btnConfirmClear" style="flex: 1; padding: 12px 24px; background: linear-gradient(135deg, #00ffff, #8a2be2); color: #000; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(0, 255, 255, 0.6)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 255, 255, 0.4)';">
+                            <i class="fas fa-trash-alt"></i> Hapus Cache
                         </button>
                     </div>
                 </div>
             `;
             
+            console.log('✓ Modal HTML created, appending to body...');
             document.body.appendChild(modal);
+            console.log('✓ Modal appended to body. Modal display:', modal.style.display);
+            console.log('✓ Modal z-index:', modal.style.zIndex);
             
             // Add hover effects
             const cacheOptions = modal.querySelectorAll('.cache-option');
@@ -1351,16 +1410,28 @@ class IslamHubApp {
             });
             
             // Button handlers
+            const btnClose = modal.querySelector('#btnCloseModal');
             const btnCancel = modal.querySelector('#btnCancelClear');
             const btnConfirm = modal.querySelector('#btnConfirmClear');
             const checkboxQuran = modal.querySelector('#clearQuranCache');
             
+            console.log('Buttons found:', { btnClose, btnCancel, btnConfirm, checkboxQuran });
+            
+            // Close button (X)
+            btnClose.addEventListener('click', () => {
+                console.log('Close button (X) clicked');
+                modal.remove();
+                resolve(false);
+            });
+            
             btnCancel.addEventListener('click', () => {
+                console.log('Cancel button clicked');
                 modal.remove();
                 resolve(false);
             });
             
             btnConfirm.addEventListener('click', () => {
+                console.log('Confirm button clicked');
                 const clearQuran = checkboxQuran.checked;
                 modal.remove();
                 resolve({
@@ -1379,13 +1450,20 @@ class IslamHubApp {
     }
 
     async clearAllCache() {
-        // Show selection dialog
-        const shouldClear = await this.showCacheClearDialog();
-        if (!shouldClear) return;
-        
-        const loadingOverlay = this.showCacheLoadingOverlay();
+        console.log('🚀 clearAllCache() method called');
         
         try {
+            // Show selection dialog
+            const shouldClear = await this.showCacheClearDialog();
+            console.log('Dialog result:', shouldClear);
+            
+            if (!shouldClear) {
+                console.log('User cancelled cache clearing');
+                return;
+            }
+            
+            const loadingOverlay = this.showCacheLoadingOverlay();
+            
             console.log('Starting cache clearing process...');
             
             // First, hide any update notifications to stop the loop
@@ -1475,7 +1553,7 @@ class IslamHubApp {
         } catch (error) {
             console.error('Error clearing cache:', error);
             if (loadingOverlay) loadingOverlay.remove();
-            this.showDialog('error', 'Gagal membersihkan cache. Silakan coba lagi.');
+            this.showDialog('error', 'Gagal membersihkan cache: ' + error.message);
         }
     }
     
