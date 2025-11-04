@@ -828,6 +828,11 @@ export default class AlQuranApp {
         
         // Sidebar functionality
         this._setupSidebarContent();
+        
+        // Scroll to top when rendering new page
+        setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
     }
     
     _getSurahNumberForVerse(verseElement) {
@@ -1858,6 +1863,19 @@ export default class AlQuranApp {
     async loadPageData(pageNumber) {
         try {
             const pageStr = String(pageNumber).padStart(3, '0');
+            const storageKey = `alquran_page_${pageStr}`;
+            
+            // Check if data exists in localStorage (offline mode)
+            const offlineData = localStorage.getItem(storageKey);
+            if (offlineData) {
+                try {
+                    return JSON.parse(offlineData);
+                } catch (e) {
+                    console.warn('Failed to parse offline data, fetching from network:', e);
+                }
+            }
+            
+            // Fetch from network if not in localStorage
             const response = await fetch(`${this.basePath}/js/data/alquran/pages/Page${pageStr}.json`);
             
             if (!response.ok) {
@@ -2920,6 +2938,11 @@ export default class AlQuranApp {
         
         // Apply font settings to all Arabic text elements
         this._applyFontSettings();
+        
+        // Scroll to top when rendering new surah
+        setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
     }
     
     _setupVerseTracking(surahNumber) {
