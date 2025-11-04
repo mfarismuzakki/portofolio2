@@ -1060,22 +1060,12 @@ export default class AlQuranApp {
             e.stopPropagation();
             const surahNum = parseInt(btn.dataset.surah);
             
-            // Show loading state in modal
-            const modalContent = modal.querySelector('.modal-content');
-            const originalContent = modalContent.innerHTML;
-            modalContent.innerHTML = `
-                <div style="text-align: center; padding: 60px 20px;">
-                    <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
-                    <p style="color: var(--text-primary); font-size: 1.1rem;">Memuat surat...</p>
-                </div>
-            `;
+            // Close modal immediately and let inline loader handle loading state
+            modal.remove();
             
             try {
                 await this.readSurah(surahNum);
-                modal.remove();
             } catch (error) {
-                // Restore original content if error
-                modalContent.innerHTML = originalContent;
                 this._notify('Gagal memuat surat', 'error');
             }
         }));
@@ -1156,21 +1146,12 @@ export default class AlQuranApp {
         modal.querySelectorAll('.juz-card').forEach(c=>c.addEventListener('click', async ()=>{ 
             const juzNum = parseInt(c.querySelector('.juz-number').textContent);
             
-            // Show loading state
-            const modalContent = modal.querySelector('.modal-content');
-            const originalContent = modalContent.innerHTML;
-            modalContent.innerHTML = `
-                <div style="text-align: center; padding: 60px 20px;">
-                    <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
-                    <p style="color: var(--text-primary); font-size: 1.1rem;">Memuat juz...</p>
-                </div>
-            `;
+            // Close modal immediately and let inline loader handle loading state
+            modal.remove();
             
             try {
                 await this.readJuz(juzNum);
-                modal.remove();
             } catch (error) {
-                modalContent.innerHTML = originalContent;
                 this._notify('Gagal memuat juz', 'error');
             }
         }));

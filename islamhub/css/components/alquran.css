@@ -443,8 +443,8 @@
 
 .basmalah-arabic.amiri {
     font-family: 'Amiri Quran', 'Amiri', serif !important;
-    letter-spacing: 0.01em !important;
-    word-spacing: 0.03em !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
 }
 
 .arabic-text.scheherazade,
@@ -3125,13 +3125,13 @@
 
 .basmalah-arabic {
     font-family: 'Amiri Quran', 'KFGQPC Uthmani', 'Uthmanic Hafs', serif;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     color: rgba(255, 255, 255, 0.95);
     font-weight: 400;
     direction: rtl;
-    letter-spacing: 0.02em;
-    word-spacing: 0.05em;
-    line-height: 2;
+    letter-spacing: 0;
+    word-spacing: 0;
+    line-height: 1.8;
     display: block;
     text-align: center;
 }
@@ -3142,11 +3142,11 @@
 }
 
 .surah-mode.reading-view .basmalah-arabic {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     display: block;
     font-weight: 400;
-    letter-spacing: 0.02em;
-    word-spacing: 0.05em;
+    letter-spacing: 0;
+    word-spacing: 0;
     text-align: center !important;
 }
 
@@ -3166,11 +3166,11 @@
     padding: 2.5rem 3rem;
     text-align: justify;
     direction: rtl;
-    line-height: 2.2;
-    font-size: 2rem;
+    line-height: 1.8;
+    font-size: 1.75rem;
     max-width: 700px;
-    word-spacing: normal;
-    letter-spacing: normal;
+    word-spacing: 0;
+    letter-spacing: 0;
 }
 
 /* Remove any separation between verses in reading mode */
@@ -3234,12 +3234,12 @@
 /* Arabic text in reading mode - large, continuous, justified */
 .verse-arabic-inline {
     font-family: 'Uthmanic Hafs', 'KFGQPC Uthmani', 'Amiri Quran', serif !important;
-    font-size: 2rem;
-    line-height: 2.2;
+    font-size: 1.75rem;
+    line-height: 1.8;
     color: var(--text-primary);
     font-weight: 400;
-    letter-spacing: normal;
-    word-spacing: normal;
+    letter-spacing: 0;
+    word-spacing: 0;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     direction: rtl;
     text-align: justify;

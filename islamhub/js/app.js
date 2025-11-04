@@ -1273,7 +1273,116 @@ class IslamHubApp {
         }
     }
     
+    async showCacheClearDialog() {
+        return new Promise((resolve) => {
+            const modal = document.createElement('div');
+            modal.className = 'modal cache-clear-modal';
+            modal.style.display = 'flex';
+            modal.style.zIndex = '10000';
+            
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid rgba(0, 255, 255, 0.3); border-radius: 20px; padding: 0;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(138, 43, 226, 0.1)); padding: 25px; border-bottom: 1px solid rgba(0, 255, 255, 0.2);">
+                        <h3 style="margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 12px;">
+                            <i class="fas fa-trash-alt" style="color: var(--primary-cyan);"></i>
+                            Hapus Cache
+                        </h3>
+                    </div>
+                    <div class="modal-body" style="padding: 30px;">
+                        <p style="margin-bottom: 25px; color: rgba(255, 255, 255, 0.9); line-height: 1.6;">
+                            Pilih data yang ingin dihapus:
+                        </p>
+                        
+                        <div class="cache-options" style="display: flex; flex-direction: column; gap: 15px;">
+                            <label class="cache-option" style="display: flex; align-items: center; gap: 12px; padding: 15px; background: rgba(0, 255, 255, 0.05); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 12px; cursor: pointer; transition: all 0.3s;">
+                                <input type="checkbox" id="clearAppCache" checked style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary-cyan);">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Cache Aplikasi</div>
+                                    <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">HTML, CSS, JavaScript, dan aset lainnya</div>
+                                </div>
+                            </label>
+                            
+                            <label class="cache-option" style="display: flex; align-items: center; gap: 12px; padding: 15px; background: rgba(138, 43, 226, 0.05); border: 1px solid rgba(138, 43, 226, 0.2); border-radius: 12px; cursor: pointer; transition: all 0.3s;">
+                                <input type="checkbox" id="clearQuranCache" style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary-purple);">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Data Al-Quran <span style="color: var(--primary-cyan); font-size: 0.85rem;">(~2.5 GB)</span></div>
+                                    <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">Teks ayat dan audio offline</div>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 10px;">
+                            <div style="display: flex; gap: 10px; align-items: flex-start;">
+                                <i class="fas fa-info-circle" style="color: #ffc107; margin-top: 2px;"></i>
+                                <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.8); line-height: 1.5;">
+                                    <strong>Catatan:</strong> Pengaturan aplikasi dan lokasi akan tetap tersimpan. Jika tidak mencentang Al-Quran, data offline akan dipertahankan.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="display: flex; gap: 10px; padding: 20px 30px; background: rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0 0 18px 18px;">
+                        <button id="btnCancelClear" style="flex: 1; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                            Batal
+                        </button>
+                        <button id="btnConfirmClear" style="flex: 1; padding: 12px 24px; background: linear-gradient(135deg, #00ffff, #8a2be2); color: #000; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                            Hapus Cache
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Add hover effects
+            const cacheOptions = modal.querySelectorAll('.cache-option');
+            cacheOptions.forEach(option => {
+                option.addEventListener('mouseenter', () => {
+                    option.style.transform = 'translateX(5px)';
+                    option.style.background = option.querySelector('#clearAppCache') 
+                        ? 'rgba(0, 255, 255, 0.1)' 
+                        : 'rgba(138, 43, 226, 0.1)';
+                });
+                option.addEventListener('mouseleave', () => {
+                    option.style.transform = 'translateX(0)';
+                    option.style.background = option.querySelector('#clearAppCache') 
+                        ? 'rgba(0, 255, 255, 0.05)' 
+                        : 'rgba(138, 43, 226, 0.05)';
+                });
+            });
+            
+            // Button handlers
+            const btnCancel = modal.querySelector('#btnCancelClear');
+            const btnConfirm = modal.querySelector('#btnConfirmClear');
+            const checkboxQuran = modal.querySelector('#clearQuranCache');
+            
+            btnCancel.addEventListener('click', () => {
+                modal.remove();
+                resolve(false);
+            });
+            
+            btnConfirm.addEventListener('click', () => {
+                const clearQuran = checkboxQuran.checked;
+                modal.remove();
+                resolve({
+                    keepQuran: !clearQuran
+                });
+            });
+            
+            // Close on backdrop click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                    resolve(false);
+                }
+            });
+        });
+    }
+
     async clearAllCache() {
+        // Show selection dialog
+        const shouldClear = await this.showCacheClearDialog();
+        if (!shouldClear) return;
+        
         const loadingOverlay = this.showCacheLoadingOverlay();
         
         try {
@@ -1291,19 +1400,35 @@ class IslamHubApp {
                 }
             }
             
-            // 2. Clear all caches
+            // 2. Clear all caches (with exclusions)
             if ('caches' in window) {
                 const cacheNames = await caches.keys();
                 await Promise.all(
                     cacheNames.map(cacheName => {
+                        // Skip Al-Quran cache if user chose to keep it
+                        if (shouldClear.keepQuran && cacheName.includes('alquran')) {
+                            console.log('Keeping cache:', cacheName);
+                            return Promise.resolve();
+                        }
                         console.log('Deleting cache:', cacheName);
                         return caches.delete(cacheName);
                     })
                 );
             }
             
-            // 3. Clear localStorage (but keep user preferences)
+            // 3. Clear localStorage (but keep user preferences and Al-Quran if selected)
             const preserveKeys = ['islamhub_settings', 'islamhub_location'];
+            
+            // If keep Al-Quran is selected, preserve all alquran keys
+            if (shouldClear.keepQuran) {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.startsWith('alquran_') || key.includes('offline'))) {
+                        preserveKeys.push(key);
+                    }
+                }
+            }
+            
             const localStorageBackup = {};
             preserveKeys.forEach(key => {
                 const value = localStorage.getItem(key);
