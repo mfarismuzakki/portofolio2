@@ -1,0 +1,133 @@
+/* Posters2: Fresh Visual Direction (Sunnah-centric) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Scheherazade+New:wght@700&display=swap');
+
+:root{
+  --bg:#0b0f19;
+  --card:#0f1524;
+  --ink:#e6f7ff;
+  --ink-dim:#bfefff;
+  --primary:#5df2ff; /* softer cyan */
+  --accent:#ffd166;  /* warm gold */
+  --success:#23d997;
+  --danger:#ff6b6b;
+  --ring: 0 0 0 2px rgba(93,242,255,.25),0 10px 30px rgba(93,242,255,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:linear-gradient(160deg,#0b0f19 0%,#091324 100%);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;}
+.container{width:1080px;min-height:1080px;margin:0 auto;padding:40px;background:radial-gradient(1200px 1200px at 80% -10%,rgba(93,242,255,.08),transparent),
+linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0));border:1px solid rgba(93,242,255,.12);border-radius:28px;box-shadow:var(--ring);position:relative;overflow:hidden}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.brand{display:flex;gap:14px;align-items:center}
+.brand .logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#5df2ff,#00b8ff);display:grid;place-items:center;color:#001018;font-weight:900;box-shadow:0 6px 18px rgba(0,184,255,.35);overflow:hidden}
+.brand .logo img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+.brand .title{font-weight:900;font-size:28px;letter-spacing:.5px}
+.badge{padding:8px 14px;border:1px solid rgba(93,242,255,.25);border-radius:999px;color:var(--primary);font-weight:700;font-size:14px}
+.hero{margin:18px 0 28px}
+.h1{font-size:64px;line-height:1.1;font-weight:900;letter-spacing:.2px;background:linear-gradient(90deg,#5df2ff,#ffd166);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sub{margin-top:10px;color:var(--ink-dim);font-size:20px}
+.grid{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:linear-gradient(180deg,rgba(93,242,255,.05),rgba(93,242,255,.02));border:1px solid rgba(93,242,255,.15);border-radius:18px;padding:18px}
+.card h3{font-size:22px;margin-top:10px}
+.card p{color:#cfefff;font-size:16px;margin-top:6px}
+.icon{font-size:40px;color:var(--primary)}
+.icon i{font-size:40px;color:var(--primary)}
+.footer{margin-top:24px;display:flex;align-items:center;justify-content:space-between}
+.cta{display:flex;gap:12px;align-items:center}
+.btn{background:linear-gradient(90deg,#5df2ff,#00b8ff);color:#001018;border:none;padding:16px 26px;border-radius:14px;font-weight:800;cursor:pointer;box-shadow:0 8px 24px rgba(0,184,255,.35)}
+.link{color:var(--primary);font-weight:800;font-size:20px}
+.note{font-size:14px;color:#a8dfff}
+.hr{border:none;border-top:1px solid rgba(93,242,255,.15);margin:22px 0}
+.quran{font-family:'Scheherazade New', serif;font-size:30px;color:#a6f6ff}
+.caption{margin-top:16px;color:#afe7ff;font-size:16px}
+
+/* Portrait variant */
+.container.portrait{height:1350px}
+
+/* Utility */
+.row{display:flex;gap:14px;align-items:center}
+.kicker{color:#ffd166;font-weight:800;letter-spacing:.08em}
+.tag{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,209,102,.3);color:#ffd166;font-weight:700;font-size:13px}
+
+/* Coming Soon pill */
+.pill{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.3);color:#ffd166;font-weight:800}
+
+/* --- Device mockups & interactive hero --- */
+.hero-split{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:center}
+.phone-wrap{display:flex;justify-content:center;align-items:center;gap:14px;margin:8px 0}
+.phone-gallery{display:flex;gap:12px;justify-content:flex-start;flex-wrap:wrap;margin-top:10px}
+.phones-cluster{position:relative;min-height:580px;display:grid;place-items:center}
+.phone{--w:300px; width:var(--w); aspect-ratio:9/19.5; border-radius:32px;background:linear-gradient(180deg,rgba(93,242,255,.06),rgba(93,242,255,.02));border:1px solid rgba(93,242,255,.18);box-shadow:0 18px 48px rgba(0,0,0,.45);position:relative;overflow:hidden}
+.phone:before{content:"";position:absolute;top:10px;left:50%;transform:translateX(-50%);width:28%;height:8px;border-radius:8px;background:rgba(255,255,255,.18)}
+.screen{position:absolute;inset:18px 10px 12px 10px;border-radius:18px;overflow:hidden;background:#000;border:1px solid rgba(93,242,255,.12)}
+.screen>img{width:100%;height:100%;object-fit:contain;object-position:top center;display:block;background:#000;image-rendering:-webkit-optimize-contrast}
+.tilt{transform:rotate(-7deg)}
+.tilt-right{transform:rotate(9deg)}
+.phone-sm{--w:200px}
+.phone-md{--w:300px}
+.cluster-main{z-index:2}
+.cluster-left{position:absolute;left:6%;top:10%}
+.cluster-right{position:absolute;right:4%;bottom:8%}
+
+/* Features list */
+.features{margin-top:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.feature{display:flex;gap:10px;align-items:flex-start;background:rgba(93,242,255,.06);border:1px solid rgba(93,242,255,.16);border-radius:12px;padding:10px}
+.feature i{color:var(--primary);margin-top:2px}
+.feature strong{display:block}
+
+/* CTA bubble */
+.cta-bubble{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;text-align:center;font-weight:900;letter-spacing:.02em;color:#001018;background:radial-gradient(80% 80% at 50% 30%,#ffd166,#ffcd4d);box-shadow:0 12px 28px rgba(255,209,102,.35);border:1px solid rgba(255,209,102,.5)}
+
+/* Cuplikan App phone row */
+.phone-row{display:flex;gap:24px;justify-content:center;align-items:flex-end;margin-top:14px}
+.phone-card{flex:0 0 auto;display:flex;flex-direction:column;gap:8px;align-items:center}
+.phone-caption{font-size:14px;color:#a8dfff}
+.phone-xs{--w:240px}
+.phone-lg{--w:360px}
+.phone-xl{--w:440px}
+.screen.tight{inset:14px 8px 10px 8px;border-radius:16px}
+.screen.edge{inset:6px 5px 6px 5px;border-radius:12px}
+.screen.edge-max{inset:5px 4px 5px 4px;border-radius:10px}
+
+/* Export compact mode for square sizes to avoid clipping */
+.container.compact{padding:32px}
+.container.compact .header{margin-bottom:14px}
+.container.compact .h1{font-size:50px}
+.container.compact .sub{font-size:18px;margin-top:8px}
+.container.compact .hero{margin:10px 0 18px}
+.container.compact .badge{font-size:12px;padding:6px 10px}
+.container.compact .brand .title{font-size:24px}
+.container.compact .grid{gap:14px}
+.container.compact .card{padding:14px}
+.container.compact .card h3{font-size:18px;margin-top:6px}
+.container.compact .card p{font-size:14px}
+.container.compact .icon i{font-size:32px}
+.container.compact .features{gap:8px}
+.container.compact .feature{padding:8px}
+.container.compact .feature strong{font-weight:800}
+.container.compact .hr{margin:16px 0}
+.container.compact .phone-xl{--w:400px}
+.container.compact .phone-lg{--w:320px}
+.container.compact .phone-xs{--w:200px}
+.container.compact .phone-row{gap:18px}
+.container.compact .phone-caption{font-size:13px}
+
+/* Hide specific sections when compact to prevent cropping */
+.container.compact .coming-soon{display:none}
+
+/* Size-specific export tuning */
+.container.export-square .h1{font-size:48px}
+.container.export-square .brand .title{font-size:22px}
+.container.export-square .grid{gap:12px}
+.container.export-square .features{gap:6px}
+.container.export-landscape .h1{font-size:44px}
+.container.export-landscape .sub{font-size:16px}
+.container.export-landscape .grid{gap:12px}
+.container.export-landscape .phone-xl{--w:360px}
+.container.export-landscape .phone-lg{--w:300px}
+.container.export-landscape .phone-xs{--w:180px}
+
+/* Screenshot-only mode (remove phone frames) */
+.container.no-frame .phone{background:transparent;border:none;box-shadow:none;overflow:visible}
+.container.no-frame .phone:before{display:none}
+.container.no-frame .screen{position:static;inset:auto;border:0;border-radius:12px;background:transparent}
+.container.no-frame .screen>img{width:100%;height:auto;object-fit:contain;object-position:top center;background:transparent}
