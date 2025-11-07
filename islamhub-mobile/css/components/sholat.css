@@ -1,0 +1,922 @@
+/* ===== SHOLAT APP STYLES ===== */
+
+.sholat-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    padding-bottom: 20px;
+    min-height: 100vh;
+}
+
+/* ===== HEADER ===== */
+.sholat-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.sholat-header h2 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    color: var(--primary-cyan);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-orbitron);
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.sholat-header h2 i {
+    margin-right: 0.5rem;
+}
+
+.sholat-header p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+}
+
+/* ===== SEARCH BAR ===== */
+.sholat-search {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+}
+
+.sholat-search input {
+    width: 100%;
+    padding: 0.75rem 3rem 0.75rem 1rem;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 25px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.sholat-search input:focus {
+    outline: none;
+    border-color: var(--primary-cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.sholat-search i {
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-cyan);
+}
+
+.sholat-search .clear-search {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 59, 48, 0.2);
+    color: var(--pink);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+/* ===== TABS ===== */
+.sholat-tabs {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.sholat-tabs::-webkit-scrollbar {
+    height: 4px;
+}
+
+.sholat-tabs::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+.sholat-tab {
+    flex-shrink: 0;
+    padding: 0.75rem 1.5rem;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sholat-tab:hover {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: var(--primary-cyan);
+}
+
+.sholat-tab.active {
+    background: linear-gradient(135deg, var(--primary-cyan), var(--electric-blue));
+    border-color: transparent;
+    color: var(--dark-bg);
+    font-weight: 600;
+}
+
+.sholat-tab i {
+    font-size: 1rem;
+}
+
+/* ===== FILTERS ===== */
+.sholat-filters {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.sholat-filter-btn {
+    padding: 0.5rem 1.25rem;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.sholat-filter-btn:hover {
+    border-color: var(--primary-cyan);
+    color: #fff;
+}
+
+.sholat-filter-btn.active {
+    background: rgba(0, 255, 255, 0.15);
+    border-color: var(--primary-cyan);
+    color: var(--primary-cyan);
+}
+
+/* ===== CONTENT GRID ===== */
+.sholat-content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* ===== CARDS ===== */
+.sholat-card {
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.sholat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sholat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-cyan);
+    box-shadow: 0 8px 30px rgba(0, 255, 255, 0.3);
+}
+
+.sholat-card:hover::before {
+    opacity: 1;
+}
+
+.sholat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.sholat-icon {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+}
+
+.sholat-badge {
+    padding: 0.25rem 0.75rem;
+    background: rgba(0, 255, 255, 0.2);
+    border: 1px solid var(--primary-cyan);
+    border-radius: 12px;
+    color: var(--primary-cyan);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.sholat-tab-badge {
+    padding: 0.25rem 0.75rem;
+    background: rgba(255, 0, 255, 0.2);
+    border: 1px solid var(--pink);
+    border-radius: 12px;
+    color: var(--pink);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.sholat-title {
+    font-size: 1.25rem;
+    color: #fff;
+    margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+.sholat-arabic {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.95);
+    text-align: right;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-scheherazade);
+    line-height: 2;
+    position: relative;
+    z-index: 1;
+}
+
+.sholat-latin {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+    margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+.sholat-description {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+}
+
+.sholat-ruling {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.2));
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    border-radius: 12px;
+    color: #FFD700;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+.sholat-variations-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    background: rgba(138, 43, 226, 0.2);
+    border: 1px solid rgba(138, 43, 226, 0.4);
+    border-radius: 12px;
+    color: #BA55D3;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== MODAL ===== */
+.sholat-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.sholat-modal-content {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(10, 10, 30, 0.98), rgba(20, 20, 40, 0.98));
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    position: relative;
+}
+
+.sholat-modal-header {
+    position: sticky;
+    top: 0;
+    background: rgba(10, 10, 15, 0.95);
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.sholat-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.sholat-modal-header h2 {
+    color: var(--primary-cyan);
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    margin: 0;
+    line-height: 1.3;
+    word-break: break-word;
+    font-family: var(--font-rajdhani);
+    font-weight: 600;
+}
+
+.sholat-modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.sholat-favorite-btn {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: var(--primary-cyan);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.sholat-favorite-btn:hover {
+    background: rgba(0, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.sholat-favorite-btn.active {
+    background: rgba(255, 59, 48, 0.2);
+    border-color: var(--pink);
+    color: var(--pink);
+}
+
+.sholat-favorite-btn.active:hover {
+    background: rgba(255, 59, 48, 0.3);
+}
+
+.sholat-copy-btn {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: var(--primary-cyan);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.sholat-copy-btn:hover {
+    background: rgba(0, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.sholat-copy-btn.copied {
+    background: rgba(0, 255, 0, 0.2);
+    border-color: #00ff00;
+    color: #00ff00;
+}
+
+.sholat-modal-back {
+    background: none;
+    border: none;
+    color: var(--primary-cyan);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.sholat-modal-back:hover {
+    transform: translateX(-5px);
+}
+
+.sholat-modal-body {
+    padding: 1rem;
+    padding-bottom: 20px;
+}
+
+/* ===== DETAIL CONTENT ===== */
+.sholat-detail-content {
+    color: #fff;
+    margin-top: 1.5rem;
+}
+
+.sholat-detail-icon {
+    font-size: 4rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.5));
+}
+
+.sholat-detail-section {
+    margin-bottom: 2rem;
+    padding: 0 0.5rem 0 1rem;
+}
+
+.sholat-detail-section h4 {
+    color: var(--primary-cyan);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.sholat-detail-section h4 i {
+    font-size: 1rem;
+}
+
+.sholat-detail-arabic {
+    font-family: var(--font-scheherazade);
+    font-size: 1.8rem;
+    line-height: 2.5;
+    color: rgba(255, 255, 255, 0.95);
+    text-align: right;
+    direction: rtl;
+    background: rgba(0, 255, 255, 0.03);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    margin-bottom: 1.5rem;
+}
+
+.sholat-detail-latin {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.85);
+    font-style: italic;
+    background: rgba(0, 128, 255, 0.05);
+    padding: 1.25rem;
+    border-radius: 12px;
+    border-left: 3px solid var(--electric-blue);
+    margin-bottom: 1.5rem;
+}
+
+.sholat-detail-translation {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 255, 255, 0.03);
+    padding: 1.25rem;
+    border-radius: 12px;
+    border-left: 3px solid var(--primary-cyan);
+    margin-bottom: 1.5rem;
+}
+
+.sholat-ruling-badge {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.2));
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    border-radius: 20px;
+    color: #FFD700;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* ===== DALIL CARDS ===== */
+.sholat-dalil-card {
+    background: rgba(0, 255, 255, 0.03);
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.sholat-dalil-card:last-child {
+    margin-bottom: 0;
+}
+
+.dalil-source {
+    color: var(--primary-cyan);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.dalil-arabic {
+    font-family: var(--font-scheherazade);
+    font-size: 1.4rem;
+    line-height: 2.2;
+    color: rgba(255, 255, 255, 0.95);
+    text-align: right;
+    direction: rtl;
+    margin-bottom: 0.75rem;
+}
+
+.dalil-translation {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    font-style: italic;
+}
+
+/* ===== VARIATION CARDS ===== */
+.sholat-variation-card {
+    background: rgba(138, 43, 226, 0.05);
+    border: 1px solid rgba(138, 43, 226, 0.2);
+    border-radius: 10px;
+    padding: 1.25rem;
+}
+
+.variation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.variation-number {
+    color: #BA55D3;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.variation-frequency {
+    background: rgba(138, 43, 226, 0.2);
+    border: 1px solid rgba(138, 43, 226, 0.3);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    color: #BA55D3;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.variation-note {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(0, 255, 255, 0.05);
+    border-left: 3px solid rgba(0, 255, 255, 0.3);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+}
+
+.variation-note i {
+    color: var(--primary-cyan);
+    margin-right: 0.5rem;
+}
+
+/* ===== TIPS & WARNING ===== */
+.sholat-tips {
+    background: rgba(0, 255, 100, 0.08);
+    border-left: 3px solid #00ff64;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.sholat-tips h4 {
+    color: #00ff64;
+    margin-bottom: 1rem;
+}
+
+.sholat-tips p,
+.sholat-tips ul li {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+}
+
+.sholat-warning {
+    background: rgba(255, 165, 0, 0.08);
+    border-left: 3px solid #FFA500;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.sholat-warning p,
+.sholat-warning ul li {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+}
+
+/* Benefit Section */
+.sholat-benefit {
+    background: rgba(0, 255, 100, 0.08);
+    border-left: 3px solid #00ff64;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.sholat-benefit h4 {
+    color: #00ff64;
+    margin-bottom: 1rem;
+}
+
+.sholat-benefit p {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Reference Section */
+.sholat-reference {
+    background: rgba(2550, 193, 7, 0.08);
+    border-left: 3px solid #ffc107;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0;
+    margin-bottom: 1rem;
+}
+
+.sholat-warning p,
+.sholat-warning ul li {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+}
+
+/* Benefit Section */
+.sholat-benefit {
+    background: rgba(0, 255, 100, 0.08);
+    border-left: 3px solid #00ff64;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.sholat-benefit h4 {
+    color: #00ff64;
+    margin-bottom: 1rem;
+}
+
+.sholat-benefit p {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Reference Section */
+.sholat-reference {
+    background: rgba(255, 193, 7, 0.08);
+    border-left: 3px solid #ffc107;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 1.5rem;
+}
+
+.sholat-detail-section ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.sholat-detail-section ul li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.sholat-detail-section ul li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--primary-cyan);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: rgba(255, 255, 255, 0.5);
+    grid-column: 1 / -1;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+}
+
+/* ===== LOADING PLACEHOLDER ===== */
+.loading-placeholder {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--primary-cyan);
+    grid-column: 1 / -1;
+}
+
+.loading-placeholder i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    animation: spin 1s linear infinite;
+}
+
+.loading-placeholder p {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .sholat-content-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .sholat-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .sholat-tabs {
+        gap: 0.5rem;
+        justify-content: flex-start;
+        max-width: 100%;
+    }
+    
+    .sholat-tab {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .sholat-modal {
+        padding: 0;
+    }
+    
+    .sholat-modal-body {
+        padding: 0;
+        padding-bottom: 20px;
+    }
+    
+    .sholat-detail-arabic {
+        font-size: 1.5rem;
+    }
+    
+    .dalil-arabic {
+        font-size: 1.2rem;
+    }
+}
+
+/* ===== SCROLLBAR ===== */
+.sholat-modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sholat-modal-content::-webkit-scrollbar-track {
+    background: rgba(0, 255, 255, 0.05);
+}
+
+.sholat-modal-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.sholat-modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 255, 0.5);
+}
+
+/* ===== TOAST NOTIFICATION ===== */
+.toast-notification {
+    position: fixed !important;
+    bottom: 100px !important;
+    left: 50% !important;
+    transform: translateX(-50%) translateY(100px) !important;
+    background: rgba(0, 255, 255, 0.95) !important;
+    color: var(--dark-bg) !important;
+    padding: 1rem 2rem !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    z-index: 10001 !important;
+    opacity: 0 !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 20px rgba(0, 255, 255, 0.5) !important;
+    pointer-events: none !important;
+}
+
+.toast-notification.show {
+    opacity: 1 !important;
+    transform: translateX(-50%) translateY(0) !important;
+}
+
+.sholat-toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.95), rgba(0, 200, 200, 0.95));
+    color: #000;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.5);
+    z-index: 10000;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.sholat-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.sholat-toast i {
+    font-size: 1.2rem;
+}
+
+/* ===== FAVORITE CARD DELETE BUTTON ===== */
+.sholat-favorite-card {
+    position: relative;
+}
+
+.sholat-delete-favorite {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: rgba(255, 0, 110, 0.2);
+    border: 1px solid rgba(255, 0, 110, 0.4);
+    color: #ff006e;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    opacity: 1;
+}
+
+.sholat-delete-favorite:hover {
+    background: rgba(255, 0, 110, 0.3);
+    border-color: #ff006e;
+    transform: scale(1.1);
+}
+
+.sholat-delete-favorite i {
+    font-size: 0.9rem;
+}

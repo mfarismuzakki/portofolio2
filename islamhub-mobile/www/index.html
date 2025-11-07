@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IslamHub - Aplikasi Islam Terpadu</title>
+    <meta name="description" content="Platform terpadu aplikasi Islam: Adzan, Dzikir, Waris, Qibla, Tata Cara Sholat, dan Sirah Nabi">
+    
+    <!-- Cache Control - Force revalidation -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Arabic Quran Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+        <!-- Styles - Modular CSS Architecture -->
+    <link rel="stylesheet" href="css/style-modular.css?v=1.3.1">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00ffff">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="cyber-grid"></div>
+    <div class="floating-particles"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+            </div>
+            <h3>IslamHub</h3>
+            <p>Memuat aplikasi...</p>
+        </div>
+    </div>
+    
+    <!-- Update Available Notification -->
+    <div class="update-notification" id="updateNotification" style="display: none;">
+        <div class="update-content">
+            <div class="update-icon">
+                <i class="fas fa-sync-alt"></i>
+            </div>
+            <div class="update-text">
+                <h4>Versi Baru Tersedia!</h4>
+                <p>Aplikasi telah diperbarui. Bersihkan cache untuk mendapatkan fitur terbaru.</p>
+            </div>
+            <div class="update-actions">
+                <button class="update-btn-primary" id="updateNowBtn">
+                    <i class="fas fa-download"></i> Update Sekarang
+                </button>
+                <button class="update-btn-secondary" id="updateLaterBtn">
+                    <i class="fas fa-times"></i> Nanti
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SuperApps Container -->
+    <div class="superapps-container">
+        <!-- Content Area -->
+        <main class="app-content" id="appContent">
+            <!-- Home Component -->
+            <div id="home-app" class="app-component active" data-app="home">
+                <div class="home-hero">
+                    <!-- Logo -->
+                    <!-- <div class="app-logo">
+                        <i class="fas fa-mosque"></i>
+                        <span>IslamHub</span>
+                    </div> -->
+                    
+                    <h1 class="hero-title">
+                        <span class="title-line">ISLAMIC</span>
+                        <span class="title-line glow">APPLICATIONS</span>
+                        <span class="title-line">HUB</span>
+                    </h1>
+                    
+                    <!-- Hadith Ticker Carousel -->
+                    <div class="hadith-ticker">
+                        <div class="hadith-content" id="hadithContent">
+                            <div class="hadith-text-container">
+                                <div class="hadith-arabic" id="hadithArabic">Loading...</div>
+                                <div class="hadith-indonesia" id="hadithIndonesia">Memuat hadith...</div>
+                                <div class="hadith-reference" id="hadithReference">-</div>
+                            </div>
+                        </div>
+                        <div class="hadith-controls">
+                            <button class="hadith-btn" id="prevHadith" title="Hadist Sebelumnya">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="hadith-btn" id="playPauseHadith" title="Pause/Play Auto">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <button class="hadith-btn" id="nextHadith" title="Hadist Selanjutnya">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="hadith-progress">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" data-target="8">8</span>
+                            <span class="stat-label">Aplikasi Tersedia</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" data-target="1">1</span>
+                            <span class="stat-label">Segera Hadir</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Download Al-Quran Highlight Card -->
+                    <div class="download-alquran-card" onclick="window.islamHub.switchApp('alquran')">
+                        <div class="download-card-icon">
+                            <i class="fas fa-book-quran"></i>
+                        </div>
+                        <div class="download-card-content">
+                            <h3><i class="fas fa-download"></i> Download Al-Quran Offline</h3>
+                            <p>Akses mushaf digital lengkap dengan audio murottal tanpa internet. Hemat kuota, loading super cepat!</p>
+                            <div class="download-features">
+                                <span class="feature-badge"><i class="fas fa-book"></i> 604 Halaman</span>
+                                <span class="feature-badge"><i class="fas fa-volume-up"></i> Audio Lengkap</span>
+                                <span class="feature-badge"><i class="fas fa-wifi-slash"></i> Mode Offline</span>
+                            </div>
+                        </div>
+                        <div class="download-card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <!-- Apps Grid -->
+                <div class="apps-grid">
+                    <div class="app-card" onclick="window.islamHub.switchApp('adzan')">
+                        <div class="app-badge live">LIVE</div>
+                        <div class="app-icon">
+                            <i class="fas fa-mosque"></i>
+                        </div>
+                        <h3>Waktu Adzan</h3>
+                        <p>Jadwal waktu sholat real-time dengan countdown otomatis</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('alquran')">
+                        <div class="app-badge beta">UJICOBA</div>
+                        <div class="app-icon">
+                            <i class="fas fa-book-quran"></i>
+                        </div>
+                        <h3>Al-Qur'an</h3>
+                        <p>Mushaf digital dengan audio per halaman dan fitur hafalan</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('dzikir')">
+                        <div class="app-badge live">LIVE</div>
+                        <div class="app-icon">
+                            <i class="fas fa-hands"></i>
+                        </div>
+                        <h3>Dzikir & Doa</h3>
+                        <p>Kumpulan dzikir dan doa harian dari Al-Quran dan hadist</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('waris')">
+                        <div class="app-badge beta">UJICOBA</div>
+                        <div class="app-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h3>Kalkulator Waris</h3>
+                        <p>Hitung pembagian warisan sesuai syariat Islam</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('qibla')">
+                        <div class="app-badge beta">UJICOBA</div>
+                        <div class="app-icon">
+                            <i class="fas fa-compass"></i>
+                        </div>
+                        <h3>Arah Kiblat</h3>
+                        <p>Temukan arah kiblat dengan kompas digital</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('sirah')">
+                        <div class="app-badge beta">UJICOBA</div>
+                        <div class="app-icon">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                        <h3>Sirah Nabi</h3>
+                        <p>Kisah kehidupan para nabi, rasul, dan sahabat</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('sholat')">
+                        <div class="app-badge live">LIVE</div>
+                        <div class="app-icon">
+                            <i class="fas fa-mosque"></i>
+                        </div>
+                        <h3>Tata Cara Sholat</h3>
+                        <p>Panduan lengkap tata cara sholat dengan bacaan dan dalil</p>
+                    </div>
+
+                    <div class="app-card coming-soon">
+                        <div class="app-badge soon">SEGERA</div>
+                        <div class="app-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>Tanya Jawab Islam</h3>
+                        <p>Konsultasi dan tanya jawab Islam dengan jawaban terkurasi sesuai pemahaman Islam yang lurus berdasarkan Al-Quran dan Sunnah</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Adzan Component -->
+            <div id="adzan-app" class="app-component" data-app="adzan">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat aplikasi Adzan...</p>
+                </div>
+            </div>
+
+            <!-- Dzikir Component -->
+            <div id="dzikir-app" class="app-component" data-app="dzikir">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat aplikasi Dzikir...</p>
+                </div>
+            </div>
+
+            <!-- Al-Quran Component -->
+            <div id="alquran-app" class="app-component" data-app="alquran">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat Al-Qur'an Digital...</p>
+                </div>
+            </div>
+
+            <!-- Waris Component -->
+            <div id="waris-app" class="app-component" data-app="waris">
+                <!-- Waris Home -->
+                <div id="waris-home" class="waris-home">
+                    <div class="waris-header">
+                        <h2><i class="fas fa-balance-scale"></i> Kalkulator Waris Syar'i</h2>
+                        <p>Perhitungan waris berdasarkan Al-Qur'an dan Sunnah dengan dalil lengkap</p>
+                    </div>
+
+                    <!-- Menu Cards -->
+                    <div class="waris-menu-grid">
+                        <div class="waris-menu-card" onclick="window.warisApp.showCalculator()">
+                            <div class="waris-menu-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h3>Perhitungan Baru</h3>
+                            <p>Mulai perhitungan waris baru dengan data Anda</p>
+                        </div>
+
+                        <div class="waris-menu-card" onclick="window.warisApp.showExamples()">
+                            <div class="waris-menu-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <h3>Contoh Perhitungan</h3>
+                            <p>Lihat contoh kasus waris yang umum terjadi</p>
+                        </div>
+
+                        <div class="waris-menu-card" onclick="window.warisApp.showFavorites()">
+                            <div class="waris-menu-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <h3>Favorit</h3>
+                            <p>Simpan dan akses perhitungan favorit</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Favorites Page -->
+                <div id="waris-favorites" class="waris-favorites" style="display: none;">
+                    <div class="waris-header">
+                        <h2><i class="fas fa-star"></i> Perhitungan Favorit</h2>
+                        <p>Akses cepat ke perhitungan yang telah Anda simpan</p>
+                    </div>
+
+                    <div id="waris-favorites-list" class="waris-favorites-list">
+                        <!-- Favorites will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Examples Page -->
+                <div id="waris-examples" class="waris-examples" style="display: none;">
+                    <div class="waris-header">
+                        <h2><i class="fas fa-file-alt"></i> Contoh Perhitungan Waris</h2>
+                        <p>Pilih salah satu contoh kasus untuk melihat perhitungannya</p>
+                    </div>
+
+                    <div class="waris-examples-grid">
+                        <div class="waris-example-card" data-example="umariyah">
+                            <div class="example-badge">Kasus Klasik</div>
+                            <h3>Masalah Umariyah</h3>
+                            <div class="example-case">
+                                <p><strong>Kasus:</strong> Suami + Ibu + Ayah</p>
+                                <p><strong>Harta:</strong> Rp 120.000.000</p>
+                            </div>
+                            <div class="example-heirs">
+                                <span class="heir-tag"><i class="fas fa-male"></i> Suami</span>
+                                <span class="heir-tag"><i class="fas fa-female"></i> Ibu</span>
+                                <span class="heir-tag"><i class="fas fa-male"></i> Ayah</span>
+                            </div>
+                            <button class="waris-btn waris-btn-primary" onclick="window.warisApp.loadExample('umariyah')">
+                                <i class="fas fa-eye"></i> Lihat Perhitungan
+                            </button>
+                        </div>
+
+                        <div class="waris-example-card" data-example="awl">
+                            <div class="example-badge">Awl</div>
+                            <h3>Kasus Awl (Pengurangan)</h3>
+                            <div class="example-case">
+                                <p><strong>Kasus:</strong> Suami + 2 Anak Perempuan + Ibu</p>
+                                <p><strong>Harta:</strong> Rp 100.000.000</p>
+                            </div>
+                            <div class="example-heirs">
+                                <span class="heir-tag"><i class="fas fa-male"></i> Suami</span>
+                                <span class="heir-tag"><i class="fas fa-female"></i> 2 Putri</span>
+                                <span class="heir-tag"><i class="fas fa-female"></i> Ibu</span>
+                            </div>
+                            <button class="waris-btn waris-btn-primary" onclick="window.warisApp.loadExample('awl')">
+                                <i class="fas fa-eye"></i> Lihat Perhitungan
+                            </button>
+                        </div>
+
+                        <div class="waris-example-card" data-example="radd">
+                            <div class="example-badge">Radd</div>
+                            <h3>Kasus Radd (Pengembalian)</h3>
+                            <div class="example-case">
+                                <p><strong>Kasus:</strong> Istri + 1 Anak Perempuan</p>
+                                <p><strong>Harta:</strong> Rp 90.000.000</p>
+                            </div>
+                            <div class="example-heirs">
+                                <span class="heir-tag"><i class="fas fa-female"></i> Istri</span>
+                                <span class="heir-tag"><i class="fas fa-female"></i> Putri</span>
+                            </div>
+                            <button class="waris-btn waris-btn-primary" onclick="window.warisApp.loadExample('radd')">
+                                <i class="fas fa-eye"></i> Lihat Perhitungan
+                            </button>
+                        </div>
+
+                        <div class="waris-example-card" data-example="asabah">
+                            <div class="example-badge">Asabah</div>
+                            <h3>Kasus Asabah (Sisa)</h3>
+                            <div class="example-case">
+                                <p><strong>Kasus:</strong> Istri + 2 Anak Laki + 1 Anak Perempuan</p>
+                                <p><strong>Harta:</strong> Rp 200.000.000</p>
+                            </div>
+                            <div class="example-heirs">
+                                <span class="heir-tag"><i class="fas fa-female"></i> Istri</span>
+                                <span class="heir-tag"><i class="fas fa-male"></i> 2 Putra</span>
+                                <span class="heir-tag"><i class="fas fa-female"></i> Putri</span>
+                            </div>
+                            <button class="waris-btn waris-btn-primary" onclick="window.warisApp.loadExample('asabah')">
+                                <i class="fas fa-eye"></i> Lihat Perhitungan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculator Page -->
+                <div id="waris-calculator" class="waris-calculator" style="display: none;">
+                    <div class="waris-header">
+                        <h2><i class="fas fa-calculator"></i> Perhitungan Waris</h2>
+                    </div>
+
+                <!-- Wizard Container -->
+                <div class="waris-wizard-container">
+                    <!-- Progress Bar -->
+                    <div class="waris-progress-bar">
+                        <div class="waris-progress-step active">
+                            <div class="waris-step-circle">1</div>
+                            <span class="waris-step-label">Tirkah</span>
+                        </div>
+                        <div class="waris-progress-step">
+                            <div class="waris-step-circle">2</div>
+                            <span class="waris-step-label">Ahli Waris</span>
+                        </div>
+                        <div class="waris-progress-step">
+                            <div class="waris-step-circle">3</div>
+                            <span class="waris-step-label">Hasil</span>
+                        </div>
+                    </div>
+
+                    <!-- Wizard Content -->
+                    <div class="waris-wizard-content">
+                        <!-- Step 1: Tirkah (Harta yang Ditinggalkan) -->
+                        <div id="waris-step1" class="waris-wizard-step active">
+                            <div class="waris-form-group">
+                                <label><i class="fas fa-coins"></i> Total Harta yang Ditinggalkan</label>
+                                <div class="waris-input-group">
+                                    <span class="waris-input-prefix">Rp</span>
+                                    <input type="text" id="waris-totalAssets" placeholder="0" inputmode="numeric">
+                                </div>
+                            </div>
+
+                            <div class="waris-form-group">
+                                <label><i class="fas fa-hand-holding-heart"></i> Biaya Pemakaman</label>
+                                <div class="waris-input-group">
+                                    <span class="waris-input-prefix">Rp</span>
+                                    <input type="text" id="waris-funeralCosts" placeholder="0" inputmode="numeric">
+                                </div>
+                            </div>
+
+                            <div class="waris-form-group">
+                                <label><i class="fas fa-file-invoice-dollar"></i> Hutang yang Harus Dibayar</label>
+                                <div class="waris-input-group">
+                                    <span class="waris-input-prefix">Rp</span>
+                                    <input type="text" id="waris-debts" placeholder="0" inputmode="numeric">
+                                </div>
+                            </div>
+
+                            <div class="waris-form-group">
+                                <label><i class="fas fa-scroll"></i> Wasiat (maksimal 1/3 harta bersih)</label>
+                                <div class="waris-input-group">
+                                    <span class="waris-input-prefix">Rp</span>
+                                    <input type="text" id="waris-wasiat" placeholder="0" inputmode="numeric">
+                                </div>
+                            </div>
+
+                            <!-- Summary -->
+                            <div class="waris-tirkah-summary">
+                                <h4><i class="fas fa-calculator"></i> Ringkasan</h4>
+                                <div class="waris-summary-row">
+                                    <span class="waris-summary-label">Total Harta</span>
+                                    <span class="waris-summary-value" id="waris-summaryAssets">Rp 0</span>
+                                </div>
+                                <div class="waris-summary-row">
+                                    <span class="waris-summary-label">Biaya & Hutang</span>
+                                    <span class="waris-summary-value" id="waris-summaryDeductions">Rp 0</span>
+                                </div>
+                                <div class="waris-summary-row">
+                                    <span class="waris-summary-label">Wasiat</span>
+                                    <span class="waris-summary-value" id="waris-summaryWasiat">Rp 0</span>
+                                </div>
+                                <div class="waris-summary-row">
+                                    <span class="waris-summary-label"><strong>Harta yang Dibagi</strong></span>
+                                    <span class="waris-summary-value" id="waris-summaryNet">Rp 0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Ahli Waris -->
+                        <div id="waris-step2" class="waris-wizard-step">
+                            <!-- Suami/Istri -->
+                            <div class="waris-heirs-section">
+                                <h4><i class="fas fa-ring"></i> Pasangan</h4>
+                                <div class="waris-heir-option">
+                                    <div class="waris-radio-group">
+                                        <input type="radio" id="waris-husband" name="waris-spouse" value="husband">
+                                        <label for="waris-husband">Suami</label>
+                                    </div>
+                                </div>
+                                <div class="waris-heir-option">
+                                    <div class="waris-radio-group">
+                                        <input type="radio" id="waris-wife" name="waris-spouse" value="wife">
+                                        <label for="waris-wife">Istri</label>
+                                    </div>
+                                    <div id="waris-wifeCount" class="waris-count-input">
+                                        <label>Jumlah istri:</label>
+                                        <input type="number" id="waris-wifeNumber" min="1" max="4" value="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Orang Tua -->
+                            <div class="waris-heirs-section">
+                                <h4><i class="fas fa-user-friends"></i> Orang Tua</h4>
+                                <div class="waris-heir-option">
+                                    <div class="waris-checkbox-group">
+                                        <input type="checkbox" id="waris-father" name="waris-father">
+                                        <label for="waris-father">Ayah</label>
+                                    </div>
+                                </div>
+                                <div class="waris-heir-option">
+                                    <div class="waris-checkbox-group">
+                                        <input type="checkbox" id="waris-mother" name="waris-mother">
+                                        <label for="waris-mother">Ibu</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Anak -->
+                            <div class="waris-heirs-section">
+                                <h4><i class="fas fa-child"></i> Anak</h4>
+                                <div class="waris-heir-option">
+                                    <div class="waris-checkbox-group">
+                                        <input type="checkbox" id="waris-sons" name="waris-sons">
+                                        <label for="waris-sons">Anak Laki-laki</label>
+                                    </div>
+                                    <div id="waris-sonsCount" class="waris-count-input">
+                                        <label>Jumlah:</label>
+                                        <input type="number" id="waris-sonsNumber" min="1" value="1">
+                                    </div>
+                                </div>
+                                <div class="waris-heir-option">
+                                    <div class="waris-checkbox-group">
+                                        <input type="checkbox" id="waris-daughters" name="waris-daughters">
+                                        <label for="waris-daughters">Anak Perempuan</label>
+                                    </div>
+                                    <div id="waris-daughtersCount" class="waris-count-input">
+                                        <label>Jumlah:</label>
+                                        <input type="number" id="waris-daughtersNumber" min="1" value="1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Hasil -->
+                        <div id="waris-step3" class="waris-wizard-step">
+                            <div id="waris-resultsContent">
+                                <!-- Results will be rendered here by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="waris-wizard-nav">
+                        <button id="waris-backToHomeBtn" class="waris-btn waris-btn-secondary" style="display: none;">
+                            <i class="fas fa-home"></i> Halaman Utama
+                        </button>
+                        <button id="waris-prevBtn" class="waris-btn waris-btn-secondary" style="display: none;">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </button>
+                        <button id="waris-nextBtn" class="waris-btn waris-btn-primary">
+                            Lanjut <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button id="waris-calculateBtn" class="waris-btn waris-btn-primary" style="display: none;">
+                            <i class="fas fa-calculator"></i> Hitung Waris
+                        </button>
+                        <button id="waris-homeBtn" class="waris-btn waris-btn-secondary" style="display: none;">
+                            <i class="fas fa-home"></i> Halaman Utama
+                        </button>
+                        <button id="waris-favoriteBtn" class="waris-btn waris-btn-favorite" style="display: none;">
+                            <i class="far fa-star"></i> Simpan ke Favorit
+                        </button>
+                        <button id="waris-resetBtn" class="waris-btn waris-btn-reset" style="display: none;">
+                            <i class="fas fa-redo"></i> Hitung Ulang
+                        </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- Qibla Component -->
+            <div id="qibla-app" class="app-component" data-app="qibla">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat aplikasi Qibla...</p>
+                </div>
+            </div>
+
+            <!-- Sholat Component -->
+            <div id="sholat-app" class="app-component" data-app="sholat">
+                <div class="sholat-container">
+                    <!-- Header -->
+                    <div class="sholat-header">
+                        <h2><i class="fas fa-kaaba"></i> Tata Cara Sholat</h2>
+                        <p>Panduan lengkap rukun, bacaan, dan sunnah sholat berdasarkan Al-Quran & Hadits</p>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="sholat-search">
+                        <input type="text" id="sholatSearchInput" placeholder="Cari rukun, bacaan, atau sunnah sholat...">
+                        <i class="fas fa-search"></i>
+                        <button class="clear-search" id="sholatClearSearch">×</button>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="sholat-tabs">
+                        <button class="sholat-tab active" data-tab="rukun">
+                            <i class="fas fa-check-circle"></i> Rukun Sholat
+                        </button>
+                        <button class="sholat-tab" data-tab="syarat">
+                            <i class="fas fa-list-check"></i> Syarat Sholat
+                        </button>
+                        <button class="sholat-tab" data-tab="bacaan">
+                            <i class="fas fa-book-open"></i> Bacaan Sholat
+                        </button>
+                        <button class="sholat-tab" data-tab="sunnah">
+                            <i class="fas fa-star"></i> Sunnah Sholat
+                        </button>
+                        <button class="sholat-tab" data-tab="favorit">
+                            <i class="fas fa-heart"></i> Favorit
+                        </button>
+                    </div>
+
+                    <!-- Filters (dynamic based on tab) -->
+                    <!-- <div class="sholat-filters" id="sholatFilters">
+                        <button class="sholat-filter-btn active" data-filter="all">Semua</button>
+                        <button class="sholat-filter-btn" data-filter="rukun">Rukun</button>
+                        <button class="sholat-filter-btn" data-filter="syarat">Syarat</button>
+                    </div> -->
+
+                    <!-- Content Grid -->
+                    <div class="sholat-content-grid" id="sholatContentGrid">
+                        <!-- Content will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Detail Modal -->
+                <div class="sholat-modal" id="sholatModal">
+                    <div class="sholat-modal-content">
+                        <div class="sholat-modal-header">
+                            <div class="sholat-modal-title">
+                                <button class="sholat-modal-back" onclick="window.sholatApp.closeModal()">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                                <h2 id="sholatModalTitle">Detail</h2>
+                            </div>
+                            <div class="sholat-modal-actions">
+                                <button class="sholat-copy-btn" id="sholatCopyBtn" onclick="window.sholatApp.copyContent()" title="Salin teks">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button class="sholat-favorite-btn" id="sholatFavoriteBtn" onclick="window.sholatApp.toggleFavorite()" title="Tambah ke favorit">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="sholat-modal-body" id="sholatModalContent">
+                            <!-- Modal content will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sirah Component -->
+            <div id="sirah-app" class="app-component" data-app="sirah">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat aplikasi Sirah Nabi...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Floating Prayer Widget -->
+        <div class="floating-prayer-widget" id="floatingPrayerWidget" style="display: none;" onclick="window.islamHub.switchApp('adzan')">
+            <div class="widget-content">
+                <div class="widget-icon">
+                    <i class="fas fa-mosque"></i>
+                </div>
+                <div class="widget-info">
+                    <div class="widget-prayer-name" id="widgetPrayerName">Dzuhur</div>
+                    <div class="widget-countdown" id="widgetCountdown">01:23:45</div>
+                    <div class="widget-city" id="widgetCity">Jakarta</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-section source-section">
+                    <div class="footer-icon-text">
+                        <i class="fas fa-database"></i>
+                        <p>Sumber: Al-Qur'an, Hadist Shahih, dan Kitab Para Ulama</p>
+                    </div>
+                </div>
+                
+                                <div class="footer-section">
+                    <div class="footer-icon-text">
+                        <i class="fab fa-instagram"></i>
+                        <p><a href="https://instagram.com/mfarismuzakki" target="_blank" rel="noopener" style="color: var(--primary-cyan); text-decoration: none;">Sampaikan melalui Instagram kami</a> untuk kesalahan konten, saran, bug, atau pengembangan fitur.</p>
+                    </div>
+                </div>
+                
+                <div class="footer-section copyright-section">
+                    <div class="footer-icon-text">
+                        <i class="fas fa-copyright"></i>
+                        <p>2025 Muhammad Faris Muzakki & Istri Tercinta (Lulusan Terbaik Imam Muhammad bin Saud University Jurusan Syariah Tahun 2022)</p>
+                    </div>
+                </div>
+                
+                <div class="footer-section version-section">
+                    <div class="footer-icon-text">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Versi 1.2.1</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-navigation" id="bottomNavigation">
+            <button class="bottom-nav-item active" data-app="home">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </button>
+            <button class="bottom-nav-item" data-app="adzan">
+                <i class="fas fa-mosque"></i>
+                <span>Adzan</span>
+            </button>
+            <button class="bottom-nav-item" data-app="alquran">
+                <i class="fas fa-book-quran"></i>
+                <span>Al-Qur'an</span>
+            </button>
+            <button class="bottom-nav-item" data-app="dzikir">
+                <i class="fas fa-hands"></i>
+                <span>Dzikir</span>
+            </button>
+            <button class="bottom-nav-item" id="moreAppsBtn">
+                <i class="fas fa-th"></i>
+                <span>Lainnya</span>
+            </button>
+        </nav>
+        
+        <!-- More Apps Dropdown -->
+        <div class="more-apps-dropdown" id="moreAppsDropdown">
+            <div class="more-apps-header">
+                <h3><i class="fas fa-th"></i> Aplikasi Lainnya</h3>
+                <button class="close-dropdown" id="closeDropdown">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="more-apps-list">
+                <button class="more-app-item" data-app="sholat">
+                    <div class="more-app-icon">
+                        <i class="fas fa-kaaba"></i>
+                    </div>
+                    <div class="more-app-info">
+                        <h4>Tata Cara Sholat</h4>
+                        <p>Panduan gerakan dan bacaan sholat</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="more-app-item" data-app="waris">
+                    <div class="more-app-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="more-app-info">
+                        <h4>Kalkulator Waris</h4>
+                        <p>Hitung pembagian warisan syar'i</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="more-app-item" data-app="qibla">
+                    <div class="more-app-icon">
+                        <i class="fas fa-compass"></i>
+                    </div>
+                    <div class="more-app-info">
+                        <h4>Arah Kiblat</h4>
+                        <p>Kompas digital arah kiblat</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="more-app-item" data-app="sirah">
+                    <div class="more-app-icon">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <div class="more-app-info">
+                        <h4>Sirah Nabi</h4>
+                        <p>Kisah para nabi dan rasul</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Capacitor Core (for native app features) -->
+    <script src="capacitor.js"></script>
+    
+    <!-- Al-Quran Data Scripts -->
+    <script src="js/data/alquran/quran-data.js"></script>
+    <script src="js/data/alquran/quran-verses.js"></script>
+    
+        <!-- Main App Script -->
+    <script type="module" src="js/app.js?v=1.2.4"></script>
+
+    <!-- Auto-fix for update loop - runs before everything -->
+    <script>
+        // Immediate fix for existing users with old service worker
+        (function() {
+            const currentVersion = '1.2.4';
+            const savedVersion = localStorage.getItem('islamhub_app_version');
+            const loopDetection = sessionStorage.getItem('islamhub_loop_reload_count');
+            const loopCount = parseInt(loopDetection || '0');
+            
+            // Detect if we're in a reload loop (more than 2 reloads in this session)
+            if (loopCount > 2) {
+                console.log('Loop detected! Auto-fixing...');
+                
+                // Clear everything
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Unregister all service workers
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(registrations => {
+                        registrations.forEach(reg => {
+                            reg.unregister();
+                            console.log('Old service worker unregistered');
+                        });
+                    });
+                }
+                
+                // Clear all caches
+                if ('caches' in window) {
+                    caches.keys().then(names => {
+                        names.forEach(name => {
+                            caches.delete(name);
+                            console.log('Cache deleted:', name);
+                        });
+                    });
+                }
+                
+                // Set new version and reset counter
+                localStorage.setItem('islamhub_app_version', currentVersion);
+                sessionStorage.setItem('islamhub_loop_reload_count', '0');
+                
+                // Final reload with clean slate
+                setTimeout(() => {
+                    window.location.reload(true);
+                }, 500);
+                
+                return;
+            }
+            
+            // Increment reload counter
+            sessionStorage.setItem('islamhub_loop_reload_count', (loopCount + 1).toString());
+            
+            // If version changed, prepare for clean update
+            if (savedVersion && savedVersion !== currentVersion) {
+                console.log('Version change detected, preparing update...');
+                localStorage.setItem('islamhub_app_version', currentVersion);
+                localStorage.removeItem('islamhub_update_notification_shown');
+            }
+        })();
+    </script>
+
+    
+    <!-- PWA Registration -->
+    <script>
+        if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
+            window.addEventListener('load', async () => {
+                try {
+                    // Unregister ALL old service workers first (IMPORTANT!)
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                        console.log('Unregistered old service worker');
+                    }
+                    
+                    // Wait a bit to ensure cleanup
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
+                    // Use simple relative path for service worker
+                    const swPath = './sw.js?v=1.2.2';
+                    
+                    console.log('Registering SW:', swPath);
+                    
+                    // Register new service worker with scope at current directory
+                    const reg = await navigator.serviceWorker.register(swPath, { 
+                        scope: './',
+                        updateViaCache: 'none' // Don't cache the service worker file
+                    });
+                    
+                    console.log('Service Worker registered successfully', reg.scope);
+                    
+                    // No auto-reload listeners - let user decide via update notification
+                    
+                } catch (err) {
+                    console.error('Service Worker registration failed:', err);
+                }
+            });
+        } else {
+            console.log('Service Worker not supported or file protocol');
+        }
+    </script>
+</body>
+</html>

@@ -782,13 +782,13 @@
     <script src="js/data/alquran/quran-verses.js"></script>
     
         <!-- Main App Script -->
-    <script type="module" src="js/app.js?v=1.2.1"></script>
+    <script type="module" src="js/app.js?v=1.2.4"></script>
 
     <!-- Auto-fix for update loop - runs before everything -->
     <script>
         // Immediate fix for existing users with old service worker
         (function() {
-            const currentVersion = '1.2.1';
+            const currentVersion = '1.2.4';
             const savedVersion = localStorage.getItem('islamhub_app_version');
             const loopDetection = sessionStorage.getItem('islamhub_loop_reload_count');
             const loopCount = parseInt(loopDetection || '0');
@@ -861,9 +861,14 @@
                     // Wait a bit to ensure cleanup
                     await new Promise(resolve => setTimeout(resolve, 100));
                     
-                    // Register new service worker
-                    const reg = await navigator.serviceWorker.register('/islamhub/sw.js?v=1.2.1', { 
-                        scope: '/islamhub/',
+                    // Use simple relative path for service worker
+                    const swPath = './sw.js?v=1.2.2';
+                    
+                    console.log('Registering SW:', swPath);
+                    
+                    // Register new service worker with scope at current directory
+                    const reg = await navigator.serviceWorker.register(swPath, { 
+                        scope: './',
                         updateViaCache: 'none' // Don't cache the service worker file
                     });
                     

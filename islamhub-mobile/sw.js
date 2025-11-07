@@ -2,14 +2,14 @@
 
 // IMPORTANT: Update version setiap kali push update!
 // Format: islamhub-v[major].[minor].[patch]-[timestamp]
-const CACHE_VERSION = '1.2.1-20251103';
+const CACHE_VERSION = '1.2.4-20251107';
 const CACHE_NAME = `islamhub-v${CACHE_VERSION}`;
 
 // Strategi: Network First untuk HTML/JS/CSS, Cache First untuk assets statis
 const urlsToCache = [
-  '/islamhub/',
-  '/islamhub/index.html',
-  '/islamhub/manifest.json',
+  './',
+  './index.html',
+  './manifest.json',
   'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap',
   'https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;500;600;700&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
@@ -136,8 +136,8 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   const options = {
     body: event.data ? event.data.text() : 'Notifikasi baru dari IslamHub',
-    icon: './assets/icons/icon-192x192.png',
-    badge: './assets/icons/icon-72x72.png',
+    icon: '/assets/icons/icon-192x192.png',
+    badge: '/assets/icons/icon-72x72.png',
     vibrate: [200, 100, 200],
     tag: 'islamhub-notification',
     requireInteraction: false

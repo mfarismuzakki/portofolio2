@@ -6,7 +6,7 @@ yarn-error.log
 # Build outputs
 dist/
 build/
-www/
+# www/ - COMMENTED: Need to deploy www for mfarismuzakki.id/islamhub-mobile
 
 # Android
 android/.gradle/
