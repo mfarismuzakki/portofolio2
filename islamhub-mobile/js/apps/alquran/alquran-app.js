@@ -14,6 +14,19 @@ export default class AlQuranApp {
         this.QURAN_JUZ = window.QURAN_JUZ || [];
         this.QURAN_VERSES = window.QURAN_VERSES || {};
 
+        // Debug logging for data availability
+        console.log('🕌 AlQuran App initialized', {
+            basePath: this.basePath,
+            surahs: this.QURAN_SURAHS.length,
+            juz: this.QURAN_JUZ.length,
+            verses: Object.keys(this.QURAN_VERSES).length
+        });
+
+        // Check if data is missing
+        if (this.QURAN_SURAHS.length === 0) {
+            console.error('QURAN_SURAHS is empty! Data script may not have loaded.');
+        }
+
         this.currentPage = 1;
         this.totalPages = 604;
         this.isPlaying = false;

@@ -6145,6 +6145,39 @@
     .audio-nav-btn i {
         font-size: 0.75rem;
     }
+}
+
+/* ===== FIX UNTUK ANDROID/CAPACITOR ===== */
+/* Prevent audio player dari naik saat keyboard muncul di Android */
+@supports (-webkit-touch-callout: none) {
+    /* iOS Safari */
+    .audio-player {
+        position: fixed !important;
+        bottom: 68px !important;
+    }
+}
+
+/* Android/Capacitor specific fix */
+body.capacitor-android .audio-player,
+body[data-platform="android"] .audio-player {
+    position: fixed !important;
+    bottom: 68px !important;
+    transform: translateZ(0); /* Force GPU acceleration */
+    will-change: auto; /* Prevent unnecessary repainting */
+}
+
+@media (max-width: 768px) {
+    body.capacitor-android .audio-player,
+    body[data-platform="android"] .audio-player {
+        bottom: 58px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    body.capacitor-android .audio-player,
+    body[data-platform="android"] .audio-player {
+        bottom: 52px !important;
+    }
     
     /* ===== FULLSCREEN MODAL & SIDEBAR FOR MOBILE ===== */
     /* Sidebar Fullscreen */

@@ -5958,7 +5958,7 @@
 /* ===== AUDIO PLAYER ===== */
 .audio-player {
     position: fixed;
-    bottom: 68px; /* Tepat di atas bottom nav */
+    bottom: max(68px, calc(56px + env(safe-area-inset-bottom))); /* Tepat di atas bottom nav + safe area */
     left: 0;
     right: 0;
     background: rgba(10, 10, 15, 0.98);

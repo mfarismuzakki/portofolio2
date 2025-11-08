@@ -194,3 +194,18 @@ if (typeof module !== 'undefined' && module.exports) {
         getPageInfo
     };
 }
+
+// Expose to window for browser/Capacitor usage
+if (typeof window !== 'undefined') {
+    window.QURAN_SURAHS = QURAN_SURAHS;
+    window.QURAN_JUZ = QURAN_JUZ;
+    window.getJuzByPage = getJuzByPage;
+    window.getSurahsByPage = getSurahsByPage;
+    window.getAudioPathForPage = getAudioPathForPage;
+    window.getPageInfo = getPageInfo;
+    
+    console.log('Quran data loaded:', {
+        surahs: QURAN_SURAHS.length,
+        juz: QURAN_JUZ.length
+    });
+}

@@ -168,3 +168,18 @@ if (typeof module !== 'undefined' && module.exports) {
         SURAH_CACHE
     };
 }
+
+// Expose to window for browser/Capacitor usage
+if (typeof window !== 'undefined') {
+    window.QURAN_VERSES = SAMPLE_VERSES;
+    window.getVersesByPage = getVersesByPage;
+    window.getVerseByReference = getVerseByReference;
+    window.loadSurahData = loadSurahData;
+    window.loadSurahByFileName = loadSurahByFileName;
+    window.getVersesBySurah = getVersesBySurah;
+    window.SURAH_CACHE = SURAH_CACHE;
+    
+    console.log('✅ Quran verses loaded:', {
+        samplePages: Object.keys(SAMPLE_VERSES).length
+    });
+}
