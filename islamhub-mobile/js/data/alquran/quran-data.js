@@ -183,7 +183,7 @@ function getPageInfo(page) {
     };
 }
 
-// Export untuk digunakan di aplikasi
+// Export untuk Node.js
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         QURAN_SURAHS,
@@ -195,7 +195,17 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 }
 
-// Expose to window for browser/Capacitor usage
+// Export ke window untuk browser
+if (typeof window !== 'undefined') {
+    window.QURAN_SURAHS = QURAN_SURAHS;
+    window.QURAN_JUZ = QURAN_JUZ;
+    window.getJuzByPage = getJuzByPage;
+    window.getSurahsByPage = getSurahsByPage;
+    window.getAudioPathForPage = getAudioPathForPage;
+    window.getPageInfo = getPageInfo;
+}
+
+// Export ke window untuk browser
 if (typeof window !== 'undefined') {
     window.QURAN_SURAHS = QURAN_SURAHS;
     window.QURAN_JUZ = QURAN_JUZ;
@@ -204,7 +214,21 @@ if (typeof window !== 'undefined') {
     window.getAudioPathForPage = getAudioPathForPage;
     window.getPageInfo = getPageInfo;
     
-    console.log('Quran data loaded:', {
+    console.log('Quran data exported to window:', {
+        surahs: QURAN_SURAHS.length,
+        juz: QURAN_JUZ.length
+    });
+}
+
+// Export to window for browser usage
+if (typeof window !== 'undefined') {
+    window.QURAN_SURAHS = QURAN_SURAHS;
+    window.QURAN_JUZ = QURAN_JUZ;
+    window.getJuzByPage = getJuzByPage;
+    window.getSurahsByPage = getSurahsByPage;
+    window.getAudioPathForPage = getAudioPathForPage;
+    window.getPageInfo = getPageInfo;
+    console.log('Quran data loaded to window:', {
         surahs: QURAN_SURAHS.length,
         juz: QURAN_JUZ.length
     });

@@ -138,12 +138,6 @@ class IslamHubApp {
             this.isNative = true;
             console.log('Running in native environment');
             
-            // Add platform class to body for CSS targeting
-            const platform = Capacitor.getPlatform();
-            document.body.classList.add(`capacitor-${platform}`);
-            document.body.setAttribute('data-platform', platform);
-            console.log('Platform:', platform);
-            
             try {
                 // Initialize StatusBar
                 const { StatusBar } = Capacitor.Plugins;

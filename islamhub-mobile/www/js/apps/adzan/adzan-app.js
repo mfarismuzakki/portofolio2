@@ -1040,6 +1040,8 @@ export default class AdzanApp {
     // ============= NOTIFICATION FEATURES =============
     
     async initNotifications() {
+        console.log('[Notification] Initializing notifications...');
+        
         // Load notification state from localStorage
         const savedState = localStorage.getItem('islamhub_adzan_notifications_enabled');
         this.notificationEnabled = savedState === 'true';
@@ -1049,12 +1051,33 @@ export default class AdzanApp {
             this.notificationPermission = Notification.permission;
         }
         
+        // For native apps, check Capacitor permission
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+            try {
+                const { LocalNotifications } = window.Capacitor.Plugins;
+                const permStatus = await LocalNotifications.checkPermissions();
+                this.notificationPermission = permStatus.display;
+                console.log('[Native] Notification permission:', permStatus.display);
+            } catch (error) {
+                console.error('[Native] Failed to check permissions:', error);
+            }
+        }
+        
+        console.log('[Notification] State:', {
+            enabled: this.notificationEnabled,
+            permission: this.notificationPermission,
+            hasPrayerTimes: !!this.prayerTimes && Object.keys(this.prayerTimes).length > 0
+        });
+        
         // Update button state
         this.updateNotificationButton();
         
         // Schedule notifications if enabled
         if (this.notificationEnabled && this.notificationPermission === 'granted') {
-            this.scheduleNotifications();
+            console.log('[Notification] Auto-scheduling notifications...');
+            await this.scheduleNotifications();
+        } else {
+            console.log('[Notification] Not scheduling - enabled:', this.notificationEnabled, 'permission:', this.notificationPermission);
         }
     }
     
@@ -1183,9 +1206,9 @@ export default class AdzanApp {
         }, 3000);
     }
     
-    scheduleNotifications() {
+    async scheduleNotifications() {
         // Cancel existing scheduled notifications
-        this.cancelScheduledNotifications();
+        await this.cancelScheduledNotifications();
         
         if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) {
             console.warn('No prayer times available for scheduling notifications');
@@ -1200,38 +1223,99 @@ export default class AdzanApp {
         // Use Indonesian names to match prayerTimes keys
         const prayers = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
         
-        prayers.forEach(prayer => {
-            const prayerTime = this.prayerTimes[prayer];
-            if (!prayerTime) return;
+        // Check if running as native app (Capacitor)
+        const isNative = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications;
+        
+        if (isNative) {
+            // Use Capacitor LocalNotifications for native apps
+            const { LocalNotifications } = window.Capacitor.Plugins;
+            const notifications = [];
             
-            // Parse prayer time
-            const [hours, minutes] = prayerTime.split(':').map(Number);
-            const prayerDate = new Date();
-            prayerDate.setHours(hours, minutes, 0, 0);
-            
-            // Schedule notification 5 minutes BEFORE prayer time
-            const notificationDate = new Date(prayerDate.getTime() - 5 * 60 * 1000);
-            
-            // If notification time has passed today, schedule for tomorrow
-            if (notificationDate <= now) {
-                notificationDate.setDate(notificationDate.getDate() + 1);
-            }
-            
-            const timeUntilNotification = notificationDate.getTime() - now.getTime();
-            
-            // Only schedule if within next 24 hours
-            if (timeUntilNotification > 0 && timeUntilNotification <= 24 * 60 * 60 * 1000) {
-                const timeoutId = setTimeout(() => {
-                    this.showPrayerNotification(prayer, prayerTime);
-                    // Reschedule for next day
-                    setTimeout(() => this.scheduleNotifications(), 1000);
-                }, timeUntilNotification);
+            prayers.forEach((prayer, index) => {
+                const prayerTime = this.prayerTimes[prayer];
+                if (!prayerTime) return;
                 
-                this.scheduledNotifications.push(timeoutId);
+                // Parse prayer time
+                const [hours, minutes] = prayerTime.split(':').map(Number);
+                const prayerDate = new Date();
+                prayerDate.setHours(hours, minutes, 0, 0);
                 
-                console.log(`Scheduled notification for ${prayer} at ${notificationDate.toLocaleTimeString()} (in ${Math.round(timeUntilNotification / 60000)} minutes)`);
+                // Schedule notification 5 minutes BEFORE prayer time
+                const notificationDate = new Date(prayerDate.getTime() - 5 * 60 * 1000);
+                
+                // If notification time has passed today, schedule for tomorrow
+                if (notificationDate <= now) {
+                    notificationDate.setDate(notificationDate.getDate() + 1);
+                }
+                
+                const timeUntilNotification = notificationDate.getTime() - now.getTime();
+                
+                // Only schedule if within next 24 hours
+                if (timeUntilNotification > 0 && timeUntilNotification <= 24 * 60 * 60 * 1000) {
+                    notifications.push({
+                        title: `🕌 Waktu ${prayer}`,
+                        body: `⏰ 5 menit lagi waktu sholat ${prayer} (${prayerTime}). Bersiaplah untuk sholat.`,
+                        id: index + 1,
+                        schedule: { at: notificationDate },
+                        sound: 'default',
+                        smallIcon: 'ic_notification',
+                        largeIcon: 'ic_launcher',
+                        actionTypeId: '',
+                        extra: {
+                            prayer: prayer,
+                            time: prayerTime
+                        }
+                    });
+                    
+                    console.log(`[Native] Scheduled notification for ${prayer} at ${notificationDate.toLocaleTimeString()} (in ${Math.round(timeUntilNotification / 60000)} minutes)`);
+                }
+            });
+            
+            if (notifications.length > 0) {
+                try {
+                    await LocalNotifications.schedule({ notifications });
+                    console.log(`[Native] Scheduled ${notifications.length} native notifications`);
+                } catch (error) {
+                    console.error('[Native] Failed to schedule notifications:', error);
+                }
             }
-        });
+        } else {
+            // Use setTimeout for web/PWA
+            prayers.forEach(prayer => {
+                const prayerTime = this.prayerTimes[prayer];
+                if (!prayerTime) return;
+                
+                // Parse prayer time
+                const [hours, minutes] = prayerTime.split(':').map(Number);
+                const prayerDate = new Date();
+                prayerDate.setHours(hours, minutes, 0, 0);
+                
+                // Schedule notification 5 minutes BEFORE prayer time
+                const notificationDate = new Date(prayerDate.getTime() - 5 * 60 * 1000);
+                
+                // If notification time has passed today, schedule for tomorrow
+                if (notificationDate <= now) {
+                    notificationDate.setDate(notificationDate.getDate() + 1);
+                }
+                
+                const timeUntilNotification = notificationDate.getTime() - now.getTime();
+                
+                // Only schedule if within next 24 hours
+                if (timeUntilNotification > 0 && timeUntilNotification <= 24 * 60 * 60 * 1000) {
+                    const timeoutId = setTimeout(() => {
+                        this.showPrayerNotification(prayer, prayerTime);
+                        // Reschedule for next day
+                        setTimeout(() => this.scheduleNotifications(), 1000);
+                    }, timeUntilNotification);
+                    
+                    this.scheduledNotifications.push(timeoutId);
+                    
+                    console.log(`[Web] Scheduled notification for ${prayer} at ${notificationDate.toLocaleTimeString()} (in ${Math.round(timeUntilNotification / 60000)} minutes)`);
+                }
+            });
+            
+            console.log(`[Web] Scheduled ${this.scheduledNotifications.length} web notifications`);
+        }
         
         // Set up a periodic check every minute to ensure notifications aren't missed
         // This is a fallback in case setTimeout fails
@@ -1242,13 +1326,25 @@ export default class AdzanApp {
         this.notificationCheckInterval = setInterval(() => {
             this.checkPendingNotifications();
         }, 60000); // Check every minute
-        
-        console.log(`Scheduled ${this.scheduledNotifications.length} prayer notifications with fallback checker`);
     }
     
-    cancelScheduledNotifications() {
+    async cancelScheduledNotifications() {
+        // Cancel web timeouts
         this.scheduledNotifications.forEach(timeoutId => clearTimeout(timeoutId));
         this.scheduledNotifications = [];
+        
+        // Cancel native notifications
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+            try {
+                const { LocalNotifications } = window.Capacitor.Plugins;
+                await LocalNotifications.cancel({ notifications: [
+                    { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }
+                ]});
+                console.log('[Native] Cancelled all scheduled notifications');
+            } catch (error) {
+                console.error('[Native] Failed to cancel notifications:', error);
+            }
+        }
         
         if (this.notificationCheckInterval) {
             clearInterval(this.notificationCheckInterval);
@@ -1358,31 +1454,31 @@ export default class AdzanApp {
         if (this.notificationPermission !== 'granted') return;
         
         const title = '🕌 IslamHub - Notifikasi Aktif';
-        const body = `Anda akan menerima notifikasi saat waktu sholat tiba. Semoga istiqomah dalam ibadah 🤲`;
+        const body = `Anda akan menerima notifikasi 5 menit sebelum waktu sholat tiba. Semoga istiqomah dalam ibadah 🤲`;
         
         // Check if running as native app (Capacitor)
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
             try {
                 const { LocalNotifications } = window.Capacitor.Plugins;
+                // Schedule for 1 second from now (instant notification)
+                const scheduleTime = new Date(Date.now() + 1000);
                 await LocalNotifications.schedule({
                     notifications: [{
                         id: 999999,
                         title: title,
                         body: body,
-                        largeBody: body,
-                        summaryText: 'IslamHub',
-                        sound: null,
-                        smallIcon: 'ic_stat_icon_config_sample',
-                        iconColor: '#00FFFF',
-                        attachments: null,
+                        schedule: { at: scheduleTime },
+                        sound: 'default',
+                        smallIcon: 'ic_notification',
+                        largeIcon: 'ic_launcher',
                         actionTypeId: '',
-                        extra: null
+                        extra: { type: 'welcome' }
                     }]
                 });
-                console.log('Native notification shown');
+                console.log('[Native] Welcome notification scheduled for', scheduleTime);
                 return;
             } catch (error) {
-                console.error('Native notification failed:', error);
+                console.error('[Native] Welcome notification failed:', error);
             }
         }
         

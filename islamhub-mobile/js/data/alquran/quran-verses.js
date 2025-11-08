@@ -1,8 +1,26 @@
 /* ===== Al-Quran Verses Sample Data ===== */
-// Contoh data ayat untuk beberapa halaman pertama
-// Dalam implementasi lengkap, data ini bisa diambil dari API atau database
+// Data ayat per halaman dalam format: page_X: [{surah, verse}, ...]
+// Struktur disesuaikan untuk audio per halaman
 
 const SAMPLE_VERSES = {
+    // Convert old format to new format for audio playback
+    page_1: [
+        {surah: 1, verse: 1},
+        {surah: 1, verse: 2},
+        {surah: 1, verse: 3},
+        {surah: 1, verse: 4},
+        {surah: 1, verse: 5},
+        {surah: 1, verse: 6},
+        {surah: 1, verse: 7}
+    ],
+    page_2: [
+        {surah: 2, verse: 1},
+        {surah: 2, verse: 2},
+        {surah: 2, verse: 3},
+        {surah: 2, verse: 4},
+        {surah: 2, verse: 5}
+    ],
+    // Old format kept for backward compatibility
     1: {
         // Halaman 1 - Al-Fatihah
         verses: [
@@ -156,7 +174,7 @@ async function getVersesBySurah(surahNumber) {
     return null;
 }
 
-// Export
+// Export untuk Node.js
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         SAMPLE_VERSES,
@@ -169,7 +187,7 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 }
 
-// Expose to window for browser/Capacitor usage
+// Export ke window untuk browser
 if (typeof window !== 'undefined') {
     window.QURAN_VERSES = SAMPLE_VERSES;
     window.getVersesByPage = getVersesByPage;
@@ -178,8 +196,4 @@ if (typeof window !== 'undefined') {
     window.loadSurahByFileName = loadSurahByFileName;
     window.getVersesBySurah = getVersesBySurah;
     window.SURAH_CACHE = SURAH_CACHE;
-    
-    console.log('✅ Quran verses loaded:', {
-        samplePages: Object.keys(SAMPLE_VERSES).length
-    });
 }
