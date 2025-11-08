@@ -268,8 +268,6 @@ If you find IslamHub useful, please consider:
 
 <div align="center">
 
-**Built with ❤️ for the Muslim Ummah**
-
 *"Read in the name of your Lord who created"* - Al-Alaq 96:1
 
 [⬆ Back to Top](#-islamhub-mobile)

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    
+    <!-- IslamHub notification icon - simple mosque silhouette -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,3L10.5,5.5L12,8L13.5,5.5L12,3ZM12,8.5C10,8.5 8.5,10 8.5,12L8.5,20L10,20L10,14L14,14L14,20L15.5,20L15.5,12C15.5,10 14,8.5 12,8.5ZM6,11L6,20L7.5,20L7.5,11L6,11ZM16.5,11L16.5,20L18,20L18,11L16.5,11ZM4,18L4,20L20,20L20,18L4,18Z" />
+</vector>

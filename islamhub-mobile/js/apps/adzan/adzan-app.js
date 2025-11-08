@@ -1258,8 +1258,6 @@ export default class AdzanApp {
                         id: index + 1,
                         schedule: { at: notificationDate },
                         sound: 'default',
-                        smallIcon: 'ic_notification',
-                        largeIcon: 'ic_launcher',
                         actionTypeId: '',
                         extra: {
                             prayer: prayer,
@@ -1451,7 +1449,13 @@ export default class AdzanApp {
     }
     
     async showWelcomeNotification() {
-        if (this.notificationPermission !== 'granted') return;
+        console.log('[Welcome] Starting welcome notification...');
+        console.log('[Welcome] Permission status:', this.notificationPermission);
+        
+        if (this.notificationPermission !== 'granted') {
+            console.log('[Welcome] Permission not granted, skipping');
+            return;
+        }
         
         const title = '🕌 IslamHub - Notifikasi Aktif';
         const body = `Anda akan menerima notifikasi 5 menit sebelum waktu sholat tiba. Semoga istiqomah dalam ibadah 🤲`;
@@ -1460,8 +1464,14 @@ export default class AdzanApp {
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
             try {
                 const { LocalNotifications } = window.Capacitor.Plugins;
-                // Schedule for 1 second from now (instant notification)
-                const scheduleTime = new Date(Date.now() + 1000);
+                
+                // Trigger haptic feedback for notification
+                if (window.Capacitor.Plugins.Haptics) {
+                    await window.Capacitor.Plugins.Haptics.notification({ type: 'success' });
+                }
+                
+                // Schedule with sufficient delay for processing
+                const scheduleTime = new Date(Date.now() + 500);
                 await LocalNotifications.schedule({
                     notifications: [{
                         id: 999999,
@@ -1469,8 +1479,6 @@ export default class AdzanApp {
                         body: body,
                         schedule: { at: scheduleTime },
                         sound: 'default',
-                        smallIcon: 'ic_notification',
-                        largeIcon: 'ic_launcher',
                         actionTypeId: '',
                         extra: { type: 'welcome' }
                     }]

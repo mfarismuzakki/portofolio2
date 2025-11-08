@@ -19,9 +19,9 @@
       "backgroundColor": "#0a0e27"
     },
     "LocalNotifications": {
-      "smallIcon": "ic_stat_icon_config_sample",
+      "smallIcon": "ic_notification",
       "iconColor": "#00FFFF",
-      "sound": "adzan.mp3"
+      "sound": "default"
     }
   }
 }

@@ -42,22 +42,21 @@ body::before {
 
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgba(139, 0, 255, 0.4) 0%, rgba(0, 128, 255, 0.4) 100%);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #00d4ff;
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgba(139, 0, 255, 0.6) 0%, rgba(0, 128, 255, 0.6) 100%);
-  box-shadow: 0 0 8px rgba(139, 0, 255, 0.3);
+  background: #00e5ff;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
 }

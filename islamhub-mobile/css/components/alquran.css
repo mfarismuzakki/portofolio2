@@ -597,6 +597,26 @@
     overflow-y: auto;
 }
 
+/* Scrollbar for modal body */
+.modal-body::-webkit-scrollbar {
+    width: 10px !important;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-radius: 5px !important;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #00d4ff !important;
+    border-radius: 5px !important;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #00e5ff !important;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.8) !important;
+}
+
 /* Surah List */
 .surah-list {
     color: var(--text-primary);
@@ -810,21 +830,22 @@
 
 /* Scrollbar for surah grid */
 .surah-grid::-webkit-scrollbar {
-    width: 8px;
+    width: 10px !important;
 }
 
 .surah-grid::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-radius: 5px !important;
 }
 
 .surah-grid::-webkit-scrollbar-thumb {
-    background: rgba(0, 255, 255, 0.3);
-    border-radius: 4px;
+    background: #00d4ff !important;
+    border-radius: 5px !important;
 }
 
 .surah-grid::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 255, 255, 0.5);
+    background: #00e5ff !important;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.8) !important;
 }
 
 /* Simple Surah List - 1 Row per Surah */
@@ -951,21 +972,22 @@
 
 /* Scrollbar for simple list */
 .surah-list-simple::-webkit-scrollbar {
-    width: 8px;
+    width: 10px !important;
 }
 
 .surah-list-simple::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-radius: 5px !important;
 }
 
 .surah-list-simple::-webkit-scrollbar-thumb {
-    background: rgba(0, 255, 255, 0.3);
-    border-radius: 4px;
+    background: #00d4ff !important;
+    border-radius: 5px !important;
 }
 
 .surah-list-simple::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 255, 255, 0.5);
+    background: #00e5ff !important;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.8) !important;
 }
 
 /* Responsive for simple list */
@@ -1134,21 +1156,22 @@
 
 /* Scrollbar for juz grid */
 .juz-grid::-webkit-scrollbar {
-    width: 8px;
+    width: 10px !important;
 }
 
 .juz-grid::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-radius: 5px !important;
 }
 
 .juz-grid::-webkit-scrollbar-thumb {
-    background: rgba(0, 255, 255, 0.3);
-    border-radius: 4px;
+    background: #00d4ff !important;
+    border-radius: 5px !important;
 }
 
 .juz-grid::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 255, 255, 0.5);
+    background: #00e5ff !important;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.8) !important;
 }
 
 /* Bookmarks List */
@@ -6226,7 +6249,7 @@
 /* ===== Audio Player Styles ===== */
 .audio-player {
     position: fixed;
-    bottom: 20px; /* Height of bottom nav: 12+10+24+5+16+10+12+border = ~90px */
+    bottom: 68px; /* Di atas bottom nav (58px height + 10px padding) */
     left: 0;
     right: 0;
     background: linear-gradient(180deg, rgba(0, 20, 30, 0.98) 0%, rgba(0, 30, 40, 0.98) 100%);
@@ -6238,6 +6261,43 @@
     z-index: 999; /* Below bottom nav (1000) */
     box-shadow: 0 -4px 20px rgba(0, 255, 255, 0.15);
     animation: slideUpAudio 0.3s ease-out;
+}
+
+/* ===== FIX UNTUK ANDROID/CAPACITOR ===== */
+/* Audio player position - Responsive untuk berbagai ukuran layar */
+
+/* Default - Small Android phones (< 400px width) */
+body.capacitor-android .audio-player,
+body[data-platform="android"] .audio-player {
+    position: fixed !important;
+    bottom: 2px !important; /* Paling dekat untuk HP kecil */
+    transform: translateZ(0);
+    will-change: auto;
+}
+
+/* Medium Android phones (400px - 500px) */
+@media (min-width: 400px) and (max-width: 500px) {
+    body.capacitor-android .audio-player,
+    body[data-platform="android"] .audio-player {
+        bottom: 3px !important;
+    }
+}
+
+/* Large Android phones (> 500px) */
+@media (min-width: 501px) {
+    body.capacitor-android .audio-player,
+    body[data-platform="android"] .audio-player {
+        bottom: 5px !important;
+    }
+}
+
+/* Web & iOS - tetap 20px */
+body:not(.capacitor-android) .audio-player,
+body:not([data-platform="android"]) .audio-player {
+    position: fixed !important;
+    bottom: 18px !important;
+    transform: translateZ(0);
+    will-change: auto;
 }
 
 @keyframes slideUpAudio {

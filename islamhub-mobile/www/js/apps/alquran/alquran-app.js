@@ -430,7 +430,7 @@ export default class AlQuranApp {
             const progress = document.getElementById('alqAudioProgress'); if (progress) progress.style.display = 'block';
         } catch (err) {
             console.error('Audio error', err);
-            this._notify('Gagal memutar audio', 'error');
+            // Error notification disabled - all audio is available
             const audioToggle = document.getElementById('alqAudioToggle'); if (audioToggle) audioToggle.innerHTML = '<i class="fas fa-play"></i><span>Putar Audio</span>';
         }
     }
@@ -3642,7 +3642,7 @@ export default class AlQuranApp {
                         this.isPlaying = true;
                     }).catch(err => {
                         console.error('Audio play error:', err);
-                        this._notify('Gagal memutar audio', 'error');
+                        // Error notification disabled - all audio is available
                     });
                 } else {
                     audioElement.pause();
@@ -3732,10 +3732,8 @@ export default class AlQuranApp {
                         const nextVerse = this.currentPageVerses[this.currentVerseIndex];
                         console.log('[ended] Next verse:', nextVerse);
                         
-                        // Small delay between verses
-                        setTimeout(() => {
-                            this._playVerseAudio(nextVerse.surah, nextVerse.verse);
-                        }, 50);
+                        // Play immediately without delay
+                        this._playVerseAudio(nextVerse.surah, nextVerse.verse);
                     } else {
                         // Finished all verses on page
                         console.log('[ended] Page completed');
@@ -3758,10 +3756,8 @@ export default class AlQuranApp {
                     const totalVerses = surahInfo ? surahInfo.verses : 286;
                     
                     if (this.settings.autoPlayNext && verse < totalVerses) {
-                        // Auto-play next verse
-                        setTimeout(() => {
-                            this.playVerseAudio(surah, verse + 1);
-                        }, 50);
+                        // Auto-play next verse immediately
+                        this.playVerseAudio(surah, verse + 1);
                     } else {
                         // Stop at current verse
                         if (playPauseBtn?.querySelector('i')) {
@@ -3788,7 +3784,7 @@ export default class AlQuranApp {
                 console.error('Audio error:', e);
                 playPauseBtn.querySelector('i').className = 'fas fa-play';
                 this.isPlaying = false;
-                this._notify('Audio belum tersedia untuk halaman ini', 'error');
+                // Error notification disabled - all audio is available
             });
         }
         
@@ -3933,7 +3929,7 @@ export default class AlQuranApp {
             const playPauseBtn = document.getElementById('audioPlayPause');
             
             if (!audioPlayer || !audioElement) {
-                this._notify('Audio player tidak tersedia', 'error');
+                console.error('Audio player elements not found');
                 return;
             }
 
@@ -4053,7 +4049,7 @@ export default class AlQuranApp {
                 this.isLoadingNewAudio = false;
             } catch (err) {
                 console.error('Error playing verse audio:', err);
-                this._notify('Gagal memutar audio ayat', 'error');
+                // Error notification disabled - all audio is available
                 audioPlayer.style.display = 'none';
                 // Remove highlight on error
                 verseElements.forEach(el => {
@@ -4073,7 +4069,7 @@ export default class AlQuranApp {
 
         } catch (error) {
             console.error('Error playing verse audio:', error);
-            this._notify('Gagal memutar audio ayat', 'error');
+            // Error notification disabled - all audio is available
             // Reset loading flag on error
             this.isLoadingNewAudio = false;
         }

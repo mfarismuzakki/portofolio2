@@ -138,6 +138,12 @@ class IslamHubApp {
             this.isNative = true;
             console.log('Running in native environment');
             
+            // Add platform class to body for CSS targeting
+            const platform = Capacitor.getPlatform();
+            document.body.classList.add(`capacitor-${platform}`);
+            document.body.setAttribute('data-platform', platform);
+            console.log('Platform:', platform);
+            
             try {
                 // Initialize StatusBar
                 const { StatusBar } = Capacitor.Plugins;
@@ -360,7 +366,7 @@ class IslamHubApp {
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('More Apps button clicked');
-                this.triggerHaptic('light');
+                // Haptic disabled for navigation
                 moreAppsDropdown.classList.toggle('show');
             });
             
@@ -369,7 +375,7 @@ class IslamHubApp {
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('Closing dropdown');
-                this.triggerHaptic('light');
+                // Haptic disabled for navigation
                 moreAppsDropdown.classList.remove('show');
             });
             
@@ -383,7 +389,7 @@ class IslamHubApp {
                     e.stopPropagation();
                     const appName = item.dataset.app;
                     console.log(`Opening app from dropdown: ${appName}`);
-                    this.triggerHaptic('medium');
+                    // Haptic disabled for navigation
                     moreAppsDropdown.classList.remove('show');
                     this.switchApp(appName);
                 });
@@ -412,7 +418,7 @@ class IslamHubApp {
             item.addEventListener('click', (e) => {
                 const appName = e.currentTarget.dataset.app;
                 if (appName) {
-                    this.triggerHaptic('medium');
+                    // Haptic disabled for navigation
                     this.switchApp(appName);
                 }
             });

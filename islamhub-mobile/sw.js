@@ -2,7 +2,7 @@
 
 // IMPORTANT: Update version setiap kali push update!
 // Format: islamhub-v[major].[minor].[patch]-[timestamp]
-const CACHE_VERSION = '1.4.0-20251108';
+const CACHE_VERSION = '1.4.1-20251108-cyan';
 const CACHE_NAME = `islamhub-v${CACHE_VERSION}`;
 
 // Strategi: Network First untuk HTML/JS/CSS, Cache First untuk assets statis

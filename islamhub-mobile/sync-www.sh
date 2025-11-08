@@ -46,10 +46,5 @@ echo "  ✓ Assets"
 cp capacitor.config.json www/
 echo "  ✓ Capacitor config"
 
-echo ""
-echo -e "${GREEN}✅ Sync complete!${NC}"
-echo ""
-echo "📱 Next steps:"
-echo "   1. npx cap sync           - Sync to native projects"
-echo "   2. npx cap open android   - Open Android Studio"
-echo ""
+npx cap sync android
+
