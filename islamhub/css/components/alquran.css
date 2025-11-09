@@ -6291,11 +6291,11 @@ body[data-platform="android"] .audio-player {
     }
 }
 
-/* Web & iOS - tetap 20px */
+/* Web & iOS - turun lebih rendah */
 body:not(.capacitor-android) .audio-player,
 body:not([data-platform="android"]) .audio-player {
     position: fixed !important;
-    bottom: 18px !important;
+    bottom: 5px !important;
     transform: translateZ(0);
     will-change: auto;
 }
