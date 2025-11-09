@@ -3956,11 +3956,12 @@ export default class AlQuranApp {
             const surahStr = String(surahNumber).padStart(3, '0');
             const verseStr = String(verseNumber).padStart(3, '0');
             const localPath = `${this.basePath}/assets/audio/alquran/verses/${surahStr}/${surahStr}_${verseStr}.mp3`;
-            // Use basePath so audio works on web deploys under a subdirectory and in native Android (Capacitor)
-            const onlinePath = `${this.basePath}/assets/audio/alquran/verses/${surahStr}/${surahStr}_${verseStr}.mp3`;
+            // Use online fallback from mfarismuzakki.id/islamhub
+            const onlinePath = `https://mfarismuzakki.id/islamhub/assets/audio/alquran/verses/${surahStr}/${surahStr}_${verseStr}.mp3`;
             
             console.log(`[playVerseAudio] Playing Surah ${surahNumber} Verse ${verseNumber}`);
             console.log('[playVerseAudio] Local path:', localPath);
+            console.log('[playVerseAudio] Online path:', onlinePath);
             
             // Try local first (prioritize offline/downloaded audio)
             const tryLocal = await new Promise((resolve) => {

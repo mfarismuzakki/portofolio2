@@ -1051,10 +1051,29 @@ export default class AdzanApp {
             this.notificationPermission = Notification.permission;
         }
         
-        // For native apps, check Capacitor permission
+        // For native apps, check Capacitor permission and create channel
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
             try {
                 const { LocalNotifications } = window.Capacitor.Plugins;
+                
+                // Create notification channel for Android
+                try {
+                    await LocalNotifications.createChannel({
+                        id: 'prayer_times',
+                        name: 'Waktu Sholat',
+                        description: 'Notifikasi untuk waktu sholat',
+                        importance: 5, // IMPORTANCE_HIGH
+                        visibility: 1, // VISIBILITY_PUBLIC
+                        sound: 'default',
+                        vibration: true,
+                        lights: true,
+                        lightColor: '#00FFFF'
+                    });
+                    console.log('[Native] Notification channel created');
+                } catch (channelError) {
+                    console.log('[Native] Channel creation error (might already exist):', channelError);
+                }
+                
                 const permStatus = await LocalNotifications.checkPermissions();
                 this.notificationPermission = permStatus.display;
                 console.log('[Native] Notification permission:', permStatus.display);
@@ -1258,6 +1277,8 @@ export default class AdzanApp {
                         id: index + 1,
                         schedule: { at: notificationDate },
                         sound: 'default',
+                        smallIcon: 'ic_notification',
+                        channelId: 'prayer_times',
                         actionTypeId: '',
                         extra: {
                             prayer: prayer,
@@ -1479,6 +1500,8 @@ export default class AdzanApp {
                         body: body,
                         schedule: { at: scheduleTime },
                         sound: 'default',
+                        smallIcon: 'ic_notification',
+                        channelId: 'prayer_times',
                         actionTypeId: '',
                         extra: { type: 'welcome' }
                     }]
