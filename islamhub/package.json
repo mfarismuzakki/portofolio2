@@ -1,0 +1,49 @@
+{
+  "name": "islamhub-mobile",
+  "version": "1.0.0",
+  "description": "IslamHub - 7 Aplikasi Islam dalam 1 Platform (Mobile Version)",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx cap sync && npx cap open android",
+    "dev:ios": "npx cap sync && npx cap open ios",
+    "sync": "npx cap sync",
+    "sync:android": "npx cap sync android",
+    "sync:ios": "npx cap sync ios",
+    "open:android": "npx cap open android",
+    "open:ios": "npx cap open ios",
+    "add:android": "npx cap add android",
+    "add:ios": "npx cap add ios",
+    "build:android": "npx cap sync android && cd android && ./gradlew assembleRelease",
+    "build:ios": "npx cap sync ios && cd ios/App && xcodebuild -workspace App.xcworkspace -scheme App -configuration Release"
+  },
+  "keywords": [
+    "islam",
+    "quran",
+    "prayer",
+    "adzan",
+    "qibla",
+    "mobile",
+    "pwa",
+    "capacitor"
+  ],
+  "author": "Muhammad Faris Muzakki",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/app": "^6.0.2",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/filesystem": "^6.0.1",
+    "@capacitor/geolocation": "^6.0.1",
+    "@capacitor/haptics": "^6.0.2",
+    "@capacitor/ios": "^6.1.2",
+    "@capacitor/keyboard": "^6.0.2",
+    "@capacitor/local-notifications": "^6.1.2",
+    "@capacitor/network": "^6.0.3",
+    "@capacitor/share": "^6.0.3",
+    "@capacitor/splash-screen": "^6.0.3",
+    "@capacitor/status-bar": "^6.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2"
+  }
+}

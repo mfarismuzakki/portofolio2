@@ -203,18 +203,68 @@ class QiblaFinder {
         const options = {
             enableHighAccuracy: true,
             timeout: 15000,
-            maximumAge: 300000 // 5 minutes
+            maximumAge: 60000 // Reduce cache time for more accurate location
         };
         
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                this.onLocationSuccess(position);
-            },
-            (error) => {
-                this.onLocationError(error);
-            },
-            options
-        );
+        // Use multiple location attempts for better accuracy
+        let attempts = 0;
+        const maxAttempts = 3;
+        const locationReadings = [];
+        
+        const getLocationReading = () => {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    attempts++;
+                    locationReadings.push({
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude,
+                        accuracy: position.coords.accuracy
+                    });
+                    
+                    if (attempts < maxAttempts && position.coords.accuracy > 50) {
+                        // Try again if accuracy is poor
+                        this.updateLocationStatus(`Meningkatkan akurasi... (${attempts}/${maxAttempts})`);
+                        setTimeout(getLocationReading, 1000);
+                    } else {
+                        // Use best available reading or average if all are good
+                        let bestReading;
+                        if (locationReadings.length === 1) {
+                            bestReading = locationReadings[0];
+                        } else {
+                            // Average readings if accuracy is good on multiple attempts
+                            const goodReadings = locationReadings.filter(r => r.accuracy <= 50);
+                            if (goodReadings.length > 1) {
+                                bestReading = {
+                                    lat: goodReadings.reduce((sum, r) => sum + r.lat, 0) / goodReadings.length,
+                                    lon: goodReadings.reduce((sum, r) => sum + r.lon, 0) / goodReadings.length,
+                                    accuracy: Math.min(...goodReadings.map(r => r.accuracy))
+                                };
+                            } else {
+                                bestReading = locationReadings.reduce((best, current) => 
+                                    current.accuracy < best.accuracy ? current : best
+                                );
+                            }
+                        }
+                        
+                        const position = {
+                            coords: {
+                                latitude: bestReading.lat,
+                                longitude: bestReading.lon,
+                                accuracy: bestReading.accuracy
+                            }
+                        };
+                        
+                        this.onLocationSuccess(position);
+                    }
+                },
+                (error) => {
+                    this.onLocationError(error);
+                },
+                options
+            );
+        };
+        
+        getLocationReading();
     }
     
     onLocationSuccess(position) {

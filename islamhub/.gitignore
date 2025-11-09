@@ -1,0 +1,70 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build outputs
+dist/
+build/
+# www/ - COMMENTED: Need to deploy www for mfarismuzakki.id/islamhub-mobile
+
+# Android
+android/.gradle/
+android/local.properties
+android/.idea/
+android/build/
+android/app/build/
+android/.DS_Store
+android/captures/
+*.apk
+*.ap_
+*.aab
+
+# Signing files
+*.jks
+*.keystore
+keystore.properties
+android/keystore.properties
+
+# Local configuration
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Capacitor
+.capacitor/
+capacitor-cordova-android-plugins/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Backup files
+*.bak
+*~
+
+# Screenshots (optional, comment out if you want to track them)
+# screenshots/
+
+# Release files (optional)
+# releases/

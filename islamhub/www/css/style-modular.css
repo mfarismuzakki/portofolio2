@@ -1,0 +1,32 @@
+/* ===== IslamHub - Main Stylesheet ===== */
+/* Modular CSS Architecture for Better Maintainability */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Scheherazade+New:wght@400;700&display=swap');
+
+/* Core Components */
+@import url('components/variables.css');
+@import url('components/base.css');
+@import url('components/animations.css');
+@import url('components/loading.css');
+@import url('components/navigation.css');
+
+/* Home Page */
+@import url('components/home.css');
+@import url('components/hadith-ticker.css');
+
+/* Apps */
+@import url('components/adzan.css');
+@import url('components/floating-widget.css');
+@import url('components/dzikir.css');
+@import url('components/alquran.css');
+@import url('components/waris.css');
+@import url('components/qibla.css');
+@import url('components/sholat.css');
+@import url('components/sirah.css');
+
+/* Layout */
+@import url('components/footer.css');
+
+/* Responsive */
+@import url('components/responsive.css');

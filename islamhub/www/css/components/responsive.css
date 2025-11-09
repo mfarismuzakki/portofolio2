@@ -1,0 +1,150 @@
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+  /* Hero */
+  .hero-title {
+    gap: 3px;
+  }
+  
+  .title-line {
+    font-size: clamp(2rem, 8vw, 3rem);
+    letter-spacing: 3px;
+  }
+  
+  .hero-stats {
+    gap: 30px;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+  
+  .stat-label {
+    font-size: 0.8rem;
+  }
+  
+  /* Apps Grid */
+  .apps-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  /* Hadith Ticker */
+  .hadith-ticker {
+    padding: 15px;
+    margin: 30px 15px 0;
+  }
+  
+  .hadith-arabic {
+    font-size: 1rem;
+  }
+  
+  .hadith-indonesia {
+    font-size: 0.9rem;
+  }
+  
+  .hadith-reference {
+    font-size: 0.8rem;
+  }
+  
+  /* Adzan */
+  .adzan-header {
+    padding: 20px;
+  }
+  
+  .current-time {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+  
+  .current-gmt {
+    font-size: 0.9rem;
+  }
+  
+  .location-name {
+    font-size: 1rem;
+  }
+  
+  .btn-change-location {
+    width: 100%;
+  }
+  
+  .next-prayer-card {
+    padding: 25px;
+  }
+  
+  .prayer-times-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+  }
+  
+  .modal-content {
+    width: 95%;
+  }
+  
+  /* Sunnah Section */
+  .sunnah-section .section-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .sunnah-section .section-description {
+    font-size: 0.85rem;
+  }
+  
+  .sunnah-prayer-item {
+    padding: 10px;
+  }
+  
+  .sunnah-prayer-name {
+    font-size: 0.9rem;
+  }
+  
+  .sunnah-prayer-arabic {
+    font-size: 0.85rem;
+  }
+  
+  .sunnah-prayer-indonesia {
+    font-size: 0.8rem;
+  }
+  
+  /* Footer */
+  .footer-section {
+    padding: 15px;
+  }
+  
+  .footer-section i {
+    font-size: 1.2rem;
+  }
+  
+  .footer-section p {
+    font-size: 0.85rem;
+  }
+  
+  /* Floating Widget */
+  .floating-prayer-widget {
+    right: 10px;
+    min-width: 180px;
+    padding: 12px 15px;
+  }
+  
+  .widget-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  
+  .widget-countdown {
+    font-size: 1.1rem;
+  }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-4 {
+  margin-bottom: 2rem;
+}
