@@ -37,10 +37,11 @@ rm -rf www/js
 cp -r js www/
 echo "  ✓ JS files"
 
-# Copy assets
-rm -rf www/assets
-cp -r assets www/
-echo "  ✓ Assets"
+# Copy assets (excluding audio folder)
+mkdir -p www/assets
+cp -r assets/icons www/assets/ 2>/dev/null || true
+cp -r assets/sounds www/assets/ 2>/dev/null || true
+echo "  ✓ Assets (audio excluded)"
 
 # Copy capacitor config to www
 cp capacitor.config.json www/
