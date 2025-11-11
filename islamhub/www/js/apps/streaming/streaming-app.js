@@ -25,6 +25,20 @@ class StreamingApp {
         // Video streaming channels
         this.videoChannels = [
             {
+                name: 'Khalid Basalamah TV',
+                url: 'https://www.youtube.com/embed/63ftY04qXVk',
+                description: 'Kajian Ilmiah 24/7 dari Ustadz Khalid Basalamah',
+                logo: 'assets/logo/khalid_tv.jpg',
+                color: 'khalid'
+            },
+            {
+                name: 'Syafiq Riza Basalamah TV',
+                url: 'https://www.youtube.com/embed/bEJFMrKmBb4',
+                description: 'Siaran 24 Jam dari Ustadz Syafiq Riza Basalamah',
+                logo: 'assets/logo/syafiq_tv.jpg',
+                color: 'syafiq'
+            },
+            {
                 name: 'Rodja TV',
                 url: 'https://rodja.tv/live/',
                 description: 'Live Streaming TV Dakwah Ahlus Sunnah',
@@ -61,7 +75,7 @@ class StreamingApp {
             <div class="streaming-container">
                 <div class="streaming-header">
                     <h1><i class="fas fa-broadcast-tower"></i> Streaming Kajian Islam</h1>
-                    <p class="subtitle">Radio Islam & Kajian Ustadz Salafy</p>
+                    <p class="subtitle">Radio dan video streaming kajian Islam live 24/7</p>
                 </div>
 
                 <!-- Radio Streaming Section -->

@@ -863,6 +863,12 @@
   animation: pulse-live 2s ease-in-out infinite;
 }
 
+.app-badge.new {
+  background: linear-gradient(135deg, #ff0080 0%, #ff4db8 100%);
+  color: #fff;
+  animation: pulse-new 2s ease-in-out infinite;
+}
+
 .app-badge.beta {
   background: linear-gradient(135deg, #ffa500 0%, #ff6b00 100%);
   color: #0a0a0f;
@@ -879,6 +885,15 @@
   }
   50% {
     box-shadow: 0 2px 16px rgba(0, 255, 136, 0.6);
+  }
+}
+
+@keyframes pulse-new {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(255, 0, 128, 0.3);
+  }
+  50% {
+    box-shadow: 0 2px 16px rgba(255, 0, 128, 0.6);
   }
 }
 

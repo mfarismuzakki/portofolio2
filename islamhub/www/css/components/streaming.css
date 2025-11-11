@@ -166,6 +166,44 @@
   margin-bottom: 0;
 }
 
+/* Khalid TV color variant */
+.video-card.video-khalid {
+  background: linear-gradient(135deg, rgba(0, 100, 200, 0.1), rgba(0, 150, 255, 0.1));
+  border: 1px solid rgba(0, 150, 255, 0.3);
+}
+
+.video-card.video-khalid .video-logo {
+  box-shadow: 0 4px 15px rgba(0, 150, 255, 0.3);
+}
+
+.video-card.video-khalid .btn-video {
+  background: linear-gradient(135deg, #0064c8, #0096ff);
+  box-shadow: 0 4px 15px rgba(0, 150, 255, 0.3);
+}
+
+.video-card.video-khalid .btn-video:hover {
+  box-shadow: 0 6px 20px rgba(0, 150, 255, 0.5);
+}
+
+/* Syafiq TV color variant */
+.video-card.video-syafiq {
+  background: linear-gradient(135deg, rgba(34, 139, 34, 0.1), rgba(50, 205, 50, 0.1));
+  border: 1px solid rgba(50, 205, 50, 0.3);
+}
+
+.video-card.video-syafiq .video-logo {
+  box-shadow: 0 4px 15px rgba(50, 205, 50, 0.3);
+}
+
+.video-card.video-syafiq .btn-video {
+  background: linear-gradient(135deg, #228b22, #32cd32);
+  box-shadow: 0 4px 15px rgba(50, 205, 50, 0.3);
+}
+
+.video-card.video-syafiq .btn-video:hover {
+  box-shadow: 0 6px 20px rgba(50, 205, 50, 0.5);
+}
+
 .video-info {
   display: flex;
   align-items: center;
