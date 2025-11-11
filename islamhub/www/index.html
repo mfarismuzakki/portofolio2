@@ -127,23 +127,12 @@
                         </div>
                     </div>
                     
-                    <!-- Download Al-Quran Highlight Card -->
-                    <div class="download-alquran-card" onclick="window.islamHub.switchApp('alquran')">
-                        <div class="download-card-icon">
-                            <i class="fas fa-book-quran"></i>
-                        </div>
-                        <div class="download-card-content">
-                            <h3><i class="fas fa-download"></i> Download Al-Quran Offline</h3>
-                            <p>Akses mushaf digital lengkap dengan audio murottal tanpa internet. Hemat kuota, loading super cepat!</p>
-                            <div class="download-features">
-                                <span class="feature-badge"><i class="fas fa-book"></i> 604 Halaman</span>
-                                <span class="feature-badge"><i class="fas fa-volume-up"></i> Audio Lengkap</span>
-                                <span class="feature-badge"><i class="fas fa-wifi-slash"></i> Mode Offline</span>
-                            </div>
-                        </div>
-                        <div class="download-card-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
+                    <!-- Clear Data Button (Web Only) -->
+                    <div class="clear-data-section" id="clearDataSection" style="display: none;">
+                        <button class="btn-clear-data" id="btnClearData">
+                            <i class="fas fa-trash-alt"></i>
+                            <span>Hapus Data Cache (Jika Gagal Update)</span>
+                        </button>
                     </div>
                     
                 </div>
@@ -647,6 +636,14 @@
                     <p>Memuat aplikasi Sirah Nabi...</p>
                 </div>
             </div>
+
+            <!-- Streaming Component -->
+            <div id="streaming-app" class="app-component" data-app="streaming">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat aplikasi Streaming...</p>
+                </div>
+            </div>
         </main>
 
         <!-- Floating Prayer Widget -->
@@ -769,6 +766,16 @@
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </button>
+                <button class="more-app-item" data-app="streaming">
+                    <div class="more-app-icon">
+                        <i class="fas fa-broadcast-tower"></i>
+                    </div>
+                    <div class="more-app-info">
+                        <h4>Streaming Kajian</h4>
+                        <p>Audio dan Video Kajian</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -884,5 +891,67 @@
             console.log('Service Worker not supported or file protocol');
         }
     </script>
+    
+    <!-- Clear Data Modal -->
+    <div class="modal-overlay" id="clearDataModal">
+        <div class="modal-content clear-data-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-trash-alt"></i> Hapus Data Cache</h3>
+                <button class="modal-close" id="closeClearDataModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">Pilih data yang ingin dihapus. Data audio Al-Quran tidak akan dihapus secara default.</p>
+                
+                <div class="clear-data-options">
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="clearCache" checked>
+                        <span class="checkbox-label">
+                            <i class="fas fa-database"></i>
+                            <strong>Cache Aplikasi</strong>
+                            <small>File CSS, JS, dan gambar yang di-cache</small>
+                        </span>
+                    </label>
+                    
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="clearLocalStorage" checked>
+                        <span class="checkbox-label">
+                            <i class="fas fa-save"></i>
+                            <strong>Data Lokal</strong>
+                            <small>Pengaturan, bookmark, dan history</small>
+                        </span>
+                    </label>
+                    
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="clearIndexedDB">
+                        <span class="checkbox-label">
+                            <i class="fas fa-book-quran"></i>
+                            <strong>Data Al-Quran</strong>
+                            <small>Verses, translations (tidak termasuk audio)</small>
+                        </span>
+                    </label>
+                    
+                    <label class="checkbox-option danger">
+                        <input type="checkbox" id="clearAudio">
+                        <span class="checkbox-label">
+                            <i class="fas fa-volume-up"></i>
+                            <strong>Audio Al-Quran</strong>
+                            <small>⚠️ File audio yang sudah didownload (ukuran besar)</small>
+                        </span>
+                    </label>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn-secondary" id="cancelClearData">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
+                    <button class="btn-danger" id="confirmClearData">
+                        <i class="fas fa-trash-alt"></i> Hapus Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

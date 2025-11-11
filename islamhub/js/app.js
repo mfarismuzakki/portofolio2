@@ -79,6 +79,9 @@ class IslamHubApp {
         
         // Setup cache management and update notifications
         this.setupCacheManagement();
+        
+        // Setup clear data button (Web only)
+        this.setupClearDataButton();
     }
     
     async registerServiceWorker() {
@@ -467,8 +470,8 @@ class IslamHubApp {
             nav.classList.add('active');
         });
         
-        // If app is in dropdown (waris, qibla, sirah, sholat), activate 'More Apps' button
-        const dropdownApps = ['waris', 'qibla', 'sirah', 'sholat'];
+        // If app is in dropdown (waris, qibla, sirah, sholat, streaming), activate 'More Apps' button
+        const dropdownApps = ['waris', 'qibla', 'sirah', 'sholat', 'streaming'];
         if (dropdownApps.includes(appName)) {
             const moreAppsBtn = document.getElementById('moreAppsBtn');
             if (moreAppsBtn) {
@@ -546,7 +549,8 @@ class IslamHubApp {
                 'waris': 'waris-app.js',
                 'qibla': 'qibla-app.js',
                 'sholat': 'sholat-app.js',
-                'sirah': 'sirah-app.js'
+                'sirah': 'sirah-app.js',
+                'streaming': 'streaming-app.js'
             };
             
             const fileName = appFiles[appName];
@@ -562,7 +566,8 @@ class IslamHubApp {
                 'waris': 'kalkulator',
                 'qibla': 'qibla',
                 'sholat': 'sholat',
-                'sirah': 'sirah'
+                'sirah': 'sirah',
+                'streaming': 'streaming'
             };
             
             const folder = folderMap[appName];
@@ -586,6 +591,8 @@ class IslamHubApp {
                 window.warisApp = appInstance;
             } else if (appName === 'sholat') {
                 window.sholatApp = appInstance;
+            } else if (appName === 'streaming') {
+                window.streamingApp = appInstance;
             }
             
             this.loadedApps.add(appName);
@@ -1766,36 +1773,13 @@ class IslamHubApp {
         const overlay = document.createElement('div');
         overlay.className = 'cache-loading-overlay';
         overlay.innerHTML = `
-            <div class="cache-loading-content">
-                <i class="fas fa-sync-alt fa-spin" style="font-size: 3rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
-                <h3 style="color: var(--primary-cyan); margin-bottom: 10px;">Membersihkan Cache...</h3>
-                <p style="color: rgba(255, 255, 255, 0.8);">Mohon tunggu sebentar</p>
-            </div>
+            <div class="cache-spinner"></div>
+            <h3>Membersihkan Data...</h3>
+            <p>Mohon tunggu sebentar</p>
         `;
-        overlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(10, 10, 31, 0.95);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10001;
-        `;
-        
-        const content = overlay.querySelector('.cache-loading-content');
-        content.style.cssText = `
-            text-align: center;
-            padding: 40px;
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 15px;
-        `;
-        
+        overlay.style.display = 'flex';
         document.body.appendChild(overlay);
+        console.log('[Cache Loading] Overlay appended to body');
         return overlay;
     }
     
@@ -1823,22 +1807,285 @@ class IslamHubApp {
             window.location.reload(true);
         }, 1000);
     }
+    
+    // ===== CLEAR DATA FEATURE (WEB ONLY) =====
+    
+    setupClearDataButton() {
+        // Only show on web, not native apps
+        if (this.isNative) {
+            console.log('[Clear Data] Skipped - native app');
+            return;
+        }
+        
+        const clearDataSection = document.getElementById('clearDataSection');
+        const btnClearData = document.getElementById('btnClearData');
+        const modal = document.getElementById('clearDataModal');
+        const closeModal = document.getElementById('closeClearDataModal');
+        const cancelBtn = document.getElementById('cancelClearData');
+        const confirmBtn = document.getElementById('confirmClearData');
+        
+        console.log('[Clear Data] Setup:', {
+            section: !!clearDataSection,
+            button: !!btnClearData,
+            modal: !!modal,
+            closeBtn: !!closeModal,
+            cancelBtn: !!cancelBtn,
+            confirmBtn: !!confirmBtn
+        });
+        
+        // Show clear data button
+        if (clearDataSection) {
+            clearDataSection.style.display = 'block';
+        }
+        
+        // Open modal
+        if (btnClearData && modal) {
+            btnClearData.addEventListener('click', () => {
+                console.log('[Clear Data] Button clicked, opening modal');
+                console.log('[Clear Data] Modal element:', modal);
+                console.log('[Clear Data] Modal classes before:', modal.className);
+                
+                // Check current computed styles
+                const beforeStyles = window.getComputedStyle(modal);
+                console.log('[Clear Data] Before - Position:', beforeStyles.position, 'Z-index:', beforeStyles.zIndex, 'Display:', beforeStyles.display, 'Visibility:', beforeStyles.visibility, 'Opacity:', beforeStyles.opacity);
+                
+                modal.classList.add('show');
+                // Force visibility with inline styles as fallback
+                modal.style.opacity = '1';
+                modal.style.visibility = 'visible';
+                modal.style.display = 'flex';
+                
+                console.log('[Clear Data] Modal classes after:', modal.className);
+                
+                // Check after styles
+                setTimeout(() => {
+                    const afterStyles = window.getComputedStyle(modal);
+                    console.log('[Clear Data] After - Position:', afterStyles.position, 'Z-index:', afterStyles.zIndex, 'Display:', afterStyles.display, 'Visibility:', afterStyles.visibility, 'Opacity:', afterStyles.opacity);
+                }, 100);
+                
+                console.log('[Clear Data] Modal displayed');
+            });
+        }
+        
+        // Close modal handlers
+        const closeModalHandler = () => {
+            console.log('[Clear Data] Closing modal');
+            if (modal) {
+                modal.classList.remove('show');
+                // Reset inline styles
+                modal.style.opacity = '';
+                modal.style.visibility = '';
+                modal.style.display = '';
+            }
+        };
+        
+        if (closeModal) closeModal.addEventListener('click', closeModalHandler);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModalHandler);
+        
+        // Click outside to close
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModalHandler();
+                }
+            });
+        }
+        
+        // Confirm clear data
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', () => {
+                console.log('[Clear Data] Confirm clicked');
+                this.performClearData();
+            });
+        }
+    }
+    
+    async performClearData() {
+        const clearCache = document.getElementById('clearCache').checked;
+        const clearLocalStorage = document.getElementById('clearLocalStorage').checked;
+        const clearIndexedDB = document.getElementById('clearIndexedDB').checked;
+        const clearAudio = document.getElementById('clearAudio').checked;
+        
+        console.log('Clear data requested:', { clearCache, clearLocalStorage, clearIndexedDB, clearAudio });
+        
+        // Close modal first
+        const modal = document.getElementById('clearDataModal');
+        if (modal) {
+            modal.classList.remove('show');
+        }
+        
+        let clearedItems = [];
+        
+        try {
+            // Show loading overlay with slight delay to ensure modal closes first
+            await new Promise(resolve => setTimeout(resolve, 100));
+            const overlay = this.showCacheLoadingOverlay();
+            console.log('[Clear Data] Overlay created:', overlay);
+            
+            // 1. Clear Cache Storage
+            if (clearCache && 'caches' in window) {
+                const cacheNames = await caches.keys();
+                for (const name of cacheNames) {
+                    // Don't clear audio cache unless specifically requested
+                    if (name.includes('audio') && !clearAudio) {
+                        console.log('Skipping audio cache:', name);
+                        continue;
+                    }
+                    await caches.delete(name);
+                    console.log('Deleted cache:', name);
+                }
+                clearedItems.push('Cache aplikasi');
+            }
+            
+            // 2. Clear LocalStorage (except audio download status if not requested)
+            if (clearLocalStorage) {
+                const keysToPreserve = [];
+                
+                if (!clearAudio) {
+                    // Preserve audio download status
+                    const keys = Object.keys(localStorage);
+                    keys.forEach(key => {
+                        if (key.includes('audio_downloaded') || key.includes('alquran_audio')) {
+                            keysToPreserve.push({ key, value: localStorage.getItem(key) });
+                        }
+                    });
+                }
+                
+                localStorage.clear();
+                
+                // Restore preserved keys
+                keysToPreserve.forEach(({ key, value }) => {
+                    localStorage.setItem(key, value);
+                });
+                
+                clearedItems.push('Data lokal');
+            }
+            
+            // 3. Clear IndexedDB
+            if (clearIndexedDB && 'indexedDB' in window) {
+                const databases = await indexedDB.databases();
+                for (const db of databases) {
+                    // Skip audio database unless requested
+                    if (db.name && db.name.includes('audio') && !clearAudio) {
+                        console.log('Skipping audio database:', db.name);
+                        continue;
+                    }
+                    indexedDB.deleteDatabase(db.name);
+                    console.log('Deleted IndexedDB:', db.name);
+                }
+                clearedItems.push('Data Al-Quran');
+            }
+            
+            // 4. Clear Audio (if specifically requested)
+            if (clearAudio && 'caches' in window) {
+                const cacheNames = await caches.keys();
+                for (const name of cacheNames) {
+                    if (name.includes('audio')) {
+                        await caches.delete(name);
+                        console.log('Deleted audio cache:', name);
+                    }
+                }
+                
+                // Clear audio-related localStorage
+                const keys = Object.keys(localStorage);
+                keys.forEach(key => {
+                    if (key.includes('audio_downloaded') || key.includes('alquran_audio')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+                
+                clearedItems.push('Audio Al-Quran');
+            }
+            
+            // Unregister service worker if cache cleared
+            if (clearCache && 'serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (const registration of registrations) {
+                    await registration.unregister();
+                    console.log('Unregistered service worker');
+                }
+            }
+            
+            // Update overlay message
+            const overlayText = overlay.querySelector('h3');
+            if (overlayText) {
+                overlayText.textContent = '✓ Data Berhasil Dihapus!';
+            }
+            const overlaySubtext = overlay.querySelector('p');
+            if (overlaySubtext) {
+                overlaySubtext.textContent = 'Memuat ulang aplikasi...';
+            }
+            
+            // Close modal
+            const modal = document.getElementById('clearDataModal');
+            if (modal) {
+                modal.classList.remove('show');
+                modal.style.display = '';
+            }
+            
+            console.log('Data cleared successfully:', clearedItems);
+            
+            // Reload after short delay
+            if (clearedItems.length > 0) {
+                setTimeout(() => {
+                    window.location.reload(true);
+                }, 1500);
+            } else {
+                overlay.remove();
+                this.showToast('Tidak ada data yang dipilih', 'info');
+            }
+            
+        } catch (error) {
+            console.error('Error clearing data:', error);
+            const overlay = document.querySelector('.cache-loading-overlay');
+            if (overlay) overlay.remove();
+            this.showToast('❌ Gagal menghapus data: ' + error.message, 'error');
+        }
+    }
+    
+    showToast(message, type = 'info') {
+        // Simple toast notification
+        const toast = document.createElement('div');
+        toast.className = `toast-notification toast-${type}`;
+        toast.textContent = message;
+        toast.style.cssText = `
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: ${type === 'success' ? 'rgba(0, 255, 102, 0.95)' : 'rgba(255, 51, 102, 0.95)'};
+            color: #000;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease-out;
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'slideUp 0.3s ease-out';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
 }
 
 // Initialize app when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initApp);
-} else {
-    // DOM already loaded, init immediately
-    initApp();
-}
-
 function initApp() {
     window.islamHub = new IslamHubApp();
     window.islamHub.init();
     
     // Make emergency reset globally available
     window.emergencyReset = () => window.islamHub.emergencyReset();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    // DOM already loaded, init immediately
+    initApp();
 }
 
 // Export for use in other modules

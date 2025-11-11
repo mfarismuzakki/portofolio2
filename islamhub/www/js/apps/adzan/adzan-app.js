@@ -36,6 +36,10 @@ export default class AdzanApp {
 
     async init() {
         console.log('Initializing Adzan App...');
+        
+        // Clear any old delivered notifications on app start
+        await this.clearOldDeliveredNotifications();
+        
         await this.render();
         this.setupEventListeners(); // Setup event listeners after render
         await this.loadSavedLocation();
@@ -44,6 +48,31 @@ export default class AdzanApp {
         this.updateCountdown(); // Initial countdown display
         this.updateClock();
         await this.initNotifications();
+    }
+    
+    async clearOldDeliveredNotifications() {
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+            try {
+                const { LocalNotifications } = window.Capacitor.Plugins;
+                
+                // Clear delivered notifications except persistent one if enabled
+                const delivered = await LocalNotifications.getDeliveredNotifications();
+                if (delivered.notifications && delivered.notifications.length > 0) {
+                    const toRemove = this.persistentNotificationEnabled 
+                        ? delivered.notifications.filter(n => n.id !== this.PERSISTENT_NOTIFICATION_ID)
+                        : delivered.notifications;
+                    
+                    if (toRemove.length > 0) {
+                        console.log('[Native] Clearing', toRemove.length, 'old notifications on app start');
+                        await LocalNotifications.removeDeliveredNotifications({
+                            notifications: toRemove
+                        });
+                    }
+                }
+            } catch (error) {
+                console.log('[Native] Could not clear old notifications:', error);
+            }
+        }
     }
 
     async render() {
@@ -61,8 +90,9 @@ export default class AdzanApp {
                             <span class="location-name" id="locationName">Jakarta, Indonesia</span>
                         </div>
                         <div class="location-actions">
-                            <button class="btn-notification" id="btnToggleNotification" title="Toggle Notifikasi">
+                            <button class="btn-notification" id="btnToggleNotification" title="Notifikasi Waktu Sholat">
                                 <i class="far fa-bell-slash"></i>
+                                <span>Aktifkan Notifikasi</span>
                             </button>
                             <button class="btn-change-location" id="btnChangeLocation">
                                 <i class="fas fa-edit"></i> Ubah Lokasi
@@ -1105,15 +1135,18 @@ export default class AdzanApp {
         if (!btn) return;
         
         const icon = btn.querySelector('i');
+        const text = btn.querySelector('span');
         
         if (this.notificationEnabled) {
             btn.classList.add('active');
             btn.title = 'Notifikasi Aktif - Klik untuk Menonaktifkan';
             if (icon) icon.className = 'fas fa-bell';
+            if (text) text.textContent = 'Nonaktifkan Notifikasi';
         } else {
             btn.classList.remove('active');
             btn.title = 'Notifikasi Nonaktif - Klik untuk Mengaktifkan';
             if (icon) icon.className = 'far fa-bell-slash';
+            if (text) text.textContent = 'Aktifkan Notifikasi';
         }
     }
     
@@ -1263,14 +1296,19 @@ export default class AdzanApp {
                 const notificationDate = new Date(prayerDate.getTime() - 5 * 60 * 1000);
                 
                 // If notification time has passed today, schedule for tomorrow
-                if (notificationDate <= now) {
+                // Add 2 minutes buffer to ensure we don't schedule for past time
+                if (notificationDate.getTime() <= now.getTime() + (2 * 60 * 1000)) {
                     notificationDate.setDate(notificationDate.getDate() + 1);
+                    console.log(`[Native] ${prayer} time has passed, scheduling for tomorrow`);
                 }
                 
                 const timeUntilNotification = notificationDate.getTime() - now.getTime();
                 
-                // Only schedule if within next 24 hours
-                if (timeUntilNotification > 0 && timeUntilNotification <= 24 * 60 * 60 * 1000) {
+                // Only schedule if:
+                // 1. Time is in the future (> 0)
+                // 2. Within next 24 hours
+                // 3. At least 1 minute in the future to avoid immediate triggers
+                if (timeUntilNotification > 60000 && timeUntilNotification <= 24 * 60 * 60 * 1000) {
                     notifications.push({
                         title: `🕌 Waktu ${prayer}`,
                         body: `⏰ 5 menit lagi waktu sholat ${prayer} (${prayerTime}). Bersiaplah untuk sholat.`,
@@ -1286,7 +1324,11 @@ export default class AdzanApp {
                         }
                     });
                     
-                    console.log(`[Native] Scheduled notification for ${prayer} at ${notificationDate.toLocaleTimeString()} (in ${Math.round(timeUntilNotification / 60000)} minutes)`);
+                    const hoursUntil = Math.floor(timeUntilNotification / (60 * 60 * 1000));
+                    const minutesUntil = Math.floor((timeUntilNotification % (60 * 60 * 1000)) / 60000);
+                    console.log(`[Native] ✓ Scheduled ${prayer} for ${notificationDate.toLocaleDateString()} ${notificationDate.toLocaleTimeString()} (in ${hoursUntil}h ${minutesUntil}m)`);
+                } else {
+                    console.log(`[Native] ✗ Skipped ${prayer} - time until notification: ${Math.round(timeUntilNotification / 60000)} minutes`);
                 }
             });
             
@@ -1356,10 +1398,29 @@ export default class AdzanApp {
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
             try {
                 const { LocalNotifications } = window.Capacitor.Plugins;
+                
+                // Cancel pending scheduled notifications (yang belum muncul)
                 await LocalNotifications.cancel({ notifications: [
-                    { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }
+                    { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 999999 }
                 ]});
                 console.log('[Native] Cancelled all scheduled notifications');
+                
+                // Remove delivered notifications (yang sudah muncul di notification tray)
+                try {
+                    const pending = await LocalNotifications.getPending();
+                    console.log('[Native] Pending notifications:', pending.notifications.length);
+                    
+                    // Clear all delivered notifications from notification tray
+                    const delivered = await LocalNotifications.getDeliveredNotifications();
+                    if (delivered.notifications && delivered.notifications.length > 0) {
+                        console.log('[Native] Clearing', delivered.notifications.length, 'delivered notifications');
+                        await LocalNotifications.removeDeliveredNotifications({
+                            notifications: delivered.notifications
+                        });
+                    }
+                } catch (e) {
+                    console.log('[Native] Could not check/clear delivered notifications:', e);
+                }
             } catch (error) {
                 console.error('[Native] Failed to cancel notifications:', error);
             }
@@ -1491,8 +1552,8 @@ export default class AdzanApp {
                     await window.Capacitor.Plugins.Haptics.notification({ type: 'success' });
                 }
                 
-                // Schedule with sufficient delay for processing
-                const scheduleTime = new Date(Date.now() + 500);
+                // Schedule immediately without delay
+                const scheduleTime = new Date(Date.now() + 100); // Minimal delay
                 await LocalNotifications.schedule({
                     notifications: [{
                         id: 999999,
@@ -1506,7 +1567,7 @@ export default class AdzanApp {
                         extra: { type: 'welcome' }
                     }]
                 });
-                console.log('[Native] Welcome notification scheduled for', scheduleTime);
+                console.log('[Native] Welcome notification scheduled immediately');
                 return;
             } catch (error) {
                 console.error('[Native] Welcome notification failed:', error);

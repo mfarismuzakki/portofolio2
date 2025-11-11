@@ -24,6 +24,8 @@
 @import url('components/qibla.css');
 @import url('components/sholat.css');
 @import url('components/sirah.css');
+@import url('components/streaming.css');
+@import url('components/clear-data-modal.css');
 
 /* Layout */
 @import url('components/footer.css');
