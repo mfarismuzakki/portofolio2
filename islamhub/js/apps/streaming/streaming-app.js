@@ -118,6 +118,9 @@ class StreamingApp {
                                 <span class="status-dot"></span>
                                 <span>Live</span>
                             </div>
+                            <button class="streaming-close-btn" id="streamingCloseBtn" title="Tutup Player">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
                         <div class="streaming-audio-controls">
                             <button class="streaming-audio-btn" id="streamingPlayPause">
@@ -264,6 +267,16 @@ class StreamingApp {
             });
         }
         
+        // Close button
+        const closeBtn = document.getElementById('streamingCloseBtn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                if (this.currentStream !== null) {
+                    this.stopRadio(this.currentStream);
+                }
+            });
+        }
+        
         // Simulate signal strength animation
         this.startSignalAnimation();
     }
@@ -398,11 +411,16 @@ class StreamingApp {
         }
     }
 
-    stopRadio(stationIndex) {
+    stopRadio(stationIndex = null) {
+        // If no index provided, use current stream
+        const indexToStop = stationIndex !== null ? stationIndex : this.currentStream;
+        
+        if (indexToStop === null) return;
+        
         const radioPlayer = document.getElementById('radioPlayer');
         const audioContainer = document.getElementById('audioPlayerContainer');
-        const btnRadio = document.getElementById(`btnRadio${stationIndex}`);
-        const radioStatus = document.getElementById(`radioStatus${stationIndex}`);
+        const btnRadio = document.getElementById(`btnRadio${indexToStop}`);
+        const radioStatus = document.getElementById(`radioStatus${indexToStop}`);
         
         if (radioPlayer) {
             radioPlayer.pause();
