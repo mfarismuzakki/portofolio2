@@ -204,6 +204,48 @@
   box-shadow: 0 6px 20px rgba(50, 205, 50, 0.5);
 }
 
+/* Makkah Live color variant */
+.video-card.video-makkah {
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), rgba(255, 215, 0, 0.1));
+  border: 1px solid rgba(218, 165, 32, 0.3);
+}
+
+.video-card.video-makkah .video-icon {
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.3), rgba(255, 215, 0, 0.3));
+  color: #daa520;
+  box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);
+}
+
+.video-card.video-makkah .btn-video {
+  background: linear-gradient(135deg, #daa520, #ffd700);
+  box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3);
+}
+
+.video-card.video-makkah .btn-video:hover {
+  box-shadow: 0 6px 20px rgba(218, 165, 32, 0.5);
+}
+
+/* Madinah Live color variant */
+.video-card.video-madinah {
+  background: linear-gradient(135deg, rgba(0, 128, 128, 0.1), rgba(32, 178, 170, 0.1));
+  border: 1px solid rgba(32, 178, 170, 0.3);
+}
+
+.video-card.video-madinah .video-icon {
+  background: linear-gradient(135deg, rgba(0, 128, 128, 0.3), rgba(32, 178, 170, 0.3));
+  color: #20b2aa;
+  box-shadow: 0 4px 15px rgba(32, 178, 170, 0.4);
+}
+
+.video-card.video-madinah .btn-video {
+  background: linear-gradient(135deg, #008080, #20b2aa);
+  box-shadow: 0 4px 15px rgba(32, 178, 170, 0.3);
+}
+
+.video-card.video-madinah .btn-video:hover {
+  box-shadow: 0 6px 20px rgba(32, 178, 170, 0.5);
+}
+
 .video-info {
   display: flex;
   align-items: center;
@@ -230,6 +272,20 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.video-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 255, 102, 0.2));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 2.5rem;
+  color: var(--primary-cyan);
+  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
 }
 
 .video-details {
