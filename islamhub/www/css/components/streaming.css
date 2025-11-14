@@ -204,6 +204,48 @@
   box-shadow: 0 6px 20px rgba(50, 205, 50, 0.5);
 }
 
+/* Makkah Live color variant */
+.video-card.video-makkah {
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), rgba(255, 215, 0, 0.1));
+  border: 1px solid rgba(218, 165, 32, 0.3);
+}
+
+.video-card.video-makkah .video-icon {
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.3), rgba(255, 215, 0, 0.3));
+  color: #daa520;
+  box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);
+}
+
+.video-card.video-makkah .btn-video {
+  background: linear-gradient(135deg, #daa520, #ffd700);
+  box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3);
+}
+
+.video-card.video-makkah .btn-video:hover {
+  box-shadow: 0 6px 20px rgba(218, 165, 32, 0.5);
+}
+
+/* Madinah Live color variant */
+.video-card.video-madinah {
+  background: linear-gradient(135deg, rgba(0, 128, 128, 0.1), rgba(32, 178, 170, 0.1));
+  border: 1px solid rgba(32, 178, 170, 0.3);
+}
+
+.video-card.video-madinah .video-icon {
+  background: linear-gradient(135deg, rgba(0, 128, 128, 0.3), rgba(32, 178, 170, 0.3));
+  color: #20b2aa;
+  box-shadow: 0 4px 15px rgba(32, 178, 170, 0.4);
+}
+
+.video-card.video-madinah .btn-video {
+  background: linear-gradient(135deg, #008080, #20b2aa);
+  box-shadow: 0 4px 15px rgba(32, 178, 170, 0.3);
+}
+
+.video-card.video-madinah .btn-video:hover {
+  box-shadow: 0 6px 20px rgba(32, 178, 170, 0.5);
+}
+
 .video-info {
   display: flex;
   align-items: center;
@@ -230,6 +272,20 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.video-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 255, 102, 0.2));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 2.5rem;
+  color: var(--primary-cyan);
+  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
 }
 
 .video-details {
@@ -378,13 +434,14 @@
 /* ===== AUDIO PLAYER (STYLE ALQURAN/DZIKIR) ===== */
 .audio-player-container {
   position: fixed;
-  bottom: max(80px, calc(68px + env(safe-area-inset-bottom)));
+  bottom: 68px;
   left: 0;
   right: 0;
   background: rgba(10, 10, 15, 0.98);
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(0, 255, 255, 0.3);
   padding: 15px 20px;
+  padding-bottom: calc(15px + env(safe-area-inset-bottom));
   z-index: 998;
   box-shadow: 0 -4px 20px rgba(0, 255, 255, 0.2);
 }
@@ -396,6 +453,7 @@
   margin-bottom: 12px;
   flex-wrap: wrap;
   gap: 8px;
+  position: relative;
 }
 
 .streaming-radio-name {
@@ -406,6 +464,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: 1;
 }
 
 .streaming-radio-status {
@@ -422,6 +481,28 @@
   border-radius: 50%;
   background: var(--primary-cyan);
   animation: pulse-dot 2s infinite;
+}
+
+.streaming-close-btn {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  color: #ff4444;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+}
+
+.streaming-close-btn:hover {
+  background: rgba(255, 0, 0, 0.2);
+  border-color: #ff4444;
+  transform: scale(1.1);
 }
 
 .streaming-audio-controls {
@@ -545,8 +626,15 @@
 
 @media (max-width: 768px) {
   .audio-player-container {
-    bottom: 70px;
+    bottom: 60px;
     padding: 12px 15px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+  
+  .streaming-close-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
   }
   
   .streaming-signal-indicator {

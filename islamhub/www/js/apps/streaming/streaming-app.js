@@ -22,6 +22,24 @@ class StreamingApp {
             }
         ];
         
+        // Live Makkah & Madinah
+        this.liveHaramain = [
+            {
+                name: 'Makkah Live',
+                url: 'https://www.youtube.com/embed/MI-fE4uTRZg',
+                description: 'Live streaming 24/7 dari Masjidil Haram Makkah',
+                icon: 'fas fa-kaaba',
+                color: 'makkah'
+            },
+            {
+                name: 'Madinah Live',
+                url: 'https://www.youtube.com/embed/TpT8b8JFZ6E',
+                description: 'Live streaming 24/7 dari Masjid Nabawi Madinah',
+                icon: 'fas fa-mosque',
+                color: 'madinah'
+            }
+        ];
+        
         // Video streaming channels
         this.videoChannels = [
             {
@@ -82,7 +100,7 @@ class StreamingApp {
                 <div class="streaming-section">
                     <div class="section-header">
                         <i class="fas fa-radio"></i>
-                        <h2>Radio Streaming</h2>
+                        <h2>Streaming Radio Kajian</h2>
                     </div>
                     
                     ${this.radioStations.map((station, index) => `
@@ -118,6 +136,9 @@ class StreamingApp {
                                 <span class="status-dot"></span>
                                 <span>Live</span>
                             </div>
+                            <button class="streaming-close-btn" id="streamingCloseBtn" title="Tutup Player">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
                         <div class="streaming-audio-controls">
                             <button class="streaming-audio-btn" id="streamingPlayPause">
@@ -146,7 +167,7 @@ class StreamingApp {
                 <div class="streaming-section">
                     <div class="section-header">
                         <i class="fas fa-tv"></i>
-                        <h2>Streaming Video</h2>
+                        <h2>Streaming Video Kajian</h2>
                     </div>
                     <p class="section-description">
                         Tonton live streaming TV dakwah Islam langsung dari browser
@@ -175,6 +196,39 @@ class StreamingApp {
                     `).join('')}
                 </div>
 
+                <!-- Live Haramain Section -->
+                <div class="streaming-section">
+                    <div class="section-header">
+                        <i class="fas fa-kaaba"></i>
+                        <h2>Live Makkah & Madinah</h2>
+                    </div>
+                    <p class="section-description">
+                        Saksikan langsung suasana Masjidil Haram dan Masjid Nabawi 24 jam
+                    </p>
+                    
+                    ${this.liveHaramain.map((live, index) => `
+                        <div class="video-card video-${live.color}">
+                            <div class="video-info">
+                                <div class="video-icon">
+                                    <i class="${live.icon}"></i>
+                                </div>
+                                <div class="video-details">
+                                    <h3>${live.name}</h3>
+                                    <p>${live.description}</p>
+                                    <div class="video-status">
+                                        <span class="status-dot live"></span>
+                                        <span>Live 24/7</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-video" onclick="window.streamingApp.openVideoStream('${live.url}', '${live.name}')">
+                                <i class="fas fa-play-circle"></i>
+                                <span>Tonton Live</span>
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+
                 <!-- Tips Section -->
                 <div class="streaming-tips">
                     <div class="tip-card">
@@ -183,8 +237,9 @@ class StreamingApp {
                             <h4>Tips Streaming</h4>
                             <ul>
                                 <li>Pastikan koneksi internet stabil untuk streaming lancar</li>
+                                <li>Live Haramain menampilkan suasana Makkah & Madinah realtime 24/7</li>
                                 <li>Radio streaming akan diputar langsung di aplikasi</li>
-                                <li>Video streaming akan dibuka di aplikasi</li>
+                                <li>Video streaming kajian akan dibuka di aplikasi</li>
                                 <li>Gunakan WiFi untuk menghemat kuota internet</li>
                             </ul>
                         </div>
@@ -260,6 +315,16 @@ class StreamingApp {
                 } else {
                     muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
                     muteBtn.classList.remove('muted');
+                }
+            });
+        }
+        
+        // Close button
+        const closeBtn = document.getElementById('streamingCloseBtn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                if (this.currentStream !== null) {
+                    this.stopRadio(this.currentStream);
                 }
             });
         }
@@ -398,11 +463,16 @@ class StreamingApp {
         }
     }
 
-    stopRadio(stationIndex) {
+    stopRadio(stationIndex = null) {
+        // If no index provided, use current stream
+        const indexToStop = stationIndex !== null ? stationIndex : this.currentStream;
+        
+        if (indexToStop === null) return;
+        
         const radioPlayer = document.getElementById('radioPlayer');
         const audioContainer = document.getElementById('audioPlayerContainer');
-        const btnRadio = document.getElementById(`btnRadio${stationIndex}`);
-        const radioStatus = document.getElementById(`radioStatus${stationIndex}`);
+        const btnRadio = document.getElementById(`btnRadio${indexToStop}`);
+        const radioStatus = document.getElementById(`radioStatus${indexToStop}`);
         
         if (radioPlayer) {
             radioPlayer.pause();

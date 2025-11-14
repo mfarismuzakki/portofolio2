@@ -3027,20 +3027,31 @@
 }
 
 .verse-item-reading:hover {
-    background: rgba(0, 255, 255, 0.08);
-    border-radius: 4px;
+    background: rgba(0, 255, 255, 0.08) !important;
+    border-radius: 4px !important;
+    background-clip: content-box !important;
+    padding: 0.25rem 0.375rem !important;
+    margin: -0.25rem -0.375rem !important;
 }
 
 .verse-item-reading:active {
-    background: rgba(0, 255, 255, 0.15);
+    background: rgba(0, 255, 255, 0.15) !important;
+    background-clip: content-box !important;
+    padding: 0.25rem 0.375rem !important;
+    margin: -0.25rem -0.375rem !important;
+    border-radius: 4px !important;
 }
 
 /* Verse audio playing highlight */
 .verse-item-reading.playing-audio,
 .verse-item-clean.playing-audio {
     background: rgba(0, 255, 255, 0.12) !important;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-    animation: audioPlaying 2s ease-in-out infinite;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+    animation: audioPlaying 2s ease-in-out infinite !important;
+    background-clip: content-box !important;
+    padding: 0.25rem 0.375rem !important;
+    margin: -0.25rem -0.375rem !important;
+    border-radius: 4px !important;
 }
 
 @keyframes audioPlaying {
@@ -3780,9 +3791,13 @@
     box-shadow: 0 0 15px rgba(255, 20, 147, 0.4);
 }
 
-/* Verse Highlight Animation */
+/* Verse Highlight Animation - hanya konten, tanpa margin */
 .verse-highlight {
-    animation: verseHighlight 2s ease;
+    animation: verseHighlight 2s ease !important;
+    background-clip: content-box !important;
+    padding: 0.25rem 0.375rem !important;
+    margin: -0.25rem -0.375rem !important;
+    border-radius: 4px !important;
 }
 
 @keyframes verseHighlight {
