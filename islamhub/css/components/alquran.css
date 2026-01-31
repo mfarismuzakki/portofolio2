@@ -4,7 +4,7 @@
 @font-face {
     font-family: 'Uthmanic Hafs';
     src: url('https://fonts.qurancomplex.gov.sa/wp02/woff2/UthmanicHafs_V20.woff2') format('woff2'),
-         url('https://fonts.qurancomplex.gov.sa/wp02/woff/UthmanicHafs_V20.woff') format('woff');
+        url('https://fonts.qurancomplex.gov.sa/wp02/woff/UthmanicHafs_V20.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -24,7 +24,8 @@
 .alquran-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px 2px; /* Padding minimal kiri-kanan */
+    padding: 20px 2px;
+    /* Padding minimal kiri-kanan */
     padding-bottom: 20px;
     color: var(--text-primary);
     min-height: 100vh;
@@ -62,16 +63,16 @@
     background: rgba(0, 255, 255, 0.1);
     border: 1px solid var(--primary-cyan);
     border-radius: 10px;
-    padding: 24px 20px;
+    padding: 32px 24px;
     color: var(--text-primary);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     font-family: var(--font-secondary);
-    min-height: 110px;
+    min-height: 140px;
 }
 
 .nav-btn:hover {
@@ -81,12 +82,12 @@
 }
 
 .nav-btn i {
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: var(--primary-cyan);
 }
 
 .nav-btn span {
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     font-weight: 500;
 }
 
@@ -377,17 +378,20 @@
     display: flex;
     flex-direction: column;
     gap: 25px;
-    padding: 0 4px; /* Minimal padding kiri-kanan */
+    padding: 0 4px;
+    /* Minimal padding kiri-kanan */
 }
 
 .verse-item {
     background: rgba(255, 255, 255, 0.02);
     border-radius: 12px;
-    padding: 18px 6px; /* Reduced from 25px to 18px */
+    padding: 24px 20px;
+    /* More padding for better spacing */
     border: 1px solid rgba(0, 255, 255, 0.1);
     transition: all 0.3s ease;
     position: relative;
-    margin-bottom: 8px; /* Reduced spacing between verses */
+    margin-bottom: 16px;
+    /* Better spacing between verses */
 }
 
 .verse-item:hover {
@@ -414,19 +418,24 @@
 
 .verse-content {
     margin-right: 50px;
-    margin-bottom: 8px; /* Reduced from 15px to 8px */
+    margin-bottom: 16px;
+    /* Better spacing */
 }
 
 .arabic-text {
-    font-size: 1.2rem;
-    line-height: 2.0; /* Reduced from 2.4 to 2.0 - more compact like Quran.com */
+    font-size: 1.75rem;
+    /* Larger font like Quran.com */
+    line-height: 2.6;
+    /* Spacious line height for readability */
     text-align: right;
     color: var(--text-primary);
-    font-family: 'Amiri Quran', 'Uthmanic Hafs', 'KFGQPC Uthmani', serif;
-    margin-bottom: 10px; /* Reduced from 15px to 10px */
+    font-family: 'Uthmanic Hafs', 'KFGQPC Uthmani', 'Amiri Quran', serif;
+    margin-bottom: 16px;
     direction: rtl;
-    word-spacing: 0.05em; /* Reduced from 0.1em */
-    letter-spacing: 0.01em; /* Reduced from 0.02em */
+    word-spacing: 0.12em;
+    /* Consistent word spacing like Quran.com */
+    letter-spacing: -0.01em;
+    /* Tighter for Arabic script */
 }
 
 /* Arabic Font Families */
@@ -469,18 +478,20 @@
 }
 
 .transliteration-text {
-    font-size: 1rem; /* Reduced from 1.1rem */
+    font-size: 1rem;
     color: var(--text-secondary);
     font-style: italic;
-    margin-bottom: 8px; /* Reduced from 10px */
-    line-height: 1.5; /* Reduced from 1.6 */
+    margin-bottom: 12px;
+    line-height: 1.7;
     font-family: var(--font-secondary);
 }
 
 .translation-text {
-    font-size: 0.95rem; /* Reduced from 1rem */
-    color: var(--text-primary);
-    line-height: 1.6; /* Reduced from 1.7 */
+    font-size: 1.05rem;
+    /* Slightly larger for readability */
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.8;
+    /* Better line height for translation */
     font-family: var(--font-secondary);
 }
 
@@ -996,36 +1007,36 @@
         padding: 12px;
         gap: 12px;
     }
-    
+
     .surah-row-number {
         width: 35px;
         height: 35px;
         font-size: 0.9rem;
     }
-    
+
     .surah-row-latin {
         font-size: 0.95rem;
     }
-    
+
     .surah-row-arabic {
         font-size: 1rem;
     }
-    
+
     .surah-row-info {
         font-size: 0.8rem;
     }
-    
+
     .surah-row-btn,
     .surah-row-btn-verse {
         width: 35px;
         height: 35px;
     }
-    
+
     .surah-row-btn i,
     .surah-row-btn-verse i {
         font-size: 0.9rem;
     }
-    
+
     .surah-row-actions {
         gap: 6px;
     }
@@ -1327,12 +1338,12 @@
     transition: all 0.3s ease;
 }
 
-.toggle-switch input:checked + .toggle-slider {
+.toggle-switch input:checked+.toggle-slider {
     background: var(--primary-cyan);
     border-color: var(--primary-cyan);
 }
 
-.toggle-switch input:checked + .toggle-slider::before {
+.toggle-switch input:checked+.toggle-slider::before {
     transform: translateX(24px);
     background: var(--dark-bg);
 }
@@ -1540,23 +1551,23 @@
         flex-wrap: wrap;
         gap: 10px;
     }
-    
+
     .setting-label {
         flex: 1 1 100%;
         min-width: 100%;
     }
-    
+
     .font-select {
         width: 100%;
         font-size: 0.9rem;
         padding: 8px 12px;
     }
-    
+
     .font-size-control {
         width: 100%;
         justify-content: center;
     }
-    
+
     .settings-section-title {
         font-size: 1rem;
         padding: 15px;
@@ -1633,11 +1644,13 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .alquran-container {
-        padding: 15px 4px; /* Kurangi padding kiri-kanan dari 15px ke 4px */
+        padding: 15px 4px;
+        /* Kurangi padding kiri-kanan dari 15px ke 4px */
     }
 
     .alquran-header {
-        padding: 20px 8px; /* Kurangi padding kiri-kanan */
+        padding: 20px 8px;
+        /* Kurangi padding kiri-kanan */
     }
 
     .alquran-title h1 {
@@ -1699,7 +1712,7 @@
         grid-template-columns: repeat(2, 1fr);
         max-height: 60vh;
     }
-    
+
     .quick-page-grid {
         grid-template-columns: 1fr;
     }
@@ -1754,24 +1767,24 @@
     .juz-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .surah-card-header {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .surah-names {
         text-align: center;
     }
-    
+
     .surah-name-arabic {
         text-align: center;
     }
-    
+
     .surah-actions {
         flex-direction: column;
     }
-    
+
     .btn-read-surah,
     .btn-jump-verse {
         width: 100%;
@@ -1797,12 +1810,12 @@
         align-items: flex-start;
         gap: 10px;
     }
-    
+
     .font-size-control {
         width: 100%;
         justify-content: space-between;
     }
-    
+
     .font-select {
         width: 100%;
         min-width: unset;
@@ -1815,6 +1828,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1936,10 +1950,21 @@
     font-weight: 500;
 }
 
-.level-item.level-1 .level-count { color: #ffaa00; }
-.level-item.level-2 .level-count { color: #00aaff; }
-.level-item.level-3 .level-count { color: #00ff41; }
-.level-item.level-4 .level-count { color: #ff0064; }
+.level-item.level-1 .level-count {
+    color: #ffaa00;
+}
+
+.level-item.level-2 .level-count {
+    color: #00aaff;
+}
+
+.level-item.level-3 .level-count {
+    color: #00ff41;
+}
+
+.level-item.level-4 .level-count {
+    color: #ff0064;
+}
 
 .progress-tips {
     text-align: left;
@@ -2050,11 +2075,30 @@
     background: var(--dark-bg);
 }
 
-.verse-progress-indicator.level-0 { border-color: #666; color: #666; }
-.verse-progress-indicator.level-1 { border-color: #ffaa00; color: #ffaa00; }
-.verse-progress-indicator.level-2 { border-color: #00aaff; color: #00aaff; }
-.verse-progress-indicator.level-3 { border-color: #00ff41; color: #00ff41; }
-.verse-progress-indicator.level-4 { border-color: #ff0064; color: #ff0064; }
+.verse-progress-indicator.level-0 {
+    border-color: #666;
+    color: #666;
+}
+
+.verse-progress-indicator.level-1 {
+    border-color: #ffaa00;
+    color: #ffaa00;
+}
+
+.verse-progress-indicator.level-2 {
+    border-color: #00aaff;
+    color: #00aaff;
+}
+
+.verse-progress-indicator.level-3 {
+    border-color: #00ff41;
+    color: #00ff41;
+}
+
+.verse-progress-indicator.level-4 {
+    border-color: #ff0064;
+    color: #ff0064;
+}
 
 /* Progress modal specific styles */
 .progress-modal .modal-content {
@@ -2067,6 +2111,7 @@
 
 /* Print styles */
 @media print {
+
     .alquran-header,
     .page-navigation,
     .page-actions,
@@ -2097,20 +2142,20 @@
     .summary-stats {
         grid-template-columns: 1fr;
     }
-    
+
     .progress-levels {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .progress-circle {
         width: 100px;
         height: 100px;
     }
-    
+
     .progress-number {
         font-size: 2rem;
     }
-    
+
     .memorization-controls {
         flex-wrap: wrap;
     }
@@ -2120,7 +2165,7 @@
     .progress-levels {
         grid-template-columns: 1fr;
     }
-    
+
     .memorization-btn {
         padding: 6px 12px;
         font-size: 0.8rem;
@@ -2653,11 +2698,14 @@
 .surah-header-compact {
     background: var(--surface);
     border-radius: 12px;
-    padding: 20px 4px; /* Padding sangat kecil kiri-kanan */
+    padding: 20px 4px;
+    /* Padding sangat kecil kiri-kanan */
     margin-bottom: 15px;
     border: 1px solid rgba(0, 255, 255, 0.15);
-    max-width: 100%; /* Full width, tanpa limit 900px */
-    margin-left: 2px; /* Margin minimal dari edge */
+    max-width: 100%;
+    /* Full width, tanpa limit 900px */
+    margin-left: 2px;
+    /* Margin minimal dari edge */
     margin-right: 2px;
 }
 
@@ -2670,13 +2718,16 @@
     border-bottom: 1px solid rgba(0, 255, 255, 0.1);
 }
 
-.top-left, .top-right {
+.top-left,
+.top-right {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.menu-toggle-btn, .home-btn, .settings-icon-btn {
+.menu-toggle-btn,
+.home-btn,
+.settings-icon-btn {
     background: transparent;
     border: 1px solid rgba(0, 255, 255, 0.3);
     border-radius: 8px;
@@ -2690,7 +2741,9 @@
     font-size: 0.9rem;
 }
 
-.menu-toggle-btn:hover, .home-btn:hover, .settings-icon-btn:hover {
+.menu-toggle-btn:hover,
+.home-btn:hover,
+.settings-icon-btn:hover {
     background: rgba(0, 255, 255, 0.1);
     border-color: var(--primary-cyan);
 }
@@ -2753,9 +2806,11 @@
 }
 
 .surah-title-section {
-    padding: 1rem 0.5rem 1rem 0.5rem; /* Kurangi padding kiri-kanan dari 1rem ke 0.5rem */
+    padding: 1rem 0.5rem 1rem 0.5rem;
+    /* Kurangi padding kiri-kanan dari 1rem ke 0.5rem */
     margin-top: 0;
-    margin-left: 8px; /* Margin minimal dari edge */
+    margin-left: 8px;
+    /* Margin minimal dari edge */
     margin-right: 8px;
 }
 
@@ -2859,7 +2914,8 @@
     position: relative;
     transition: all 0.3s ease;
     margin-bottom: 15px;
-    overflow: hidden; /* Prevent content from overflowing */
+    overflow: hidden;
+    /* Prevent content from overflowing */
 }
 
 .verse-item-clean:hover {
@@ -2869,8 +2925,10 @@
 
 .verse-number-badge {
     position: absolute;
-    top: 8px; /* Menempel ke atas */
-    left: 8px; /* Menempel ke kiri */
+    top: 8px;
+    /* Menempel ke atas */
+    left: 8px;
+    /* Menempel ke kiri */
     background: rgba(0, 255, 255, 0.15);
     color: var(--primary-cyan);
     width: 32px;
@@ -2888,16 +2946,23 @@
 .verse-item-clean .verse-arabic {
     font-family: 'Amiri Quran', 'Uthmanic Hafs', 'KFGQPC Uthmani', serif;
     font-size: 1.2rem;
-    line-height: 2.0; /* Reduced from 2.5 to match page mode */
+    line-height: 2.0;
+    /* Reduced from 2.5 to match page mode */
     text-align: right;
     color: var(--text-primary);
-    margin-bottom: 10px; /* Reduced from 18px */
-    margin-top: 25px; /* Beri ruang untuk nomor badge di atas */
-    margin-left: 0; /* Hapus margin kiri */
-    margin-right: 0; /* Hapus margin kanan */
+    margin-bottom: 10px;
+    /* Reduced from 18px */
+    margin-top: 25px;
+    /* Beri ruang untuk nomor badge di atas */
+    margin-left: 0;
+    /* Hapus margin kiri */
+    margin-right: 0;
+    /* Hapus margin kanan */
     direction: rtl;
-    word-spacing: 0.05em; /* Reduced from 0.1em to match page mode */
-    letter-spacing: 0.01em; /* Reduced from 0.02em to match page mode */
+    word-spacing: 0.05em;
+    /* Reduced from 0.1em to match page mode */
+    letter-spacing: 0.01em;
+    /* Reduced from 0.02em to match page mode */
     font-weight: 400;
 }
 
@@ -2907,16 +2972,20 @@
     font-style: italic;
     margin-bottom: 10px;
     line-height: 1.6;
-    margin-left: 0; /* Hapus margin kiri */
-    margin-right: 0; /* Hapus margin kanan */
+    margin-left: 0;
+    /* Hapus margin kiri */
+    margin-right: 0;
+    /* Hapus margin kanan */
 }
 
 .verse-item-clean .verse-translation {
     font-size: 0.95rem;
     color: var(--text-secondary);
     line-height: 1.7;
-    margin-left: 0; /* Hapus margin kiri */
-    margin-right: 0; /* Hapus margin kanan */
+    margin-left: 0;
+    /* Hapus margin kiri */
+    margin-right: 0;
+    /* Hapus margin kanan */
 }
 
 .verse-actions-inline {
@@ -2924,8 +2993,10 @@
     gap: 8px;
     justify-content: flex-end;
     margin-top: 15px;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
-    padding: 0 4px; /* Padding kecil agar tidak keluar */
+    flex-wrap: wrap;
+    /* Allow wrapping on small screens */
+    padding: 0 4px;
+    /* Padding kecil agar tidak keluar */
 }
 
 .verse-btn-inline {
@@ -2937,8 +3008,10 @@
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 0.85rem;
-    white-space: nowrap; /* Prevent text wrapping */
-    flex-shrink: 0; /* Prevent shrinking */
+    white-space: nowrap;
+    /* Prevent text wrapping */
+    flex-shrink: 0;
+    /* Prevent shrinking */
 }
 
 .verse-btn-inline:hover {
@@ -3003,7 +3076,8 @@
 .page-separator-play i {
     font-size: 0.7rem;
     color: var(--primary-cyan);
-    margin-left: 1px; /* Adjust play icon position */
+    margin-left: 1px;
+    /* Adjust play icon position */
 }
 
 .page-separator-play:hover {
@@ -3026,20 +3100,9 @@
     position: relative;
 }
 
-.verse-item-reading:hover {
-    background: rgba(0, 255, 255, 0.08) !important;
-    border-radius: 4px !important;
-    background-clip: content-box !important;
-    padding: 0.25rem 0.375rem !important;
-    margin: -0.25rem -0.375rem !important;
-}
-
-.verse-item-reading:active {
-    background: rgba(0, 255, 255, 0.15) !important;
-    background-clip: content-box !important;
-    padding: 0.25rem 0.375rem !important;
-    margin: -0.25rem -0.375rem !important;
-    border-radius: 4px !important;
+.verse-item-reading:hover .verse-arabic-inline {
+    color: var(--primary-cyan);
+    transition: color 0.2s ease;
 }
 
 /* Verse audio playing highlight */
@@ -3055,9 +3118,12 @@
 }
 
 @keyframes audioPlaying {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
     }
+
     50% {
         box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
     }
@@ -3066,7 +3132,8 @@
 /* Verse Play Popup - Fixed Bottom Version */
 .verse-play-popup {
     position: fixed;
-    bottom: 150px; /* Above audio player + bottom nav */
+    bottom: 150px;
+    /* Above audio player + bottom nav */
     left: 0;
     right: 0;
     z-index: 9999;
@@ -3182,38 +3249,38 @@
     padding: 2rem;
 }
 
-/* Basmalah styling */
+/* Basmalah styling - Quran.com style */
 .basmalah-text {
     text-align: center !important;
-    margin: 2rem auto 1.5rem auto;
-    padding: 0;
+    margin: 2.5rem auto 2rem auto;
+    padding: 1rem 0;
     direction: ltr;
 }
 
 .basmalah-arabic {
-    font-family: 'Amiri Quran', 'KFGQPC Uthmani', 'Uthmanic Hafs', serif;
-    font-size: 1.4rem;
+    font-family: 'Uthmanic Hafs', 'KFGQPC Uthmani', 'Amiri Quran', serif;
+    font-size: 1.8rem;
     color: rgba(255, 255, 255, 0.95);
     font-weight: 400;
     direction: rtl;
-    letter-spacing: 0;
-    word-spacing: 0;
-    line-height: 1.8;
+    letter-spacing: -0.01em;
+    word-spacing: 0.12em;
+    line-height: 2.2;
     display: block;
     text-align: center;
 }
 
 .surah-mode.reading-view .basmalah-text {
-    margin: 1.5rem 0 1.2rem 0;
+    margin: 2rem 0 1.5rem 0;
     text-align: center;
 }
 
 .surah-mode.reading-view .basmalah-arabic {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     display: block;
     font-weight: 400;
-    letter-spacing: 0;
-    word-spacing: 0;
+    letter-spacing: -0.01em;
+    word-spacing: 0.12em;
     text-align: center !important;
 }
 
@@ -3230,14 +3297,16 @@
     background: transparent;
     border: none;
     border-radius: 0;
-    padding: 2.5rem 3rem;
+    padding: 0.75rem 0.5rem;
     text-align: justify;
+    text-align-last: right;
     direction: rtl;
     line-height: 1.8;
-    font-size: 1.75rem;
-    max-width: 700px;
-    word-spacing: 0;
+    font-size: 1.55rem;
+    max-width: 720px;
+    word-spacing: 0.02em;
     letter-spacing: 0;
+    display: block;
 }
 
 /* Remove any separation between verses in reading mode */
@@ -3246,77 +3315,69 @@
     position: relative;
     margin: 0;
     padding: 0;
+    word-spacing: inherit;
+    letter-spacing: inherit;
 }
 
-/* Verse numbers with Arabic ornament in reading mode */
+/* Verse numbers with Arabic ornament in reading mode - Quran.com style */
 .verse-number-ornament {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-family: 'Uthmanic Hafs', 'KFGQPC Uthmani', 'Amiri Quran', serif;
-    font-size: 1.4rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0 0.2rem;
-    vertical-align: baseline;
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0.15em;
+    vertical-align: middle;
     line-height: 1;
     direction: rtl;
-    transition: all 0.2s ease;
-    position: relative;
-    top: -0.1em;
 }
 
 .verse-number-ornament:hover {
     color: var(--primary-cyan);
-    transform: scale(1.05);
 }
 
-/* Verse numbers in reading mode - small and subtle */
+/* Verse numbers in reading mode - Quran.com style (circular end marker) */
 .verse-number-inline {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 30px;
-    height: 30px;
-    padding: 0 8px;
-    background: rgba(0, 255, 255, 0.06);
-    border: 1px solid rgba(0, 255, 255, 0.2);
+    min-width: 20px;
+    height: 20px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.35);
     border-radius: 50%;
-    color: rgba(0, 255, 255, 0.8);
-    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.5rem;
     font-weight: 600;
-    margin: 0 10px;
+    margin: 0 0.15em;
     vertical-align: middle;
     font-family: var(--font-primary);
-    transition: all 0.2s ease;
-    opacity: 0.75;
 }
 
 .verse-number-inline:hover {
-    background: rgba(0, 255, 255, 0.12);
-    opacity: 1;
-    transform: scale(1.1);
-    box-shadow: 0 2px 8px rgba(0, 255, 255, 0.25);
+    color: var(--primary-cyan);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
-/* Arabic text in reading mode - compact like page mode */
+/* Arabic text in reading mode - Quran.com style - INLINE continuous text */
 .verse-arabic-inline {
-    font-family: 'Amiri Quran', 'Uthmanic Hafs', 'KFGQPC Uthmani', serif !important;
-    font-size: 1.2rem; /* Same as page mode */
-    line-height: 2.0; /* Same as page mode */
+    font-family: 'Uthmanic Hafs', 'KFGQPC Uthmani', 'Amiri Quran', serif !important;
+    font-size: inherit;
+    /* Inherit from parent container */
+    line-height: inherit;
+    /* Inherit from parent container */
     color: var(--text-primary);
     font-weight: 400;
-    letter-spacing: 0.01em; /* Same as page mode */
-    word-spacing: 0.05em; /* Same as page mode */
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    letter-spacing: inherit;
+    word-spacing: inherit;
     direction: rtl;
-    text-align: right; /* Changed from justify to right like page mode */
-    margin-bottom: 10px;
+    display: inline;
+    /* INLINE for continuous text like Quran.com */
 }
 
-.verse-item-reading:hover .verse-arabic-inline {
-    color: rgba(0, 255, 255, 0.85);
-    transition: color 0.3s ease;
-}
+/* Hover style is now defined earlier in .verse-item-reading:hover .verse-arabic-inline */
 
 /* Action buttons container in reading mode */
 .surah-actions-minimal {
@@ -3801,10 +3862,13 @@
 }
 
 @keyframes verseHighlight {
-    0%, 100% {
+
+    0%,
+    100% {
         background: transparent;
         box-shadow: none;
     }
+
     50% {
         background: rgba(0, 255, 255, 0.15);
         box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
@@ -3843,11 +3907,11 @@
         left: 0;
         box-shadow: 5px 0 20px rgba(0, 0, 0, 0.5);
     }
-    
+
     .surah-mode {
         max-width: 100%;
     }
-    
+
     .menu-toggle-btn {
         display: flex;
     }
@@ -3861,7 +3925,7 @@
         max-width: 780px;
         word-spacing: 0.09em;
     }
-    
+
     .verse-number-ornament {
         font-size: 1.5rem;
     }
@@ -3875,7 +3939,7 @@
         max-width: 650px;
         padding: 2.5rem 2rem;
     }
-    
+
     .verse-number-ornament {
         font-size: 1.3rem;
     }
@@ -3887,143 +3951,155 @@
         width: 280px;
         left: -280px;
     }
-    
+
     .header-top-bar {
         flex-direction: column;
         gap: 10px;
         align-items: stretch;
     }
-    
+
     .view-mode-toggle {
         justify-content: center;
     }
-    
+
     .surah-arabic-name {
         font-size: 2rem;
     }
-    
+
     .surah-info-line {
         font-size: 0.9rem;
     }
-    
+
     .verse-item-clean .verse-arabic {
         font-size: 1.1rem;
         line-height: 2.3;
-        margin-left: 8px; /* Margin minimal di mobile */
+        margin-left: 8px;
+        /* Margin minimal di mobile */
         margin-right: 8px;
     }
-    
+
     .verse-item-clean .verse-transliteration,
     .verse-item-clean .verse-translation {
-        margin-left: 8px; /* Margin minimal di mobile */
+        margin-left: 8px;
+        /* Margin minimal di mobile */
         margin-right: 8px;
     }
-    
+
     .verse-number-badge {
-        position: absolute; /* Tetap absolute, menempel di kiri atas */
+        position: absolute;
+        /* Tetap absolute, menempel di kiri atas */
         top: 6px;
         left: 6px;
-        width: 28px; /* Slightly smaller on mobile */
+        width: 28px;
+        /* Slightly smaller on mobile */
         height: 28px;
         font-size: 0.85rem;
     }
-    
+
     /* Button actions styling for mobile */
     .verse-actions-inline {
         gap: 6px;
         padding: 0 2px;
         margin-top: 12px;
     }
-    
+
     .verse-btn-inline {
         padding: 5px 10px;
         font-size: 0.8rem;
     }
-    
+
     .verse-arabic-inline {
         font-size: 1.5rem;
         line-height: 2.0;
         word-spacing: 0.08em;
         letter-spacing: 0.01em;
     }
-    
+
     .verse-number-inline {
         min-width: 26px;
         height: 26px;
         font-size: 0.6rem;
         margin: 0 8px;
     }
-    
+
     .verse-number-ornament {
         font-size: 1.2rem;
         margin: 0 0.15rem;
         top: -0.05em;
     }
-    
+
     .surah-verses {
-        padding: 2rem 0.5rem; /* Kurangi padding kiri-kanan dari 1.5rem ke 0.5rem */
+        padding: 2rem 0.5rem;
+        /* Kurangi padding kiri-kanan dari 1.5rem ke 0.5rem */
     }
-    
+
     .surah-mode.reading-view .surah-verses {
-        padding: 2rem 0.5rem; /* Kurangi padding kiri-kanan dari 1.5rem ke 0.5rem */
+        padding: 2rem 0.5rem;
+        /* Kurangi padding kiri-kanan dari 1.5rem ke 0.5rem */
         line-height: 2.0;
         font-size: 1.5rem;
         max-width: 100%;
     }
-    
+
     .popup-modal-content {
         width: 95%;
         max-height: 90vh;
     }
-    
+
     .surah-meta-badges {
         font-size: 0.8rem;
     }
-    
+
     /* Juz mode responsive - same as surah mode */
     .juz-mode .verse-item-clean .verse-arabic {
         font-size: 1.1rem;
         line-height: 2.3;
-        margin-left: 8px; /* Margin minimal di mobile */
+        margin-left: 8px;
+        /* Margin minimal di mobile */
         margin-right: 8px;
     }
-    
+
     .juz-mode .verse-item-clean .verse-transliteration,
     .juz-mode .verse-item-clean .verse-translation {
-        margin-left: 8px; /* Margin minimal di mobile */
+        margin-left: 8px;
+        /* Margin minimal di mobile */
         margin-right: 8px;
     }
-    
+
     .juz-surah-header {
-        padding: 1rem 0.5rem; /* Kurangi padding kiri-kanan */
-        margin: 1.5rem 4px 1rem 4px; /* Margin kiri-kanan lebih kecil */
+        padding: 1rem 0.5rem;
+        /* Kurangi padding kiri-kanan */
+        margin: 1.5rem 4px 1rem 4px;
+        /* Margin kiri-kanan lebih kecil */
     }
-    
+
     .juz-surah-name-arabic {
         font-size: 1.6rem;
     }
-    
+
     .juz-surah-name-latin {
         font-size: 1rem;
     }
-    
+
     .juz-surah-title-section {
-        padding: 0.75rem 0.25rem; /* Kurangi padding kiri-kanan */
-        margin: 2rem 4px 1.5rem 4px; /* Margin minimal */
+        padding: 0.75rem 0.25rem;
+        /* Kurangi padding kiri-kanan */
+        margin: 2rem 4px 1.5rem 4px;
+        /* Margin minimal */
     }
-    
+
     .juz-surah-title-section .surah-arabic-name {
         font-size: 2rem;
     }
-    
+
     .juz-surah-title-section .surah-info-line {
         font-size: 1rem;
     }
-    
+
     .juz-mode .basmalah-arabic {
         font-size: 1.6rem;
     }
-    
+
     .juz-mode.reading-view .surah-verses {
         padding: 1.5rem 1rem;
         font-size: 1.5rem;
@@ -4035,96 +4111,96 @@
         width: 100%;
         left: -100%;
     }
-    
+
     .surah-actions-minimal {
         gap: 6px;
     }
-    
+
     .action-btn-minimal {
         padding: 8px 12px;
         font-size: 0.9rem;
     }
-    
+
     .action-btn-minimal i {
         font-size: 1rem;
     }
-    
+
     .view-mode-btn {
         font-size: 0.8rem;
         padding: 6px 12px;
     }
-    
+
     .verse-arabic-inline {
         font-size: 1.3rem;
         line-height: 2.6;
     }
-    
+
     .verse-number-inline {
         min-width: 26px;
         height: 26px;
         font-size: 0.75rem;
         margin: 0 8px;
     }
-    
+
     .surah-verses {
         padding: 20px;
         line-height: 2.6;
     }
-    
+
     /* Juz mode responsive 480px - same as surah mode */
     .juz-mode .verse-arabic-inline {
         font-size: 1.3rem;
         line-height: 2.6;
     }
-    
+
     .juz-mode .verse-number-inline {
         min-width: 26px;
         height: 26px;
         font-size: 0.75rem;
         margin: 0 8px;
     }
-    
+
     .juz-mode .surah-verses {
         padding: 20px;
         line-height: 3;
     }
-    
+
     .juz-surah-header {
         padding: 0.75rem 0.5rem;
         margin: 1rem 0 0.75rem 0;
     }
-    
+
     .juz-surah-name-arabic {
         font-size: 1.4rem;
     }
-    
+
     .juz-surah-name-latin {
         font-size: 0.9rem;
     }
-    
+
     .juz-surah-title-section {
         padding: 0.5rem;
         margin: 1.5rem 0 1rem 0;
     }
-    
+
     .juz-surah-title-section .surah-arabic-name {
         font-size: 1.8rem;
     }
-    
+
     .juz-surah-title-section .surah-info-line {
         font-size: 0.9rem;
     }
-    
+
     .juz-mode .basmalah-arabic {
         font-size: 1.2rem;
     }
-    
+
     .basmalah-arabic {
         font-size: 1.3rem;
     }
-    
+
     /* Audio player styles moved to end of file */
-    
+
     .verse-play-popup {
         bottom: 140px;
     }
@@ -4434,7 +4510,28 @@
     gap: 1rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
+    flex-wrap: wrap;
 }
+
+/* Surah Reading Progress Bar - Quran.com style */
+.surah-reading-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.surah-reading-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-cyan), #00e5ff);
+    width: 0%;
+    transition: width 0.15s ease-out;
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
 
 .floating-header.visible {
     opacity: 1;
@@ -4571,67 +4668,67 @@
         padding: 0.5rem 0.75rem;
         gap: 0.5rem;
     }
-    
+
     .floating-header-left {
         gap: 0.5rem;
         min-width: 0;
         flex: 1;
     }
-    
+
     .floating-surah-info-inline {
         min-width: 0;
         overflow: hidden;
     }
-    
+
     .floating-surah-name {
         font-size: 0.8rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    
+
     .floating-surah-meta {
         font-size: 0.65rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    
+
     .floating-nav-btn {
         width: 32px;
         height: 32px;
     }
-    
+
     .floating-nav-btn i {
         font-size: 0.8rem;
     }
-    
+
     .floating-mode-btn {
         width: 32px;
         height: 32px;
     }
-    
+
     .floating-page-info {
         font-size: 0.75rem;
     }
-    
+
     .page-separator {
         margin: 1.5rem 0;
         gap: 0.5rem;
     }
-    
+
     .page-separator-info {
         font-size: 0.7rem;
         padding: 0.4rem 0.75rem;
         gap: 0.4rem;
     }
-    
+
     .page-separator-play {
         width: 24px;
         height: 24px;
         margin-left: 0.2rem;
     }
-    
+
     .page-separator-play i {
         font-size: 0.65rem;
     }
@@ -4639,22 +4736,27 @@
 
 /* ===== PAGE MODE STYLES ===== */
 .alquran-container.page-mode {
-    padding-top: 50px; /* Lebih kecil lagi agar mepet */
+    padding-top: 50px;
+    /* Lebih kecil lagi agar mepet */
 }
 
 .alquran-container.surah-mode {
-    padding-top: 50px; /* Samakan dengan page mode */
+    padding-top: 50px;
+    /* Samakan dengan page mode */
 }
 
 .alquran-container.juz-mode {
-    padding-top: 50px; /* Samakan dengan mode lain */
+    padding-top: 50px;
+    /* Samakan dengan mode lain */
 }
 
 /* Juz Surah Header - for when surah changes within juz */
 .juz-surah-header {
     text-align: center;
-    padding: 1.5rem 0.5rem; /* Kurangi padding kiri-kanan dari 1rem ke 0.5rem */
-    margin: 2.5rem 8px 1.5rem 8px; /* Margin kiri-kanan lebih kecil */
+    padding: 1.5rem 0.5rem;
+    /* Kurangi padding kiri-kanan dari 1rem ke 0.5rem */
+    margin: 2.5rem 8px 1.5rem 8px;
+    /* Margin kiri-kanan lebih kecil */
     background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(138, 43, 226, 0.1) 100%);
     border-radius: 15px;
     border: 1px solid rgba(0, 255, 255, 0.3);
@@ -4894,7 +4996,8 @@
 
 .page-title-section {
     text-align: center;
-    padding: 1rem 1rem; /* Kurangi dari 2rem ke 1rem */
+    padding: 1rem 1rem;
+    /* Kurangi dari 2rem ke 1rem */
     margin-bottom: 2rem;
     background: linear-gradient(135deg, rgba(0, 255, 255, 0.05) 0%, rgba(138, 43, 226, 0.05) 100%);
     border-radius: 15px;
@@ -5109,6 +5212,7 @@
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -5165,6 +5269,7 @@
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -5177,23 +5282,23 @@
         flex-direction: column;
         gap: 0.75rem;
     }
-    
+
     .page-nav-btn {
         width: 100%;
     }
-    
+
     .page-nav-btn-prev {
         order: 2;
     }
-    
+
     .page-nav-info {
         order: 1;
     }
-    
+
     .page-nav-btn-next {
         order: 3;
     }
-    
+
     .surah-separator {
         margin: 2rem 0 1.5rem;
     }
@@ -5299,6 +5404,7 @@
     0% {
         left: -100%;
     }
+
     100% {
         left: 100%;
     }
@@ -5356,6 +5462,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -5410,9 +5517,12 @@
 }
 
 @keyframes iconGlow {
-    0%, 100% {
+
+    0%,
+    100% {
         text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
     }
+
     50% {
         text-shadow: 0 0 30px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.4);
     }
@@ -5682,24 +5792,24 @@
         grid-template-columns: 1fr;
         gap: 15px;
     }
-    
+
     .offline-card {
         padding: 20px;
     }
-    
+
     .offline-card-header {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .offline-card-icon {
         font-size: 2.5rem;
     }
-    
+
     .offline-actions {
         flex-direction: column;
     }
-    
+
     .btn-download-offline,
     .btn-redownload-offline,
     .btn-delete-offline {
@@ -5756,8 +5866,15 @@
 }
 
 @keyframes iconPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
 }
 
 .custom-confirm-title {
@@ -5869,19 +5986,19 @@
         padding: 30px 25px;
         max-width: 90%;
     }
-    
+
     .custom-confirm-title {
         font-size: 1.3rem;
     }
-    
+
     .custom-confirm-message {
         font-size: 0.95rem;
     }
-    
+
     .custom-confirm-actions {
         flex-direction: column;
     }
-    
+
     .custom-confirm-cancel,
     .custom-confirm-ok {
         width: 100%;
@@ -5932,10 +6049,13 @@
 }
 
 @keyframes loaderPulse {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scale(1);
         opacity: 1;
     }
+
     50% {
         transform: scale(1.1);
         opacity: 0.8;
@@ -5972,6 +6092,7 @@
     0% {
         background-position: 200% 0;
     }
+
     100% {
         background-position: -200% 0;
     }
@@ -5983,11 +6104,11 @@
         min-width: 280px;
         max-width: 90%;
     }
-    
+
     .inline-loader-spinner i {
         font-size: 3rem;
     }
-    
+
     .inline-loader-message {
         font-size: 1.1rem;
     }
@@ -5996,14 +6117,16 @@
 /* ===== AUDIO PLAYER ===== */
 .audio-player {
     position: fixed;
-    bottom: max(68px, calc(56px + env(safe-area-inset-bottom))); /* Tepat di atas bottom nav + safe area */
+    bottom: max(68px, calc(56px + env(safe-area-inset-bottom)));
+    /* Tepat di atas bottom nav + safe area */
     left: 0;
     right: 0;
     background: rgba(10, 10, 15, 0.98);
     backdrop-filter: blur(20px);
     border-top: 1px solid rgba(0, 255, 255, 0.3);
     padding: 12px 15px;
-    z-index: 998; /* Di bawah nav (999) tapi di atas konten */
+    z-index: 998;
+    /* Di bawah nav (999) tapi di atas konten */
     box-shadow: 0 -4px 20px rgba(0, 255, 255, 0.2);
 }
 
@@ -6110,55 +6233,56 @@
 
 @media (max-width: 768px) {
     .audio-player {
-        bottom: 58px; /* Sesuaikan dengan nav mobile (padding 10px + content ~48px) */
+        bottom: 58px;
+        /* Sesuaikan dengan nav mobile (padding 10px + content ~48px) */
         padding: 10px 12px;
     }
-    
+
     .audio-info {
         margin-bottom: 8px;
     }
-    
+
     .audio-surah-name {
         font-size: 0.85rem;
     }
-    
+
     .audio-controls {
         gap: 8px;
     }
-    
+
     .audio-btn {
         width: 36px;
         height: 36px;
     }
-    
+
     .audio-btn i {
         font-size: 0.9rem;
     }
-    
+
     .audio-btn#audioPlayPause {
         width: 44px;
         height: 44px;
     }
-    
+
     .audio-btn#audioPlayPause i {
         font-size: 1.1rem;
     }
-    
+
     .audio-nav-btn {
         width: 32px;
         height: 32px;
     }
-    
+
     /* ===== FULLSCREEN SIDEBAR FOR TABLET ===== */
     .quran-sidebar {
         width: 100%;
         left: -100%;
     }
-    
+
     .quran-sidebar.open {
         left: 0;
     }
-    
+
     /* Modal lebih lebar untuk tablet */
     .modal-content,
     .surah-list-modal-content,
@@ -6172,49 +6296,50 @@
 
 @media (max-width: 480px) {
     .audio-player {
-        bottom: 52px; /* Sesuaikan dengan nav mobile kecil (padding 8px + content ~44px) */
+        bottom: 52px;
+        /* Sesuaikan dengan nav mobile kecil (padding 8px + content ~44px) */
         padding: 8px 10px;
     }
-    
+
     .audio-surah-name {
         font-size: 0.8rem;
     }
-    
+
     .audio-verse-counter {
         font-size: 0.75rem;
     }
-    
+
     .audio-controls {
         gap: 6px;
     }
-    
+
     .audio-btn {
         width: 32px;
         height: 32px;
     }
-    
+
     .audio-btn i {
         font-size: 0.85rem;
     }
-    
+
     .audio-btn#audioPlayPause {
         width: 40px;
         height: 40px;
     }
-    
+
     .audio-btn#audioPlayPause i {
         font-size: 1rem;
     }
-    
+
     .audio-nav-btn {
         width: 28px;
         height: 28px;
     }
-    
+
     .audio-nav-btn i {
         font-size: 0.75rem;
     }
-    
+
     /* ===== FULLSCREEN MODAL & SIDEBAR FOR MOBILE ===== */
     /* Sidebar Fullscreen */
     .quran-sidebar {
@@ -6222,16 +6347,16 @@
         width: 100%;
         border-right: none;
     }
-    
+
     .quran-sidebar.open {
         left: 0;
     }
-    
+
     /* Modal Fullscreen */
     .modal {
         padding: 0 !important;
     }
-    
+
     .modal-content,
     .surah-list-modal-content,
     .juz-list-modal-content,
@@ -6244,17 +6369,17 @@
         border-radius: 0 !important;
         border: none !important;
     }
-    
+
     .modal-body {
         max-height: calc(100vh - 120px) !important;
         padding: 15px !important;
     }
-    
+
     .surah-list-grid,
     .juz-list-grid {
         gap: 12px !important;
     }
-    
+
     .surah-card,
     .juz-card {
         padding: 16px !important;
@@ -6264,7 +6389,8 @@
 /* ===== Audio Player Styles ===== */
 .audio-player {
     position: fixed;
-    bottom: 68px; /* Di atas bottom nav (58px height + 10px padding) */
+    bottom: 68px;
+    /* Di atas bottom nav (58px height + 10px padding) */
     left: 0;
     right: 0;
     background: linear-gradient(180deg, rgba(0, 20, 30, 0.98) 0%, rgba(0, 30, 40, 0.98) 100%);
@@ -6273,7 +6399,8 @@
     border-top: 1px solid rgba(0, 255, 255, 0.3);
     padding: 12px 15px;
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
-    z-index: 999; /* Below bottom nav (1000) */
+    z-index: 999;
+    /* Below bottom nav (1000) */
     box-shadow: 0 -4px 20px rgba(0, 255, 255, 0.15);
     animation: slideUpAudio 0.3s ease-out;
 }
@@ -6285,13 +6412,15 @@
 body.capacitor-android .audio-player,
 body[data-platform="android"] .audio-player {
     position: fixed !important;
-    bottom: 2px !important; /* Paling dekat untuk HP kecil */
+    bottom: 2px !important;
+    /* Paling dekat untuk HP kecil */
     transform: translateZ(0);
     will-change: auto;
 }
 
 /* Medium Android phones (400px - 500px) */
 @media (min-width: 400px) and (max-width: 500px) {
+
     body.capacitor-android .audio-player,
     body[data-platform="android"] .audio-player {
         bottom: 3px !important;
@@ -6300,6 +6429,7 @@ body[data-platform="android"] .audio-player {
 
 /* Large Android phones (> 500px) */
 @media (min-width: 501px) {
+
     body.capacitor-android .audio-player,
     body[data-platform="android"] .audio-player {
         bottom: 5px !important;
@@ -6320,6 +6450,7 @@ body:not([data-platform="android"]) .audio-player {
         transform: translateY(100%);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -6429,31 +6560,32 @@ body:not([data-platform="android"]) .audio-player {
     .audio-player {
         padding: 10px 12px;
         padding-bottom: calc(10px + env(safe-area-inset-bottom));
-        bottom: 40px; /* Bottom nav height on mobile */
+        bottom: 40px;
+        /* Bottom nav height on mobile */
     }
-    
+
     .audio-btn {
         width: 36px;
         height: 36px;
     }
-    
+
     .audio-btn i {
         font-size: 0.85rem;
     }
-    
+
     .audio-nav-btn {
         width: 32px;
         height: 32px;
     }
-    
+
     .audio-nav-btn i {
         font-size: 0.75rem;
     }
-    
+
     .audio-surah-name {
         font-size: 0.85rem;
     }
-    
+
     .audio-time {
         font-size: 0.7rem;
     }
@@ -6476,7 +6608,8 @@ body:not([data-platform="android"]) .audio-player {
     align-items: stretch !important;
     justify-content: stretch !important;
     height: 100vh !important;
-    height: 100dvh !important; /* Dynamic viewport height for mobile */
+    height: 100dvh !important;
+    /* Dynamic viewport height for mobile */
     background: transparent !important;
     position: fixed !important;
     top: 0 !important;
@@ -6514,9 +6647,11 @@ body:not([data-platform="android"]) .audio-player {
     overflow-y: auto !important;
     overflow-x: hidden !important;
     padding: 20px !important;
-    padding-bottom: 40px !important; /* Extra padding at bottom */
+    padding-bottom: 40px !important;
+    /* Extra padding at bottom */
     max-height: none !important;
-    height: 0 !important; /* Flexbox trick to make it scrollable */
+    height: 0 !important;
+    /* Flexbox trick to make it scrollable */
     -webkit-overflow-scrolling: touch;
     background: transparent !important;
     position: relative !important;
@@ -6526,7 +6661,8 @@ body:not([data-platform="android"]) .audio-player {
 @media (max-width: 480px) {
     .modal-body-fullscreen {
         padding: 15px !important;
-        padding-bottom: 30px !important; /* Extra padding at bottom for mobile */
+        padding-bottom: 30px !important;
+        /* Extra padding at bottom for mobile */
     }
 }
 
@@ -6536,6 +6672,3 @@ body:not([data-platform="android"]) .audio-player {
     max-height: none !important;
     height: auto !important;
 }
-
-
-

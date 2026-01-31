@@ -13,7 +13,7 @@ export default class AlQuranApp {
         this.QURAN_SURAHS = window.QURAN_SURAHS || [];
         this.QURAN_JUZ = window.QURAN_JUZ || [];
         this.QURAN_VERSES = window.QURAN_VERSES || {};
-        
+
         // Debug log
         console.log('AlQuranApp constructor - Data loaded:', {
             surahs: this.QURAN_SURAHS.length,
@@ -41,15 +41,15 @@ export default class AlQuranApp {
         });
 
         this.isMemorizationMode = false;
-        
+
         // Mode baca: 'page' atau 'surah'
         this.readMode = 'page';
         this.currentSurah = null;
         this.currentSurahData = null;
-        
+
         // View mode: 'reading' atau 'translation'
         this.viewMode = localStorage.getItem('alquran_view_mode') || 'translation';
-        
+
         // Sidebar state
         this.sidebarOpen = false;
     }
@@ -57,7 +57,7 @@ export default class AlQuranApp {
     async init() {
         // Refresh Quran data to ensure it's loaded
         this._refreshQuranData();
-        
+
         // restore last page
         const last = localStorage.getItem('alquran_last_page');
         if (last) this.currentPage = parseInt(last, 10) || 1;
@@ -72,10 +72,10 @@ export default class AlQuranApp {
     _applyFontSettings() {
         const fontSize = this.settings.arabicFontSize || 1.8;
         const fontFamily = this.settings.arabicFont || 'uthmanic';
-        
+
         // Apply font size via CSS custom property
         document.documentElement.style.setProperty('--arabic-font-size', `${fontSize}rem`);
-        
+
         // Apply font family class to all Arabic text elements
         const arabicSelectors = [
             '.arabic-text',
@@ -83,7 +83,7 @@ export default class AlQuranApp {
             '.verse-arabic-inline',
             '.basmalah-arabic'
         ];
-        
+
         arabicSelectors.forEach(selector => {
             const elements = document.querySelectorAll(selector);
             elements.forEach(el => {
@@ -104,7 +104,7 @@ export default class AlQuranApp {
         this.currentSurahData = null;
         this.audioSetupDone = false;
         this.audioListenersAttached = false;
-        
+
         // Hide and reset audio player
         const audioPlayer = document.getElementById('quranAudioPlayer');
         if (audioPlayer) {
@@ -115,7 +115,7 @@ export default class AlQuranApp {
                 audioElement.src = '';
             }
         }
-        
+
         await this.render();
     }
 
@@ -150,13 +150,12 @@ export default class AlQuranApp {
         quickNav.className = 'quick-nav';
         quickNav.innerHTML = `
             <button class="nav-btn" data-action="surahList"><i class="fas fa-list"></i><span>Daftar Surat</span></button>
-            <button class="nav-btn" data-action="juzList"><i class="fas fa-bookmark"></i><span>Daftar Juz</span></button>
             <button class="nav-btn" data-action="pageList"><i class="fas fa-file"></i><span>Buka Halaman</span></button>
             <button class="nav-btn" data-action="bookmarks"><i class="fas fa-heart"></i><span>Tersimpan</span></button>
             <button class="nav-btn" data-action="offline"><i class="fas fa-download"></i><span>Mode Offline</span></button>
             <button class="nav-btn" data-action="settings"><i class="fas fa-cog"></i><span>Pengaturan</span></button>
         `;
-        
+
         // Last Read Section
         const lastRead = this._loadJSON('alquran_last_read', null);
         let lastReadSection = '';
@@ -213,15 +212,14 @@ export default class AlQuranApp {
     _attachLocalElements() {
         // quick nav
         const navButtons = this.container.querySelectorAll('.quick-nav .nav-btn');
-        
+
         navButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 const action = btn.dataset.action;
                 if (action === 'surahList') this._showSurahList();
-                else if (action === 'juzList') this._showJuzList();
                 else if (action === 'pageList') this._showPageJumpModal();
                 else if (action === 'bookmarks') this._showBookmarksModal();
                 else if (action === 'offline') this._showOfflineModal();
@@ -229,7 +227,7 @@ export default class AlQuranApp {
                 else if (action === 'settings') this._showSettingsModal();
             });
         });
-        
+
         // Resume reading button
         const resumeBtn = this.container.querySelector('[data-action="resumeReading"]');
         if (resumeBtn) {
@@ -398,7 +396,7 @@ export default class AlQuranApp {
     async playAudio() {
         try {
             this._stopAudio();
-            const path = typeof getAudioPathForPage === 'function' ? getAudioPathForPage(this.currentPage) : `${this.basePath}/assets/audio/alquran/Page${String(this.currentPage).padStart(3,'0')}.mp3`;
+            const path = typeof getAudioPathForPage === 'function' ? getAudioPathForPage(this.currentPage) : `${this.basePath}/assets/audio/alquran/Page${String(this.currentPage).padStart(3, '0')}.mp3`;
             this.audio = new Audio(path);
             this.audio.preload = 'metadata';
 
@@ -450,7 +448,7 @@ export default class AlQuranApp {
                 this.audio.pause();
                 this.audio.src = '';
                 this.audio = null;
-            } catch(e) {
+            } catch (e) {
                 console.error('Error stopping audio:', e);
             }
         }
@@ -462,7 +460,7 @@ export default class AlQuranApp {
         if (!this.audio) return;
         const fill = document.getElementById('alqProgressFill');
         const td = document.getElementById('alqTimeDisplay');
-        if (fill && this.audio.duration) fill.style.width = `${(this.audio.currentTime/this.audio.duration)*100}%`;
+        if (fill && this.audio.duration) fill.style.width = `${(this.audio.currentTime / this.audio.duration) * 100}%`;
         if (td) td.textContent = `${this._formatTime(this.audio.currentTime)} / ${this._formatTime(this.audio.duration)}`;
     }
 
@@ -470,13 +468,13 @@ export default class AlQuranApp {
         this.isPlaying = false;
         const audioToggle = document.getElementById('alqAudioToggle'); if (audioToggle) audioToggle.innerHTML = '<i class="fas fa-play"></i><span>Putar Audio</span>';
         if (this.settings.autoPlayNext && this.currentPage < this.totalPages) {
-            setTimeout(()=> this.nextPage(), 800);
+            setTimeout(() => this.nextPage(), 800);
         }
     }
 
     prevPage() { if (this.currentPage > 1) { this.currentPage--; this._onPageChanged(); } }
     nextPage() { if (this.currentPage < this.totalPages) { this.currentPage++; this._onPageChanged(); } }
-    async goToPage(val) { const p = parseInt(val,10); if (!isNaN(p) && p>=1 && p<=this.totalPages) { this.currentPage = p; await this.openPage(p); } }
+    async goToPage(val) { const p = parseInt(val, 10); if (!isNaN(p) && p >= 1 && p <= this.totalPages) { this.currentPage = p; await this.openPage(p); } }
 
     async _onPageChanged() {
         this._stopAudio();
@@ -484,22 +482,22 @@ export default class AlQuranApp {
         this._updateLastRead(this.currentPage);
         await this.render();
     }
-    
+
     async openPage(pageNum) {
         try {
             console.log('[openPage] Opening page:', pageNum);
-            
+
             // Find which surah contains this page
             const surah = this.QURAN_SURAHS.find(s => pageNum >= s.startPage && pageNum <= s.endPage);
-            
+
             if (!surah) {
                 this._notify('Halaman tidak ditemukan', 'error');
                 return;
             }
-            
+
             // Open the surah and scroll to the page
             await this.readSurah(surah.number);
-            
+
             // Wait for render to complete, then scroll to page separator
             setTimeout(() => {
                 const pageSeparators = document.querySelectorAll('.page-separator');
@@ -516,58 +514,58 @@ export default class AlQuranApp {
                     }
                 }
             }, 500);
-            
+
             console.log('[openPage] Opened surah and scrolling to page', pageNum);
         } catch (error) {
             console.error('[openPage] Error:', error);
             this._notify('Gagal membuka halaman: ' + error.message, 'error');
         }
     }
-    
+
     async renderPageReader() {
         try {
             console.log('[renderPageReader] Starting render for page:', this.currentPage);
-            
+
             if (!this.container) {
                 console.error('[renderPageReader] Container not found!');
                 return;
             }
-        
-        // Ensure viewMode is set (default to translation)
-        if (!this.viewMode) {
-            this.viewMode = localStorage.getItem('alquran_view_mode') || 'translation';
-        }
-        
-        // Hide floating prayer widget when reading page
-        const floatingWidget = document.getElementById('floatingPrayerWidget');
-        if (floatingWidget) {
-            floatingWidget.style.setProperty('display', 'none', 'important');
-            floatingWidget.dataset.wasHidden = 'true';
-        }
-        
-        // Load page data
-        const pageData = await this.loadPageData(this.currentPage);
-        if (!pageData) {
-            this._notify('Gagal memuat halaman', 'error');
-            return;
-        }
-        
-        // Build HTML untuk mode baca halaman
-        this.container.innerHTML = '';
-        
-        const wrapper = document.createElement('div');
-        wrapper.className = `alquran-container page-mode ${this.viewMode === 'reading' ? 'reading-view' : 'translation-view'}`;
-        
-        // Sidebar Backdrop
-        const backdrop = document.createElement('div');
-        backdrop.className = `sidebar-backdrop ${this.sidebarOpen ? 'active' : ''}`;
-        backdrop.id = 'sidebarBackdrop';
-        
-        // Sidebar Navigation (sama seperti surah mode)
-        const sidebar = document.createElement('div');
-        sidebar.className = `quran-sidebar ${this.sidebarOpen ? 'open' : ''}`;
-        sidebar.id = 'quranSidebar';
-        sidebar.innerHTML = `
+
+            // Ensure viewMode is set (default to translation)
+            if (!this.viewMode) {
+                this.viewMode = localStorage.getItem('alquran_view_mode') || 'translation';
+            }
+
+            // Hide floating prayer widget when reading page
+            const floatingWidget = document.getElementById('floatingPrayerWidget');
+            if (floatingWidget) {
+                floatingWidget.style.setProperty('display', 'none', 'important');
+                floatingWidget.dataset.wasHidden = 'true';
+            }
+
+            // Load page data
+            const pageData = await this.loadPageData(this.currentPage);
+            if (!pageData) {
+                this._notify('Gagal memuat halaman', 'error');
+                return;
+            }
+
+            // Build HTML untuk mode baca halaman
+            this.container.innerHTML = '';
+
+            const wrapper = document.createElement('div');
+            wrapper.className = `alquran-container page-mode ${this.viewMode === 'reading' ? 'reading-view' : 'translation-view'}`;
+
+            // Sidebar Backdrop
+            const backdrop = document.createElement('div');
+            backdrop.className = `sidebar-backdrop ${this.sidebarOpen ? 'active' : ''}`;
+            backdrop.id = 'sidebarBackdrop';
+
+            // Sidebar Navigation (sama seperti surah mode)
+            const sidebar = document.createElement('div');
+            sidebar.className = `quran-sidebar ${this.sidebarOpen ? 'open' : ''}`;
+            sidebar.id = 'quranSidebar';
+            sidebar.innerHTML = `
             <div class="sidebar-header">
                 <h3>Navigasi</h3>
                 <button class="sidebar-close" id="closeSidebar"><i class="fas fa-times"></i></button>
@@ -586,16 +584,16 @@ export default class AlQuranApp {
                 </div>
             </div>
         `;
-        
-        // Floating Header
-        const floatingHeader = document.createElement('div');
-        floatingHeader.className = 'floating-header visible';
-        floatingHeader.id = 'floatingHeader';
-        
-        // Get surah names for this page
-        const surahNames = pageData.surahs.map(s => s.name).join(' • ');
-        
-        floatingHeader.innerHTML = `
+
+            // Floating Header
+            const floatingHeader = document.createElement('div');
+            floatingHeader.className = 'floating-header visible';
+            floatingHeader.id = 'floatingHeader';
+
+            // Get surah names for this page
+            const surahNames = pageData.surahs.map(s => s.name).join(' • ');
+
+            floatingHeader.innerHTML = `
             <div class="floating-header-left">
                 <button class="floating-nav-btn" id="menuToggle" title="Menu"><i class="fas fa-bars"></i></button>
                 <button class="floating-nav-btn" id="btnBackHome" title="Home"><i class="fas fa-home"></i></button>
@@ -623,11 +621,11 @@ export default class AlQuranApp {
                 <button class="floating-nav-btn" id="btnSettings" title="Pengaturan"><i class="fas fa-cog"></i></button>
             </div>
         `;
-        
-        // Header - Page info
-        const header = document.createElement('div');
-        header.className = 'page-title-section';
-        header.innerHTML = `
+
+            // Header - Page info
+            const header = document.createElement('div');
+            header.className = 'page-title-section';
+            header.innerHTML = `
             <div class="page-title-clean">
                 <h1 class="page-number-big">Halaman ${this.currentPage}</h1>
                 <h2 class="page-surah-names">${surahNames}</h2>
@@ -640,18 +638,18 @@ export default class AlQuranApp {
                 </div>
             </div>
         `;
-        
-        // Verses container
-        const versesContainer = document.createElement('div');
-        versesContainer.className = 'page-verses';
-        
-        // Render each surah in this page
-        for (const surah of pageData.surahs) {
-            // Add surah separator if multiple surahs
-            if (pageData.surahs.length > 1) {
-                const surahSeparator = document.createElement('div');
-                surahSeparator.className = 'surah-separator';
-                surahSeparator.innerHTML = `
+
+            // Verses container
+            const versesContainer = document.createElement('div');
+            versesContainer.className = 'page-verses';
+
+            // Render each surah in this page
+            for (const surah of pageData.surahs) {
+                // Add surah separator if multiple surahs
+                if (pageData.surahs.length > 1) {
+                    const surahSeparator = document.createElement('div');
+                    surahSeparator.className = 'surah-separator';
+                    surahSeparator.innerHTML = `
                     <div class="surah-separator-line"></div>
                     <div class="surah-separator-info">
                         <span class="surah-name-arabic">${surah.nameArabic}</span>
@@ -659,44 +657,44 @@ export default class AlQuranApp {
                     </div>
                     <div class="surah-separator-line"></div>
                 `;
-                versesContainer.appendChild(surahSeparator);
-                
-                // Add Basmalah for new surah (except At-Taubah)
-                if (surah.number !== 9 && surah.verses[0].number !== 1) {
-                    const basmalahEl = document.createElement('div');
-                    basmalahEl.className = 'basmalah-text';
-                    basmalahEl.innerHTML = `
+                    versesContainer.appendChild(surahSeparator);
+
+                    // Add Basmalah for new surah (except At-Taubah)
+                    if (surah.number !== 9 && surah.verses[0].number !== 1) {
+                        const basmalahEl = document.createElement('div');
+                        basmalahEl.className = 'basmalah-text';
+                        basmalahEl.innerHTML = `
                         <div class="basmalah-arabic ${this.settings.arabicFont}">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
                     `;
-                    versesContainer.appendChild(basmalahEl);
+                        versesContainer.appendChild(basmalahEl);
+                    }
                 }
-            }
-            
-            // Render verses - SAMA SEPERTI SURAH MODE
-            const verseProgressData = this._loadJSON('alquran_verse_progress', {});
-            
-            for (const verse of surah.verses) {
-                const verseEl = document.createElement('div');
-                verseEl.dataset.verseNumber = verse.number;
-                verseEl.dataset.surahNumber = surah.number; // Tambahkan surah number
-                verseEl.dataset.pageNumber = this.currentPage;
-                
-                const verseKey = `${surah.number}:${verse.number}`;
-                const isBookmarked = this.verseBookmarks.includes(verseKey);
-                const isMemorized = verseProgressData[verseKey] && verseProgressData[verseKey].level === 4;
-                
-                if (this.viewMode === 'reading') {
-                    // Reading mode - hanya Arab dengan nomor ayat Arab
-                    const arabicNumber = this._toArabicNumber(verse.number);
-                    verseEl.className = 'verse-item-reading';
-                    verseEl.innerHTML = `
+
+                // Render verses - SAMA SEPERTI SURAH MODE
+                const verseProgressData = this._loadJSON('alquran_verse_progress', {});
+
+                for (const verse of surah.verses) {
+                    const verseEl = document.createElement('div');
+                    verseEl.dataset.verseNumber = verse.number;
+                    verseEl.dataset.surahNumber = surah.number; // Tambahkan surah number
+                    verseEl.dataset.pageNumber = this.currentPage;
+
+                    const verseKey = `${surah.number}:${verse.number}`;
+                    const isBookmarked = this.verseBookmarks.includes(verseKey);
+                    const isMemorized = verseProgressData[verseKey] && verseProgressData[verseKey].level === 4;
+
+                    if (this.viewMode === 'reading') {
+                        // Reading mode - hanya Arab dengan nomor ayat Arab
+                        const arabicNumber = this._toArabicNumber(verse.number);
+                        verseEl.className = 'verse-item-reading';
+                        verseEl.innerHTML = `
                         <span class="verse-arabic-inline ${this.settings.arabicFont}">${verse.arabic}</span>
                         <span class="verse-number-ornament">&#xFD3F;${arabicNumber}&#xFD3E;</span>
                     `;
-                } else {
-                    // Translation mode - lengkap (SAMA SEPERTI SURAH MODE)
-                    verseEl.className = 'verse-item-clean';
-                    verseEl.innerHTML = `
+                    } else {
+                        // Translation mode - lengkap (SAMA SEPERTI SURAH MODE)
+                        verseEl.className = 'verse-item-clean';
+                        verseEl.innerHTML = `
                         <div class="verse-number-badge">${verse.number}</div>
                         <div class="verse-arabic ${this.settings.arabicFont}">${verse.arabic}</div>
                         ${!this.settings.hideTransliteration && verse.transliteration ? `<div class="verse-transliteration">${verse.transliteration}</div>` : ''}
@@ -715,15 +713,15 @@ export default class AlQuranApp {
                             ${!this.settings.hideMemorization ? `<button class="verse-btn-inline verse-btn-memorize" data-memorize-verse="${verse.number}" title="Tandai Hafal"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
                         </div>
                     `;
+                    }
+                    versesContainer.appendChild(verseEl);
                 }
-                versesContainer.appendChild(verseEl);
             }
-        }
-        
-        // Navigation buttons
-        const navButtons = document.createElement('div');
-        navButtons.className = 'page-navigation';
-        navButtons.innerHTML = `
+
+            // Navigation buttons
+            const navButtons = document.createElement('div');
+            navButtons.className = 'page-navigation';
+            navButtons.innerHTML = `
             <button class="page-nav-btn page-nav-btn-prev" ${this.currentPage <= 1 ? 'disabled' : ''}>
                 <i class="fas fa-chevron-left"></i> Halaman Sebelumnya
             </button>
@@ -732,42 +730,42 @@ export default class AlQuranApp {
                 Halaman Selanjutnya <i class="fas fa-chevron-right"></i>
             </button>
         `;
-        
-        // Assemble all parts
-        wrapper.appendChild(backdrop);
-        wrapper.appendChild(sidebar);
-        wrapper.appendChild(floatingHeader);
-        wrapper.appendChild(header);
-        wrapper.appendChild(versesContainer);
-        wrapper.appendChild(navButtons);
-        
-        this.container.appendChild(wrapper);
-        
-        // Attach event listeners
-        this._attachPageReaderListeners();
-            
+
+            // Assemble all parts
+            wrapper.appendChild(backdrop);
+            wrapper.appendChild(sidebar);
+            wrapper.appendChild(floatingHeader);
+            wrapper.appendChild(header);
+            wrapper.appendChild(versesContainer);
+            wrapper.appendChild(navButtons);
+
+            this.container.appendChild(wrapper);
+
+            // Attach event listeners
+            this._attachPageReaderListeners();
+
         } catch (error) {
             console.error('[renderPageReader] Error:', error);
             this._notify('Gagal menampilkan halaman: ' + error.message, 'error');
         }
     }
-    
+
     _attachPageReaderListeners() {
         if (!this.container) return;
-        
+
         // Sidebar toggle
         const menuToggle = document.getElementById('menuToggle');
         const closeSidebar = document.getElementById('closeSidebar');
         const backdrop = document.getElementById('sidebarBackdrop');
-        
+
         if (menuToggle) menuToggle.addEventListener('click', () => this.toggleSidebar());
         if (closeSidebar) closeSidebar.addEventListener('click', () => this.toggleSidebar());
         if (backdrop) backdrop.addEventListener('click', () => this.toggleSidebar());
-        
+
         // Back to home
         const btnBackHome = document.getElementById('btnBackHome');
         if (btnBackHome) btnBackHome.addEventListener('click', () => this.resetToHome());
-        
+
         // View mode toggle
         const modeButtons = this.container.querySelectorAll('.floating-mode-btn');
         modeButtons.forEach(btn => {
@@ -780,26 +778,26 @@ export default class AlQuranApp {
                 await this.renderPageReader(); // Re-render with new mode
             });
         });
-        
+
         // Settings button
         const btnSettings = document.getElementById('btnSettings');
         if (btnSettings) btnSettings.addEventListener('click', () => this._showSettingsModal());
-        
+
         // Navigation buttons
         const btnPrev = this.container.querySelector('.page-nav-btn-prev');
         const btnNext = this.container.querySelector('.page-nav-btn-next');
-        
+
         if (btnPrev && this.currentPage > 1) {
             btnPrev.addEventListener('click', () => this.openPage(this.currentPage - 1));
         }
         if (btnNext && this.currentPage < this.totalPages) {
             btnNext.addEventListener('click', () => this.openPage(this.currentPage + 1));
         }
-        
+
         // Verse actions - SAMA SEPERTI SURAH MODE
         this.container.addEventListener('click', (e) => {
             const verseItem = e.target.closest('.verse-item-clean, .verse-item-reading');
-            
+
             // Copy verse
             if (e.target.closest('[data-copy-verse]')) {
                 const btn = e.target.closest('[data-copy-verse]');
@@ -811,7 +809,7 @@ export default class AlQuranApp {
                     }
                 }
             }
-            
+
             // Bookmark verse
             if (e.target.closest('[data-bookmark-verse]')) {
                 const btn = e.target.closest('[data-bookmark-verse]');
@@ -825,7 +823,7 @@ export default class AlQuranApp {
                     }
                 }
             }
-            
+
             // Memorize verse
             if (e.target.closest('[data-memorize-verse]')) {
                 const btn = e.target.closest('[data-memorize-verse]');
@@ -838,21 +836,21 @@ export default class AlQuranApp {
                 }
             }
         });
-        
+
         // Sidebar functionality
         this._setupSidebarContent();
-        
+
         // Scroll to top when rendering new page
         setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }, 100);
     }
-    
+
     _getSurahNumberForVerse(verseElement) {
         // Get surah number from data attribute
         const surahNum = parseInt(verseElement.dataset.surahNumber);
         if (surahNum) return surahNum;
-        
+
         // Fallback: get from nearest surah separator
         let element = verseElement;
         while (element && element.previousElementSibling) {
@@ -865,14 +863,14 @@ export default class AlQuranApp {
                 }
             }
         }
-        
+
         return null;
     }
-    
+
     _copyVerseContent(surahNum, verseNum) {
         const surah = QURAN_SURAHS.find(s => s.number === surahNum);
         if (!surah) return;
-        
+
         // Find verse data
         // You'll need to load this from the page data or cache
         const text = `QS ${surah.name} (${surah.nameArabic}) ${surahNum}:${verseNum}`;
@@ -890,42 +888,42 @@ export default class AlQuranApp {
     }
 
     addBookmark(page) { if (!this.bookmarks.includes(page)) { this.bookmarks.push(page); this._saveJSON('alquran_bookmarks', this.bookmarks); this._notify(`Halaman ${page} disimpan`, 'success'); } }
-    removeBookmark(page) { this.bookmarks = this.bookmarks.filter(p=>p!==page); this._saveJSON('alquran_bookmarks', this.bookmarks); this._notify(`Halaman ${page} dihapus`, 'info'); }
+    removeBookmark(page) { this.bookmarks = this.bookmarks.filter(p => p !== page); this._saveJSON('alquran_bookmarks', this.bookmarks); this._notify(`Halaman ${page} dihapus`, 'info'); }
 
     copyPageText() {
         const versesData = typeof getVersesByPage === 'function' ? getVersesByPage(this.currentPage) : { verses: [] };
         const text = (versesData.verses || []).map(v => `${v.arabic}\n${v.transliteration || ''}\n${v.translation || ''}\n(QS ${v.surah}:${v.verse})`).join('\n\n');
-        navigator.clipboard.writeText(text).then(()=> this._notify('Teks halaman berhasil disalin','success')).catch(()=> this._notify('Gagal menyalin teks','error'));
+        navigator.clipboard.writeText(text).then(() => this._notify('Teks halaman berhasil disalin', 'success')).catch(() => this._notify('Gagal menyalin teks', 'error'));
     }
 
     shareCurrentPage() {
         const url = window.location.href.split('#')[0] + `#page-${this.currentPage}`;
-        if (navigator.share) { navigator.share({ title: `Al-Qur'an Halaman ${this.currentPage}`, url }).catch(()=>{}); }
-        else { navigator.clipboard.writeText(url).then(()=> this._notify('Link halaman disalin ke clipboard','success')); }
+        if (navigator.share) { navigator.share({ title: `Al-Qur'an Halaman ${this.currentPage}`, url }).catch(() => { }); }
+        else { navigator.clipboard.writeText(url).then(() => this._notify('Link halaman disalin ke clipboard', 'success')); }
     }
 
     copyVerse(surah, verse) {
         const versesData = typeof getVersesByPage === 'function' ? getVersesByPage(this.currentPage) : { verses: [] };
-        const v = (versesData.verses || []).find(x => String(x.surah)===String(surah) && String(x.verse)===String(verse));
-        if (v) { const text = `${v.arabic}\n\n${v.transliteration||''}\n\n${v.translation||''}\n\n(QS ${surah}:${verse})`; navigator.clipboard.writeText(text).then(()=> this._notify('Ayat berhasil disalin','success')); }
+        const v = (versesData.verses || []).find(x => String(x.surah) === String(surah) && String(x.verse) === String(verse));
+        if (v) { const text = `${v.arabic}\n\n${v.transliteration || ''}\n\n${v.translation || ''}\n\n(QS ${surah}:${verse})`; navigator.clipboard.writeText(text).then(() => this._notify('Ayat berhasil disalin', 'success')); }
     }
 
     bookmarkVerse(surah, verse) {
         const key = `${surah}:${verse}`;
         const arr = this._loadJSON('alquran_verse_bookmarks', []);
-        if (arr.includes(key)) { 
-            const updated = arr.filter(x=>x!==key); 
-            this._saveJSON('alquran_verse_bookmarks', updated); 
-            this._notify('Bookmark ayat dihapus','info');
+        if (arr.includes(key)) {
+            const updated = arr.filter(x => x !== key);
+            this._saveJSON('alquran_verse_bookmarks', updated);
+            this._notify('Bookmark ayat dihapus', 'info');
             this.verseBookmarks = updated;
         }
-        else { 
-            arr.push(key); 
-            this._saveJSON('alquran_verse_bookmarks', arr); 
-            this._notify('Ayat dibookmark','success');
+        else {
+            arr.push(key);
+            this._saveJSON('alquran_verse_bookmarks', arr);
+            this._notify('Ayat dibookmark', 'success');
             this.verseBookmarks = arr;
         }
-        
+
         // Update button icon
         const btn = document.querySelector(`[data-bookmark-verse="${verse}"]`);
         if (btn) {
@@ -940,13 +938,13 @@ export default class AlQuranApp {
         const key = `${surah}:${verse}`;
         const prog = this._loadJSON('alquran_verse_progress', {});
         const isMemorized = prog[key] && prog[key].level === 4;
-        
+
         if (isMemorized) {
             // Jika sudah hafal, hapus dari progress
             delete prog[key];
             this._saveJSON('alquran_verse_progress', prog);
             this._notify(`Ayat ${verse} dihapus dari hafalan`, 'info');
-            
+
             // Update icon button if exists
             const btn = document.querySelector(`[data-memorize-verse="${verse}"]`);
             if (btn) {
@@ -958,7 +956,7 @@ export default class AlQuranApp {
             prog[key] = { level: 4, timestamp: new Date().toISOString() };
             this._saveJSON('alquran_verse_progress', prog);
             this._notify(`Ayat ${verse} ditandai sebagai hafal ✓`, 'success');
-            
+
             // Update icon button if exists
             const btn = document.querySelector(`[data-memorize-verse="${verse}"]`);
             if (btn) {
@@ -968,7 +966,7 @@ export default class AlQuranApp {
         }
     }
 
-    _memorizationLevelName(l) { return {0:'Belum',1:'Dasar',2:'Menengah',3:'Lancar',4:'Hafal'}[l]||'Belum'; }
+    _memorizationLevelName(l) { return { 0: 'Belum', 1: 'Dasar', 2: 'Menengah', 3: 'Lancar', 4: 'Hafal' }[l] || 'Belum'; }
 
     // Refresh Quran data from window global
     _refreshQuranData() {
@@ -992,25 +990,25 @@ export default class AlQuranApp {
         // Remove existing modal if any
         const existingModal = document.getElementById('surahListModal');
         if (existingModal) existingModal.remove();
-        
+
         // Create new modal
         const modal = document.createElement('div');
         modal.id = 'surahListModal';
         modal.className = 'modal modal-fullscreen';
-        
+
         const html = ['<div class="modal-content modal-content-fullscreen">'];
         html.push('<div class="modal-header">');
         html.push('<h3><i class="fas fa-book-quran"></i> Daftar Surat</h3>');
         html.push('<button class="close-btn" data-close>×</button>');
         html.push('</div>');
         html.push('<div class="modal-body modal-body-fullscreen">');
-        
+
         // Search box with icon
         html.push('<div class="surah-search-wrapper">');
         html.push('<i class="fas fa-search search-icon"></i>');
         html.push('<input type="text" id="surahSearchInput" placeholder="Cari surat..." class="search-input">');
         html.push('</div>');
-        
+
         if (this.QURAN_SURAHS.length > 0) {
             html.push('<div class="surah-list-simple" id="surahListSimple">');
             for (const s of this.QURAN_SURAHS) {
@@ -1043,28 +1041,28 @@ export default class AlQuranApp {
         } else {
             html.push('<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Data surat tidak tersedia.</p></div>');
         }
-        
+
         html.push('</div></div>');
         modal.innerHTML = html.join('');
-        
+
         // Append to body and show
         document.body.appendChild(modal);
         modal.style.setProperty('display', 'flex', 'important');
-        
+
         // Close handlers
-        modal.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click', ()=>{
-            modal.style.display='none';
+        modal.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => {
+            modal.style.display = 'none';
             modal.remove();
         }));
-        
+
         // Backdrop click
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
-                modal.style.display='none';
+                modal.style.display = 'none';
                 modal.remove();
             }
         });
-        
+
         // Search functionality
         const searchInput = document.getElementById('surahSearchInput');
         if (searchInput) {
@@ -1085,24 +1083,24 @@ export default class AlQuranApp {
             // Don't auto-focus on mobile to prevent keyboard popup
             // setTimeout(() => searchInput.focus(), 100);
         }
-        
+
         // Event listener untuk tombol "Baca Surat"
-        modal.querySelectorAll('.surah-row-btn').forEach(btn=>btn.addEventListener('click', async (e)=>{ 
+        modal.querySelectorAll('.surah-row-btn').forEach(btn => btn.addEventListener('click', async (e) => {
             e.stopPropagation();
             const surahNum = parseInt(btn.dataset.surah);
-            
+
             // Close modal immediately and let inline loader handle loading state
             modal.remove();
-            
+
             try {
                 await this.readSurah(surahNum);
             } catch (error) {
                 this._notify('Gagal memuat surat', 'error');
             }
         }));
-        
+
         // Event listener untuk tombol "Lompat ke Ayat"
-        modal.querySelectorAll('.surah-row-btn-verse').forEach(btn=>btn.addEventListener('click', (e)=>{ 
+        modal.querySelectorAll('.surah-row-btn-verse').forEach(btn => btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const surahNum = parseInt(btn.dataset.surah);
             const totalVerses = parseInt(btn.dataset.totalVerses);
@@ -1110,102 +1108,21 @@ export default class AlQuranApp {
         }));
     }
 
-    _showJuzList() {
-        // Refresh data jika belum ada
-        this._refreshQuranData();
-        
-        // Remove existing modal if any
-        const existingModal = document.getElementById('juzListModal');
-        if (existingModal) existingModal.remove();
-        
-        // Create new modal
-        const modal = document.createElement('div');
-        modal.id = 'juzListModal';
-        modal.className = 'modal modal-fullscreen';
-        
-        const html = ['<div class="modal-content modal-content-fullscreen">'];
-        html.push('<div class="modal-header">');
-        html.push('<h3><i class="fas fa-bookmark"></i> Daftar Juz</h3>');
-        html.push('<button class="close-btn" data-close>×</button>');
-        html.push('</div>');
-        html.push('<div class="modal-body modal-body-fullscreen">');
-        
-        if (this.QURAN_JUZ.length > 0) {
-            html.push('<div class="juz-grid">');
-            for (const j of this.QURAN_JUZ) {
-                html.push(`
-                    <div class="juz-card" data-start="${j.startPage}">
-                        <div class="juz-header">
-                            <div class="juz-number-badge">
-                                <span class="juz-number">${j.number}</span>
-                            </div>
-                        </div>
-                        <div class="juz-body">
-                            <h4 class="juz-name">${j.name}</h4>
-                            <div class="juz-pages">
-                                <i class="fas fa-file-alt"></i>
-                                <span>Halaman ${j.startPage} - ${j.endPage}</span>
-                            </div>
-                        </div>
-                        <div class="juz-action">
-                            <button class="btn-open-juz">
-                                <i class="fas fa-book-open"></i>
-                                <span>Buka Juz</span>
-                            </button>
-                        </div>
-                    </div>
-                `);
-            }
-            html.push('</div>');
-        } else {
-            html.push('<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Data juz tidak tersedia.</p></div>');
-        }
-        
-        html.push('</div></div>');
-        modal.innerHTML = html.join('');
-        
-        // Append to body and show
-        document.body.appendChild(modal);
-        modal.style.setProperty('display', 'flex', 'important');
-        
-        // Close handlers
-        modal.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click', ()=>{
-            modal.remove();
-        }));
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.remove();
-        });
-        
-        // Juz card click handlers
-        modal.querySelectorAll('.juz-card').forEach(c=>c.addEventListener('click', async ()=>{ 
-            const juzNum = parseInt(c.querySelector('.juz-number').textContent);
-            
-            // Close modal immediately and let inline loader handle loading state
-            modal.remove();
-            
-            try {
-                await this.readJuz(juzNum);
-            } catch (error) {
-                this._notify('Gagal memuat juz', 'error');
-            }
-        }));
-    }
-
     _showBookmarksModal() {
         // Remove existing modal if any
         const existingModal = document.getElementById('bookmarksModal');
         if (existingModal) existingModal.remove();
-        
+
         // Create new modal
         const modal = document.createElement('div');
         modal.id = 'bookmarksModal';
         modal.className = 'modal modal-fullscreen';
-        
+
         const html = ['<div class="modal-content modal-content-fullscreen"><div class="modal-header"><h3><i class="fas fa-heart"></i> Tersimpan</h3><button class="close-btn" data-close>×</button></div><div class="modal-body modal-body-fullscreen">'];
-        
+
         // Get verse bookmarks
         const verseBookmarks = this._loadJSON('alquran_verse_bookmarks', []);
-        
+
         if (verseBookmarks.length === 0) {
             html.push('<div class="empty-state"><i class="fas fa-heart-broken"></i><h3>Belum Ada Favorit</h3><p>Tandai ayat favorit Anda dengan tombol bookmark</p></div>');
         } else {
@@ -1229,24 +1146,24 @@ export default class AlQuranApp {
         }
         html.push('</div></div>');
         modal.innerHTML = html.join('');
-        
+
         // Append to body and show
         document.body.appendChild(modal);
         modal.style.setProperty('display', 'flex', 'important');
-        
+
         // Close handlers
-        modal.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click', ()=>modal.remove()));
+        modal.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => modal.remove()));
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.remove();
         });
-        
+
         // Click verse bookmark to navigate
         modal.querySelectorAll('.verse-bookmark').forEach(el => {
             el.addEventListener('click', async (e) => {
                 if (!e.target.closest('.remove-bookmark')) {
                     const surahNum = parseInt(el.dataset.surah);
                     const verseNum = parseInt(el.dataset.verse);
-                    
+
                     // Show loading state
                     const modalContent = modal.querySelector('.modal-content');
                     const originalContent = modalContent.innerHTML;
@@ -1256,11 +1173,11 @@ export default class AlQuranApp {
                             <p style="color: var(--text-primary); font-size: 1.1rem;">Memuat surat...</p>
                         </div>
                     `;
-                    
+
                     try {
                         await this.readSurah(surahNum);
                         modal.remove();
-                        
+
                         // After modal is removed and surah is loaded, scroll to verse
                         setTimeout(() => {
                             const verseEl = document.querySelector(`[data-verse-number="${verseNum}"]`);
@@ -1279,16 +1196,16 @@ export default class AlQuranApp {
                 }
             });
         });
-        
+
         // Remove bookmark
-        modal.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click', (e)=>{ 
-            e.stopPropagation(); 
+        modal.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', (e) => {
+            e.stopPropagation();
             const key = b.dataset.remove;
             const arr = this._loadJSON('alquran_verse_bookmarks', []);
             const updated = arr.filter(x => x !== key);
             this._saveJSON('alquran_verse_bookmarks', updated);
             this._notify('Bookmark dihapus', 'info');
-            this._showBookmarksModal(); 
+            this._showBookmarksModal();
         }));
     }
 
@@ -1296,14 +1213,14 @@ export default class AlQuranApp {
         const modal = document.createElement('div');
         modal.className = 'modal modal-fullscreen';
         modal.id = 'pageJumpModal';
-        
+
         const html = ['<div class="modal-content modal-content-fullscreen">'];
         html.push('<div class="modal-header">');
         html.push('<h3><i class="fas fa-file-alt"></i> Buka Halaman</h3>');
         html.push('<button class="close-btn" data-close>×</button>');
         html.push('</div>');
         html.push('<div class="modal-body modal-body-fullscreen">');
-        
+
         html.push('<div class="page-jump-wrapper">');
         html.push('<div class="page-input-section">');
         html.push('<label class="input-label"><i class="fas fa-hashtag"></i> Nomor Halaman</label>');
@@ -1313,7 +1230,7 @@ export default class AlQuranApp {
         html.push('</div>');
         html.push('<p class="input-hint">Masukkan nomor halaman dari 1 sampai 604</p>');
         html.push('</div>');
-        
+
         html.push('<div class="quick-access-section">');
         html.push('<h4 class="section-title"><i class="fas fa-bolt"></i> Akses Cepat</h4>');
         html.push('<div class="quick-page-grid">');
@@ -1323,16 +1240,16 @@ export default class AlQuranApp {
         html.push('<button class="quick-page-btn" data-page="604"><i class="fas fa-flag-checkered"></i><span>Halaman 604</span><small>Akhir Al-Qur\'an</small></button>');
         html.push('</div>');
         html.push('</div>');
-        
+
         html.push('</div></div></div>');
-        
+
         modal.innerHTML = html.join('');
         document.body.appendChild(modal);
         modal.style.setProperty('display', 'flex', 'important');
-        
+
         // Close handler
         modal.querySelector('[data-close]').addEventListener('click', () => modal.remove());
-        
+
         // Go to page button
         modal.querySelector('#btnGoToPage').addEventListener('click', () => {
             const input = modal.querySelector('#jumpPageInput');
@@ -1344,7 +1261,7 @@ export default class AlQuranApp {
                 this._notify('Masukkan nomor halaman antara 1-604', 'error');
             }
         });
-        
+
         // Quick access buttons
         modal.querySelectorAll('.quick-page-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -1353,12 +1270,12 @@ export default class AlQuranApp {
                 modal.remove();
             });
         });
-        
+
         // Backdrop click
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.remove();
         });
-        
+
         // Enter key to jump
         const input = modal.querySelector('#jumpPageInput');
         if (input) {
@@ -1379,10 +1296,10 @@ export default class AlQuranApp {
         // Get surah info
         const surah = this.QURAN_SURAHS.find(s => s.number === surahNumber);
         if (!surah) return;
-        
+
         const modal = document.createElement('div');
         modal.className = 'modal modal-fullscreen verse-jump-modal';
-        
+
         const html = ['<div class="modal-content modal-content-fullscreen">'];
         html.push(`<div class="modal-header"><h3>Lompat ke Ayat - ${surah.name}</h3><button class="close-btn" data-close>×</button></div>`);
         html.push('<div class="modal-body modal-body-fullscreen">');
@@ -1390,12 +1307,12 @@ export default class AlQuranApp {
         html.push(`<label>Pilih nomor ayat (1-${totalVerses})</label>`);
         html.push(`<input type="number" id="jumpVerseInput" min="1" max="${totalVerses}" value="1" class="verse-jump-input">`);
         html.push(`<button class="btn-jump-to-verse" id="btnJumpToVerse">Lompat ke Ayat</button>`);
-        
+
         // Quick verse access - like Android app
         html.push('<div class="quick-verse-access">');
         html.push('<h4>Akses Cepat</h4>');
         html.push('<div class="quick-verse-grid">');
-        
+
         // Generate quick access buttons (every 10 verses, plus first and last)
         const quickVerses = [1];
         for (let i = 10; i <= totalVerses; i += 10) {
@@ -1404,21 +1321,21 @@ export default class AlQuranApp {
         if (quickVerses[quickVerses.length - 1] !== totalVerses) {
             quickVerses.push(totalVerses);
         }
-        
+
         quickVerses.forEach(v => {
             html.push(`<button class="quick-verse-btn" data-verse="${v}">Ayat ${v}</button>`);
         });
-        
+
         html.push('</div></div>');
         html.push('</div></div></div>');
-        
+
         modal.innerHTML = html.join('');
         document.body.appendChild(modal);
         modal.style.setProperty('display', 'flex', 'important');
-        
+
         // Close button
         modal.querySelector('[data-close]').addEventListener('click', () => modal.remove());
-        
+
         // Jump button
         modal.querySelector('#btnJumpToVerse').addEventListener('click', () => {
             const input = modal.querySelector('#jumpVerseInput');
@@ -1433,7 +1350,7 @@ export default class AlQuranApp {
             const surahModal = document.getElementById('surahListModal');
             if (surahModal) surahModal.remove();
         });
-        
+
         // Quick verse buttons
         modal.querySelectorAll('.quick-verse-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -1445,12 +1362,12 @@ export default class AlQuranApp {
                 if (surahModal) surahModal.remove();
             });
         });
-        
+
         // Close on backdrop click
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.remove();
         });
-        
+
         // Enter key to jump and input validation
         const input = modal.querySelector('#jumpVerseInput');
         if (input) {
@@ -1463,7 +1380,7 @@ export default class AlQuranApp {
                     e.target.value = 1;
                 }
             });
-            
+
             input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     modal.querySelector('#btnJumpToVerse').click();
@@ -1477,7 +1394,7 @@ export default class AlQuranApp {
     async readSurahAndJumpToVerse(surahNumber, verseNumber) {
         // First, load the surah
         await this.readSurah(surahNumber);
-        
+
         // Then, scroll to the specific verse after a short delay
         setTimeout(() => {
             const verseElement = this.container.querySelector(`[data-verse-number="${verseNumber}"]`);
@@ -1494,12 +1411,12 @@ export default class AlQuranApp {
         // Remove existing modal if any
         const existingModal = document.getElementById('settingsModal');
         if (existingModal) existingModal.remove();
-        
+
         // Create new modal
         const modal = document.createElement('div');
         modal.id = 'settingsModal';
         modal.className = 'modal modal-fullscreen';
-        
+
         modal.innerHTML = `
             <div class="modal-content modal-content-fullscreen">
                 <div class="modal-header">
@@ -1615,86 +1532,86 @@ export default class AlQuranApp {
                 </div>
             </div>
         `;
-        
+
         // Append to body and show
         document.body.appendChild(modal);
         modal.style.setProperty('display', 'flex', 'important');
-        
+
         // Close handlers
-        modal.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click', ()=>modal.remove()));
+        modal.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => modal.remove()));
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.remove();
         });
-        
-        document.getElementById('set_hide_translit').addEventListener('change', (e)=>{ 
-            this.settings.hideTransliteration = e.target.checked; 
-            this._saveJSON('alquran_settings', this.settings); 
+
+        document.getElementById('set_hide_translit').addEventListener('change', (e) => {
+            this.settings.hideTransliteration = e.target.checked;
+            this._saveJSON('alquran_settings', this.settings);
             if (this.readMode === 'surah' && this.currentSurahData) {
                 this.renderSurahMode();
             } else {
                 this.render();
             }
         });
-        document.getElementById('set_hide_trans').addEventListener('change', (e)=>{ 
-            this.settings.hideTranslation = e.target.checked; 
-            this._saveJSON('alquran_settings', this.settings); 
+        document.getElementById('set_hide_trans').addEventListener('change', (e) => {
+            this.settings.hideTranslation = e.target.checked;
+            this._saveJSON('alquran_settings', this.settings);
             if (this.readMode === 'surah' && this.currentSurahData) {
                 this.renderSurahMode();
             } else {
                 this.render();
             }
         });
-        document.getElementById('set_autoplay').addEventListener('change', (e)=>{ 
-            this.settings.autoPlayNext = e.target.checked; 
-            this._saveJSON('alquran_settings', this.settings); 
+        document.getElementById('set_autoplay').addEventListener('change', (e) => {
+            this.settings.autoPlayNext = e.target.checked;
+            this._saveJSON('alquran_settings', this.settings);
         });
-        document.getElementById('set_hide_lastread').addEventListener('change', (e)=>{ 
-            this.settings.hideLastRead = e.target.checked; 
-            this._saveJSON('alquran_settings', this.settings); 
+        document.getElementById('set_hide_lastread').addEventListener('change', (e) => {
+            this.settings.hideLastRead = e.target.checked;
+            this._saveJSON('alquran_settings', this.settings);
             if (this.readMode === 'surah' && this.currentSurahData) {
                 this.renderSurahMode();
             } else {
                 this.render();
             }
         });
-        document.getElementById('set_hide_memorization').addEventListener('change', (e)=>{ 
-            this.settings.hideMemorization = e.target.checked; 
-            this._saveJSON('alquran_settings', this.settings); 
+        document.getElementById('set_hide_memorization').addEventListener('change', (e) => {
+            this.settings.hideMemorization = e.target.checked;
+            this._saveJSON('alquran_settings', this.settings);
             if (this.readMode === 'surah' && this.currentSurahData) {
                 this.renderSurahMode();
             } else {
                 this.render();
             }
         });
-        
+
         // Font size controls
         const fontSizeDisplay = document.getElementById('fontSizeDisplay');
         const fontBtns = modal.querySelectorAll('[data-font-action]');
-        
+
         fontBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const action = btn.dataset.fontAction;
                 let currentSize = this.settings.arabicFontSize || 1.8;
-                
+
                 if (action === 'increase' && currentSize < 3.5) {
                     currentSize += 0.1;
                 } else if (action === 'decrease' && currentSize > 1.0) {
                     currentSize -= 0.1;
                 }
-                
+
                 currentSize = Math.round(currentSize * 10) / 10; // Round to 1 decimal
                 this.settings.arabicFontSize = currentSize;
                 this._saveJSON('alquran_settings', this.settings);
-                
+
                 // Update display
                 fontSizeDisplay.textContent = `${currentSize}rem`;
-                
+
                 // Apply settings
                 this._applyFontSettings();
             });
         });
-        
+
         // Font family select
         const arabicFontSelect = document.getElementById('arabicFontSelect');
         if (arabicFontSelect) {
@@ -1704,7 +1621,7 @@ export default class AlQuranApp {
                 this._applyFontSettings();
             });
         }
-        
+
         // Reset settings button
         const resetBtn = document.getElementById('resetSettings');
         if (resetBtn) {
@@ -1724,7 +1641,7 @@ export default class AlQuranApp {
                     modal.remove();
                     this._showSettingsModal(); // Reopen with updated values
                     this._applyFontSettings();
-                    
+
                     if (this.readMode === 'surah' && this.currentSurahData) {
                         this.renderSurahMode();
                     } else {
@@ -1738,7 +1655,7 @@ export default class AlQuranApp {
     _showMemorizationProgress() {
         // Check if memorization feature is disabled
         if (this.settings.hideMemorization) {
-            const modal = document.createElement('div'); 
+            const modal = document.createElement('div');
             modal.className = 'modal modal-fullscreen';
             modal.innerHTML = `
                 <div class="modal-content modal-content-fullscreen">
@@ -1756,10 +1673,10 @@ export default class AlQuranApp {
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
             modal.style.setProperty('display', 'flex', 'important');
-            
+
             modal.querySelector('[data-close]').addEventListener('click', () => modal.remove());
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) modal.remove();
@@ -1769,11 +1686,11 @@ export default class AlQuranApp {
 
         const progress = this._loadJSON('alquran_memorization_progress', {});
         const verseProgress = this._loadJSON('alquran_verse_progress', {});
-        
+
         // Calculate statistics
         const totalVerses = Object.keys(verseProgress).length;
         const surahStats = {};
-        
+
         // Group by surah
         Object.entries(verseProgress).forEach(([key, data]) => {
             const [surahNum] = key.split(':');
@@ -1783,10 +1700,10 @@ export default class AlQuranApp {
             surahStats[surahNum].count++;
             surahStats[surahNum].verses.push({ key, ...data });
         });
-        
+
         // Build content
         let contentHtml = '';
-        
+
         if (totalVerses === 0) {
             contentHtml = `
                 <div class="empty-state">
@@ -1819,10 +1736,10 @@ export default class AlQuranApp {
                 </div>
                 <div class="progress-surah-list">
             `;
-            
+
             // Sort by surah number
             const sortedSurahs = Object.entries(surahStats).sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
-            
+
             sortedSurahs.forEach(([surahNum, data]) => {
                 const surahInfo = typeof QURAN_SURAHS !== 'undefined' ? QURAN_SURAHS.find(s => s.number === parseInt(surahNum)) : null;
                 if (surahInfo) {
@@ -1846,11 +1763,11 @@ export default class AlQuranApp {
                     `;
                 }
             });
-            
+
             contentHtml += '</div>';
         }
-        
-        const modal = document.createElement('div'); 
+
+        const modal = document.createElement('div');
         modal.className = 'modal modal-fullscreen';
         modal.innerHTML = `
             <div class="modal-content modal-content-fullscreen">
@@ -1863,10 +1780,10 @@ export default class AlQuranApp {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(modal);
         modal.style.setProperty('display', 'flex', 'important');
-        
+
         modal.querySelector('[data-close]').addEventListener('click', () => modal.remove());
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.remove();
@@ -1879,7 +1796,7 @@ export default class AlQuranApp {
         try {
             const pageStr = String(pageNumber).padStart(3, '0');
             const storageKey = `alquran_page_${pageStr}`;
-            
+
             // PRIORITY: Check if data exists in localStorage first (offline-first approach)
             const offlineData = localStorage.getItem(storageKey);
             if (offlineData) {
@@ -1891,23 +1808,23 @@ export default class AlQuranApp {
                     localStorage.removeItem(storageKey);
                 }
             }
-            
+
             // Only fetch from network if NOT in cache
             const response = await fetch(`${this.basePath}/js/data/alquran/pages/Page${pageStr}.json`);
-            
+
             if (!response.ok) {
                 throw new Error(`Page ${pageNumber} not found (HTTP ${response.status})`);
             }
-            
+
             const pageData = await response.json();
-            
+
             // Auto-save to localStorage for future offline use
             try {
                 localStorage.setItem(storageKey, JSON.stringify(pageData));
             } catch (e) {
                 console.warn('Failed to save page to cache (storage might be full):', e);
             }
-            
+
             return pageData;
         } catch (error) {
             console.error(`Error loading page ${pageNumber}:`, error);
@@ -1917,30 +1834,33 @@ export default class AlQuranApp {
 
     async readSurah(surahNumber) {
         try {
+            // Scroll to top immediately when changing surah
+            window.scrollTo({ top: 0, behavior: 'instant' });
+
             // Show inline loader
             this._showInlineLoader('Memuat Surat...');
-            
+
             // Get surah info from QURAN_SURAHS
             const surah = this.QURAN_SURAHS.find(s => s.number === surahNumber);
             if (!surah) {
                 this._hideInlineLoader();
                 throw new Error('Data surat tidak ditemukan');
             }
-            
+
             // Load pages for this surah (NEW: per-page system)
             const allVerses = [];
             const startPage = surah.startPage;
             const endPage = surah.endPage;
-            
+
             // Load all pages that contain this surah
             let surahDescription = '';
             for (let pageNum = startPage; pageNum <= endPage; pageNum++) {
                 // Update loader progress
                 const progress = Math.round(((pageNum - startPage + 1) / (endPage - startPage + 1)) * 100);
                 this._updateInlineLoader(`Memuat Surat... ${progress}%`);
-                
+
                 const pageData = await this.loadPageData(pageNum);
-                
+
                 if (pageData && pageData.surahs) {
                     // Extract verses for this specific surah from the page
                     const surahInPage = pageData.surahs.find(s => s.number === surahNumber);
@@ -1949,7 +1869,7 @@ export default class AlQuranApp {
                         if (!surahDescription && surahInPage.description) {
                             surahDescription = surahInPage.description;
                         }
-                        
+
                         // Add page number to each verse
                         const versesWithPage = surahInPage.verses.map(v => ({
                             ...v,
@@ -1959,12 +1879,12 @@ export default class AlQuranApp {
                     }
                 }
             }
-            
+
             if (allVerses.length === 0) {
                 this._hideInlineLoader();
                 throw new Error('Surat belum tersedia');
             }
-            
+
             // Build complete surah data
             const surahData = {
                 number: surah.number,
@@ -1979,17 +1899,17 @@ export default class AlQuranApp {
                 description: surahDescription || 'Informasi surat ini akan segera tersedia.',
                 verses: allVerses
             };
-            
+
             this.readMode = 'surah';
             this.currentSurah = surahNumber;
             this.currentSurahData = surahData;
             this.currentVisiblePage = surah.startPage; // Track halaman yang visible
-            
+
             await this.renderSurahMode();
-            
+
             // Hide loader after render
             this._hideInlineLoader();
-            
+
         } catch (error) {
             this._hideInlineLoader();
             console.error('Error loading surah:', error);
@@ -2001,7 +1921,7 @@ export default class AlQuranApp {
         try {
             // Show inline loader
             this._showInlineLoader('Memuat Juz...');
-            
+
             // Get juz info
             const juz = this.QURAN_JUZ.find(j => j.number === juzNumber);
             if (!juz) {
@@ -2009,25 +1929,25 @@ export default class AlQuranApp {
                 console.error('QURAN_JUZ not found or juz number invalid:', juzNumber, this.QURAN_JUZ);
                 throw new Error('Data juz tidak ditemukan');
             }
-            
+
             // Load all pages in this juz
             const allVerses = [];
             const surahsInJuz = new Set();
             const totalPages = juz.endPage - juz.startPage + 1;
             let loadedPages = 0;
-            
+
             for (let pageNum = juz.startPage; pageNum <= juz.endPage; pageNum++) {
                 // Update loader progress
                 loadedPages++;
                 const progress = Math.round((loadedPages / totalPages) * 100);
                 this._updateInlineLoader(`Memuat Juz... ${progress}%`);
-                
+
                 const pageData = await this.loadPageData(pageNum);
-                
+
                 if (pageData && pageData.surahs) {
                     for (const surahInPage of pageData.surahs) {
                         surahsInJuz.add(surahInPage.number);
-                        
+
                         // Add page number to each verse
                         const versesWithPage = surahInPage.verses.map(v => ({
                             ...v,
@@ -2040,12 +1960,12 @@ export default class AlQuranApp {
                     }
                 }
             }
-            
+
             if (allVerses.length === 0) {
                 this._hideInlineLoader();
                 throw new Error('Juz belum tersedia');
             }
-            
+
             // Build juz data
             const juzData = {
                 number: juz.number,
@@ -2055,18 +1975,18 @@ export default class AlQuranApp {
                 verses: allVerses,
                 surahCount: surahsInJuz.size
             };
-            
+
             this.readMode = 'juz';
             this.currentJuz = juzNumber;
             this.currentJuzData = juzData;
             this.currentSurah = null;
             this.currentSurahData = null;
-            
+
             await this.renderJuzMode();
-            
+
             // Hide loader after render
             this._hideInlineLoader();
-            
+
         } catch (error) {
             this._hideInlineLoader();
             console.error('Error loading juz:', error);
@@ -2076,36 +1996,36 @@ export default class AlQuranApp {
 
     async renderJuzMode() {
         if (!this.container || !this.currentJuzData) return;
-        
+
         const juz = this.currentJuzData;
-        
+
         // Ensure viewMode is set (default to translation)
         if (!this.viewMode) {
             this.viewMode = localStorage.getItem('alquran_view_mode') || 'translation';
         }
-        
+
         // Reset audio setup flag when re-rendering
         this.audioSetupDone = false;
         this.audioListenersAttached = false;
-        
+
         // Hide floating prayer widget when reading juz - FORCE HIDE
         const floatingWidget = document.getElementById('floatingPrayerWidget');
         if (floatingWidget) {
             floatingWidget.style.setProperty('display', 'none', 'important');
             floatingWidget.dataset.wasHidden = 'true';
         }
-        
+
         // Build HTML untuk mode baca juz
         this.container.innerHTML = '';
-        
+
         const wrapper = document.createElement('div');
         wrapper.className = `alquran-container juz-mode ${this.viewMode === 'reading' ? 'reading-view' : 'translation-view'}`;
-        
+
         // Sidebar Backdrop
         const backdrop = document.createElement('div');
         backdrop.className = `sidebar-backdrop ${this.sidebarOpen ? 'active' : ''}`;
         backdrop.id = 'sidebarBackdrop';
-        
+
         // Sidebar Navigation
         const sidebar = document.createElement('div');
         sidebar.className = `quran-sidebar ${this.sidebarOpen ? 'open' : ''}`;
@@ -2129,15 +2049,15 @@ export default class AlQuranApp {
                 </div>
             </div>
         `;
-        
+
         // Floating Header (Sticky from start) - dengan navigasi buttons
         const floatingHeader = document.createElement('div');
         floatingHeader.className = 'floating-header visible'; // visible from start
         floatingHeader.id = 'floatingHeader';
-        
+
         // Get first verse to initialize header
         const firstVerse = juz.verses[0];
-        
+
         floatingHeader.innerHTML = `
             <div class="floating-header-left">
                 <button class="floating-nav-btn" id="menuToggle" title="Menu"><i class="fas fa-bars"></i></button>
@@ -2166,7 +2086,7 @@ export default class AlQuranApp {
                 <button class="floating-nav-btn" id="btnSettings" title="Pengaturan"><i class="fas fa-cog"></i></button>
             </div>
         `;
-        
+
         // Header - Judul Juz
         const header = document.createElement('div');
         header.className = 'surah-title-section';
@@ -2181,11 +2101,11 @@ export default class AlQuranApp {
                 </div>
             </div>
         `;
-        
+
         // Verses container
         const versesContainer = document.createElement('div');
         versesContainer.className = 'surah-verses';
-        
+
         // Add initial page separator for first page
         const initialPageSeparator = document.createElement('div');
         initialPageSeparator.className = 'page-separator';
@@ -2202,15 +2122,15 @@ export default class AlQuranApp {
             <div class="page-separator-line"></div>
         `;
         versesContainer.appendChild(initialPageSeparator);
-        
+
         let currentPageInView = juz.startPage;
         let currentSurahInView = null;
         let needsBasmalah = false;
-        
+
         for (const verse of juz.verses) {
             const versePage = verse.page;
             const verseSurah = verse.surahNumber;
-            
+
             // Check if surah changed (for basmalah)
             if (currentSurahInView !== null && currentSurahInView !== verseSurah) {
                 // New surah started, check if needs basmalah
@@ -2219,15 +2139,15 @@ export default class AlQuranApp {
                 // First surah in juz, check if we're at verse 1
                 needsBasmalah = verse.number === 1 && verseSurah !== 9 && verseSurah !== 1;
             }
-            
+
             // Add surah header when surah changes
             if (currentSurahInView !== verseSurah) {
                 // Get full surah info from QURAN_SURAHS
                 const surahInfo = typeof QURAN_SURAHS !== 'undefined' ? QURAN_SURAHS.find(s => s.number === verseSurah) : null;
-                
+
                 const surahHeaderEl = document.createElement('div');
                 surahHeaderEl.className = 'juz-surah-title-section';
-                
+
                 if (surahInfo) {
                     surahHeaderEl.innerHTML = `
                         <div class="surah-title-clean">
@@ -2250,7 +2170,7 @@ export default class AlQuranApp {
                     `;
                 }
                 versesContainer.appendChild(surahHeaderEl);
-                
+
                 // Add basmalah after surah header if needed
                 if (needsBasmalah) {
                     const basmalahEl = document.createElement('div');
@@ -2261,10 +2181,10 @@ export default class AlQuranApp {
                     versesContainer.appendChild(basmalahEl);
                     needsBasmalah = false;
                 }
-                
+
                 currentSurahInView = verseSurah;
             }
-            
+
             // Add page separator when page changes
             if (currentPageInView !== versePage) {
                 const pageSeparator = document.createElement('div');
@@ -2284,17 +2204,17 @@ export default class AlQuranApp {
                 versesContainer.appendChild(pageSeparator);
                 currentPageInView = versePage;
             }
-            
+
             const verseEl = document.createElement('div');
             verseEl.dataset.verseNumber = verse.number;
             verseEl.dataset.pageNumber = versePage;
             verseEl.dataset.surahNumber = verseSurah;
-            
+
             const verseKey = `${verseSurah}:${verse.number}`;
             const isBookmarked = this.verseBookmarks.includes(verseKey);
             const verseProgress = this._loadJSON('alquran_verse_progress', {});
             const isMemorized = verseProgress[verseKey] && verseProgress[verseKey].level === 4;
-            
+
             if (this.viewMode === 'reading') {
                 // Reading mode - hanya Arab dengan nomor ayat Arab, clickable untuk play audio
                 const arabicNumber = this._toArabicNumber(verse.number);
@@ -2323,7 +2243,7 @@ export default class AlQuranApp {
             }
             versesContainer.appendChild(verseEl);
         }
-        
+
         // Navigation to prev/next juz
         const juzNav = document.createElement('div');
         juzNav.className = 'surah-navigation';
@@ -2333,7 +2253,7 @@ export default class AlQuranApp {
             ${prevJuz ? `<button class="nav-surah-btn prev" data-juz="${prevJuz}"><i class="fas fa-chevron-left"></i> Juz Sebelumnya</button>` : '<div></div>'}
             ${nextJuz ? `<button class="nav-surah-btn next" data-juz="${nextJuz}">Juz Selanjutnya <i class="fas fa-chevron-right"></i></button>` : '<div></div>'}
         `;
-        
+
         // Audio Player (same design as surah mode)
         const audioPlayerHTML = `
             <div class="audio-player" id="quranAudioPlayer" style="display: none;">
@@ -2367,7 +2287,7 @@ export default class AlQuranApp {
                 <audio id="quranAudioElement" preload="metadata"></audio>
             </div>
         `;
-        
+
         // Assemble
         wrapper.appendChild(backdrop);
         wrapper.appendChild(sidebar);
@@ -2375,22 +2295,22 @@ export default class AlQuranApp {
         wrapper.appendChild(header);
         wrapper.appendChild(versesContainer);
         wrapper.appendChild(juzNav);
-        
+
         // Add audio player to container
         const audioPlayerDiv = document.createElement('div');
         audioPlayerDiv.innerHTML = audioPlayerHTML;
         wrapper.appendChild(audioPlayerDiv.firstElementChild);
-        
+
         this.container.appendChild(wrapper);
-        
+
         // Initialize sidebar content
         this._initializeSidebar();
-        
+
         // Event listeners
         document.getElementById('menuToggle')?.addEventListener('click', () => this.toggleSidebar());
         document.getElementById('closeSidebar')?.addEventListener('click', () => this.toggleSidebar());
         document.getElementById('sidebarBackdrop')?.addEventListener('click', () => this.toggleSidebar());
-        
+
         // Juz navigation
         document.querySelectorAll('.nav-surah-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -2400,10 +2320,10 @@ export default class AlQuranApp {
                 this.readJuz(juzNum);
             });
         });
-        
+
         // Settings button
         document.getElementById('btnSettings')?.addEventListener('click', () => this._showSettingsModal());
-        
+
         // Sidebar tabs
         document.querySelectorAll('.sidebar-tab').forEach(tab => {
             tab.addEventListener('click', () => {
@@ -2412,9 +2332,9 @@ export default class AlQuranApp {
                 this._loadSidebarContent(tab.dataset.tab);
             });
         });
-        
+
         document.getElementById('btnBackHome')?.addEventListener('click', () => this.resetToHome());
-        
+
         // Floating header mode toggle
         document.querySelectorAll('.floating-mode-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
@@ -2429,7 +2349,7 @@ export default class AlQuranApp {
                 }
             });
         });
-        
+
         // Verse actions (only in translation mode)
         if (this.viewMode === 'translation') {
             // Play verse audio button
@@ -2440,7 +2360,7 @@ export default class AlQuranApp {
                     this.playVerseAudio(surahNum, verseNum);
                 });
             });
-            
+
             // Copy verse
             document.querySelectorAll('[data-copy-verse]').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -2455,7 +2375,7 @@ export default class AlQuranApp {
                     }
                 });
             });
-            
+
             // Bookmark verse
             document.querySelectorAll('[data-bookmark-verse]').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -2471,7 +2391,7 @@ export default class AlQuranApp {
                     }
                 });
             });
-            
+
             // Memorization
             if (!this.settings.hideMemorization) {
                 document.querySelectorAll('[data-memorize-verse]').forEach(btn => {
@@ -2481,7 +2401,7 @@ export default class AlQuranApp {
                     });
                 });
             }
-            
+
             // Tafsir
             document.querySelectorAll('[data-tafsir-verse]').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -2503,7 +2423,7 @@ export default class AlQuranApp {
                 });
             });
         }
-        
+
         // Surah info buttons in juz mode
         document.querySelectorAll('.juz-surah-info-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
@@ -2532,7 +2452,7 @@ export default class AlQuranApp {
                 }
             });
         });
-        
+
         // Page audio play buttons
         document.querySelectorAll('[data-play-page]').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -2542,52 +2462,52 @@ export default class AlQuranApp {
                 this._playPageAudio(pageNum);
             });
         });
-        
+
         // Load juz tab in sidebar by default
         this._loadSidebarContent('juz');
-        
+
         // Set up verse tracking for updating floating header with current surah and page
         this._setupJuzVerseTracking(juz.number);
-        
+
         // Apply font settings to all Arabic text elements
         this._applyFontSettings();
-        
+
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
     async renderSurahMode() {
         if (!this.container || !this.currentSurahData) return;
-        
+
         const surah = this.currentSurahData;
-        
+
         // Ensure viewMode is set (default to translation)
         if (!this.viewMode) {
             this.viewMode = localStorage.getItem('alquran_view_mode') || 'translation';
         }
-        
+
         // Reset audio setup flag when re-rendering
         this.audioSetupDone = false;
         this.audioListenersAttached = false;
-        
+
         // Hide floating prayer widget when reading surah - FORCE HIDE
         const floatingWidget = document.getElementById('floatingPrayerWidget');
         if (floatingWidget) {
             floatingWidget.style.setProperty('display', 'none', 'important');
             floatingWidget.dataset.wasHidden = 'true';
         }
-        
+
         // Build HTML untuk mode baca surat
         this.container.innerHTML = '';
-        
+
         const wrapper = document.createElement('div');
         wrapper.className = `alquran-container surah-mode ${this.viewMode === 'reading' ? 'reading-view' : 'translation-view'}`;
-        
+
         // Sidebar Backdrop
         const backdrop = document.createElement('div');
         backdrop.className = `sidebar-backdrop ${this.sidebarOpen ? 'active' : ''}`;
         backdrop.id = 'sidebarBackdrop';
-        
+
         // Sidebar Navigation
         const sidebar = document.createElement('div');
         sidebar.className = `quran-sidebar ${this.sidebarOpen ? 'open' : ''}`;
@@ -2611,7 +2531,7 @@ export default class AlQuranApp {
                 </div>
             </div>
         `;
-        
+
         // Floating Header (Sticky from start) - dengan navigasi buttons
         const floatingHeader = document.createElement('div');
         floatingHeader.className = 'floating-header visible'; // visible from start
@@ -2643,8 +2563,12 @@ export default class AlQuranApp {
                 </span>
                 <button class="floating-nav-btn" id="btnSettings" title="Pengaturan"><i class="fas fa-cog"></i></button>
             </div>
+            <div class="surah-reading-progress">
+                <div class="surah-reading-progress-bar" id="surahProgressBar"></div>
+            </div>
         `;
-        
+
+
         // Header - Judul Surat saja (tidak ada tombol lagi)
         const header = document.createElement('div');
         header.className = 'surah-title-section';
@@ -2660,11 +2584,11 @@ export default class AlQuranApp {
                 </div>
             </div>
         `;
-        
+
         // Verses container
         const versesContainer = document.createElement('div');
         versesContainer.className = 'surah-verses';
-        
+
         // Add initial page separator for first page
         const initialPageSeparator = document.createElement('div');
         initialPageSeparator.className = 'page-separator';
@@ -2681,7 +2605,7 @@ export default class AlQuranApp {
             <div class="page-separator-line"></div>
         `;
         versesContainer.appendChild(initialPageSeparator);
-        
+
         // Add Basmalah at the beginning (except for At-Taubah/surah 9)
         if (surah.number !== 9 && surah.number !== 1) { // Not At-Taubah and not Al-Fatihah (already has basmalah as verse 1)
             const basmalahEl = document.createElement('div');
@@ -2691,11 +2615,11 @@ export default class AlQuranApp {
             `;
             versesContainer.appendChild(basmalahEl);
         }
-        
+
         let currentPageInView = null;
         for (const verse of surah.verses) {
             const versePage = verse.page || surah.startPage;
-            
+
             // Add page separator when page changes
             if (currentPageInView !== null && currentPageInView !== versePage) {
                 const pageSeparator = document.createElement('div');
@@ -2715,17 +2639,17 @@ export default class AlQuranApp {
                 versesContainer.appendChild(pageSeparator);
             }
             currentPageInView = versePage;
-            
+
             const verseEl = document.createElement('div');
             verseEl.dataset.verseNumber = verse.number; // Add data attribute for jumping
             verseEl.dataset.pageNumber = versePage; // Add page number for tracking
             verseEl.dataset.surahNumber = surah.number; // Add surah number for audio highlighting
-            
+
             const verseKey = `${surah.number}:${verse.number}`;
             const isBookmarked = this.verseBookmarks.includes(verseKey);
             const verseProgress = this._loadJSON('alquran_verse_progress', {});
             const isMemorized = verseProgress[verseKey] && verseProgress[verseKey].level === 4;
-            
+
             if (this.viewMode === 'reading') {
                 // Reading mode - hanya Arab dengan nomor ayat Arab, clickable untuk play audio
                 const arabicNumber = this._toArabicNumber(verse.number);
@@ -2754,7 +2678,7 @@ export default class AlQuranApp {
             }
             versesContainer.appendChild(verseEl);
         }
-        
+
         // Navigation to prev/next surah
         const surahNav = document.createElement('div');
         surahNav.className = 'surah-navigation';
@@ -2764,7 +2688,7 @@ export default class AlQuranApp {
             ${prevSurah ? `<button class="nav-surah-btn prev" data-surah="${prevSurah}"><i class="fas fa-chevron-left"></i> Surat Sebelumnya</button>` : '<div></div>'}
             ${nextSurah ? `<button class="nav-surah-btn next" data-surah="${nextSurah}">Surat Selanjutnya <i class="fas fa-chevron-right"></i></button>` : '<div></div>'}
         `;
-        
+
         // Audio Player (same design as Dzikir)
         const audioPlayerHTML = `
             <div class="audio-player" id="quranAudioPlayer" style="display: none;">
@@ -2798,7 +2722,7 @@ export default class AlQuranApp {
                 <audio id="quranAudioElement" preload="metadata"></audio>
             </div>
         `;
-        
+
         // Assemble
         wrapper.appendChild(backdrop);
         wrapper.appendChild(sidebar);
@@ -2806,25 +2730,25 @@ export default class AlQuranApp {
         wrapper.appendChild(header);          // Nama surat di bawah
         wrapper.appendChild(versesContainer);
         wrapper.appendChild(surahNav);
-        
+
         // Add audio player to container
         const audioPlayerDiv = document.createElement('div');
         audioPlayerDiv.innerHTML = audioPlayerHTML;
         wrapper.appendChild(audioPlayerDiv.firstElementChild);
-        
+
         this.container.appendChild(wrapper);
-        
+
         // Initialize sidebar content
         this._initializeSidebar();
-        
+
         // Set up verse tracking for last read
         this._setupVerseTracking(surah.number);
-        
+
         // Event listeners
         document.getElementById('menuToggle')?.addEventListener('click', () => this.toggleSidebar());
         document.getElementById('closeSidebar')?.addEventListener('click', () => this.toggleSidebar());
         document.getElementById('sidebarBackdrop')?.addEventListener('click', () => this.toggleSidebar());
-        
+
         // Surah navigation
         document.querySelectorAll('.nav-surah-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -2834,7 +2758,7 @@ export default class AlQuranApp {
                 this.readSurah(surahNum);
             });
         });
-        
+
         // View mode slider toggle
         document.querySelectorAll('.view-slider-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
@@ -2846,10 +2770,10 @@ export default class AlQuranApp {
                 this._notify(`Mode ${this.viewMode === 'reading' ? 'Membaca' : 'Terjemahan'} Aktif`, 'info');
             });
         });
-        
+
         // Settings button
         document.getElementById('btnSettings')?.addEventListener('click', () => this._showSettingsModal());
-        
+
         // Sidebar tabs
         document.querySelectorAll('.sidebar-tab').forEach(tab => {
             tab.addEventListener('click', () => {
@@ -2858,18 +2782,18 @@ export default class AlQuranApp {
                 this._loadSidebarContent(tab.dataset.tab);
             });
         });
-        
+
         // Info buttons
         document.getElementById('btnSurahInfo')?.addEventListener('click', () => this._showSurahInfoModal(surah));
         document.getElementById('btnOtherNames')?.addEventListener('click', () => this._showOtherNamesModal(surah));
         document.getElementById('btnBackHome')?.addEventListener('click', () => this.resetToHome());
-        
+
         document.getElementById('playSurahAudio')?.addEventListener('click', () => {
             this._playAudio(surah);
         });
-        
+
         document.getElementById('copySurah')?.addEventListener('click', () => this.copySurahText());
-        
+
         // Floating header mode toggle
         document.querySelectorAll('.floating-mode-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
@@ -2884,7 +2808,7 @@ export default class AlQuranApp {
                 }
             });
         });
-        
+
         // Verse actions (only in translation mode)
         if (this.viewMode === 'translation') {
             // Play verse audio button
@@ -2894,7 +2818,7 @@ export default class AlQuranApp {
                     this.playVerseAudio(surah.number, verseNum);
                 });
             });
-            
+
             this.container.querySelectorAll('[data-copy-verse]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const verseNum = parseInt(btn.dataset.copyVerse);
@@ -2905,14 +2829,14 @@ export default class AlQuranApp {
                     }
                 });
             });
-            
+
             this.container.querySelectorAll('[data-bookmark-verse]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const verseNum = parseInt(btn.dataset.bookmarkVerse);
                     this.bookmarkVerse(surah.number, verseNum);
                 });
             });
-            
+
             // Memorize button
             this.container.querySelectorAll('[data-memorize-verse]').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -2920,7 +2844,7 @@ export default class AlQuranApp {
                     this.markVerseMemorized(surah.number, verseNum);
                 });
             });
-            
+
             // Tafsir button
             this.container.querySelectorAll('[data-tafsir-verse]').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -2941,7 +2865,7 @@ export default class AlQuranApp {
                 });
             });
         }
-        
+
         // Play audio from specific page (page separator buttons)
         this.container.querySelectorAll('[data-play-page]').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -2949,18 +2873,18 @@ export default class AlQuranApp {
                 console.log('[PLAY BUTTON CLICKED] Page number from button:', pageNum);
                 console.log('[PLAY BUTTON CLICKED] Current page:', this.currentPage);
                 console.log('[PLAY BUTTON CLICKED] Current visible page:', this.currentVisiblePage);
-                
+
                 // Show audio player and play from this specific page
                 const audioPlayer = document.getElementById('quranAudioPlayer');
                 if (audioPlayer) {
                     audioPlayer.style.display = 'block';
-                    
+
                     // Setup controls if not already done
                     if (!this.audioSetupDone) {
                         this._setupAudioControls(surah);
                         this.audioSetupDone = true;
                     }
-                    
+
                     // Play from specific page
                     console.log('[PLAY BUTTON CLICKED] Calling _playPage with pageNum:', pageNum);
                     this._playPage(surah, pageNum);
@@ -2968,34 +2892,34 @@ export default class AlQuranApp {
                 }
             });
         });
-        
+
         // Apply font settings to all Arabic text elements
         this._applyFontSettings();
-        
+
         // Scroll to top when rendering new surah
         setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }, 100);
     }
-    
+
     _setupVerseTracking(surahNumber) {
         // Floating header is now always visible (no need for scroll listener)
-        
+
         // Use Intersection Observer to track visible verses and update page number
         const observerOptions = {
             root: null,
             rootMargin: '-50% 0px -50% 0px',
             threshold: 0
         };
-        
+
         let trackingTimeout = null;
-        
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const verseNumber = parseInt(entry.target.dataset.verseNumber);
                     const pageNumber = parseInt(entry.target.dataset.pageNumber);
-                    
+
                     if (verseNumber) {
                         // Update visible page number in header
                         if (pageNumber && this.currentVisiblePage !== pageNumber) {
@@ -3009,7 +2933,7 @@ export default class AlQuranApp {
                                     <span class="page-number">Hal. ${pageNumber}</span>
                                 `;
                             }
-                            
+
                             // IMPORTANT: Update page play button with current visible page
                             const pagePlayBtn = document.querySelector('.page-play-btn');
                             if (pagePlayBtn) {
@@ -3017,7 +2941,7 @@ export default class AlQuranApp {
                                 console.log('[IntersectionObserver] Updated play button to page:', pageNumber);
                             }
                         }
-                        
+
                         // Debounce the save operation
                         if (trackingTimeout) clearTimeout(trackingTimeout);
                         trackingTimeout = setTimeout(() => {
@@ -3031,17 +2955,50 @@ export default class AlQuranApp {
                 }
             });
         }, observerOptions);
-        
+
         // Observe all verse elements
         const verseElements = this.container.querySelectorAll('[data-verse-number]');
         verseElements.forEach(el => observer.observe(el));
-        
+
         // Store observer for cleanup
         if (this.verseObserver) {
             this.verseObserver.disconnect();
         }
         this.verseObserver = observer;
+
+        // Setup surah reading progress bar
+        const updateProgressBar = () => {
+            const progressBar = document.getElementById('surahProgressBar');
+            if (!progressBar) return;
+
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+            if (docHeight > 0) {
+                const scrollPercent = Math.min(100, (scrollTop / docHeight) * 100);
+                progressBar.style.width = scrollPercent + '%';
+            }
+        };
+
+        // Initial update
+        updateProgressBar();
+
+        // Update on scroll with throttling for performance
+        let scrollTimeout = null;
+        const scrollHandler = () => {
+            if (scrollTimeout) return;
+            scrollTimeout = setTimeout(() => {
+                updateProgressBar();
+                scrollTimeout = null;
+            }, 10);
+        };
+
+        window.addEventListener('scroll', scrollHandler, { passive: true });
+
+        // Store scroll handler for cleanup
+        this.progressScrollHandler = scrollHandler;
     }
+
 
     _setupJuzVerseTracking(juzNumber) {
         // Use Intersection Observer to track visible verses and update surah name and page number
@@ -3050,22 +3007,22 @@ export default class AlQuranApp {
             rootMargin: '-50% 0px -50% 0px',
             threshold: 0
         };
-        
+
         let trackingTimeout = null;
-        
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const verseNumber = parseInt(entry.target.dataset.verseNumber);
                     const pageNumber = parseInt(entry.target.dataset.pageNumber);
                     const surahNumber = parseInt(entry.target.dataset.surahNumber);
-                    
+
                     if (verseNumber && pageNumber && surahNumber) {
                         // Get current verse data
-                        const verse = this.currentJuzData.verses.find(v => 
+                        const verse = this.currentJuzData.verses.find(v =>
                             v.surahNumber === surahNumber && v.number === verseNumber
                         );
-                        
+
                         if (verse) {
                             // Update visible surah name in header
                             const surahNameEl = document.querySelector('.floating-surah-name');
@@ -3074,7 +3031,7 @@ export default class AlQuranApp {
                                 surahNameEl.textContent = verse.surahName;
                                 surahMetaEl.textContent = verse.surahNameArabic;
                             }
-                            
+
                             // Update visible page number in header
                             if (this.currentVisiblePage !== pageNumber) {
                                 this.currentVisiblePage = pageNumber;
@@ -3088,7 +3045,7 @@ export default class AlQuranApp {
                                 }
                             }
                         }
-                        
+
                         // Debounce the save operation
                         if (trackingTimeout) clearTimeout(trackingTimeout);
                         trackingTimeout = setTimeout(() => {
@@ -3103,11 +3060,11 @@ export default class AlQuranApp {
                 }
             });
         }, observerOptions);
-        
+
         // Observe all verse elements
         const verseElements = this.container.querySelectorAll('[data-verse-number]');
         verseElements.forEach(el => observer.observe(el));
-        
+
         // Store observer for cleanup
         if (this.verseObserver) {
             this.verseObserver.disconnect();
@@ -3129,38 +3086,38 @@ export default class AlQuranApp {
         const surah = this.currentSurahData;
         const url = window.location.href.split('#')[0] + `#surah-${surah.number}`;
         const text = `Baca Surat ${surah.name} (${surah.nameArabic}) - ${surah.meaning}`;
-        
+
         if (navigator.share) {
-            navigator.share({ title: text, url }).catch(() => {});
+            navigator.share({ title: text, url }).catch(() => { });
         } else {
             navigator.clipboard.writeText(url).then(() => this._notify('Link surat disalin', 'success'));
         }
     }
 
     _updateLastRead(page) {
-        this.history.unshift({ page, timestamp: new Date().toISOString() }); this.history = this.history.slice(0,20); this._saveJSON('alquran_history', this.history);
+        this.history.unshift({ page, timestamp: new Date().toISOString() }); this.history = this.history.slice(0, 20); this._saveJSON('alquran_history', this.history);
     }
 
     _formatLastRead() {
-        if (!this.history || this.history.length===0) return 'Belum pernah';
+        if (!this.history || this.history.length === 0) return 'Belum pernah';
         const last = new Date(this.history[0].timestamp); return last.toLocaleString('id-ID');
     }
 
-    _formatTime(seconds){ if (!seconds || isNaN(seconds)) return '0:00'; const m=Math.floor(seconds/60); const s=Math.floor(seconds%60); return `${m}:${String(s).padStart(2,'0')}`; }
+    _formatTime(seconds) { if (!seconds || isNaN(seconds)) return '0:00'; const m = Math.floor(seconds / 60); const s = Math.floor(seconds % 60); return `${m}:${String(s).padStart(2, '0')}`; }
 
-    _notify(msg, type='info') { 
-        const n = document.createElement('div'); 
-        n.className=`notification ${type}`; 
+    _notify(msg, type = 'info') {
+        const n = document.createElement('div');
+        n.className = `notification ${type}`;
         // Use absolute path from www root
         const iconPath = '/assets/icons/icon-72x72.png';
-        n.innerHTML = `<img src="${iconPath}" alt="IslamHub" style="width: 24px; height: 24px; border-radius: 4px; margin-right: 8px; object-fit: contain;" onerror="this.style.display='none'"><span>${msg}</span>`; 
-        document.body.appendChild(n); 
-        setTimeout(()=>n.classList.add('show'),50); 
-        setTimeout(()=>{ n.classList.remove('show'); setTimeout(()=>n.remove(),300); },1500); 
+        n.innerHTML = `<img src="${iconPath}" alt="IslamHub" style="width: 24px; height: 24px; border-radius: 4px; margin-right: 8px; object-fit: contain;" onerror="this.style.display='none'"><span>${msg}</span>`;
+        document.body.appendChild(n);
+        setTimeout(() => n.classList.add('show'), 50);
+        setTimeout(() => { n.classList.remove('show'); setTimeout(() => n.remove(), 300); }, 1500);
     }
 
     _saveJSON(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
-    _loadJSON(key, fallback) { try { const v = localStorage.getItem(key); return v? JSON.parse(v): fallback; } catch(e){ return fallback; } }
+    _loadJSON(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
 
     _getBasePath() {
         // Get base path for assets - handles subdirectory deployment
@@ -3171,7 +3128,7 @@ export default class AlQuranApp {
         return base || '';
     }
 
-    _cycleRepeat() { this.settings.autoRepeat = (this.settings.autoRepeat||1) >= 5 ? 1 : (this.settings.autoRepeat||1)+1; this._saveJSON('alquran_settings', this.settings); this._notify(`Pengulangan: ${this.settings.autoRepeat}x`,'info'); }
+    _cycleRepeat() { this.settings.autoRepeat = (this.settings.autoRepeat || 1) >= 5 ? 1 : (this.settings.autoRepeat || 1) + 1; this._saveJSON('alquran_settings', this.settings); this._notify(`Pengulangan: ${this.settings.autoRepeat}x`, 'info'); }
 
     // Sidebar functions
     toggleSidebar() {
@@ -3381,11 +3338,11 @@ export default class AlQuranApp {
             });
         });
     }
-    
+
     _setupSidebarContent() {
         // Initialize sidebar with default tab (surah list)
         this._initializeSidebar();
-        
+
         // Setup tab switching
         const tabButtons = document.querySelectorAll('.sidebar-tab');
         tabButtons.forEach(btn => {
@@ -3472,7 +3429,7 @@ export default class AlQuranApp {
         // Close handlers
         const closeBtn = modal.querySelector('.popup-close-btn');
         closeBtn.addEventListener('click', () => modal.remove());
-        
+
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.remove();
         });
@@ -3495,20 +3452,20 @@ export default class AlQuranApp {
     _playAudio(surah) {
         const audioPlayer = document.getElementById('quranAudioPlayer');
         if (!audioPlayer) return;
-        
+
         // Show player
         audioPlayer.style.display = 'block';
-        
+
         // Setup controls if not already done
         if (!this.audioSetupDone) {
             this._setupAudioControls(surah);
             this.audioSetupDone = true;
         }
-        
+
         // Store current surah for audio playback
         this.currentAudioSurah = surah;
         this.currentAudioPage = surah.startPage;
-        
+
         // Start playing from first page of surah
         this._playPage(surah, surah.startPage);
     }
@@ -3517,47 +3474,47 @@ export default class AlQuranApp {
     async _playPageAudio(pageNum) {
         const audioPlayer = document.getElementById('quranAudioPlayer');
         if (!audioPlayer) return;
-        
+
         // Show player
         audioPlayer.style.display = 'block';
-        
+
         console.log('[_playPageAudio] ========== Starting playback for page:', pageNum, '==========');
-        
+
         // Get all verses on this page from QURAN_VERSES
         const pageKey = `page_${pageNum}`;
         const pageVerses = this.QURAN_VERSES[pageKey];
-        
+
         if (!pageVerses || pageVerses.length === 0) {
             console.log('[_playPageAudio] No data in QURAN_VERSES, extracting from DOM...');
-            
+
             // IMPORTANT: Filter verses by page number, not just all verses in container!
             // When reading full surah, container has ALL verses of surah, not just current page
             const allRenderedVerses = this.container.querySelectorAll('.verse-item-reading, .verse-item-clean');
             console.log('[_playPageAudio] Total verses in container:', allRenderedVerses.length);
-            
+
             const extractedVerses = [];
             allRenderedVerses.forEach(verseEl => {
                 const versePageNum = parseInt(verseEl.dataset.pageNumber);
                 const surahNum = parseInt(verseEl.dataset.surahNumber);
                 const verseNum = parseInt(verseEl.dataset.verseNumber);
-                
+
                 // CRITICAL: Only extract verses that belong to the target page!
                 if (versePageNum === pageNum && surahNum && verseNum) {
                     extractedVerses.push({ surah: surahNum, verse: verseNum });
                 }
             });
-            
+
             console.log('[_playPageAudio] Filtered verses for page', pageNum, ':', extractedVerses.length);
-            
+
             if (extractedVerses.length > 0) {
                 console.log('[_playPageAudio] First verse:', extractedVerses[0], 'Last verse:', extractedVerses[extractedVerses.length - 1]);
-                
+
                 this.currentPageVerses = extractedVerses;
                 this.currentVerseIndex = 0;
-                
+
                 const firstVerse = extractedVerses[0];
                 const surahInfo = this.QURAN_SURAHS.find(s => s.number === firstVerse.surah);
-                
+
                 if (surahInfo) {
                     if (!this.audioSetupDone) {
                         this._setupAudioControls(surahInfo);
@@ -3565,40 +3522,40 @@ export default class AlQuranApp {
                     }
                     this.currentAudioSurah = surahInfo;
                     this.currentAudioPage = pageNum;
-                    
+
                     // Play first verse immediately
                     console.log('[_playPageAudio] Playing first verse of page:', firstVerse);
                     this._playVerseAudio(firstVerse.surah, firstVerse.verse);
                     return;
                 }
             }
-            
+
             this._notify('Tidak ada ayat di halaman ini', 'error');
             return;
         }
-        
+
         // If verses found in QURAN_VERSES
         console.log('[_playPageAudio] Found', pageVerses.length, 'verses in QURAN_VERSES');
         console.log('[_playPageAudio] First verse:', pageVerses[0], 'Last verse:', pageVerses[pageVerses.length - 1]);
-        
+
         const firstVerse = pageVerses[0];
         const surahInfo = this.QURAN_SURAHS.find(s => s.number === firstVerse.surah);
-        
+
         if (!surahInfo) {
             this._notify('Data surat tidak ditemukan', 'error');
             return;
         }
-        
+
         if (!this.audioSetupDone) {
             this._setupAudioControls(surahInfo);
             this.audioSetupDone = true;
         }
-        
+
         this.currentPageVerses = pageVerses;
         this.currentVerseIndex = 0;
         this.currentAudioSurah = surahInfo;
         this.currentAudioPage = pageNum;
-        
+
         // Play first verse immediately
         console.log('[_playPageAudio] Playing first verse of page:', firstVerse);
         this._playVerseAudio(firstVerse.surah, firstVerse.verse);
@@ -3618,20 +3575,20 @@ export default class AlQuranApp {
         const progressFill = document.getElementById('audioProgressFill');
         const currentTimeEl = document.getElementById('audioCurrentTime');
         const durationEl = document.getElementById('audioDuration');
-        
+
         // Remove old event listeners if they exist
         if (this.audioHandlers) {
             if (this.audioHandlers.prev) prevBtn?.removeEventListener('click', this.audioHandlers.prev);
             if (this.audioHandlers.next) nextBtn?.removeEventListener('click', this.audioHandlers.next);
         }
-        
+
         // Initialize handlers object
         this.audioHandlers = this.audioHandlers || {};
-        
+
         // Setup event listeners only once for static buttons
         if (!this.audioListenersAttached) {
             this.audioListenersAttached = true;
-            
+
             // Play/Pause button
             playPauseBtn?.addEventListener('click', () => {
                 if (audioElement.paused) {
@@ -3650,7 +3607,7 @@ export default class AlQuranApp {
                     this.isPlaying = false;
                 }
             });
-            
+
             // Close button - tutup audio player tanpa error dan hapus highlight
             closeBtn?.addEventListener('click', () => {
                 try {
@@ -3658,7 +3615,7 @@ export default class AlQuranApp {
                     this.isClosingAudio = true;
                     // Reset user request flag
                     this.userRequestedAudio = false;
-                    
+
                     audioElement.pause();
                     audioElement.src = '';
                     document.getElementById('quranAudioPlayer').style.display = 'none';
@@ -3666,13 +3623,13 @@ export default class AlQuranApp {
                         playPauseBtn.querySelector('i').className = 'fas fa-play';
                     }
                     this.isPlaying = false;
-                    
+
                     // Remove verse highlight
                     document.querySelectorAll('.verse-item-reading.playing-audio, .verse-item-clean.playing-audio').forEach(el => {
                         el.classList.remove('playing-audio');
                     });
                     this.currentPlayingVerse = null;
-                    
+
                     // Reset flag after a short delay
                     setTimeout(() => {
                         this.isClosingAudio = false;
@@ -3682,7 +3639,7 @@ export default class AlQuranApp {
                     this.isClosingAudio = false;
                 }
             });
-            
+
             // Time update - simple progress update
             audioElement?.addEventListener('timeupdate', () => {
                 // Update progress bar
@@ -3690,48 +3647,48 @@ export default class AlQuranApp {
                     const percent = (audioElement.currentTime / audioElement.duration) * 100;
                     progressFill.style.width = percent + '%';
                 }
-                
+
                 // Update current time display
                 if (currentTimeEl) {
                     currentTimeEl.textContent = this._formatTime(audioElement.currentTime);
                 }
             });
-            
+
             // Loaded metadata - update duration display
             audioElement?.addEventListener('loadedmetadata', () => {
                 if (durationEl && audioElement.duration) {
                     durationEl.textContent = this._formatTime(audioElement.duration);
                 }
             });
-            
+
             // Progress bar click to seek
             const progressBar = document.querySelector('.audio-progress-bar');
             progressBar?.addEventListener('click', (e) => {
                 if (!audioElement || !audioElement.duration) return;
-                
+
                 const rect = progressBar.getBoundingClientRect();
                 const clickX = e.clientX - rect.left;
                 const width = rect.width;
                 const percent = clickX / width;
                 const seekTime = audioElement.duration * percent;
-                
+
                 audioElement.currentTime = seekTime;
                 console.log('Seek to:', seekTime, 'seconds');
             });
-            
+
             // Audio ended - handle page mode auto-play next verse
             audioElement?.addEventListener('ended', () => {
                 console.log('[ended] Playing verse index:', this.currentVerseIndex);
-                
+
                 // Check if we're in page mode
                 if (this.currentPageVerses && this.currentPageVerses.length > 0) {
                     this.currentVerseIndex = (this.currentVerseIndex || 0) + 1;
-                    
+
                     // Play next verse in page
                     if (this.currentVerseIndex < this.currentPageVerses.length) {
                         const nextVerse = this.currentPageVerses[this.currentVerseIndex];
                         console.log('[ended] Next verse:', nextVerse);
-                        
+
                         // Play immediately without delay
                         this._playVerseAudio(nextVerse.surah, nextVerse.verse);
                     } else {
@@ -3741,7 +3698,7 @@ export default class AlQuranApp {
                         this.currentAudioPage = null;
                         this.currentPageVerses = null;
                         this.currentVerseIndex = 0;
-                        
+
                         // Stop playback
                         if (playPauseBtn?.querySelector('i')) {
                             playPauseBtn.querySelector('i').className = 'fas fa-play';
@@ -3754,7 +3711,7 @@ export default class AlQuranApp {
                     const { surah, verse } = this.currentPlayingVerse;
                     const surahInfo = this.QURAN_SURAHS.find(s => s.number === surah);
                     const totalVerses = surahInfo ? surahInfo.verses : 286;
-                    
+
                     if (this.settings.autoPlayNext && verse < totalVerses) {
                         // Auto-play next verse immediately
                         this.playVerseAudio(surah, verse + 1);
@@ -3773,21 +3730,21 @@ export default class AlQuranApp {
                     this.isPlaying = false;
                 }
             });
-            
+
             // Audio error handling
             audioElement?.addEventListener('error', (e) => {
                 // Don't show error notification if we're closing the audio player
                 if (this.isClosingAudio || this.isLoadingNewAudio) {
                     return;
                 }
-                
+
                 console.error('Audio error:', e);
                 playPauseBtn.querySelector('i').className = 'fas fa-play';
                 this.isPlaying = false;
                 // Error notification disabled - all audio is available
             });
         }
-        
+
         // Always setup/update prev and next handlers (they change based on mode)
         // Previous button - handle both page and verse mode
         this.audioHandlers.prev = () => {
@@ -3811,7 +3768,7 @@ export default class AlQuranApp {
                 }
             }
         };
-        
+
         // Next button - handle both page and verse mode
         this.audioHandlers.next = () => {
             // Check if we're in verse mode
@@ -3819,7 +3776,7 @@ export default class AlQuranApp {
                 const { surah, verse } = this.currentPlayingVerse;
                 const surahInfo = typeof QURAN_SURAHS !== 'undefined' ? QURAN_SURAHS.find(s => s.number === surah) : null;
                 const totalVerses = surahInfo ? surahInfo.verses : 286; // fallback to max
-                
+
                 if (verse < totalVerses) {
                     // Play next verse in same surah
                     this.playVerseAudio(surah, verse + 1);
@@ -3837,7 +3794,7 @@ export default class AlQuranApp {
                 }
             }
         };
-        
+
         // Attach the new handlers
         prevBtn?.addEventListener('click', this.audioHandlers.prev);
         nextBtn?.addEventListener('click', this.audioHandlers.next);
@@ -3927,7 +3884,7 @@ export default class AlQuranApp {
             const audioElement = document.getElementById('quranAudioElement');
             const audioInfo = document.getElementById('audioSurahName');
             const playPauseBtn = document.getElementById('audioPlayPause');
-            
+
             if (!audioPlayer || !audioElement) {
                 console.error('Audio player elements not found');
                 return;
@@ -3935,7 +3892,7 @@ export default class AlQuranApp {
 
             // Show audio player
             audioPlayer.style.display = 'block';
-            
+
             // Setup audio controls if not already done
             if (!this.audioSetupDone) {
                 const surahInfo = this.QURAN_SURAHS?.find(s => s.number === surahNumber);
@@ -3947,7 +3904,7 @@ export default class AlQuranApp {
 
             // Set flag to prevent error notification while loading new audio
             this.isLoadingNewAudio = true;
-            
+
             // Stop any currently playing audio
             audioElement.pause();
             audioElement.src = '';
@@ -3958,11 +3915,11 @@ export default class AlQuranApp {
             const localPath = `${this.basePath}/assets/audio/alquran/verses/${surahStr}/${surahStr}_${verseStr}.mp3`;
             // Use online fallback from mfarismuzakki.id/islamhub
             const onlinePath = `https://mfarismuzakki.id/islamhub/assets/audio/alquran/verses/${surahStr}/${surahStr}_${verseStr}.mp3`;
-            
+
             console.log(`[playVerseAudio] Playing Surah ${surahNumber} Verse ${verseNumber}`);
             console.log('[playVerseAudio] Local path:', localPath);
             console.log('[playVerseAudio] Online path:', onlinePath);
-            
+
             // Try local first (prioritize offline/downloaded audio)
             const tryLocal = await new Promise((resolve) => {
                 let settled = false;
@@ -3971,11 +3928,11 @@ export default class AlQuranApp {
                 testAudio.volume = 0; // Silent test
 
                 const cleanup = () => {
-                    try { 
-                        testAudio.pause(); 
-                        testAudio.src = ''; 
+                    try {
+                        testAudio.pause();
+                        testAudio.src = '';
                         testAudio.load();
-                    } catch(e) {}
+                    } catch (e) { }
                 };
 
                 const resolve_ = (result) => {
@@ -3987,21 +3944,21 @@ export default class AlQuranApp {
 
                 const timeout = setTimeout(() => {
                     console.log('Local audio timeout, trying online...');
-                    resolve_({ok: false, timeout: true});
+                    resolve_({ ok: false, timeout: true });
                 }, 1500); // 1.5s for local check
 
                 testAudio.addEventListener('canplay', () => {
                     console.log('Local audio available (offline)');
                     clearTimeout(timeout);
-                    resolve_({ok: true});
+                    resolve_({ ok: true });
                 }, { once: true });
-                
+
                 testAudio.addEventListener('error', (e) => {
                     console.log('Local audio not found, trying online...');
                     clearTimeout(timeout);
-                    resolve_({ok: false});
+                    resolve_({ ok: false });
                 }, { once: true });
-                
+
                 testAudio.src = localPath;
                 testAudio.load();
             });
@@ -4009,13 +3966,13 @@ export default class AlQuranApp {
             // Use local if available (user already downloaded), otherwise stream online
             const audioSrc = tryLocal.ok ? localPath : onlinePath;
             console.log('Using audio source:', tryLocal.ok ? 'LOCAL (offline/downloaded)' : 'ONLINE (streaming)', audioSrc);
-            
+
             const surahInfo = this.QURAN_SURAHS?.find(s => s.number === surahNumber);
             const surahName = surahInfo ? surahInfo.name : `QS ${surahNumber}`;
 
             // Set audio source
             audioElement.src = audioSrc;
-            
+
             // Update audio info display
             if (audioInfo) {
                 audioInfo.textContent = `${surahName} - Ayat ${verseNumber}`;
@@ -4023,7 +3980,7 @@ export default class AlQuranApp {
 
             // Store current playing verse for highlighting
             this.currentPlayingVerse = { surah: surahNumber, verse: verseNumber };
-            
+
             // Remove previous highlight
             document.querySelectorAll('.verse-item-reading.playing-audio').forEach(el => {
                 el.classList.remove('playing-audio');
@@ -4031,7 +3988,7 @@ export default class AlQuranApp {
             document.querySelectorAll('.verse-item-clean.playing-audio').forEach(el => {
                 el.classList.remove('playing-audio');
             });
-            
+
             // Highlight current verse
             const verseKey = `${surahNumber}:${verseNumber}`;
             const verseElements = document.querySelectorAll(`[data-play-verse="${verseKey}"], [data-verse-number="${verseNumber}"][data-surah-number="${surahNumber}"]`);
@@ -4046,7 +4003,7 @@ export default class AlQuranApp {
                     playPauseBtn.querySelector('i').className = 'fas fa-pause';
                 }
                 // Removed notification: this._notify(`Memutar ${surahName} ayat ${verseNumber}`, 'success');
-                
+
                 // Reset loading flag after successful play
                 this.isLoadingNewAudio = false;
             } catch (err) {
@@ -4060,7 +4017,7 @@ export default class AlQuranApp {
                 // Reset loading flag
                 this.isLoadingNewAudio = false;
             }
-            
+
             // Remove highlight when audio ends
             audioElement.addEventListener('ended', () => {
                 verseElements.forEach(el => {
@@ -4085,11 +4042,11 @@ export default class AlQuranApp {
         // Create popup
         const popup = document.createElement('div');
         popup.className = 'verse-play-popup';
-        
+
         // Get surah info
         const surahInfo = typeof QURAN_SURAHS !== 'undefined' ? QURAN_SURAHS.find(s => s.number === surahNumber) : null;
         const surahName = surahInfo ? surahInfo.name : `Surah ${surahNumber}`;
-        
+
         popup.innerHTML = `
             <div class="verse-play-popup-content">
                 <div class="verse-play-info">
@@ -4106,12 +4063,12 @@ export default class AlQuranApp {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(popup);
-        
+
         // Show popup with animation (fixed at bottom)
         setTimeout(() => popup.classList.add('show'), 10);
-        
+
         // Play button handler
         document.getElementById('versePlayPopupBtn').addEventListener('click', (e) => {
             e.stopPropagation();
@@ -4119,14 +4076,14 @@ export default class AlQuranApp {
             popup.classList.remove('show');
             setTimeout(() => popup.remove(), 200);
         });
-        
+
         // Close button handler
         document.getElementById('versePlayPopupClose').addEventListener('click', (e) => {
             e.stopPropagation();
             popup.classList.remove('show');
             setTimeout(() => popup.remove(), 200);
         });
-        
+
         // Close popup when clicking outside
         const closePopup = (e) => {
             if (!popup.contains(e.target) && e.target !== verseElement) {
@@ -4135,7 +4092,7 @@ export default class AlQuranApp {
                 document.removeEventListener('click', closePopup);
             }
         };
-        
+
         // Delay the listener to prevent immediate close
         setTimeout(() => {
             document.addEventListener('click', closePopup);
@@ -4143,7 +4100,7 @@ export default class AlQuranApp {
     }
 
     // placeholder for future online content
-    async loadOnlineContent() { this._notify('Fitur muat konten online akan segera tersedia','info'); }
+    async loadOnlineContent() { this._notify('Fitur muat konten online akan segera tersedia', 'info'); }
 
     // Offline Mode Modal
     _showOfflineModal() {
@@ -4166,17 +4123,17 @@ export default class AlQuranApp {
         const modal = document.createElement('div');
         modal.id = 'offlineModal';
         modal.className = 'modal modal-fullscreen';
-        
+
         let statusHTML = '';
         if (offlineData.downloaded) {
-            const audioStatus = offlineData.audioDownloaded 
+            const audioStatus = offlineData.audioDownloaded
                 ? '<span class="audio-status-badge downloaded"><i class="fas fa-check"></i> Audio Tersedia</span>'
                 : '<span class="audio-status-badge not-downloaded"><i class="fas fa-times"></i> Audio Belum Diunduh</span>';
-            
-            const dateDisplay = offlineData.downloadDate === 'built-in' 
+
+            const dateDisplay = offlineData.downloadDate === 'built-in'
                 ? 'Termasuk dalam Aplikasi'
                 : new Date(offlineData.downloadDate).toLocaleDateString('id-ID');
-                
+
             statusHTML = `
                 <div class="offline-status downloaded">
                     <i class="fas fa-check-circle"></i>
@@ -4353,7 +4310,7 @@ export default class AlQuranApp {
                     confirmText: 'Unduh Sekarang',
                     cancelText: 'Batal'
                 });
-                
+
                 if (confirmed) {
                     await this._downloadOfflineResources(modal, 'text');
                 }
@@ -4373,7 +4330,7 @@ export default class AlQuranApp {
                     cancelText: 'Batal',
                     warning: 'Pastikan koneksi internet stabil dan penyimpanan cukup'
                 });
-                
+
                 if (confirmed) {
                     await this._downloadOfflineResources(modal, 'audio');
                 }
@@ -4392,7 +4349,7 @@ export default class AlQuranApp {
                     confirmText: 'Unduh Ulang',
                     cancelText: 'Batal'
                 });
-                
+
                 if (confirmed) {
                     await this._downloadOfflineResources(modal, 'text');
                 }
@@ -4412,7 +4369,7 @@ export default class AlQuranApp {
                     warning: 'Tindakan ini tidak dapat dibatalkan',
                     isDanger: true
                 });
-                
+
                 if (confirmed) {
                     localStorage.removeItem('alquran_offline_status');
                     this._notify('Data offline dihapus', 'success');
@@ -4428,9 +4385,9 @@ export default class AlQuranApp {
         return new Promise((resolve) => {
             const confirmDialog = document.createElement('div');
             confirmDialog.className = 'custom-confirm-overlay';
-            
+
             const iconColor = options.isDanger ? '#ff3366' : 'var(--primary-cyan)';
-            
+
             confirmDialog.innerHTML = `
                 <div class="custom-confirm-dialog">
                     <div class="custom-confirm-icon" style="color: ${iconColor}">
@@ -4461,12 +4418,12 @@ export default class AlQuranApp {
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(confirmDialog);
-            
+
             // Show with animation
             setTimeout(() => confirmDialog.classList.add('show'), 10);
-            
+
             // Button handlers
             document.getElementById('customConfirmOk').addEventListener('click', () => {
                 confirmDialog.classList.remove('show');
@@ -4475,7 +4432,7 @@ export default class AlQuranApp {
                     resolve(true);
                 }, 200);
             });
-            
+
             document.getElementById('customConfirmCancel').addEventListener('click', () => {
                 confirmDialog.classList.remove('show');
                 setTimeout(() => {
@@ -4483,7 +4440,7 @@ export default class AlQuranApp {
                     resolve(false);
                 }, 200);
             });
-            
+
             // Close on overlay click
             confirmDialog.addEventListener('click', (e) => {
                 if (e.target === confirmDialog) {
@@ -4503,7 +4460,7 @@ export default class AlQuranApp {
 
         const totalPages = 604;
         let downloadedPages = 0;
-        
+
         const isAudio = type === 'audio';
         const downloadTitle = isAudio ? 'Mengunduh Audio Murottal...' : 'Mengunduh Teks Al-Quran...';
         const downloadIcon = isAudio ? 'music' : 'book-quran';
@@ -4532,18 +4489,18 @@ export default class AlQuranApp {
                         // Construct audio URL (Mishary Alafasy - Page)
                         const paddedPage = String(pageNum).padStart(3, '0');
                         const audioUrl = `assets/audio/alquran/verses/${paddedPage}.mp3`;
-                        
+
                         // Fetch and cache audio
                         const response = await fetch(audioUrl);
                         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                        
+
                         // Cache will store it automatically via service worker
                         await response.blob();
-                        
+
                         downloadedPages++;
 
                         const progress = Math.round((downloadedPages / totalPages) * 100);
-                        
+
                         // Update progress UI
                         if (progressFill) progressFill.style.width = `${progress}%`;
                         if (progressText) progressText.textContent = `${downloadedPages} / ${totalPages} halaman (${progress}%)`;
@@ -4573,7 +4530,7 @@ export default class AlQuranApp {
                         downloadedPages++;
 
                         const progress = Math.round((downloadedPages / totalPages) * 100);
-                        
+
                         // Update progress UI
                         if (progressFill) progressFill.style.width = `${progress}%`;
                         if (progressText) progressText.textContent = `${downloadedPages} / ${totalPages} halaman (${progress}%)`;
@@ -4600,10 +4557,10 @@ export default class AlQuranApp {
             // Success!
             const successIcon = isAudio ? 'volume-up' : 'book-quran';
             const successTitle = isAudio ? 'Audio Berhasil Diunduh!' : 'Teks Berhasil Diunduh!';
-            const successMessage = isAudio 
+            const successMessage = isAudio
                 ? 'Semua audio murottal sudah tersimpan. Anda sekarang bisa mendengarkan Al-Quran secara offline.'
                 : 'Semua halaman Al-Quran sudah tersimpan. Anda sekarang bisa membaca Al-Quran tanpa koneksi internet.';
-            
+
             modalBody.innerHTML = `
                 <div class="offline-success">
                     <i class="fas fa-${successIcon}" style="font-size: 3rem; color: var(--success-color); margin-bottom: 20px;"></i>
@@ -4628,7 +4585,7 @@ export default class AlQuranApp {
     _showInlineLoader(message = 'Memuat...') {
         // Remove existing loader if any
         this._hideInlineLoader();
-        
+
         const loader = document.createElement('div');
         loader.className = 'alquran-inline-loader';
         loader.id = 'alquranInlineLoader';
@@ -4643,9 +4600,9 @@ export default class AlQuranApp {
                 </div>
             </div>
         `;
-        
+
         this.container.appendChild(loader);
-        
+
         // Trigger animation
         setTimeout(() => loader.classList.add('show'), 10);
     }
