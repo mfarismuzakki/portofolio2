@@ -1979,7 +1979,7 @@ export default class AdzanApp {
         const el = document.getElementById('admTickerContent');
         if (!el) return;
         // Build one long string with all hadiths separated by ornaments
-        const sep = '  \u2736  ';
+        const sep = '  ||  ';
         const combined = hadiths
             .map(h => `${h.indonesia}  —\u00A0${h.reference}`)
             .join(sep);

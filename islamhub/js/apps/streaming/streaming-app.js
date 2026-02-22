@@ -4,6 +4,15 @@ class StreamingApp {
         this.player = null;
         this.signalAnimationInterval = null;
         
+        // Retry / reconnect state
+        this.retryCount = 0;
+        this.maxRetries = 8;
+        this.retryBaseDelay = 3000; // ms, doubles each attempt
+        this.retryTimeout = null;
+        this.stalledTimeout = null;
+        this.isRetrying = false;
+        this._onlineHandler = null;
+        
         // Radio stations
         this.radioStations = [
             {
@@ -26,14 +35,14 @@ class StreamingApp {
         this.liveHaramain = [
             {
                 name: 'Makkah Live',
-                url: 'https://www.youtube.com/embed/MI-fE4uTRZg',
+                url: 'https://www.youtube.com/embed/HfN2GCUE4Ro',
                 description: 'Live streaming 24/7 dari Masjidil Haram Makkah',
                 icon: 'fas fa-kaaba',
                 color: 'makkah'
             },
             {
                 name: 'Madinah Live',
-                url: 'https://www.youtube.com/embed/TpT8b8JFZ6E',
+                url: 'https://www.youtube.com/embed/uzRUh-4oSj0',
                 description: 'Live streaming 24/7 dari Masjid Nabawi Madinah',
                 icon: 'fas fa-mosque',
                 color: 'madinah'
@@ -51,7 +60,7 @@ class StreamingApp {
             },
             {
                 name: 'Syafiq Riza Basalamah TV',
-                url: 'https://www.youtube.com/embed/bEJFMrKmBb4',
+                url: 'https://www.youtube.com/embed/UBEBkz6SKTk',
                 description: 'Siaran 24 Jam dari Ustadz Syafiq Riza Basalamah',
                 logo: 'assets/logo/syafiq_tv.jpg',
                 color: 'syafiq'
@@ -329,8 +338,167 @@ class StreamingApp {
             });
         }
         
+        // Audio error/reconnect handling
+        this.setupAudioErrorHandling(radioPlayer);
+        
         // Simulate signal strength animation
         this.startSignalAnimation();
+    }
+
+    setupAudioErrorHandling(radioPlayer) {
+        if (!radioPlayer) return;
+
+        // Error: network dropped, bad URL, etc.
+        radioPlayer.addEventListener('error', () => {
+            if (this.currentStream !== null && !this.isRetrying) {
+                console.warn('[Streaming] Audio error detected, scheduling retry...');
+                this.scheduleRetry('error');
+            }
+        });
+
+        // Stalled: browser stopped receiving data unexpectedly
+        radioPlayer.addEventListener('stalled', () => {
+            if (this.currentStream !== null && !this.isRetrying) {
+                // Give it 8 seconds before treating stall as a real disconnect
+                clearTimeout(this.stalledTimeout);
+                this.stalledTimeout = setTimeout(() => {
+                    if (this.currentStream !== null && !this.isRetrying) {
+                        console.warn('[Streaming] Stream stalled, scheduling retry...');
+                        this.scheduleRetry('stalled');
+                    }
+                }, 8000);
+            }
+        });
+
+        // Waiting: temporary buffer underrun — reset stall timer
+        radioPlayer.addEventListener('waiting', () => {
+            if (this.currentStream !== null && !this.isRetrying) {
+                clearTimeout(this.stalledTimeout);
+                this.stalledTimeout = setTimeout(() => {
+                    if (this.currentStream !== null && !this.isRetrying) {
+                        console.warn('[Streaming] Stream waiting too long, scheduling retry...');
+                        this.scheduleRetry('waiting');
+                    }
+                }, 15000);
+            }
+        });
+
+        // Playing: connection healthy, reset retry counters
+        radioPlayer.addEventListener('playing', () => {
+            if (this.isRetrying || this.retryCount > 0) {
+                console.log('[Streaming] Stream recovered, resetting retry state.');
+            }
+            this.resetRetryState();
+            this.updateSignalStatus('live');
+            clearTimeout(this.stalledTimeout);
+        });
+
+        // Ended: live streams shouldn't end — treat as disconnect
+        radioPlayer.addEventListener('ended', () => {
+            if (this.currentStream !== null && !this.isRetrying) {
+                console.warn('[Streaming] Stream ended unexpectedly, scheduling retry...');
+                this.scheduleRetry('ended');
+            }
+        });
+
+        // Device came back online → retry immediately if we were retrying
+        this._onlineHandler = () => {
+            if (this.currentStream !== null) {
+                console.log('[Streaming] Network online, retrying stream immediately...');
+                clearTimeout(this.retryTimeout);
+                this.retryTimeout = null;
+                this.retryStream();
+            }
+        };
+        window.addEventListener('online', this._onlineHandler);
+    }
+
+    scheduleRetry(reason) {
+        if (this.currentStream === null) return;
+        if (this.retryCount >= this.maxRetries) {
+            console.error('[Streaming] Max retries reached, giving up.');
+            this.updateSignalStatus('failed');
+            this.showStreamingPopup(
+                'Koneksi stream terputus dan gagal dipulihkan setelah beberapa percobaan. Silakan coba putar ulang secara manual.',
+                'error'
+            );
+            return;
+        }
+
+        this.isRetrying = true;
+        const delay = Math.min(this.retryBaseDelay * Math.pow(2, this.retryCount), 30000);
+        this.retryCount++;
+
+        console.log(`[Streaming] Retry #${this.retryCount} scheduled in ${delay}ms (reason: ${reason})`);
+        this.updateSignalStatus('reconnecting');
+
+        clearTimeout(this.retryTimeout);
+        this.retryTimeout = setTimeout(() => {
+            this.retryStream();
+        }, delay);
+    }
+
+    retryStream() {
+        if (this.currentStream === null) {
+            this.isRetrying = false;
+            return;
+        }
+
+        const stationIndex = this.currentStream;
+        const station = this.radioStations[stationIndex];
+        const radioPlayer = document.getElementById('radioPlayer');
+
+        if (!radioPlayer || !station) {
+            this.isRetrying = false;
+            return;
+        }
+
+        console.log(`[Streaming] Retrying stream: ${station.name} (attempt ${this.retryCount})`);
+        this.updateSignalStatus('reconnecting');
+
+        // Reload the source and play
+        radioPlayer.pause();
+        radioPlayer.src = station.url;
+        radioPlayer.load();
+        radioPlayer.play().then(() => {
+            // 'playing' event will reset retry state
+        }).catch((err) => {
+            console.warn('[Streaming] Retry play() failed:', err);
+            this.isRetrying = false;
+            this.scheduleRetry('play-error');
+        });
+    }
+
+    resetRetryState() {
+        this.retryCount = 0;
+        this.isRetrying = false;
+        clearTimeout(this.retryTimeout);
+        clearTimeout(this.stalledTimeout);
+        this.retryTimeout = null;
+        this.stalledTimeout = null;
+    }
+
+    updateSignalStatus(status) {
+        const signalText = document.querySelector('.signal-text');
+        const radioStatusPlayer = document.getElementById('streamingRadioStatus');
+        const signalBars = document.querySelectorAll('.signal-bar');
+        const playPauseBtn = document.getElementById('streamingPlayPause');
+
+        if (status === 'reconnecting') {
+            if (signalText) signalText.textContent = 'Menghubungkan ulang...';
+            if (radioStatusPlayer) radioStatusPlayer.innerHTML = '<span class="status-dot loading"></span><span>Reconnecting...</span>';
+            if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            signalBars.forEach(bar => bar.classList.remove('active'));
+        } else if (status === 'live') {
+            if (signalText) signalText.textContent = 'Koneksi Stabil';
+            if (radioStatusPlayer) radioStatusPlayer.innerHTML = '<span class="status-dot"></span><span>Live Streaming</span>';
+            if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            signalBars.forEach(bar => bar.classList.add('active'));
+        } else if (status === 'failed') {
+            if (signalText) signalText.textContent = 'Koneksi Gagal';
+            if (radioStatusPlayer) radioStatusPlayer.innerHTML = '<span class="status-dot"></span><span>Terputus</span>';
+            if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        }
     }
     
     startSignalAnimation() {
@@ -377,6 +545,16 @@ class StreamingApp {
             this.signalAnimationInterval = null;
         }
         
+        // Clear retry timers
+        this.resetRetryState();
+        this.isRetrying = false;
+        
+        // Remove online listener
+        if (this._onlineHandler) {
+            window.removeEventListener('online', this._onlineHandler);
+            this._onlineHandler = null;
+        }
+        
         // Stop any playing radio
         if (this.currentStream !== null) {
             this.stopRadio(this.currentStream);
@@ -406,6 +584,9 @@ class StreamingApp {
 
     async startRadio(stationIndex, station, radioPlayer, audioContainer, btnRadio, radioStatus) {
         try {
+            // Reset retry state for fresh start
+            this.resetRetryState();
+
             // Show loading
             btnRadio.disabled = true;
             btnRadio.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Menghubungkan...</span>';
@@ -474,6 +655,10 @@ class StreamingApp {
         const btnRadio = document.getElementById(`btnRadio${indexToStop}`);
         const radioStatus = document.getElementById(`radioStatus${indexToStop}`);
         
+        // Cancel any pending retry before stopping
+        this.resetRetryState();
+        this.isRetrying = false;
+
         if (radioPlayer) {
             radioPlayer.pause();
             radioPlayer.src = '';
