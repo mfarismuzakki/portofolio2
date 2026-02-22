@@ -674,7 +674,8 @@ export default class AlQuranApp {
                 const verseProgressData = this._loadJSON('alquran_verse_progress', {});
 
                 for (const verse of surah.verses) {
-                    const verseEl = document.createElement('div');
+                    const isReading = this.viewMode === 'reading';
+                    const verseEl = document.createElement(isReading ? 'span' : 'div');
                     verseEl.dataset.verseNumber = verse.number;
                     verseEl.dataset.surahNumber = surah.number; // Tambahkan surah number
                     verseEl.dataset.pageNumber = this.currentPage;
@@ -683,14 +684,11 @@ export default class AlQuranApp {
                     const isBookmarked = this.verseBookmarks.includes(verseKey);
                     const isMemorized = verseProgressData[verseKey] && verseProgressData[verseKey].level === 4;
 
-                    if (this.viewMode === 'reading') {
-                        // Reading mode - hanya Arab dengan nomor ayat Arab
+                    if (isReading) {
+                        // Reading mode - hanya Arab dengan nomor ayat Arab (mushaf style)
                         const arabicNumber = this._toArabicNumber(verse.number);
                         verseEl.className = 'verse-item-reading';
-                        verseEl.innerHTML = `
-                        <span class="verse-arabic-inline ${this.settings.arabicFont}">${verse.arabic}</span>
-                        <span class="verse-number-ornament">&#xFD3F;${arabicNumber}&#xFD3E;</span>
-                    `;
+                        verseEl.innerHTML = `<span class="verse-arabic-inline ${this.settings.arabicFont}">${verse.arabic}</span><span class="verse-number-ornament">&#xFD3F;${arabicNumber}&#xFD3E;</span>`;
                     } else {
                         // Translation mode - lengkap (SAMA SEPERTI SURAH MODE)
                         verseEl.className = 'verse-item-clean';

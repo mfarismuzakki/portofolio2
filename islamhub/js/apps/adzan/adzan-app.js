@@ -32,6 +32,11 @@ export default class AdzanApp {
         this.notificationCheckInterval = null;
         this.lastNotificationCheck = {};
         this.searchDebounceTimer = null;
+        this.hijriData = null;
+        this.displayModeActive = false;
+        this.displayModeClockTimer = null;
+        this.displayModeTickerTimer = null;
+        this.displayModeTickerIndex = 0;
     }
 
     async init() {
@@ -48,6 +53,10 @@ export default class AdzanApp {
         this.updateCountdown(); // Initial countdown display
         this.updateClock();
         await this.initNotifications();
+        // Auto-restore display mode after refresh
+        if (localStorage.getItem('adzan-display-mode') === '1') {
+            this.openDisplayMode();
+        }
     }
     
     async clearOldDeliveredNotifications() {
@@ -96,6 +105,9 @@ export default class AdzanApp {
                             </button>
                             <button class="btn-change-location" id="btnChangeLocation">
                                 <i class="fas fa-edit"></i> Ubah Lokasi
+                            </button>
+                            <button class="btn-display-mode" id="btnDisplayMode">
+                                <i class="fas fa-tv"></i> Mode Tampilan Masjid
                             </button>
                         </div>
                     </div>
@@ -225,6 +237,7 @@ export default class AdzanApp {
             
             if (data.code === 200 && data.data) {
                 this.prayerTimes = {
+                    Imsak: data.data.timings.Imsak,
                     Subuh: data.data.timings.Fajr,
                     Syuruq: data.data.timings.Sunrise,
                     Dzuhur: data.data.timings.Dhuhr,
@@ -236,6 +249,7 @@ export default class AdzanApp {
                 // Update date with Hijri
                 if (data.data.date && data.data.date.hijri) {
                     const hijri = data.data.date.hijri;
+                    this.hijriData = hijri;
                     this.updateDate(hijri);
                 }
                 
@@ -261,7 +275,7 @@ export default class AdzanApp {
         const grid = document.getElementById('prayerTimesGrid');
         if (!grid) return;
         
-        const prayers = Object.entries(this.prayerTimes);
+        const prayers = Object.entries(this.prayerTimes).filter(([name]) => name !== 'Imsak');
         grid.innerHTML = prayers.map(([name, time]) => `
             <div class="prayer-time-card" data-prayer="${name}">
                 <div class="prayer-icon">
@@ -285,8 +299,8 @@ export default class AdzanApp {
         let minDiff = Infinity;
         
         for (const [name, time] of Object.entries(this.prayerTimes)) {
-            // Skip Syuruq for next prayer calculation (it's not a prayer time)
-            if (name === 'Syuruq') continue;
+            // Skip Syuruq and Imsak for next prayer calculation
+            if (name === 'Syuruq' || name === 'Imsak') continue;
             
             const [hours, minutes] = time.split(':').map(Number);
             const prayerHours = hours + minutes/60;
@@ -354,8 +368,8 @@ export default class AdzanApp {
         let minDiff = Infinity;
         
         for (const [name, time] of Object.entries(this.prayerTimes)) {
-            // Skip Syuruq for next prayer calculation
-            if (name === 'Syuruq') continue;
+            // Skip Syuruq and Imsak for next prayer calculation
+            if (name === 'Syuruq' || name === 'Imsak') continue;
             
             const [hours, minutes] = time.split(':').map(Number);
             const prayerHours = hours + minutes/60;
@@ -564,6 +578,14 @@ export default class AdzanApp {
     }
 
     setupEventListeners() {
+        // Display mode button
+        const btnDisplayMode = document.getElementById('btnDisplayMode');
+        if (btnDisplayMode) {
+            btnDisplayMode.addEventListener('click', () => {
+                this.openDisplayMode();
+            });
+        }
+
         // Change location button
         const btnChangeLocation = document.getElementById('btnChangeLocation');
         if (btnChangeLocation) {
@@ -1608,8 +1630,460 @@ export default class AdzanApp {
         }
     }
 
+    // ===== DISPLAY MODE (Mode Tampilan Masjid) =====
+
+    _getHijriString() {
+        if (!this.hijriData) return '';
+        const hijri = this.hijriData;
+        const bulanMap = {
+            'muharram': 'Muharram', 'safar': 'Safar',
+            'rabi al-awwal': 'Rabiul Awal', 'rabi al-awal': 'Rabiul Awal',
+            'rabi al-thani': 'Rabiul Akhir', 'rabi al-thaniy': 'Rabiul Akhir',
+            'jumada al-awwal': 'Jumadil Ula', 'jumada al-ula': 'Jumadil Ula',
+            'jumada al-thani': 'Jumadil Akhir', 'jumada al-akhir': 'Jumadil Akhir',
+            'rajab': 'Rajab', 'shaban': 'Syaban', 'sha ban': 'Syaban',
+            'ramadan': 'Ramadan', 'ramadhan': 'Ramadan',
+            'shawwal': 'Syawal', 'syawal': 'Syawal',
+            'dhu al-qadah': 'Dzulqaidah', 'dhul-qadah': 'Dzulqaidah',
+            'dhu al-hijjah': 'Dzulhijjah', 'dhul-hijjah': 'Dzulhijjah'
+        };
+        function normalize(s) {
+            return s.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+                .replace(/[\u02BC\u02BB\u2018\u2019']/g, '').trim().toLowerCase();
+        }
+        const monthName = bulanMap[normalize(hijri.month?.en || '')] || hijri.month?.en || '';
+        return `${hijri.day} ${monthName} ${hijri.year} H`;
+    }
+
+    openDisplayMode() {
+        localStorage.setItem('adzan-display-mode', '1');
+        import('../../data/hadith-collection.js').then(({ hadithCollection }) => {
+            this._hadithList = hadithCollection;
+            this._buildDisplayModeDOM();
+        }).catch(() => {
+            this._hadithList = [
+                { indonesia: 'Shalat berjamaah lebih utama daripada shalat sendirian dengan 27 derajat.', reference: 'HR. Al-Bukhari & Muslim' }
+            ];
+            this._buildDisplayModeDOM();
+        });
+    }
+
+    _loadDMSettings() {
+        try {
+            const saved = localStorage.getItem('adm-settings');
+            return saved ? JSON.parse(saved) : { theme: 'default', showSunnah: true, adzanSound: false };
+        } catch { return { theme: 'default', showSunnah: true, adzanSound: false }; }
+    }
+
+    _saveDMSettings() {
+        localStorage.setItem('adm-settings', JSON.stringify(this._dmSettings));
+    }
+
+    _applyDMSettings() {
+        const overlay = document.getElementById('adzanDisplayMode');
+        if (!overlay) return;
+        overlay.setAttribute('data-adm-theme', this._dmSettings.theme);
+        overlay.setAttribute('data-adm-sunnah', String(this._dmSettings.showSunnah));
+        // Sync theme option cards
+        document.querySelectorAll('.adm-theme-option').forEach(el => {
+            el.classList.toggle('active', el.dataset.theme === this._dmSettings.theme);
+        });
+        const sunnahToggle = document.getElementById('admToggleSunnah');
+        if (sunnahToggle) sunnahToggle.checked = this._dmSettings.showSunnah;
+        const soundToggle = document.getElementById('admToggleSound');
+        if (soundToggle) soundToggle.checked = this._dmSettings.adzanSound;
+        // Sync cyan theme toggle-slider color via CSS var
+        const activeThemeImg = document.querySelector(`.adm-theme-option[data-theme="${this._dmSettings.theme}"]`);
+        if (activeThemeImg) activeThemeImg.scrollIntoView({ block: 'nearest' });
+    }
+
+    _openDMSettingsPanel() {
+        const panel = document.getElementById('admSettingsPanel');
+        if (panel) panel.classList.toggle('open');
+    }
+
+    _buildDisplayModeDOM() {
+        const old = document.getElementById('adzanDisplayMode');
+        if (old) old.remove();
+        this.displayModeActive = true;
+        this._dmSettings = this._loadDMSettings();
+        this._lastSoundFired = null;
+
+        const s = this._dmSettings;
+        const overlay = document.createElement('div');
+        overlay.id = 'adzanDisplayMode';
+        overlay.className = 'adzan-display-mode';
+        overlay.setAttribute('data-adm-theme', s.theme);
+        overlay.setAttribute('data-adm-sunnah', String(s.showSunnah));
+        overlay.innerHTML = `
+            <div class="adm-bg"></div>
+            <div class="adm-top-bar">
+                <div class="adm-clock-wrap">
+                    <div class="adm-clock" id="admClock">00:00</div>
+                    <div class="adm-clock-secs" id="admSecs">:00</div>
+                </div>
+                <div class="adm-center-info">
+                    <div class="adm-masjid-name"><i class="fas fa-mosque"></i> ${this.locationDisplay}</div>
+                </div>
+                <div class="adm-date-wrap">
+                    <div class="adm-hijri" id="admHijri">${this._getHijriString()}</div>
+                    <div class="adm-gregorian" id="admGregorian"></div>
+                </div>
+                <div class="adm-top-actions">
+                    <button class="adm-settings-btn" id="admSettingsBtn" title="Pengaturan"><i class="fas fa-cog"></i></button>
+                    <button class="adm-close-btn" id="admClose" title="Tutup"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="adm-main-area">
+                <div class="adm-sunnah-panel" id="admSunnahPanel"></div>
+                <div class="adm-next-info" id="admNextInfo"></div>
+            </div>
+            <div class="adm-bottom">
+                <div class="adm-prayer-grid" id="admPrayerGrid"></div>
+                <div class="adm-ticker-wrap">
+                    <div class="adm-ticker-label"><i class="fas fa-quote-left"></i></div>
+                    <div class="adm-ticker-track">
+                        <div class="adm-ticker-content" id="admTickerContent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Drawer -->
+            <div class="adm-settings-panel" id="admSettingsPanel">
+                <div class="adm-settings-header">
+                    <span><i class="fas fa-cog"></i> Pengaturan Tampilan</span>
+                    <button class="adm-settings-header-close" id="admSettingsHeaderClose"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="adm-settings-body">
+                    <div>
+                        <div class="adm-settings-section-title">Tema Warna</div>
+                        <div class="adm-theme-options">
+                            <div class="adm-theme-option ${s.theme === 'default' ? 'active' : ''}" data-theme="default">
+                                <div class="adm-theme-preview adm-theme-preview-default"></div>
+                                <span>Klasik (Emas)</span>
+                            </div>
+                            <div class="adm-theme-option ${s.theme === 'cyan' ? 'active' : ''}" data-theme="cyan">
+                                <div class="adm-theme-preview adm-theme-preview-cyan"></div>
+                                <span>Modern (Cyan)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="adm-settings-section-title">Tampilan</div>
+                        <div class="adm-settings-row">
+                            <div class="adm-settings-row-label"><i class="fas fa-star-and-crescent"></i> Sholat Sunnah</div>
+                            <label class="adm-toggle">
+                                <input type="checkbox" id="admToggleSunnah" ${s.showSunnah ? 'checked' : ''}>
+                                <span class="adm-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="adm-settings-section-title">Suara</div>
+                        <div class="adm-settings-row">
+                            <div class="adm-settings-row-label"><i class="fas fa-volume-up"></i> Notif suara waktu adzan</div>
+                            <label class="adm-toggle">
+                                <input type="checkbox" id="admToggleSound" ${s.adzanSound ? 'checked' : ''}>
+                                <span class="adm-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adzan alert overlay -->
+            <div class="adm-adzan-alert" id="admAdzanAlert">
+                <div class="adm-adzan-alert-box">
+                    <div class="adm-adzan-alert-label">Telah Masuk Waktu</div>
+                    <div class="adm-adzan-alert-name" id="admAdzanAlertName">Subuh</div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        // Bind buttons
+        document.getElementById('admClose').addEventListener('click', () => this.closeDisplayMode());
+        document.getElementById('admSettingsBtn').addEventListener('click', () => this._openDMSettingsPanel());
+        document.getElementById('admSettingsHeaderClose').addEventListener('click', () => this._openDMSettingsPanel());
+
+        // Theme option clicks
+        overlay.querySelectorAll('.adm-theme-option').forEach(el => {
+            el.addEventListener('click', () => {
+                this._dmSettings.theme = el.dataset.theme;
+                this._saveDMSettings();
+                this._applyDMSettings();
+            });
+        });
+
+        // Sunnah toggle
+        document.getElementById('admToggleSunnah').addEventListener('change', (e) => {
+            this._dmSettings.showSunnah = e.target.checked;
+            this._saveDMSettings();
+            this._applyDMSettings();
+        });
+
+        // Sound toggle
+        document.getElementById('admToggleSound').addEventListener('change', (e) => {
+            this._dmSettings.adzanSound = e.target.checked;
+            this._saveDMSettings();
+            // Unlock AudioContext and play preview so user hears what the alert will sound like
+            if (e.target.checked) {
+                this._unlockAudio();
+                this._playAdzanSound('preview');
+            }
+        });
+
+        this._dmEscHandler = (e) => { if (e.key === 'Escape') this.closeDisplayMode(); };
+        document.addEventListener('keydown', this._dmEscHandler);
+
+        this._startDisplayModeClock();
+        this._buildDisplayModePrayerGrid();
+        this._startDisplayModeTicker();
+        this._updateDisplayModeSunnah();
+        requestAnimationFrame(() => overlay.classList.add('visible'));
+    }
+
+    _startDisplayModeClock() {
+        let _tickCount = 0;
+        const tick = () => {
+            if (!this.displayModeActive) return;
+            const now = new Date();
+            const hhmm = now.toLocaleTimeString('id-ID', { timeZone: this.timezone, hour: '2-digit', minute: '2-digit', hour12: false });
+            const rawSecs = now.toLocaleTimeString('id-ID', { timeZone: this.timezone, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+            const ss = ':' + rawSecs.slice(-2);
+
+            const clockEl = document.getElementById('admClock');
+            const secsEl = document.getElementById('admSecs');
+            if (clockEl) clockEl.textContent = hhmm;
+            if (secsEl) secsEl.textContent = ss;
+
+            const dateEl = document.getElementById('admGregorian');
+            if (dateEl) {
+                let d = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: this.timezone });
+                d = d.replace('Minggu', 'Ahad');
+                dateEl.textContent = d;
+            }
+
+            // Only update countdown text, prayer grid is built once
+            this._updateDisplayModeCountdown(now);
+
+            // Adzan sound check — fire on each prayer's minute once
+            if (this._dmSettings?.adzanSound) {
+                const hm = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+                const prayerNames = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
+                for (const name of prayerNames) {
+                    const t = this.prayerTimes[name];
+                    if (t && t === hm && now.getSeconds() === 0) {
+                        const fireKey = hm + name;
+                        if (this._lastSoundFired !== fireKey) {
+                            this._lastSoundFired = fireKey;
+                            this._playAdzanSound(name);
+                        }
+                    }
+                }
+            }
+
+            // Refresh sunnah panel every 60 seconds
+            _tickCount++;
+            if (_tickCount % 60 === 0) this._updateDisplayModeSunnah();
+
+            this.displayModeClockTimer = setTimeout(tick, 1000);
+        };
+        tick();
+    }
+
+    _buildDisplayModePrayerGrid() {
+        const grid = document.getElementById('admPrayerGrid');
+        if (!grid || !this.prayerTimes || Object.keys(this.prayerTimes).length === 0) return;
+
+        const n = new Date();
+        const nowMins = n.getHours() * 60 + n.getMinutes();
+        const nowH = n.getHours() + n.getMinutes() / 60 + n.getSeconds() / 3600;
+        const orderedNames = ['Subuh', 'Syuruq', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
+        const labels = { Subuh: 'Shubuh', Syuruq: 'Syuruq', Dzuhur: 'Dzuhur', Ashar: 'Ashar', Maghrib: 'Maghrib', Isya: "Isya'" };
+
+        let activePrayer = null;
+        for (const name of orderedNames) {
+            const t = this.prayerTimes[name];
+            if (!t) continue;
+            const [h, m] = t.split(':').map(Number);
+            if (nowMins >= h * 60 + m) activePrayer = name;
+        }
+
+        let nextPrayer = null;
+        let minDiff = Infinity;
+        for (const name of ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya']) {
+            const t = this.prayerTimes[name];
+            if (!t) continue;
+            const [h, m] = t.split(':').map(Number);
+            let diff = (h + m / 60) - nowH;
+            if (diff <= 0) diff += 24;
+            if (diff < minDiff) { minDiff = diff; nextPrayer = { name, time: t, diffH: diff }; }
+        }
+        this._dmNextPrayer = nextPrayer;
+
+        grid.innerHTML = orderedNames.map(name => {
+            const t = this.prayerTimes[name];
+            if (!t) return '';
+            const isActive = name === activePrayer;
+            const isNext = nextPrayer && name === nextPrayer.name;
+            return `
+                <div class="adm-prayer-col ${isActive ? 'adm-active' : ''} ${isNext ? 'adm-next' : ''}">
+                    <div class="adm-prayer-label">${labels[name] || name}</div>
+                    <div class="adm-prayer-time">${t}</div>
+                    ${isNext ? `<div class="adm-prayer-countdown" id="admCountdownDisplay">--:--:--</div>` : ''}
+                </div>
+            `;
+        }).join('');
+
+        if (nextPrayer) {
+            const nextInfoEl = document.getElementById('admNextInfo');
+            if (nextInfoEl) {
+                nextInfoEl.innerHTML = `<span class="adm-next-label">Menuju</span> <span class="adm-next-name">${labels[nextPrayer.name] || nextPrayer.name}</span>`;
+            }
+        }
+    }
+
+    _updateDisplayModeCountdown(now) {
+        if (!this._dmNextPrayer) return;
+        const n = now || new Date();
+        const nowH = n.getHours() + n.getMinutes() / 60 + n.getSeconds() / 3600;
+        let diff = this._dmNextPrayer.diffH - (nowH - (Math.floor(nowH - this._dmNextPrayer.diffH + 24) % 24 === 0 ? 0 : 0));
+        // Recalculate fresh diff
+        const [dh, dm] = this._dmNextPrayer.time.split(':').map(Number);
+        let freshDiff = (dh + dm / 60) - nowH;
+        if (freshDiff <= 0) freshDiff += 24;
+        const totalSecs = Math.max(0, Math.round(freshDiff * 3600));
+        const hrs = Math.floor(totalSecs / 3600);
+        const mins = Math.floor((totalSecs % 3600) / 60);
+        const secs = totalSecs % 60;
+        const cdEl = document.getElementById('admCountdownDisplay');
+        if (cdEl) cdEl.textContent = `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+        // Rebuild grid when next prayer changes (e.g. crossed into next prayer)
+        const nowMins = n.getHours() * 60 + n.getMinutes();
+        const [ndh, ndm] = this._dmNextPrayer.time.split(':').map(Number);
+        if (nowMins === ndh * 60 + ndm) {
+            this._buildDisplayModePrayerGrid();
+        }
+    }
+
+    _updateDisplayModePrayers(now) {
+        // Legacy wrapper - just rebuild grid
+        this._buildDisplayModePrayerGrid();
+    }
+
+    _startDisplayModeTicker() {
+        const hadiths = this._hadithList || [];
+        if (hadiths.length === 0) return;
+        const el = document.getElementById('admTickerContent');
+        if (!el) return;
+        // Build one long string with all hadiths separated by ornaments
+        const sep = '  \u2736  ';
+        const combined = hadiths
+            .map(h => `${h.indonesia}  —\u00A0${h.reference}`)
+            .join(sep);
+        el.textContent = combined;
+        // Speed proportional to text length: ~80px/s
+        const charCount = combined.length;
+        const duration = Math.max(60, Math.round(charCount * 0.11));
+        el.style.animationDuration = duration + 's';
+    }
+
+    async _updateDisplayModeSunnah() {
+        const panel = document.getElementById('admSunnahPanel');
+        if (!panel) return;
+        try {
+            const { sunnahPrayersCollection } = await import('../../data/sunnah-prayers.js');
+            const now = new Date();
+            const nowObj = { h: now.getHours(), m: now.getMinutes(), s: now.getSeconds() };
+            const times = {
+                fajr: this.prayerTimes['Subuh'] ? (() => { const [h,m] = this.prayerTimes['Subuh'].split(':').map(Number); return h + m/60; })() : NaN,
+                sunrise: this.prayerTimes['Syuruq'] ? (() => { const [h,m] = this.prayerTimes['Syuruq'].split(':').map(Number); return h + m/60; })() : NaN,
+                dhuhr: this.prayerTimes['Dzuhur'] ? (() => { const [h,m] = this.prayerTimes['Dzuhur'].split(':').map(Number); return h + m/60; })() : NaN,
+                asr: this.prayerTimes['Ashar'] ? (() => { const [h,m] = this.prayerTimes['Ashar'].split(':').map(Number); return h + m/60; })() : NaN,
+                maghrib: this.prayerTimes['Maghrib'] ? (() => { const [h,m] = this.prayerTimes['Maghrib'].split(':').map(Number); return h + m/60; })() : NaN,
+                isha: this.prayerTimes['Isya'] ? (() => { const [h,m] = this.prayerTimes['Isya'].split(':').map(Number); return h + m/60; })() : NaN,
+            };
+            const active = sunnahPrayersCollection.filter(s => {
+                try { return s.timeCondition(times, nowObj); } catch { return false; }
+            });
+            if (active.length === 0) {
+                panel.innerHTML = '';
+                return;
+            }
+            panel.innerHTML = active.slice(0, 2).map(s => `
+                <div class="adm-sunnah-card">
+                    <div class="adm-sunnah-icon"><i class="fas fa-star-and-crescent"></i></div>
+                    <div class="adm-sunnah-body">
+                        <div class="adm-sunnah-name">${s.name}</div>
+                        <div class="adm-sunnah-desc">${s.timeDescription}</div>
+                        <div class="adm-sunnah-ref">${s.reference}</div>
+                    </div>
+                </div>
+            `).join('');
+        } catch (e) {
+            console.warn('Sunnah panel error:', e);
+        }
+    }
+
+    _unlockAudio() {
+        // Create and immediately suspend an AudioContext to unlock it on user gesture
+        try {
+            if (!this._audioCtx) {
+                this._audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (this._audioCtx.state === 'suspended') this._audioCtx.resume();
+        } catch (e) {}
+    }
+
+    _playAdzanSound(prayerName) {
+        // Show visual alert (skip for preview)
+        if (prayerName !== 'preview') {
+            const alertEl = document.getElementById('admAdzanAlert');
+            const nameEl = document.getElementById('admAdzanAlertName');
+            const labelMap = { Subuh: 'Shubuh', Dzuhur: 'Dzuhur', Ashar: 'Ashar', Maghrib: 'Maghrib', Isya: "Isya'" };
+            if (alertEl && nameEl) {
+                nameEl.textContent = labelMap[prayerName] || prayerName;
+                alertEl.classList.add('show');
+                setTimeout(() => alertEl.classList.remove('show'), 8000);
+            }
+        }
+        // Play 3 short beeps via Web Audio API
+        try {
+            const ctx = this._audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            this._audioCtx = ctx;
+            if (ctx.state === 'suspended') ctx.resume();
+            [0, 0.4, 0.8].forEach(delay => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'square';
+                osc.frequency.value = 880; // A5 — clear, neutral beep
+                const start = ctx.currentTime + delay;
+                gain.gain.setValueAtTime(0.25, start);
+                gain.gain.setValueAtTime(0, start + 0.18);
+                osc.start(start);
+                osc.stop(start + 0.2);
+            });
+        } catch (e) { console.warn('Audio error:', e); }
+    }
+
+    closeDisplayMode() {
+        this.displayModeActive = false;
+        localStorage.removeItem('adzan-display-mode');
+        clearTimeout(this.displayModeClockTimer);
+        clearTimeout(this.displayModeTickerTimer);
+        if (this._dmEscHandler) document.removeEventListener('keydown', this._dmEscHandler);
+        const overlay = document.getElementById('adzanDisplayMode');
+        if (overlay) {
+            overlay.classList.remove('visible');
+            setTimeout(() => overlay.remove(), 400);
+        }
+    }
+
     _getBasePath() {
-        // Get base path for assets - handles subdirectory deployment
         const path = window.location.pathname;
         const base = path.substring(0, path.lastIndexOf('/'));
         return base || '';

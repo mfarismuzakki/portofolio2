@@ -53,42 +53,47 @@
 }
 
 .quick-nav {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     margin-top: 20px;
 }
 
 .nav-btn {
-    background: rgba(0, 255, 255, 0.1);
-    border: 1px solid var(--primary-cyan);
+    background: rgba(0, 255, 255, 0.08);
+    border: 1px solid rgba(0, 255, 255, 0.4);
     border-radius: 10px;
-    padding: 32px 24px;
+    padding: 16px 20px;
     color: var(--text-primary);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 14px;
+    gap: 16px;
     font-family: var(--font-secondary);
-    min-height: 140px;
+    width: 100%;
+    text-align: left;
 }
 
 .nav-btn:hover {
-    background: rgba(0, 255, 255, 0.2);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-    transform: translateY(-2px);
+    background: rgba(0, 255, 255, 0.18);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.25);
+    transform: translateY(-1px);
 }
 
 .nav-btn i {
-    font-size: 2.5rem;
+    font-size: 1.3rem;
     color: var(--primary-cyan);
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
 }
 
 .nav-btn span {
-    font-size: 1.15rem;
-    font-weight: 500;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--primary-cyan);
 }
 
 /* Last Read Card */
@@ -3272,7 +3277,10 @@
 
 .surah-mode.reading-view .basmalah-text {
     margin: 2rem 0 1.5rem 0;
-    text-align: center;
+    text-align: center !important;
+    text-align-last: center !important;
+    direction: ltr !important;
+    unicode-bidi: isolate;
 }
 
 .surah-mode.reading-view .basmalah-arabic {
@@ -3282,6 +3290,9 @@
     letter-spacing: -0.01em;
     word-spacing: 0.12em;
     text-align: center !important;
+    text-align-last: center !important;
+    direction: rtl;
+    unicode-bidi: isolate;
 }
 
 /* Translation mode - Keep card background */
@@ -3321,16 +3332,13 @@
 
 /* Verse numbers with Arabic ornament in reading mode - Quran.com style */
 .verse-number-ornament {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: inline;
     font-family: 'Uthmanic Hafs', 'KFGQPC Uthmani', 'Amiri Quran', serif;
     font-size: 0.8em;
     color: rgba(255, 255, 255, 0.8);
-    margin: 0 0.15em;
-    vertical-align: middle;
-    line-height: 1;
+    margin: 0 0.1em;
     direction: rtl;
+    vertical-align: baseline;
 }
 
 .verse-number-ornament:hover {
@@ -4985,13 +4993,17 @@
 
 /* Surah mode - basmalah centered in reading mode */
 .surah-mode.reading-view .basmalah-text {
-    text-align: center;
-    direction: ltr;
+    text-align: center !important;
+    text-align-last: center !important;
+    direction: ltr !important;
+    unicode-bidi: isolate;
 }
 
 .surah-mode.reading-view .basmalah-arabic {
     display: block;
-    text-align: center;
+    text-align: center !important;
+    text-align-last: center !important;
+    unicode-bidi: isolate;
 }
 
 .page-title-section {
@@ -5064,6 +5076,80 @@
     max-width: 900px;
     margin: 0 auto;
     padding-bottom: 2rem;
+}
+
+/* ===== Page Mode - Reading View (Mushaf Style) ===== */
+.page-mode.reading-view .page-verses {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    background: transparent;
+    border: none;
+    text-align: justify;
+    text-align-last: right;
+    direction: rtl;
+    line-height: 3;
+    font-size: 1.6rem;
+    word-spacing: 0.15em;
+    letter-spacing: 0.03em;
+    display: block;
+}
+
+.page-mode.reading-view .verse-item-reading {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    word-spacing: inherit;
+    letter-spacing: inherit;
+}
+
+.page-mode.reading-view .surah-separator {
+    display: block;
+    direction: ltr;
+    text-align: center;
+    margin: 2.5rem 0 1.5rem;
+    padding: 0;
+    gap: 0;
+}
+
+.page-mode.reading-view .surah-separator-line {
+    display: none;
+}
+
+.page-mode.reading-view .surah-separator-info {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.6rem 2rem;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    width: auto;
+}
+
+.page-mode.reading-view .basmalah-text {
+    text-align: center !important;
+    text-align-last: center !important;
+    direction: ltr !important;
+    margin: 2rem 0 1.5rem 0;
+    display: block !important;
+    unicode-bidi: isolate;
+}
+
+.page-mode.reading-view .basmalah-arabic {
+    font-family: 'Uthmanic Hafs', 'KFGQPC Uthmani', 'Amiri Quran', serif;
+    font-size: 1.7rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 400;
+    direction: rtl;
+    letter-spacing: 0.04em;
+    word-spacing: 0.2em;
+    line-height: 2;
+    display: block !important;
+    text-align: center !important;
+    text-align-last: center !important;
+    unicode-bidi: isolate;
 }
 
 .surah-separator {
