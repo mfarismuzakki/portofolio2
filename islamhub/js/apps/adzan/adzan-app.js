@@ -1671,8 +1671,8 @@ export default class AdzanApp {
     _loadDMSettings() {
         try {
             const saved = localStorage.getItem('adm-settings');
-            return saved ? JSON.parse(saved) : { theme: 'default', showSunnah: true, adzanSound: false };
-        } catch { return { theme: 'default', showSunnah: true, adzanSound: false }; }
+            return saved ? JSON.parse(saved) : { theme: 'default', showSunnah: true, adzanSound: false, adzanFullAudio: false, adzanFile: 'adzan-nur-khalid' };
+        } catch { return { theme: 'default', showSunnah: true, adzanSound: false, adzanFullAudio: false, adzanFile: 'adzan-nur-khalid' }; }
     }
 
     _saveDMSettings() {
@@ -1692,6 +1692,14 @@ export default class AdzanApp {
         if (sunnahToggle) sunnahToggle.checked = this._dmSettings.showSunnah;
         const soundToggle = document.getElementById('admToggleSound');
         if (soundToggle) soundToggle.checked = this._dmSettings.adzanSound;
+        const fullAudioToggle = document.getElementById('admToggleFullAudio');
+        if (fullAudioToggle) fullAudioToggle.checked = !!this._dmSettings.adzanFullAudio;
+        const fileSelectorRow = document.getElementById('admFileSelectorRow');
+        if (fileSelectorRow) fileSelectorRow.style.display = this._dmSettings.adzanFullAudio ? '' : 'none';
+        const previewRow = document.getElementById('admPreviewAdzanRow');
+        if (previewRow) previewRow.style.display = this._dmSettings.adzanFullAudio ? '' : 'none';
+        const fileSelect = document.getElementById('admAdzanFileSelect');
+        if (fileSelect) fileSelect.value = this._dmSettings.adzanFile || 'adzan-nur-khalid';
         // Sync cyan theme toggle-slider color via CSS var
         const activeThemeImg = document.querySelector(`.adm-theme-option[data-theme="${this._dmSettings.theme}"]`);
         if (activeThemeImg) activeThemeImg.scrollIntoView({ block: 'nearest' });
@@ -1781,11 +1789,31 @@ export default class AdzanApp {
                     <div>
                         <div class="adm-settings-section-title">Suara</div>
                         <div class="adm-settings-row">
-                            <div class="adm-settings-row-label"><i class="fas fa-volume-up"></i> Notif suara waktu adzan</div>
+                            <div class="adm-settings-row-label"><i class="fas fa-bell"></i> Notif bunyi (beep)</div>
                             <label class="adm-toggle">
                                 <input type="checkbox" id="admToggleSound" ${s.adzanSound ? 'checked' : ''}>
                                 <span class="adm-toggle-slider"></span>
                             </label>
+                        </div>
+                        <div class="adm-settings-row" style="margin-top:10px">
+                            <div class="adm-settings-row-label"><i class="fas fa-volume-up"></i> Putar Adzan Penuh</div>
+                            <label class="adm-toggle">
+                                <input type="checkbox" id="admToggleFullAudio" ${s.adzanFullAudio ? 'checked' : ''}>
+                                <span class="adm-toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="adm-settings-row adm-file-selector" id="admFileSelectorRow" style="${s.adzanFullAudio ? '' : 'display:none'}">
+                            <div class="adm-settings-row-label"><i class="fas fa-music"></i> Pilih Suara Adzan</div>
+                            <select id="admAdzanFileSelect" class="adm-select">
+                                <option value="adzan-nur-khalid" ${(!s.adzanFile || s.adzanFile === 'adzan-nur-khalid') ? 'selected' : ''}>Syaikh Nur Khalid bin Ibrahim Al-Ghamdi</option>
+                                <option value="adzan-ali-mulla" ${s.adzanFile === 'adzan-ali-mulla' ? 'selected' : ''}>Syaikh Ali Ahmad Mulla (Masjidil Haram)</option>
+                                <option value="adzan-dubai" ${s.adzanFile === 'adzan-dubai' ? 'selected' : ''}>Masjid Jumeirah, Dubai</option>
+                                <option value="adzan-istanbul" ${s.adzanFile === 'adzan-istanbul' ? 'selected' : ''}>Masjid Sultanahmet, Istanbul</option>
+                            </select>
+                        </div>
+                        <div class="adm-settings-row" id="admPreviewAdzanRow" style="${s.adzanFullAudio ? '' : 'display:none'}">
+                            <div class="adm-settings-row-label"><i class="fas fa-play-circle"></i> Preview Adzan</div>
+                            <button class="adm-preview-btn" id="admPreviewAdzanBtn"><i class="fas fa-play"></i> Putar</button>
                         </div>
                     </div>
                 </div>
@@ -1796,6 +1824,9 @@ export default class AdzanApp {
                 <div class="adm-adzan-alert-box">
                     <div class="adm-adzan-alert-label">Telah Masuk Waktu</div>
                     <div class="adm-adzan-alert-name" id="admAdzanAlertName">Subuh</div>
+                    <button class="adm-adzan-stop-btn" id="admAdzanStopBtn" style="display:none" title="Hentikan Adzan">
+                        <i class="fas fa-stop-circle"></i> Hentikan Adzan
+                    </button>
                 </div>
             </div>
         `;
@@ -1822,15 +1853,43 @@ export default class AdzanApp {
             this._applyDMSettings();
         });
 
-        // Sound toggle
+        // Sound toggle (beep)
         document.getElementById('admToggleSound').addEventListener('change', (e) => {
             this._dmSettings.adzanSound = e.target.checked;
             this._saveDMSettings();
-            // Unlock AudioContext and play preview so user hears what the alert will sound like
             if (e.target.checked) {
                 this._unlockAudio();
-                this._playAdzanSound('preview');
+                this._playBeepSound();
             }
+        });
+
+        // Full adzan audio toggle
+        document.getElementById('admToggleFullAudio').addEventListener('change', (e) => {
+            this._dmSettings.adzanFullAudio = e.target.checked;
+            this._saveDMSettings();
+            this._applyDMSettings();
+            if (e.target.checked) {
+                this._unlockAudio();
+            } else {
+                this._stopAdzanAudio();
+            }
+        });
+
+        // Adzan file selector
+        document.getElementById('admAdzanFileSelect').addEventListener('change', (e) => {
+            this._dmSettings.adzanFile = e.target.value;
+            this._saveDMSettings();
+        });
+
+        // Preview adzan button
+        document.getElementById('admPreviewAdzanBtn').addEventListener('click', () => {
+            this._unlockAudio();
+            this._playFullAdzanAudio('preview');
+        });
+
+        // Stop adzan button
+        document.getElementById('admAdzanStopBtn').addEventListener('click', () => {
+            this._stopAdzanAudio();
         });
 
         this._dmEscHandler = (e) => { if (e.key === 'Escape') this.closeDisplayMode(); };
@@ -1868,7 +1927,7 @@ export default class AdzanApp {
             this._updateDisplayModeCountdown(now);
 
             // Adzan sound check — fire on each prayer's minute once
-            if (this._dmSettings?.adzanSound) {
+            if (this._dmSettings?.adzanSound || this._dmSettings?.adzanFullAudio) {
                 const hm = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
                 const prayerNames = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
                 for (const name of prayerNames) {
@@ -2042,13 +2101,30 @@ export default class AdzanApp {
         if (prayerName !== 'preview') {
             const alertEl = document.getElementById('admAdzanAlert');
             const nameEl = document.getElementById('admAdzanAlertName');
+            const stopBtn = document.getElementById('admAdzanStopBtn');
             const labelMap = { Subuh: 'Shubuh', Dzuhur: 'Dzuhur', Ashar: 'Ashar', Maghrib: 'Maghrib', Isya: "Isya'" };
             if (alertEl && nameEl) {
                 nameEl.textContent = labelMap[prayerName] || prayerName;
                 alertEl.classList.add('show');
-                setTimeout(() => alertEl.classList.remove('show'), 8000);
+                // Show stop button only when full adzan is active
+                if (stopBtn) stopBtn.style.display = this._dmSettings?.adzanFullAudio ? '' : 'none';
+                // Auto-hide alert after 8s only when not playing full audio
+                if (!this._dmSettings?.adzanFullAudio) {
+                    setTimeout(() => alertEl.classList.remove('show'), 8000);
+                }
             }
         }
+        // Play full adzan audio if enabled
+        if (this._dmSettings?.adzanFullAudio) {
+            this._playFullAdzanAudio(prayerName);
+        }
+        // Play beep notification if enabled
+        if (this._dmSettings?.adzanSound) {
+            this._playBeepSound();
+        }
+    }
+
+    _playBeepSound() {
         // Play 3 short beeps via Web Audio API
         try {
             const ctx = this._audioCtx || new (window.AudioContext || window.webkitAudioContext)();
@@ -2070,7 +2146,60 @@ export default class AdzanApp {
         } catch (e) { console.warn('Audio error:', e); }
     }
 
+    _playFullAdzanAudio(prayerName) {
+        // Stop any existing adzan playback first
+        this._stopAdzanAudio();
+
+        const fileKey = this._dmSettings?.adzanFile || 'adzan-makkah';
+        // Build path relative to app root
+        const basePath = (this.basePath || '').replace(/\/$/, '');
+        const audioPath = basePath ? `${basePath}/assets/audio/adzan/${fileKey}.mp3` : `assets/audio/adzan/${fileKey}.mp3`;
+
+        console.log('[Adzan Audio] Playing:', audioPath);
+        try {
+            const audio = new Audio(audioPath);
+            audio.volume = 1.0;
+            this._currentAdzanAudio = audio;
+
+            audio.addEventListener('ended', () => {
+                this._currentAdzanAudio = null;
+                // Hide stop button and close alert when audio ends naturally
+                const stopBtn = document.getElementById('admAdzanStopBtn');
+                if (stopBtn) stopBtn.style.display = 'none';
+                if (prayerName !== 'preview') {
+                    const alertEl = document.getElementById('admAdzanAlert');
+                    if (alertEl) alertEl.classList.remove('show');
+                }
+            });
+
+            audio.addEventListener('error', (e) => {
+                console.warn('[Adzan Audio] Error playing:', audioPath, e);
+                this._currentAdzanAudio = null;
+            });
+
+            audio.play().catch(err => {
+                console.warn('[Adzan Audio] play() failed:', err);
+                this._currentAdzanAudio = null;
+            });
+        } catch (e) {
+            console.warn('[Adzan Audio] Init error:', e);
+        }
+    }
+
+    _stopAdzanAudio() {
+        if (this._currentAdzanAudio) {
+            this._currentAdzanAudio.pause();
+            this._currentAdzanAudio.currentTime = 0;
+            this._currentAdzanAudio = null;
+        }
+        const stopBtn = document.getElementById('admAdzanStopBtn');
+        if (stopBtn) stopBtn.style.display = 'none';
+        const alertEl = document.getElementById('admAdzanAlert');
+        if (alertEl) alertEl.classList.remove('show');
+    }
+
     closeDisplayMode() {
+        this._stopAdzanAudio();
         this.displayModeActive = false;
         localStorage.removeItem('adzan-display-mode');
         clearTimeout(this.displayModeClockTimer);
