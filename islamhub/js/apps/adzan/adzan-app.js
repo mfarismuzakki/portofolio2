@@ -1673,8 +1673,8 @@ export default class AdzanApp {
     _loadDMSettings() {
         try {
             const saved = localStorage.getItem('adm-settings');
-            return saved ? JSON.parse(saved) : { theme: 'default', showSunnah: true, adzanSound: false, adzanFullAudio: false, adzanFile: 'adzan-nur-khalid' };
-        } catch { return { theme: 'default', showSunnah: true, adzanSound: false, adzanFullAudio: false, adzanFile: 'adzan-nur-khalid' }; }
+            return saved ? JSON.parse(saved) : { theme: 'default', showSunnah: true, adzanSound: false, adzanFullAudio: false, adzanFile: 'Mishary-Rashid-Alafasy' };
+        } catch { return { theme: 'default', showSunnah: true, adzanSound: false, adzanFullAudio: false, adzanFile: 'Mishary-Rashid-Alafasy' }; }
     }
 
     _saveDMSettings() {
@@ -1701,7 +1701,7 @@ export default class AdzanApp {
         const previewRow = document.getElementById('admPreviewAdzanRow');
         if (previewRow) previewRow.style.display = this._dmSettings.adzanFullAudio ? '' : 'none';
         const fileSelect = document.getElementById('admAdzanFileSelect');
-        if (fileSelect) fileSelect.value = this._dmSettings.adzanFile || 'adzan-nur-khalid';
+        if (fileSelect) fileSelect.value = this._dmSettings.adzanFile || 'Mishary-Rashid-Alafasy';
         // Sync cyan theme toggle-slider color via CSS var
         const activeThemeImg = document.querySelector(`.adm-theme-option[data-theme="${this._dmSettings.theme}"]`);
         if (activeThemeImg) activeThemeImg.scrollIntoView({ block: 'nearest' });
@@ -1807,10 +1807,9 @@ export default class AdzanApp {
                         <div class="adm-settings-row adm-file-selector" id="admFileSelectorRow" style="${s.adzanFullAudio ? '' : 'display:none'}">
                             <div class="adm-settings-row-label"><i class="fas fa-music"></i> Pilih Suara Adzan</div>
                             <select id="admAdzanFileSelect" class="adm-select">
-                                <option value="adzan-nur-khalid" ${(!s.adzanFile || s.adzanFile === 'adzan-nur-khalid') ? 'selected' : ''}>Syaikh Nur Khalid bin Ibrahim Al-Ghamdi</option>
-                                <option value="adzan-ali-mulla" ${s.adzanFile === 'adzan-ali-mulla' ? 'selected' : ''}>Syaikh Ali Ahmad Mulla (Masjidil Haram)</option>
-                                <option value="adzan-dubai" ${s.adzanFile === 'adzan-dubai' ? 'selected' : ''}>Masjid Jumeirah, Dubai</option>
-                                <option value="adzan-istanbul" ${s.adzanFile === 'adzan-istanbul' ? 'selected' : ''}>Masjid Sultanahmet, Istanbul</option>
+                                <option value="Abdullah-Al-Zayla'i" ${s.adzanFile === "Abdullah-Al-Zayla'i" ? 'selected' : ''}>Syaikh Abdullah Al-Zayla'i</option>
+                                <option value="Ali-Ahmad-Mulla" ${s.adzanFile === 'Ali-Ahmad-Mulla' ? 'selected' : ''}>Syaikh Ali Ahmad Mulla (Masjidil Haram)</option>
+                                <option value="Mishary-Rashid-Alafasy" ${(!s.adzanFile || s.adzanFile === 'Mishary-Rashid-Alafasy') ? 'selected' : ''}>Syaikh Mishary Rashid Alafasy</option>
                             </select>
                         </div>
                         <div class="adm-settings-row" id="admPreviewAdzanRow" style="${s.adzanFullAudio ? '' : 'display:none'}">
@@ -2187,7 +2186,7 @@ export default class AdzanApp {
         // Stop any existing adzan playback first
         this._stopAdzanAudio();
 
-        const fileKey = this._dmSettings?.adzanFile || 'adzan-nur-khalid';
+        const fileKey = this._dmSettings?.adzanFile || 'Mishary-Rashid-Alafasy';
         // Build path relative to app root
         const basePath = (this.basePath || '').replace(/\/$/, '');
         const audioPath = basePath ? `${basePath}/assets/audio/adzan/${fileKey}.mp3` : `assets/audio/adzan/${fileKey}.mp3`;

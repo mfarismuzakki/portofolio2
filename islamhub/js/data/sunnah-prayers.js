@@ -124,6 +124,42 @@ export const sunnahPrayersCollection = [
     timeDescription: "Setelah sholat Maghrib hingga sebelum Isya"
   },
   {
+    name: "Sunnah Isya (Ba'diyah)",
+    arabic: "مَا مِن عَبدٍ مُسلِمٍ يُصَلِّي لِلَّهِ كُلَّ يَومٍ ثِنتَي عَشرَةَ رَكعَةً تَطَوُّعًا غَيرَ فَريضَةٍ إِلاَّ بَنَى اللَّهُ لَهُ بَيتًا في الجَنَّةِ",
+    indonesia: "Tidaklah seorang hamba muslim yang shalat kepada Allah setiap hari dua belas rakaat sunnah selain yang fardhu, melainkan Allah membangunkan untuknya rumah di surga.",
+    reference: "HR. Muslim",
+    timeCondition: (times, now) => {
+      // Ba'diyah Isya: setelah Isya hingga nisf al-layl (tengah malam syar'i)
+      // Referensi: jumhur ulama — rawatib ba'diyah Isya hanya sampai separuh malam
+      // nisf al-layl = titik tengah antara Maghrib dan Fajr (hari berikutnya)
+      const nowHours = now.h + now.m/60 + now.s/3600;
+
+      let ishaTime = times.isha;
+      let maghribTime = times.maghrib;
+      let fajrTime = times.fajr;
+
+      if (times.isha > 24) ishaTime = times.isha - 24;
+      if (times.maghrib > 24) maghribTime = times.maghrib - 24;
+      if (times.fajr > 24) fajrTime = times.fajr - 24;
+
+      if (isNaN(ishaTime) || isNaN(maghribTime) || isNaN(fajrTime)) return false;
+
+      // Fajr selalu keesokan harinya → tambah 24 jika < Maghrib
+      const fajrNextDay = fajrTime < maghribTime ? fajrTime + 24 : fajrTime;
+      const nisfRaw = (maghribTime + fajrNextDay) / 2;
+      const nisfNormalized = nisfRaw >= 24 ? nisfRaw - 24 : nisfRaw;
+
+      // Isya biasanya sebelum tengah malam, nisf bisa sesudah tengah malam
+      if (nisfNormalized < ishaTime) {
+        // nisf melewati tengah malam
+        return nowHours >= ishaTime || nowHours <= nisfNormalized;
+      } else {
+        return nowHours >= ishaTime && nowHours <= nisfNormalized;
+      }
+    },
+    timeDescription: "Setelah sholat Isya hingga tengah malam syar'i (nisf al-layl)"
+  },
+  {
     name: "Sholat Tahajud",
     arabic: "أَفْضَلُ الصَّلَاةِ بَعْدَ الْفَرِيضَةِ صَلَاةُ اللَّيْلِ",
     indonesia: "Shalat paling utama setelah shalat fardhu adalah shalat malam (tahajud).",
