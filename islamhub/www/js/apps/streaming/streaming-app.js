@@ -456,9 +456,19 @@ class StreamingApp {
         console.log(`[Streaming] Retrying stream: ${station.name} (attempt ${this.retryCount})`);
         this.updateSignalStatus('reconnecting');
 
-        // Reload the source and play
+        // First: clear the current source completely to flush any buffered data
+        // so the browser doesn't replay the buffer instead of reconnecting.
         radioPlayer.pause();
-        radioPlayer.src = station.url;
+        radioPlayer.src = '';
+        radioPlayer.load();
+
+        // Then: reconnect with a cache-busting timestamp to force a fresh request
+        const bust = '?_t=' + Date.now();
+        const freshUrl = station.url.includes('?') 
+            ? station.url + '&_t=' + Date.now() 
+            : station.url + bust;
+
+        radioPlayer.src = freshUrl;
         radioPlayer.load();
         radioPlayer.play().then(() => {
             // 'playing' event will reset retry state

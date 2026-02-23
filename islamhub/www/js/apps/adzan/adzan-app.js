@@ -230,8 +230,8 @@ export default class AdzanApp {
             };
             
             const methodId = methodMap[this.method] || 11;
-            // adjustment=-1 karena kalender Islam Indonesia (rukyat) umumnya -1 dari hisab
-            const url = `${this.API_URL}/${timestamp}?latitude=${this.lat}&longitude=${this.lon}&method=${methodId}&adjustment=-1`;
+            // Tidak pakai &adjustment=-1 karena tidak efektif, koreksi dilakukan manual di JS
+            const url = `${this.API_URL}/${timestamp}?latitude=${this.lat}&longitude=${this.lon}&method=${methodId}`;
             
             const response = await fetch(url);
             const data = await response.json();
@@ -250,9 +250,15 @@ export default class AdzanApp {
                 // Update date with Hijri
                 if (data.data.date && data.data.date.hijri) {
                     const hijri = data.data.date.hijri;
-                    // adjustment=-1 sudah diterapkan dari API, tanggal ini sudah sesuai kalender Indonesia
-                    this.hijriData = hijri;
-                    this.updateDate(hijri);
+                    // TEMPORARY: Koreksi -1 khusus Ramadan 1447H
+                    // Kalender Indonesia (rukyat) dimulai 1 hari setelah hisab
+                    // Hapus setelah Ramadan 1447H selesai
+                    const apiMonth = parseInt(hijri.month?.number || 0);
+                    const apiDay = parseInt(hijri.day || 0);
+                    const needsAdjust = (apiMonth === 9) || (apiMonth === 10 && apiDay === 1);
+                    const hijriAdjusted = needsAdjust ? this._adjustHijriDate(hijri, -1) : hijri;
+                    this.hijriData = hijriAdjusted;
+                    this.updateDate(hijriAdjusted);
                 }
                 
                 this.renderPrayerTimes();
@@ -476,6 +482,43 @@ export default class AdzanApp {
         };
         
         updateTime();
+    }
+
+    _adjustHijriDate(hijri, delta) {
+        // Deep clone agar tidak mutate objek asli
+        const h = JSON.parse(JSON.stringify(hijri));
+        const daysInMonth = [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29]; // index 1-12
+        const monthNamesEn = [
+            '', 'Muharram', 'Safar', "Rabī' al-Awwal", "Rabī' al-Thānī",
+            'Jumādā al-Ūlā', 'Jumādā al-Ākhirah', 'Rajab', "Sha'bān",
+            'Ramaḍān', 'Shawwāl', "Dhū al-Qa'dah", 'Dhū al-Ḥijjah'
+        ];
+        const monthNamesAr = [
+            '', 'مُحَرَّم', 'صَفَر', 'رَبِيعُ الأَوَّل', 'رَبِيعُ الثَّانِي',
+            'جُمَادَى الأُولَى', 'جُمَادَى الآخِرَة', 'رَجَب', 'شَعْبَان',
+            'رَمَضَان', 'شَوَّال', 'ذُو القَعْدَة', 'ذُو الحِجَّة'
+        ];
+
+        let day = parseInt(h.day) + delta;
+        let month = parseInt(h.month.number);
+        let year = parseInt(h.year);
+
+        if (day < 1) {
+            month -= 1;
+            if (month < 1) { month = 12; year -= 1; }
+            day = daysInMonth[month];
+        } else if (day > daysInMonth[month]) {
+            day = 1;
+            month += 1;
+            if (month > 12) { month = 1; year += 1; }
+        }
+
+        h.day = String(day);
+        h.month.number = month;
+        h.month.en = monthNamesEn[month] || h.month.en;
+        h.month.ar = monthNamesAr[month] || h.month.ar;
+        h.year = String(year);
+        return h;
     }
 
     updateDate(hijri) {
@@ -2090,7 +2133,7 @@ export default class AdzanApp {
                 panel.innerHTML = '';
                 return;
             }
-            panel.innerHTML = active.slice(0, 2).map(s => `
+            panel.innerHTML = active.slice(0, 3).map(s => `
                 <div class="adm-sunnah-card">
                     <div class="adm-sunnah-icon"><i class="fas fa-star-and-crescent"></i></div>
                     <div class="adm-sunnah-body">

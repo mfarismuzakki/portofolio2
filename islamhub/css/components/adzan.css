@@ -1072,30 +1072,30 @@
 /* Sunnah Prayer Panel in main area */
 .adm-sunnah-panel {
   position: absolute;
-  top: 20px;
-  left: 28px;
-  right: 28px;
+  top: 14px;
+  left: 22px;
+  right: 22px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   pointer-events: none;
 }
 
 .adm-sunnah-card {
   display: inline-flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 12px 18px;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(12px);
-  border-radius: 12px;
-  border: 1px solid rgba(255,165,0,0.35);
-  max-width: 520px;
+  gap: 8px;
+  padding: 7px 12px;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  border: 1px solid rgba(255,165,0,0.3);
+  max-width: 440px;
 }
 
 .adm-sunnah-icon {
   color: #f5930a;
-  font-size: 1.1rem;
+  font-size: 0.82rem;
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -1106,22 +1106,22 @@
 }
 
 .adm-sunnah-name {
-  font-size: clamp(0.85rem, 1.4vw, 1rem);
+  font-size: clamp(0.72rem, 1.1vw, 0.85rem);
   font-weight: 700;
   color: #f5930a;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .adm-sunnah-desc {
-  font-size: clamp(0.75rem, 1.1vw, 0.88rem);
-  color: rgba(255,255,255,0.82);
-  line-height: 1.4;
+  font-size: clamp(0.65rem, 0.9vw, 0.78rem);
+  color: rgba(255,255,255,0.78);
+  line-height: 1.35;
 }
 
 .adm-sunnah-ref {
-  font-size: clamp(0.72rem, 1vw, 0.82rem);
-  color: rgba(255,255,255,0.5);
-  margin-top: 3px;
+  font-size: clamp(0.6rem, 0.8vw, 0.7rem);
+  color: rgba(255,255,255,0.45);
+  margin-top: 2px;
   font-style: italic;
 }
 
@@ -1497,14 +1497,30 @@
 /* Responsive */
 @media (max-width: 768px) {
   .adm-top-bar {
-    grid-template-columns: auto 1fr auto;
-    padding: 12px 16px;
-    gap: 10px;
+    grid-template-columns: 1fr auto 1fr;
+    padding: 10px 12px;
+    gap: 8px;
   }
 
-  .adm-close-btn {
-    grid-column: 3;
-    grid-row: 1;
+  .adm-clock-wrap {
+    overflow: hidden;
+  }
+
+  .adm-clock {
+    font-size: 1.6rem;
+  }
+
+  .adm-clock-secs {
+    font-size: 0.85rem;
+  }
+
+  .adm-center-info {
+    position: static;
+    text-align: center;
+  }
+
+  .adm-top-actions {
+    justify-self: end;
   }
 
   .adm-date-wrap {
@@ -1513,8 +1529,21 @@
     text-align: center;
   }
 
+  .adm-masjid-name {
+    font-size: clamp(0.72rem, 3.2vw, 0.95rem);
+    gap: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    justify-content: center;
+  }
+
+  .adm-masjid-name i {
+    display: none;
+  }
+
   .adm-prayer-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .adm-ticker-wrap {
@@ -1524,11 +1553,38 @@
 
 @media (max-width: 480px) {
   .adm-prayer-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
-  .adm-prayer-col:nth-child(n+5) {
-    display: none;
+  .adm-prayer-col {
+    padding: 10px 4px;
+    gap: 2px;
+    border-right: 1px solid rgba(0,0,0,0.08);
+  }
+
+  /* Remove right border on 3rd and 6th (last of each row) */
+  .adm-prayer-col:nth-child(3n) {
+    border-right: none;
+  }
+
+  /* Add top border for second row */
+  .adm-prayer-col:nth-child(n+4) {
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .adm-prayer-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.3px;
+  }
+
+  .adm-prayer-time {
+    font-size: 1.15rem;
+    letter-spacing: -0.3px;
+  }
+
+  .adm-prayer-countdown {
+    font-size: 0.6rem;
+    padding: 1px 6px;
   }
 }
 
