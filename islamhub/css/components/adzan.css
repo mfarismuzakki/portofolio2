@@ -1577,6 +1577,64 @@
   background: rgba(0,255,200,0.22);
 }
 
+/* Preview controls wrapper */
+.adm-preview-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+/* Stop state for preview button */
+.adm-preview-btn.adm-preview-btn-stop {
+  background: rgba(220,50,50,0.18);
+  border-color: rgba(220,50,50,0.55);
+  color: #e84444;
+}
+.adm-preview-btn.adm-preview-btn-stop:hover {
+  background: rgba(220,50,50,0.32);
+}
+.adzan-display-mode[data-adm-theme="cyan"] .adm-preview-btn.adm-preview-btn-stop {
+  background: rgba(220,50,50,0.18);
+  border-color: rgba(220,50,50,0.55);
+  color: #ff6b6b;
+}
+.adzan-display-mode[data-adm-theme="cyan"] .adm-preview-btn.adm-preview-btn-stop:hover {
+  background: rgba(220,50,50,0.32);
+}
+
+/* Playing indicator with animated sound wave bars */
+.adm-preview-playing {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  color: #f5930a;
+  opacity: 0.85;
+}
+.adzan-display-mode[data-adm-theme="cyan"] .adm-preview-playing {
+  color: #00ffc8;
+}
+.adm-preview-playing-label {
+  margin-left: 4px;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+}
+.adm-pw {
+  display: inline-block;
+  width: 3px;
+  border-radius: 2px;
+  background: currentColor;
+  animation: admWave 0.8s ease-in-out infinite;
+}
+.adm-pw:nth-child(1) { height: 8px; animation-delay: 0s; }
+.adm-pw:nth-child(2) { height: 13px; animation-delay: 0.15s; }
+.adm-pw:nth-child(3) { height: 8px; animation-delay: 0.3s; }
+@keyframes admWave {
+  0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
+  50%       { transform: scaleY(1);   opacity: 1; }
+}
+
 /* Stop adzan button — inside alert overlay */
 .adm-adzan-stop-btn {
   margin-top: 20px;

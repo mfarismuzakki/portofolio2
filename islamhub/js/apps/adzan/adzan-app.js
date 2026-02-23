@@ -230,7 +230,8 @@ export default class AdzanApp {
             };
             
             const methodId = methodMap[this.method] || 11;
-            const url = `${this.API_URL}/${timestamp}?latitude=${this.lat}&longitude=${this.lon}&method=${methodId}`;
+            // adjustment=-1 karena kalender Islam Indonesia (rukyat) umumnya -1 dari hisab
+            const url = `${this.API_URL}/${timestamp}?latitude=${this.lat}&longitude=${this.lon}&method=${methodId}&adjustment=-1`;
             
             const response = await fetch(url);
             const data = await response.json();
@@ -249,6 +250,7 @@ export default class AdzanApp {
                 // Update date with Hijri
                 if (data.data.date && data.data.date.hijri) {
                     const hijri = data.data.date.hijri;
+                    // adjustment=-1 sudah diterapkan dari API, tanggal ini sudah sesuai kalender Indonesia
                     this.hijriData = hijri;
                     this.updateDate(hijri);
                 }
@@ -1813,7 +1815,15 @@ export default class AdzanApp {
                         </div>
                         <div class="adm-settings-row" id="admPreviewAdzanRow" style="${s.adzanFullAudio ? '' : 'display:none'}">
                             <div class="adm-settings-row-label"><i class="fas fa-play-circle"></i> Preview Adzan</div>
-                            <button class="adm-preview-btn" id="admPreviewAdzanBtn"><i class="fas fa-play"></i> Putar</button>
+                            <div class="adm-preview-controls">
+                                <button class="adm-preview-btn" id="admPreviewAdzanBtn" data-playing="0">
+                                    <i class="fas fa-play"></i> Putar
+                                </button>
+                                <div class="adm-preview-playing" id="admPreviewPlaying" style="display:none">
+                                    <span class="adm-pw"></span><span class="adm-pw"></span><span class="adm-pw"></span>
+                                    <span class="adm-preview-playing-label">Memutar...</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1875,17 +1885,27 @@ export default class AdzanApp {
             }
         });
 
-        // Adzan file selector
-        document.getElementById('admAdzanFileSelect').addEventListener('change', (e) => {
-            this._dmSettings.adzanFile = e.target.value;
-            this._saveDMSettings();
+        // Adzan file selector — handled via _fileSelectHandler set up in preview button block
+
+        // Preview adzan button — toggles play/stop
+        document.getElementById('admPreviewAdzanBtn').addEventListener('click', () => {
+            const btn = document.getElementById('admPreviewAdzanBtn');
+            if (btn && btn.dataset.playing === '1') {
+                this._stopAdzanAudio();
+            } else {
+                this._unlockAudio();
+                this._playFullAdzanAudio('preview');
+            }
         });
 
-        // Preview adzan button
-        document.getElementById('admPreviewAdzanBtn').addEventListener('click', () => {
-            this._unlockAudio();
-            this._playFullAdzanAudio('preview');
-        });
+        // Stop and reset preview when file changes
+        document.getElementById('admAdzanFileSelect').removeEventListener('change', this._fileSelectHandler);
+        this._fileSelectHandler = (e) => {
+            this._dmSettings.adzanFile = e.target.value;
+            this._saveDMSettings();
+            this._stopAdzanAudio(); // stop any playing preview
+        };
+        document.getElementById('admAdzanFileSelect').addEventListener('change', this._fileSelectHandler);
 
         // Stop adzan button
         document.getElementById('admAdzanStopBtn').addEventListener('click', () => {
@@ -2146,11 +2166,28 @@ export default class AdzanApp {
         } catch (e) { console.warn('Audio error:', e); }
     }
 
+    _setPreviewBtnState(playing) {
+        const btn = document.getElementById('admPreviewAdzanBtn');
+        const indicator = document.getElementById('admPreviewPlaying');
+        if (!btn) return;
+        if (playing) {
+            btn.dataset.playing = '1';
+            btn.innerHTML = '<i class="fas fa-stop"></i> Hentikan';
+            btn.classList.add('adm-preview-btn-stop');
+            if (indicator) indicator.style.display = 'flex';
+        } else {
+            btn.dataset.playing = '0';
+            btn.innerHTML = '<i class="fas fa-play"></i> Putar';
+            btn.classList.remove('adm-preview-btn-stop');
+            if (indicator) indicator.style.display = 'none';
+        }
+    }
+
     _playFullAdzanAudio(prayerName) {
         // Stop any existing adzan playback first
         this._stopAdzanAudio();
 
-        const fileKey = this._dmSettings?.adzanFile || 'adzan-makkah';
+        const fileKey = this._dmSettings?.adzanFile || 'adzan-nur-khalid';
         // Build path relative to app root
         const basePath = (this.basePath || '').replace(/\/$/, '');
         const audioPath = basePath ? `${basePath}/assets/audio/adzan/${fileKey}.mp3` : `assets/audio/adzan/${fileKey}.mp3`;
@@ -2160,13 +2197,18 @@ export default class AdzanApp {
             const audio = new Audio(audioPath);
             audio.volume = 1.0;
             this._currentAdzanAudio = audio;
+            this._currentAdzanIsPreview = prayerName === 'preview';
+
+            if (prayerName === 'preview') this._setPreviewBtnState(true);
 
             audio.addEventListener('ended', () => {
                 this._currentAdzanAudio = null;
-                // Hide stop button and close alert when audio ends naturally
-                const stopBtn = document.getElementById('admAdzanStopBtn');
-                if (stopBtn) stopBtn.style.display = 'none';
-                if (prayerName !== 'preview') {
+                if (this._currentAdzanIsPreview) {
+                    this._setPreviewBtnState(false);
+                } else {
+                    // Hide alert stop button and close alert when audio ends naturally
+                    const stopBtn = document.getElementById('admAdzanStopBtn');
+                    if (stopBtn) stopBtn.style.display = 'none';
                     const alertEl = document.getElementById('admAdzanAlert');
                     if (alertEl) alertEl.classList.remove('show');
                 }
@@ -2175,23 +2217,33 @@ export default class AdzanApp {
             audio.addEventListener('error', (e) => {
                 console.warn('[Adzan Audio] Error playing:', audioPath, e);
                 this._currentAdzanAudio = null;
+                if (prayerName === 'preview') this._setPreviewBtnState(false);
             });
 
             audio.play().catch(err => {
                 console.warn('[Adzan Audio] play() failed:', err);
                 this._currentAdzanAudio = null;
+                if (prayerName === 'preview') this._setPreviewBtnState(false);
             });
         } catch (e) {
             console.warn('[Adzan Audio] Init error:', e);
+            if (prayerName === 'preview') this._setPreviewBtnState(false);
         }
     }
 
     _stopAdzanAudio() {
+        const wasPreview = this._currentAdzanIsPreview;
         if (this._currentAdzanAudio) {
             this._currentAdzanAudio.pause();
             this._currentAdzanAudio.currentTime = 0;
             this._currentAdzanAudio = null;
         }
+        this._currentAdzanIsPreview = false;
+        // Reset preview button if was in preview mode
+        if (wasPreview) {
+            this._setPreviewBtnState(false);
+        }
+        // Hide alert stop button and close alert
         const stopBtn = document.getElementById('admAdzanStopBtn');
         if (stopBtn) stopBtn.style.display = 'none';
         const alertEl = document.getElementById('admAdzanAlert');
