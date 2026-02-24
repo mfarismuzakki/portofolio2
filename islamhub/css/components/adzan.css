@@ -1497,9 +1497,9 @@
 /* Responsive */
 @media (max-width: 768px) {
   .adm-top-bar {
-    grid-template-columns: 1fr auto 1fr;
-    padding: 10px 12px;
-    gap: 8px;
+    grid-template-columns: auto 1fr auto;
+    padding: 10px 16px 10px 12px;
+    gap: 6px;
   }
 
   .adm-clock-wrap {
@@ -1521,6 +1521,15 @@
 
   .adm-top-actions {
     justify-self: end;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .adm-close-btn,
+  .adm-settings-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.95rem;
   }
 
   .adm-date-wrap {
