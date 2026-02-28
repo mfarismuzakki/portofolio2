@@ -1807,6 +1807,7 @@ export default class AdzanApp {
                     <div class="adm-audio-bar-controls">
                         <button class="adm-audio-ctrl-btn" id="admAudioPlayPause" title="Play / Pause"><i class="fas fa-play"></i></button>
                         <button class="adm-audio-ctrl-btn" id="admAudioMute" title="Mute / Unmute"><i class="fas fa-volume-up"></i></button>
+                        <button class="adm-audio-ctrl-btn adm-audio-stop-btn" id="admAudioStop" title="Stop &amp; Tutup"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
                 <div class="adm-ticker-wrap">
@@ -2331,6 +2332,8 @@ export default class AdzanApp {
         const muteBtn = document.getElementById('admAudioMute');
         if (playPauseBtn) playPauseBtn.addEventListener('click', () => this._admTogglePlayPause());
         if (muteBtn) muteBtn.addEventListener('click', () => this._admToggleMute());
+        const stopBtn = document.getElementById('admAudioStop');
+        if (stopBtn) stopBtn.addEventListener('click', () => this._admStopAudio());
         this._updateAudioBar();
         this.displayModeAudioBarInterval = setInterval(() => {
             if (!this.displayModeActive) { clearInterval(this.displayModeAudioBarInterval); return; }
@@ -2437,6 +2440,31 @@ export default class AdzanApp {
         if (!state || !state.audioEl) return;
         state.audioEl.muted = !state.audioEl.muted;
         this._updateAudioBar();
+    }
+
+    _admStopAudio() {
+        const state = this._getAudioState();
+        if (!state) return;
+        const { type, audioEl } = state;
+        try {
+            if (type === 'radio') {
+                if (audioEl) { audioEl.pause(); audioEl.src = ''; }
+                const sa = window.streamingApp;
+                if (sa) sa.currentStream = null;
+            } else if (type === 'quran-page') {
+                const qa = window.alquranApp;
+                if (qa) qa._stopAudio();
+            } else if (type === 'quran-surah') {
+                if (audioEl) { audioEl.pause(); audioEl.src = ''; }
+                const quranPlayer = document.getElementById('quranAudioPlayer');
+                if (quranPlayer) quranPlayer.style.display = 'none';
+                const qa = window.alquranApp;
+                if (qa) { qa.isPlaying = false; qa.currentPlayingVerse = null; }
+            }
+        } catch (e) { console.error('admStopAudio error', e); }
+        // Immediately hide bar without waiting for next poll
+        const bar = document.getElementById('admAudioBar');
+        if (bar) bar.style.display = 'none';
     }
 
     _getBasePath() {

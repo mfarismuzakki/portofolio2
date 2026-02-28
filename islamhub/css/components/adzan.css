@@ -1858,6 +1858,16 @@
   border-color: rgba(255, 255, 255, 0.2);
   background: transparent;
 }
+.adm-audio-stop-btn {
+  border-color: rgba(255, 80, 80, 0.45) !important;
+  background: rgba(255, 80, 80, 0.08) !important;
+  color: #ff6b6b !important;
+  margin-left: 4px;
+}
+.adm-audio-stop-btn:hover {
+  background: rgba(255, 80, 80, 0.25) !important;
+  border-color: #ff6b6b !important;
+}
 
 /* ===== CYAN THEME — Audio Bar ===== */
 .adzan-display-mode[data-adm-theme="cyan"] .adm-audio-bar {
@@ -1890,6 +1900,16 @@
   color: rgba(255, 255, 255, 0.25);
   border-color: rgba(255, 255, 255, 0.15);
   background: transparent;
+}
+/* stop button same for both themes */
+.adzan-display-mode[data-adm-theme="cyan"] .adm-audio-stop-btn {
+  border-color: rgba(255, 80, 80, 0.45) !important;
+  background: rgba(255, 80, 80, 0.08) !important;
+  color: #ff6b6b !important;
+}
+.adzan-display-mode[data-adm-theme="cyan"] .adm-audio-stop-btn:hover {
+  background: rgba(255, 80, 80, 0.25) !important;
+  border-color: #ff6b6b !important;
 }
 
 /* Responsive */

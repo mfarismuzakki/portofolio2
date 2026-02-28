@@ -25,6 +25,7 @@ export default class AlQuranApp {
         this.totalPages = 604;
         this.isPlaying = false;
         this.audio = null;
+        this._isStartingAudio = false; // guard to prevent concurrent playAudio() calls
 
         this.bookmarks = this._loadJSON('alquran_bookmarks', []);
         this.verseBookmarks = this._loadJSON('alquran_verse_bookmarks', []);
@@ -99,6 +100,7 @@ export default class AlQuranApp {
 
     // Reset to home page
     async resetToHome() {
+        this._stopAudio(); // stop page-level audio if playing
         this.readMode = 'page';
         this.currentSurah = null;
         this.currentSurahData = null;
@@ -359,12 +361,22 @@ export default class AlQuranApp {
 
         // Delegate verse buttons
         this.container.addEventListener('click', (e) => {
+            const pagePlayBtn = e.target.closest('[data-play-page]');
             const playBtn = e.target.closest('[data-verse-play]');
             const copyBtn = e.target.closest('[data-verse-copy]');
             const vBookmark = e.target.closest('[data-verse-bookmark]');
             const markBtn = e.target.closest('[data-mark-memorized]');
             const mlevelBtn = e.target.closest('[data-mlevel]');
 
+            if (pagePlayBtn) {
+                // Only handle via toggleAudio() in page-reader mode.
+                // In surah/juz mode, renderSurahMode/renderJuzMode attach their own
+                // direct click listeners that call _playPageAudio() — if we also call
+                // toggleAudio() here we get two audio streams playing simultaneously.
+                if (this.readMode === 'page') {
+                    this.toggleAudio();
+                }
+            }
             if (playBtn) {
                 const s = playBtn.dataset.surah; const v = playBtn.dataset.verse;
                 this.playVerseAudio(s, v);
@@ -394,42 +406,63 @@ export default class AlQuranApp {
     }
 
     async playAudio() {
+        // Guard: prevent concurrent invocations before isPlaying flag is set
+        if (this._isStartingAudio) return;
+        this._isStartingAudio = true;
         try {
-            this._stopAudio();
+            this._stopAudio(); // stops previous audio, sets isPlaying=false
+            this.isPlaying = true; // set immediately to block re-entrant toggleAudio calls during load
+
             const path = typeof getAudioPathForPage === 'function' ? getAudioPathForPage(this.currentPage) : `${this.basePath}/assets/audio/alquran/Page${String(this.currentPage).padStart(3, '0')}.mp3`;
-            this.audio = new Audio(path);
-            this.audio.preload = 'metadata';
+            const audioObj = new Audio(path);
+            audioObj.preload = 'metadata';
+            this.audio = audioObj;
 
             const audioToggle = document.getElementById('alqAudioToggle');
             if (audioToggle) audioToggle.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Memuat...</span>';
+            const pagePlayBtn = this.container?.querySelector('[data-play-page]');
+            if (pagePlayBtn) pagePlayBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat...';
 
             await new Promise((resolve, reject) => {
                 const onCanPlay = () => {
-                    this.audio.removeEventListener('canplay', onCanPlay);
-                    this.audio.removeEventListener('error', onError);
+                    audioObj.removeEventListener('canplay', onCanPlay);
+                    audioObj.removeEventListener('error', onError);
                     resolve();
                 };
                 const onError = (err) => {
-                    this.audio.removeEventListener('canplay', onCanPlay);
-                    this.audio.removeEventListener('error', onError);
+                    audioObj.removeEventListener('canplay', onCanPlay);
+                    audioObj.removeEventListener('error', onError);
                     reject(err);
                 };
-                this.audio.addEventListener('canplay', onCanPlay);
-                this.audio.addEventListener('error', onError);
-                this.audio.load();
+                audioObj.addEventListener('canplay', onCanPlay);
+                audioObj.addEventListener('error', onError);
+                audioObj.load();
             });
 
-            this.audio.addEventListener('timeupdate', () => this._updateAudioProgress());
-            this.audio.addEventListener('ended', () => this._onAudioEnded());
+            // If audio was stopped while loading (page changed, user cancel etc.) abort
+            if (this.audio !== audioObj) {
+                this.isPlaying = false;
+                return;
+            }
 
-            await this.audio.play();
-            this.isPlaying = true;
+            audioObj.addEventListener('timeupdate', () => this._updateAudioProgress());
+            audioObj.addEventListener('ended', () => this._onAudioEnded(), { once: true });
+
+            await audioObj.play();
+            // this.isPlaying is already true
             if (audioToggle) audioToggle.innerHTML = '<i class="fas fa-pause"></i><span>Jeda</span>';
+            const pagePlayBtnFresh = this.container?.querySelector('[data-play-page]');
+            if (pagePlayBtnFresh) pagePlayBtnFresh.innerHTML = '<i class="fas fa-pause"></i> Jeda Audio';
             const progress = document.getElementById('alqAudioProgress'); if (progress) progress.style.display = 'block';
         } catch (err) {
             console.error('Audio error', err);
+            this.isPlaying = false;
             // Error notification disabled - all audio is available
             const audioToggle = document.getElementById('alqAudioToggle'); if (audioToggle) audioToggle.innerHTML = '<i class="fas fa-play"></i><span>Putar Audio</span>';
+            const pagePlayBtnErr = this.container?.querySelector('[data-play-page]');
+            if (pagePlayBtnErr) pagePlayBtnErr.innerHTML = '<i class="fas fa-play"></i> Putar Audio';
+        } finally {
+            this._isStartingAudio = false;
         }
     }
 
@@ -437,14 +470,14 @@ export default class AlQuranApp {
         if (this.audio && this.isPlaying) {
             this.audio.pause(); this.isPlaying = false;
             const audioToggle = document.getElementById('alqAudioToggle'); if (audioToggle) audioToggle.innerHTML = '<i class="fas fa-play"></i><span>Putar Audio</span>';
+            const pagePlayBtn = this.container?.querySelector('[data-play-page]');
+            if (pagePlayBtn) pagePlayBtn.innerHTML = '<i class="fas fa-play"></i> Putar Audio';
         }
     }
 
     _stopAudio() {
         if (this.audio) {
             try {
-                // Remove all event listeners before destroying
-                const newAudio = this.audio.cloneNode();
                 this.audio.pause();
                 this.audio.src = '';
                 this.audio = null;
@@ -453,7 +486,28 @@ export default class AlQuranApp {
             }
         }
         this.isPlaying = false;
+        this._isStartingAudio = false; // Also clear loading guard
         this.audioListenersAttached = false; // Reset listener flag
+    }
+
+    // Stop ALL audio: both page-mode (this.audio) and verse/surah-mode (quranAudioElement)
+    _stopAllAudio() {
+        this._stopAudio();
+        try {
+            const audioElement = document.getElementById('quranAudioElement');
+            if (audioElement) {
+                audioElement.pause();
+                audioElement.src = '';
+            }
+            const audioPlayer = document.getElementById('quranAudioPlayer');
+            if (audioPlayer) audioPlayer.style.display = 'none';
+        } catch (e) {
+            console.error('Error stopping quranAudioElement:', e);
+        }
+        this.audioSetupDone = false;
+        this.currentPageVerses = null;
+        this.currentVerseIndex = 0;
+        this.currentPlayingVerse = null;
     }
 
     _updateAudioProgress() {
@@ -467,13 +521,15 @@ export default class AlQuranApp {
     _onAudioEnded() {
         this.isPlaying = false;
         const audioToggle = document.getElementById('alqAudioToggle'); if (audioToggle) audioToggle.innerHTML = '<i class="fas fa-play"></i><span>Putar Audio</span>';
+        const pagePlayBtn = this.container?.querySelector('[data-play-page]');
+        if (pagePlayBtn) pagePlayBtn.innerHTML = '<i class="fas fa-play"></i> Putar Audio';
         if (this.settings.autoPlayNext && this.currentPage < this.totalPages) {
             setTimeout(async () => {
                 this.currentPage++;
                 this._stopAudio();
                 localStorage.setItem('alquran_last_page', String(this.currentPage));
                 this._updateLastRead(this.currentPage);
-                await this.render();
+                await this.renderPageReader();
                 // Auto-play audio on the new page
                 this.playAudio();
             }, 800);
@@ -488,7 +544,8 @@ export default class AlQuranApp {
         this._stopAudio();
         localStorage.setItem('alquran_last_page', String(this.currentPage));
         this._updateLastRead(this.currentPage);
-        await this.render();
+        // Page reader navigation — re-render page reader, not home
+        await this.renderPageReader();
     }
 
     async openPage(pageNum) {
@@ -1839,6 +1896,8 @@ export default class AlQuranApp {
     }
 
     async readSurah(surahNumber) {
+        // Stop any playing audio before loading a new surah
+        this._stopAllAudio();
         try {
             // Show inline loader
             this._showInlineLoader('Memuat Surat...');
@@ -1926,6 +1985,8 @@ export default class AlQuranApp {
     }
 
     async readJuz(juzNumber) {
+        // Stop any playing audio before loading a new juz
+        this._stopAllAudio();
         try {
             // Show inline loader
             this._showInlineLoader('Memuat Juz...');
@@ -2016,6 +2077,9 @@ export default class AlQuranApp {
         if (!this.viewMode) {
             this.viewMode = localStorage.getItem('alquran_view_mode') || 'translation';
         }
+
+        // Stop any audio playing before wiping DOM (prevents orphaned audio in memory)
+        this._stopAllAudio();
 
         // Reset audio setup flag when re-rendering
         this.audioSetupDone = false;
@@ -2498,6 +2562,9 @@ export default class AlQuranApp {
         if (!this.viewMode) {
             this.viewMode = localStorage.getItem('alquran_view_mode') || 'translation';
         }
+
+        // Stop any audio playing before wiping DOM (prevents orphaned audio in memory)
+        this._stopAllAudio();
 
         // Reset audio setup flag when re-rendering
         this.audioSetupDone = false;
@@ -3707,16 +3774,24 @@ export default class AlQuranApp {
                     } else {
                         // Finished all verses on page
                         console.log('[ended] Page completed');
-                        this._notify('Selesai memutar halaman ' + this.currentAudioPage, 'success');
+                        const completedPage = this.currentAudioPage;
                         this.currentAudioPage = null;
                         this.currentPageVerses = null;
                         this.currentVerseIndex = 0;
 
-                        // Stop playback
-                        if (playPauseBtn?.querySelector('i')) {
-                            playPauseBtn.querySelector('i').className = 'fas fa-play';
+                        // Auto-play next page if setting enabled
+                        if (this.settings.autoPlayNext && completedPage && completedPage < this.totalPages) {
+                            const nextPage = completedPage + 1;
+                            console.log('[ended] Auto-playing next page:', nextPage);
+                            setTimeout(() => this._playPageAudio(nextPage), 800);
+                        } else {
+                            this._notify('Selesai memutar halaman ' + completedPage, 'success');
+                            // Stop playback
+                            if (playPauseBtn?.querySelector('i')) {
+                                playPauseBtn.querySelector('i').className = 'fas fa-play';
+                            }
+                            this.isPlaying = false;
                         }
-                        this.isPlaying = false;
                     }
                 }
                 // Single verse mode

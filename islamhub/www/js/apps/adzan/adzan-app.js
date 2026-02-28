@@ -1793,7 +1793,7 @@ export default class AdzanApp {
             </div>
             <div class="adm-bottom">
                 <div class="adm-prayer-grid" id="admPrayerGrid"></div>
-                <div class="adm-audio-bar adm-audio-idle" id="admAudioBar">
+                <div class="adm-audio-bar adm-audio-idle" id="admAudioBar" style="display:none">
                     <div class="adm-audio-bar-waves">
                         <span></span><span></span><span></span><span></span><span></span>
                     </div>
@@ -1807,6 +1807,7 @@ export default class AdzanApp {
                     <div class="adm-audio-bar-controls">
                         <button class="adm-audio-ctrl-btn" id="admAudioPlayPause" title="Play / Pause"><i class="fas fa-play"></i></button>
                         <button class="adm-audio-ctrl-btn" id="admAudioMute" title="Mute / Unmute"><i class="fas fa-volume-up"></i></button>
+                        <button class="adm-audio-ctrl-btn adm-audio-stop-btn" id="admAudioStop" title="Stop &amp; Tutup"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
                 <div class="adm-ticker-wrap">
@@ -2331,6 +2332,8 @@ export default class AdzanApp {
         const muteBtn = document.getElementById('admAudioMute');
         if (playPauseBtn) playPauseBtn.addEventListener('click', () => this._admTogglePlayPause());
         if (muteBtn) muteBtn.addEventListener('click', () => this._admToggleMute());
+        const stopBtn = document.getElementById('admAudioStop');
+        if (stopBtn) stopBtn.addEventListener('click', () => this._admStopAudio());
         this._updateAudioBar();
         this.displayModeAudioBarInterval = setInterval(() => {
             if (!this.displayModeActive) { clearInterval(this.displayModeAudioBarInterval); return; }
@@ -2397,14 +2400,12 @@ export default class AdzanApp {
         const subEl = document.getElementById('admAudioBarSub');
         const iconEl = document.getElementById('admAudioBarIcon');
         if (!state) {
-            bar.classList.add('adm-audio-idle');
-            if (labelEl) labelEl.textContent = 'Tidak ada audio';
-            if (subEl) subEl.textContent = 'Putar radio atau muratal Al-Qur\'an di halaman lain';
-            if (iconEl) iconEl.innerHTML = '<i class="fas fa-music"></i>';
-            if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            if (muteBtn) { muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>'; muteBtn.classList.remove('muted'); }
+            // Hide bar entirely when no audio source
+            bar.style.display = 'none';
             return;
         }
+        // Show bar
+        bar.style.display = 'flex';
         bar.classList.toggle('adm-audio-idle', !state.isPlaying);
         if (labelEl) labelEl.textContent = state.title;
         if (subEl) subEl.textContent = state.sub;
@@ -2439,6 +2440,31 @@ export default class AdzanApp {
         if (!state || !state.audioEl) return;
         state.audioEl.muted = !state.audioEl.muted;
         this._updateAudioBar();
+    }
+
+    _admStopAudio() {
+        const state = this._getAudioState();
+        if (!state) return;
+        const { type, audioEl } = state;
+        try {
+            if (type === 'radio') {
+                if (audioEl) { audioEl.pause(); audioEl.src = ''; }
+                const sa = window.streamingApp;
+                if (sa) sa.currentStream = null;
+            } else if (type === 'quran-page') {
+                const qa = window.alquranApp;
+                if (qa) qa._stopAudio();
+            } else if (type === 'quran-surah') {
+                if (audioEl) { audioEl.pause(); audioEl.src = ''; }
+                const quranPlayer = document.getElementById('quranAudioPlayer');
+                if (quranPlayer) quranPlayer.style.display = 'none';
+                const qa = window.alquranApp;
+                if (qa) { qa.isPlaying = false; qa.currentPlayingVerse = null; }
+            }
+        } catch (e) { console.error('admStopAudio error', e); }
+        // Immediately hide bar without waiting for next poll
+        const bar = document.getElementById('admAudioBar');
+        if (bar) bar.style.display = 'none';
     }
 
     _getBasePath() {
