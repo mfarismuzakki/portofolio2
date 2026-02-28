@@ -1728,3 +1728,188 @@
 .adm-adzan-stop-btn i {
   font-size: 1.1em;
 }
+
+/* ===== ADM AUDIO BAR (kontrol radio / muratal dari tampilan masjid) ===== */
+.adm-audio-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 24px;
+  background: rgba(18, 38, 65, 0.92);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  min-height: 54px;
+  transition: opacity 0.4s ease;
+}
+.adm-audio-bar.adm-audio-idle {
+  opacity: 0.42;
+}
+
+/* Animated sound wave bars */
+.adm-audio-bar-waves {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+  height: 22px;
+}
+.adm-audio-bar-waves span {
+  display: inline-block;
+  width: 3px;
+  border-radius: 3px;
+  background: #f5930a;
+  height: 5px;
+  transition: height 0.3s;
+}
+.adm-audio-bar:not(.adm-audio-idle) .adm-audio-bar-waves span:nth-child(1) { animation: admBarWave 1s ease-in-out infinite 0s; }
+.adm-audio-bar:not(.adm-audio-idle) .adm-audio-bar-waves span:nth-child(2) { animation: admBarWave 1s ease-in-out infinite 0.18s; }
+.adm-audio-bar:not(.adm-audio-idle) .adm-audio-bar-waves span:nth-child(3) { animation: admBarWave 1s ease-in-out infinite 0.36s; }
+.adm-audio-bar:not(.adm-audio-idle) .adm-audio-bar-waves span:nth-child(4) { animation: admBarWave 1s ease-in-out infinite 0.54s; }
+.adm-audio-bar:not(.adm-audio-idle) .adm-audio-bar-waves span:nth-child(5) { animation: admBarWave 1s ease-in-out infinite 0.72s; }
+
+@keyframes admBarWave {
+  0%, 100% { height: 4px; }
+  50%       { height: 20px; }
+}
+
+/* Info section */
+.adm-audio-bar-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.adm-audio-bar-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(245, 147, 10, 0.12);
+  border: 1.5px solid rgba(245, 147, 10, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: #f5930a;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.adm-audio-bar:not(.adm-audio-idle) .adm-audio-bar-icon {
+  background: rgba(245, 147, 10, 0.2);
+  box-shadow: 0 0 10px rgba(245, 147, 10, 0.25);
+}
+.adm-audio-bar-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+.adm-audio-bar-label {
+  font-size: clamp(0.78rem, 1.3vw, 0.92rem);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.adm-audio-bar-sub {
+  font-size: clamp(0.62rem, 1vw, 0.74rem);
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+/* Controls */
+.adm-audio-bar-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.adm-audio-ctrl-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(245, 147, 10, 0.5);
+  background: rgba(245, 147, 10, 0.1);
+  color: #f5930a;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+.adm-audio-ctrl-btn:hover {
+  background: rgba(245, 147, 10, 0.28);
+  border-color: #f5930a;
+  transform: scale(1.1);
+}
+.adm-audio-ctrl-btn.muted {
+  color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: transparent;
+}
+
+/* ===== CYAN THEME — Audio Bar ===== */
+.adzan-display-mode[data-adm-theme="cyan"] .adm-audio-bar {
+  background: rgba(0, 8, 20, 0.92);
+  border-top-color: rgba(0, 255, 200, 0.08);
+  border-bottom-color: rgba(0, 255, 200, 0.06);
+}
+.adzan-display-mode[data-adm-theme="cyan"] .adm-audio-bar-waves span {
+  background: #00ffc8;
+}
+.adzan-display-mode[data-adm-theme="cyan"] .adm-audio-bar-icon {
+  background: rgba(0, 255, 200, 0.1);
+  border-color: rgba(0, 255, 200, 0.35);
+  color: #00ffc8;
+}
+.adzan-display-mode[data-adm-theme="cyan"] .adm-audio-bar:not(.adm-audio-idle) .adm-audio-bar-icon {
+  background: rgba(0, 255, 200, 0.18);
+  box-shadow: 0 0 10px rgba(0, 255, 200, 0.22);
+}
+.adzan-display-mode[data-adm-theme="cyan"] .adm-audio-ctrl-btn {
+  border-color: rgba(0, 255, 200, 0.45);
+  background: rgba(0, 255, 200, 0.08);
+  color: #00ffc8;
+}
+.adzan-display-mode[data-adm-theme="cyan"] .adm-audio-ctrl-btn:hover {
+  background: rgba(0, 255, 200, 0.22);
+  border-color: #00ffc8;
+}
+.adzan-display-mode[data-adm-theme="cyan"] .adm-audio-ctrl-btn.muted {
+  color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.15);
+  background: transparent;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .adm-audio-bar {
+    padding: 8px 18px;
+    gap: 10px;
+  }
+  .adm-audio-ctrl-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+  .adm-audio-bar-icon {
+    width: 30px;
+    height: 30px;
+  }
+}
+@media (max-width: 480px) {
+  .adm-audio-bar {
+    padding: 8px 14px;
+    gap: 8px;
+  }
+  .adm-audio-bar-sub {
+    display: none;
+  }
+}

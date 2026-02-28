@@ -1793,6 +1793,22 @@ export default class AdzanApp {
             </div>
             <div class="adm-bottom">
                 <div class="adm-prayer-grid" id="admPrayerGrid"></div>
+                <div class="adm-audio-bar adm-audio-idle" id="admAudioBar">
+                    <div class="adm-audio-bar-waves">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    <div class="adm-audio-bar-info">
+                        <div class="adm-audio-bar-icon" id="admAudioBarIcon"><i class="fas fa-music"></i></div>
+                        <div class="adm-audio-bar-text">
+                            <span class="adm-audio-bar-label" id="admAudioBarLabel">Tidak ada audio</span>
+                            <span class="adm-audio-bar-sub" id="admAudioBarSub">Putar radio atau muratal Al-Qur'an di halaman lain</span>
+                        </div>
+                    </div>
+                    <div class="adm-audio-bar-controls">
+                        <button class="adm-audio-ctrl-btn" id="admAudioPlayPause" title="Play / Pause"><i class="fas fa-play"></i></button>
+                        <button class="adm-audio-ctrl-btn" id="admAudioMute" title="Mute / Unmute"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                </div>
                 <div class="adm-ticker-wrap">
                     <div class="adm-ticker-label"><i class="fas fa-quote-left"></i></div>
                     <div class="adm-ticker-track">
@@ -1961,6 +1977,7 @@ export default class AdzanApp {
         this._buildDisplayModePrayerGrid();
         this._startDisplayModeTicker();
         this._updateDisplayModeSunnah();
+        this._startAudioBar();
         requestAnimationFrame(() => overlay.classList.add('visible'));
     }
 
@@ -2298,12 +2315,130 @@ export default class AdzanApp {
         localStorage.removeItem('adzan-display-mode');
         clearTimeout(this.displayModeClockTimer);
         clearTimeout(this.displayModeTickerTimer);
+        clearInterval(this.displayModeAudioBarInterval);
         if (this._dmEscHandler) document.removeEventListener('keydown', this._dmEscHandler);
         const overlay = document.getElementById('adzanDisplayMode');
         if (overlay) {
             overlay.classList.remove('visible');
             setTimeout(() => overlay.remove(), 400);
         }
+    }
+
+    // ===== AUDIO BAR (kontrol radio/muratal dari tampilan masjid) =====
+
+    _startAudioBar() {
+        const playPauseBtn = document.getElementById('admAudioPlayPause');
+        const muteBtn = document.getElementById('admAudioMute');
+        if (playPauseBtn) playPauseBtn.addEventListener('click', () => this._admTogglePlayPause());
+        if (muteBtn) muteBtn.addEventListener('click', () => this._admToggleMute());
+        this._updateAudioBar();
+        this.displayModeAudioBarInterval = setInterval(() => {
+            if (!this.displayModeActive) { clearInterval(this.displayModeAudioBarInterval); return; }
+            this._updateAudioBar();
+        }, 1000);
+    }
+
+    _getAudioState() {
+        // Priority 1: Radio streaming
+        const sa = window.streamingApp;
+        if (sa && sa.currentStream !== null) {
+            const station = sa.radioStations?.[sa.currentStream];
+            const radioEl = document.getElementById('radioPlayer');
+            return {
+                type: 'radio',
+                title: station?.name || 'Radio Streaming',
+                sub: station?.description || 'Live Streaming 24/7',
+                icon: 'fas fa-radio',
+                audioEl: radioEl,
+                isPlaying: radioEl ? !radioEl.paused : false,
+                isMuted: radioEl ? radioEl.muted : false
+            };
+        }
+        // Priority 2: Al-Quran mode halaman
+        const qa = window.alquranApp;
+        if (qa && qa.audio && qa.readMode === 'page') {
+            return {
+                type: 'quran-page',
+                title: `Al-Qur'an Hal. ${qa.currentPage}`,
+                sub: 'Muratal Halaman Al-Qur\'an',
+                icon: 'fas fa-book-open',
+                audioEl: qa.audio,
+                isPlaying: qa.isPlaying,
+                isMuted: qa.audio.muted
+            };
+        }
+        // Priority 3: Al-Quran mode surat / juz (pakai quranAudioElement DOM)
+        const quranEl = document.getElementById('quranAudioElement');
+        if (quranEl && quranEl.src && !quranEl.ended) {
+            const isPlaying = !quranEl.paused;
+            const surahName = qa?.currentSurahData?.name;
+            const juzNum = qa?.currentJuz;
+            const title = surahName ? `Surat ${surahName}` : (juzNum ? `Juz ${juzNum}` : 'Muratal Al-Qur\'an');
+            return {
+                type: 'quran-surah',
+                title,
+                sub: 'Muratal Surat Al-Qur\'an',
+                icon: 'fas fa-book-open',
+                audioEl: quranEl,
+                isPlaying,
+                isMuted: quranEl.muted
+            };
+        }
+        return null;
+    }
+
+    _updateAudioBar() {
+        const bar = document.getElementById('admAudioBar');
+        if (!bar) return;
+        const state = this._getAudioState();
+        const playPauseBtn = document.getElementById('admAudioPlayPause');
+        const muteBtn = document.getElementById('admAudioMute');
+        const labelEl = document.getElementById('admAudioBarLabel');
+        const subEl = document.getElementById('admAudioBarSub');
+        const iconEl = document.getElementById('admAudioBarIcon');
+        if (!state) {
+            bar.classList.add('adm-audio-idle');
+            if (labelEl) labelEl.textContent = 'Tidak ada audio';
+            if (subEl) subEl.textContent = 'Putar radio atau muratal Al-Qur\'an di halaman lain';
+            if (iconEl) iconEl.innerHTML = '<i class="fas fa-music"></i>';
+            if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            if (muteBtn) { muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>'; muteBtn.classList.remove('muted'); }
+            return;
+        }
+        bar.classList.toggle('adm-audio-idle', !state.isPlaying);
+        if (labelEl) labelEl.textContent = state.title;
+        if (subEl) subEl.textContent = state.sub;
+        if (iconEl) iconEl.innerHTML = `<i class="${state.icon}"></i>`;
+        if (playPauseBtn) playPauseBtn.innerHTML = state.isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+        if (muteBtn) {
+            muteBtn.innerHTML = state.isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+            muteBtn.classList.toggle('muted', state.isMuted);
+        }
+    }
+
+    _admTogglePlayPause() {
+        const state = this._getAudioState();
+        if (!state) return;
+        const { type, audioEl, isPlaying } = state;
+        if (type === 'radio') {
+            if (isPlaying) { audioEl.pause(); }
+            else { audioEl.play().catch(() => {}); }
+        } else if (type === 'quran-page') {
+            const qa = window.alquranApp;
+            if (qa) qa.toggleAudio();
+        } else if (type === 'quran-surah') {
+            if (isPlaying) { audioEl.pause(); }
+            else { audioEl.play().catch(() => {}); }
+            if (window.alquranApp) window.alquranApp.isPlaying = !isPlaying;
+        }
+        setTimeout(() => this._updateAudioBar(), 120);
+    }
+
+    _admToggleMute() {
+        const state = this._getAudioState();
+        if (!state || !state.audioEl) return;
+        state.audioEl.muted = !state.audioEl.muted;
+        this._updateAudioBar();
     }
 
     _getBasePath() {

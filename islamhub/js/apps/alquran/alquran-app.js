@@ -468,7 +468,15 @@ export default class AlQuranApp {
         this.isPlaying = false;
         const audioToggle = document.getElementById('alqAudioToggle'); if (audioToggle) audioToggle.innerHTML = '<i class="fas fa-play"></i><span>Putar Audio</span>';
         if (this.settings.autoPlayNext && this.currentPage < this.totalPages) {
-            setTimeout(() => this.nextPage(), 800);
+            setTimeout(async () => {
+                this.currentPage++;
+                this._stopAudio();
+                localStorage.setItem('alquran_last_page', String(this.currentPage));
+                this._updateLastRead(this.currentPage);
+                await this.render();
+                // Auto-play audio on the new page
+                this.playAudio();
+            }, 800);
         }
     }
 
@@ -838,10 +846,10 @@ export default class AlQuranApp {
         // Sidebar functionality
         this._setupSidebarContent();
 
-        // Scroll to top when rendering new page
-        setTimeout(() => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 100);
+        // Scroll to top when rendering new page — instant so it snaps immediately
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
     _getSurahNumberForVerse(verseElement) {
@@ -1832,9 +1840,6 @@ export default class AlQuranApp {
 
     async readSurah(surahNumber) {
         try {
-            // Scroll to top immediately when changing surah
-            window.scrollTo({ top: 0, behavior: 'instant' });
-
             // Show inline loader
             this._showInlineLoader('Memuat Surat...');
 
@@ -1904,6 +1909,11 @@ export default class AlQuranApp {
             this.currentVisiblePage = surah.startPage; // Track halaman yang visible
 
             await this.renderSurahMode();
+
+            // Scroll to top after new DOM is rendered
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            window.scrollTo(0, 0);
 
             // Hide loader after render
             this._hideInlineLoader();
@@ -1981,6 +1991,11 @@ export default class AlQuranApp {
             this.currentSurahData = null;
 
             await this.renderJuzMode();
+
+            // Scroll to top after new DOM is rendered
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            window.scrollTo(0, 0);
 
             // Hide loader after render
             this._hideInlineLoader();
