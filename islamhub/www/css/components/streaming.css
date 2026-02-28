@@ -431,10 +431,13 @@
   }
 }
 
-/* ===== AUDIO PLAYER (STYLE ALQURAN/DZIKIR) ===== */
+/* ===== AUDIO PLAYER (STYLE ALQURAN/DZIKIR) =====
+   Note: streaming radio now uses the global #quranAudioPlayer via #bottom-dock.
+   This container is kept for backward-compatibility but is no longer rendered
+   by streaming-app.js.  */
 .audio-player-container {
   position: fixed;
-  bottom: 68px;
+  bottom: var(--nav-height, 70px);
   left: 0;
   right: 0;
   background: rgba(10, 10, 15, 0.98);
@@ -626,7 +629,7 @@
 
 @media (max-width: 768px) {
   .audio-player-container {
-    bottom: 60px;
+    bottom: var(--nav-height, 60px);
     padding: 12px 15px;
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
   }

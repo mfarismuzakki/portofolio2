@@ -709,6 +709,34 @@
             </div>
         </footer>
 
+        <!-- Bottom Dock: unified fixed container for audio player + nav -->
+        <div id="bottom-dock">
+
+        <!-- Global Audio Player (single persistent player for ALL audio – quran, dzikir, radio) -->
+        <div class="audio-player" id="quranAudioPlayer" style="display:none">
+            <div class="audio-info" id="audioInfo">
+                <span class="audio-surah-name" id="audioSurahName">Audio</span>
+                <span class="audio-verse-counter" id="audioVerseCounter" style="display: none;"></span>
+                <!-- Live signal indicator: shown in radio mode, hidden in quran mode -->
+                <span class="status-dot" id="audioSignalDot" style="display:none" title="Status sinyal"></span>
+            </div>
+            <div class="audio-controls">
+                <button class="audio-btn audio-nav-btn" id="audioPrevVerse" title="Sebelumnya"><i class="fas fa-step-backward"></i></button>
+                <button class="audio-btn" id="audioPlayPause"><i class="fas fa-play"></i></button>
+                <button class="audio-btn audio-nav-btn" id="audioNextVerse" title="Selanjutnya"><i class="fas fa-step-forward"></i></button>
+                <div class="audio-progress" style="display: none;">
+                    <div class="audio-progress-bar"><div class="audio-progress-fill" id="audioProgressFill"></div></div>
+                    <div class="audio-time"><span id="audioCurrentTime">0:00</span><span id="audioDuration">0:00</span></div>
+                </div>
+                <!-- Mute button (visible in radio mode only) -->
+                <button class="audio-btn" id="audioMute" style="display:none" title="Mute"><i class="fas fa-volume-up"></i></button>
+                <button class="audio-btn audio-close-btn" id="audioClose" title="Tutup"><i class="fas fa-times"></i></button>
+            </div>
+            <audio id="quranAudioElement" preload="metadata"></audio>
+            <!-- Persistent radio audio element (survives page/app switches) -->
+            <audio id="radioPlayer" preload="none"></audio>
+        </div>
+
         <!-- Bottom Navigation -->
         <nav class="bottom-navigation" id="bottomNavigation">
             <button class="bottom-nav-item active" data-app="home">
@@ -723,15 +751,17 @@
                 <i class="fas fa-book-quran"></i>
                 <span>Al-Qur'an</span>
             </button>
-            <button class="bottom-nav-item" data-app="dzikir">
-                <i class="fas fa-hands"></i>
-                <span>Dzikir</span>
+            <button class="bottom-nav-item" data-app="streaming">
+                <i class="fas fa-broadcast-tower"></i>
+                <span>Kajian</span>
             </button>
             <button class="bottom-nav-item" id="moreAppsBtn">
                 <i class="fas fa-th"></i>
                 <span>Lainnya</span>
             </button>
         </nav>
+
+        </div><!-- /#bottom-dock -->
         
         <!-- More Apps Dropdown -->
         <div class="more-apps-dropdown" id="moreAppsDropdown">
@@ -782,13 +812,13 @@
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </button>
-                <button class="more-app-item" data-app="streaming">
+                <button class="more-app-item" data-app="dzikir">
                     <div class="more-app-icon">
-                        <i class="fas fa-broadcast-tower"></i>
+                        <i class="fas fa-hands"></i>
                     </div>
                     <div class="more-app-info">
-                        <h4>Streaming Kajian</h4>
-                        <p>Radio dan video streaming kajian Islam live 24/7</p>
+                        <h4>Dzikir & Doa</h4>
+                        <p>Kumpulan dzikir dan doa harian dari Al-Quran dan hadist</p>
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </button>

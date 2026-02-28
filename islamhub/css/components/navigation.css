@@ -1,21 +1,32 @@
 /* ===== NAVIGATION ===== */
+
 .superapps-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* Bottom Navigation */
-.bottom-navigation {
+/* ===== BOTTOM DOCK =====
+   Unified container that stacks the global audio player directly above the
+   bottom navigation. Both elements are now position:static inside this fixed
+   container so no JS measurement of nav height is required. */
+#bottom-dock {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Bottom Navigation – position:static, layout handled by #bottom-dock */
+.bottom-navigation {
+  position: static;
   background: rgba(10, 10, 15, 0.98);
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(0, 255, 255, 0.2);
   padding: 12px 0;
-  z-index: 1000;
   display: flex;
   justify-content: space-around;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
@@ -191,7 +202,7 @@
   flex: 1;
   position: relative;
   padding: 20px;
-  padding-bottom: 100px;
+  padding-bottom: calc(var(--dock-height, 80px) + 16px);
   min-height: calc(100vh - 80px);
 }
 
@@ -227,7 +238,7 @@
   
   .app-content {
     padding: 15px;
-    padding-bottom: 90px; /* Lebih besar untuk audio player + nav */
+    padding-bottom: calc(var(--dock-height, 70px) + 16px);
   }
 }
 

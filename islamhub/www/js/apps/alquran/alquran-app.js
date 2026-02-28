@@ -487,7 +487,8 @@ export default class AlQuranApp {
         }
         this.isPlaying = false;
         this._isStartingAudio = false; // Also clear loading guard
-        this.audioListenersAttached = false; // Reset listener flag
+        // NOTE: do NOT reset audioListenersAttached here — quranAudioPlayer is now a
+        // global persistent element; listeners must only attach once, not per-play.
     }
 
     // Stop ALL audio: both page-mode (this.audio) and verse/surah-mode (quranAudioElement)
@@ -498,9 +499,17 @@ export default class AlQuranApp {
             if (audioElement) {
                 audioElement.pause();
                 audioElement.src = '';
+                audioElement.load(); // reset currentSrc so polling sees no active audio
             }
             const audioPlayer = document.getElementById('quranAudioPlayer');
-            if (audioPlayer) audioPlayer.style.display = 'none';
+            if (audioPlayer) {
+                // Only hide if radio is not actively controlling the player
+                if (!audioPlayer.dataset.mode || audioPlayer.dataset.mode === 'quran') {
+                    audioPlayer.style.display = 'none';
+                    document.body.dataset.audioPlayerVisible = 'false';
+                }
+                delete audioPlayer.dataset.mode;
+            }
         } catch (e) {
             console.error('Error stopping quranAudioElement:', e);
         }
@@ -2081,9 +2090,10 @@ export default class AlQuranApp {
         // Stop any audio playing before wiping DOM (prevents orphaned audio in memory)
         this._stopAllAudio();
 
-        // Reset audio setup flag when re-rendering
+        // Reset audio setup flag so controls are re-initialized for the new surah/juz.
+        // audioListenersAttached is NOT reset — the global player element's listeners
+        // persist and must not be duplicated.
         this.audioSetupDone = false;
-        this.audioListenersAttached = false;
 
         // Hide floating prayer widget when reading juz - FORCE HIDE
         const floatingWidget = document.getElementById('floatingPrayerWidget');
@@ -2332,38 +2342,8 @@ export default class AlQuranApp {
         `;
 
         // Audio Player (same design as surah mode)
-        const audioPlayerHTML = `
-            <div class="audio-player" id="quranAudioPlayer" style="display: none;">
-                <div class="audio-info" id="audioInfo">
-                    <span class="audio-surah-name" id="audioSurahName">${juz.name} - Halaman ${juz.startPage}</span>
-                    <span class="audio-verse-counter" id="audioVerseCounter" style="display: none;"></span>
-                </div>
-                <div class="audio-controls">
-                    <button class="audio-btn audio-nav-btn" id="audioPrevVerse" title="Halaman Sebelumnya">
-                        <i class="fas fa-step-backward"></i>
-                    </button>
-                    <button class="audio-btn" id="audioPlayPause">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button class="audio-btn audio-nav-btn" id="audioNextVerse" title="Halaman Selanjutnya">
-                        <i class="fas fa-step-forward"></i>
-                    </button>
-                    <div class="audio-progress">
-                        <div class="audio-progress-bar">
-                            <div class="audio-progress-fill" id="audioProgressFill"></div>
-                        </div>
-                        <div class="audio-time">
-                            <span id="audioCurrentTime">0:00</span>
-                            <span id="audioDuration">0:00</span>
-                        </div>
-                    </div>
-                    <button class="audio-btn" id="audioClose">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <audio id="quranAudioElement" preload="metadata"></audio>
-            </div>
-        `;
+        // Note: quranAudioPlayer is now a global persistent element in index.html
+        // No injection needed here.
 
         // Assemble
         wrapper.appendChild(backdrop);
@@ -2372,11 +2352,6 @@ export default class AlQuranApp {
         wrapper.appendChild(header);
         wrapper.appendChild(versesContainer);
         wrapper.appendChild(juzNav);
-
-        // Add audio player to container
-        const audioPlayerDiv = document.createElement('div');
-        audioPlayerDiv.innerHTML = audioPlayerHTML;
-        wrapper.appendChild(audioPlayerDiv.firstElementChild);
 
         this.container.appendChild(wrapper);
 
@@ -2566,9 +2541,10 @@ export default class AlQuranApp {
         // Stop any audio playing before wiping DOM (prevents orphaned audio in memory)
         this._stopAllAudio();
 
-        // Reset audio setup flag when re-rendering
+        // Reset audio setup flag so controls are re-initialized for the new surah.
+        // audioListenersAttached is NOT reset — the global player element's listeners
+        // persist and must not be duplicated.
         this.audioSetupDone = false;
-        this.audioListenersAttached = false;
 
         // Hide floating prayer widget when reading surah - FORCE HIDE
         const floatingWidget = document.getElementById('floatingPrayerWidget');
@@ -2770,38 +2746,8 @@ export default class AlQuranApp {
         `;
 
         // Audio Player (same design as Dzikir)
-        const audioPlayerHTML = `
-            <div class="audio-player" id="quranAudioPlayer" style="display: none;">
-                <div class="audio-info" id="audioInfo">
-                    <span class="audio-surah-name" id="audioSurahName">${surah.name} - Halaman ${surah.startPage}</span>
-                    <span class="audio-verse-counter" id="audioVerseCounter" style="display: none;"></span>
-                </div>
-                <div class="audio-controls">
-                    <button class="audio-btn audio-nav-btn" id="audioPrevVerse" title="Halaman Sebelumnya">
-                        <i class="fas fa-step-backward"></i>
-                    </button>
-                    <button class="audio-btn" id="audioPlayPause">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button class="audio-btn audio-nav-btn" id="audioNextVerse" title="Halaman Selanjutnya">
-                        <i class="fas fa-step-forward"></i>
-                    </button>
-                    <div class="audio-progress">
-                        <div class="audio-progress-bar">
-                            <div class="audio-progress-fill" id="audioProgressFill"></div>
-                        </div>
-                        <div class="audio-time">
-                            <span id="audioCurrentTime">0:00</span>
-                            <span id="audioDuration">0:00</span>
-                        </div>
-                    </div>
-                    <button class="audio-btn" id="audioClose">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <audio id="quranAudioElement" preload="metadata"></audio>
-            </div>
-        `;
+        // Note: quranAudioPlayer is now a global persistent element in index.html
+        // No injection needed here.
 
         // Assemble
         wrapper.appendChild(backdrop);
@@ -2810,11 +2756,6 @@ export default class AlQuranApp {
         wrapper.appendChild(header);          // Nama surat di bawah
         wrapper.appendChild(versesContainer);
         wrapper.appendChild(surahNav);
-
-        // Add audio player to container
-        const audioPlayerDiv = document.createElement('div');
-        audioPlayerDiv.innerHTML = audioPlayerHTML;
-        wrapper.appendChild(audioPlayerDiv.firstElementChild);
 
         this.container.appendChild(wrapper);
 
@@ -3656,7 +3597,17 @@ export default class AlQuranApp {
         const currentTimeEl = document.getElementById('audioCurrentTime');
         const durationEl = document.getElementById('audioDuration');
 
-        // Remove old event listeners if they exist
+        // Mark player as quran mode so global radio handler defers
+        const playerEl = document.getElementById('quranAudioPlayer');
+        if (playerEl) { playerEl.dataset.mode = 'quran'; }
+
+        // Restore prev/next visibility (may have been hidden in radio mode)
+        if (prevBtn) prevBtn.style.display = '';
+        if (nextBtn) nextBtn.style.display = '';
+        const audioProgress = playerEl?.querySelector('.audio-progress');
+        if (audioProgress) audioProgress.style.display = '';
+        // Update body attribute so CSS can add padding
+        document.body.dataset.audioPlayerVisible = 'true';
         if (this.audioHandlers) {
             if (this.audioHandlers.prev) prevBtn?.removeEventListener('click', this.audioHandlers.prev);
             if (this.audioHandlers.next) nextBtn?.removeEventListener('click', this.audioHandlers.next);
@@ -3698,7 +3649,11 @@ export default class AlQuranApp {
 
                     audioElement.pause();
                     audioElement.src = '';
+                    audioElement.load(); // reset currentSrc so polling sees no active audio
                     document.getElementById('quranAudioPlayer').style.display = 'none';
+                    document.body.dataset.audioPlayerVisible = 'false';
+                    const playerModeEl = document.getElementById('quranAudioPlayer');
+                    if (playerModeEl) delete playerModeEl.dataset.mode;
                     if (playPauseBtn && playPauseBtn.querySelector('i')) {
                         playPauseBtn.querySelector('i').className = 'fas fa-play';
                     }
@@ -4065,6 +4020,9 @@ export default class AlQuranApp {
             if (audioInfo) {
                 audioInfo.textContent = `${surahName} - Ayat ${verseNumber}`;
             }
+            // Clear right-side counter (may have stale radio station name from previous radio mode)
+            const counterEl = document.getElementById('audioVerseCounter');
+            if (counterEl) { counterEl.textContent = ''; counterEl.style.display = 'none'; }
 
             // Store current playing verse for highlighting
             this.currentPlayingVerse = { surah: surahNumber, verse: verseNumber };

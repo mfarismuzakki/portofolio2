@@ -82,6 +82,152 @@ class IslamHubApp {
         
         // Setup clear data button (Web only)
         this.setupClearDataButton();
+
+        // Init global player radio mode management
+        this._initGlobalPlayer();
+
+        // Keep --nav-height updated (still used by some app padding rules)
+        // and expose --dock-height = total height of #bottom-dock for content padding.
+        const dockEl  = document.getElementById('bottom-dock');
+        const navEl   = document.getElementById('bottomNavigation');
+        if (dockEl) {
+            const ro = new ResizeObserver(() => {
+                const h = dockEl.getBoundingClientRect().height;
+                document.documentElement.style.setProperty('--dock-height', h + 'px');
+                if (navEl) {
+                    document.documentElement.style.setProperty('--nav-height', navEl.getBoundingClientRect().height + 'px');
+                }
+            });
+            ro.observe(dockEl);
+        } else if (navEl) {
+            // Fallback if dock not found
+            const updateNavHeight = () => {
+                document.documentElement.style.setProperty('--nav-height', navEl.getBoundingClientRect().height + 'px');
+            };
+            updateNavHeight();
+            window.addEventListener('resize', updateNavHeight);
+        }
+    }
+
+    // ===== GLOBAL AUDIO PLAYER (manages radio mode; quran mode is managed by alquran-app.js) =====
+
+    _initGlobalPlayer() {
+        // Use capture phase so we intercept clicks before alquran-app.js bubble handlers
+        document.getElementById('quranAudioPlayer')?.addEventListener('click', (e) => {
+            const player = document.getElementById('quranAudioPlayer');
+            if (!player || player.dataset.mode !== 'radio') return;
+
+            if (e.target.closest('#audioPlayPause')) {
+                e.stopImmediatePropagation();
+                const el = document.getElementById('radioPlayer');
+                if (el) { el.paused ? el.play() : el.pause(); }
+                this._globalPlayerUpdate();
+            } else if (e.target.closest('#audioMute')) {
+                e.stopImmediatePropagation();
+                const el = document.getElementById('radioPlayer');
+                if (el) {
+                    el.muted = !el.muted;
+                    const muteBtn = document.getElementById('audioMute');
+                    if (muteBtn) {
+                        muteBtn.querySelector('i').className = el.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+                        muteBtn.classList.toggle('muted', el.muted);
+                    }
+                }
+            } else if (e.target.closest('#audioClose')) {
+                e.stopImmediatePropagation();
+                this._globalPlayerStop();
+            }
+        }, true); // capture phase
+
+        // Update every second for radio state changes
+        setInterval(() => this._globalPlayerUpdate(), 1000);
+        this._globalPlayerUpdate();
+    }
+
+    _globalPlayerUpdate() {
+        const player = document.getElementById('quranAudioPlayer');
+        if (!player) return;
+
+        // Global player handles BOTH quran and radio.
+        // Radio mode activates when radio plays and quran is NOT playing.
+        const sa = window.streamingApp;
+        const quranEl = document.getElementById('quranAudioElement');
+        const quranActive = quranEl && quranEl.currentSrc && !quranEl.paused;
+        const radioActive = sa && (sa.currentStream !== null && sa.currentStream !== undefined);
+
+        if (radioActive && !quranActive && player.dataset.mode !== 'quran') {
+            const station = sa.radioStations?.[sa.currentStream];
+            const radioEl = document.getElementById('radioPlayer');
+            const isPlaying = radioEl ? !radioEl.paused : false;
+
+            player.dataset.mode = 'radio';
+            player.style.display = 'block';
+            document.body.dataset.audioPlayerVisible = 'true';
+
+            const nameEl    = document.getElementById('audioSurahName');
+            const counterEl = document.getElementById('audioVerseCounter');
+            const playBtn   = document.getElementById('audioPlayPause');
+            const prevBtn   = document.getElementById('audioPrevVerse');
+            const nextBtn   = document.getElementById('audioNextVerse');
+            const muteBtn   = document.getElementById('audioMute');
+            const progressEl = player.querySelector('.audio-progress');
+
+            if (nameEl) nameEl.textContent = station?.name || 'Radio Streaming';
+            if (counterEl) { counterEl.textContent = station?.description || 'Live'; counterEl.style.display = 'inline'; }
+            if (playBtn?.querySelector('i')) playBtn.querySelector('i').className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+            if (progressEl) progressEl.style.display = 'none';
+            // Show mute button in radio mode
+            if (muteBtn) {
+                muteBtn.style.display = 'flex';
+                const isMuted = radioEl ? radioEl.muted : false;
+                muteBtn.querySelector('i').className = isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+                muteBtn.classList.toggle('muted', isMuted);
+            }
+            // Show live signal dot
+            const signalDot = document.getElementById('audioSignalDot');
+            if (signalDot) {
+                signalDot.style.display = 'inline-block';
+                // Reflect play state: pulsing live dot when playing, plain dot when paused
+                signalDot.className = 'status-dot' + (isPlaying ? ' live' : '');
+            }
+
+        } else if (!radioActive && player.dataset.mode === 'radio') {
+            // Radio stopped – clear radio mode.
+            // Restore nav/mute buttons to defaults for quran mode.
+            const prevBtn = document.getElementById('audioPrevVerse');
+            const nextBtn = document.getElementById('audioNextVerse');
+            const muteBtn = document.getElementById('audioMute');
+            const signalDot = document.getElementById('audioSignalDot');
+            if (prevBtn) prevBtn.style.display = '';
+            if (nextBtn) nextBtn.style.display = '';
+            if (muteBtn) muteBtn.style.display = 'none';
+            if (signalDot) signalDot.style.display = 'none';
+            delete player.dataset.mode;
+            if (!quranActive) {
+                player.style.display = 'none';
+                document.body.dataset.audioPlayerVisible = 'false';
+            }
+        }
+    }
+
+    _globalPlayerStop() {
+        const sa = window.streamingApp;
+        if (sa && sa.currentStream !== null) {
+            // Delegate to stopRadio – this resets btnRadio text, currentStream, and calls
+            // _globalPlayerUpdate which hides the player.  Works even if the streaming
+            // page is not currently visible (btnRadio element simply won't be found, but
+            // audio is still properly stopped and currentStream is cleared).
+            sa.stopRadio(sa.currentStream);
+        } else {
+            // No active stream – just clean up audio and player UI directly.
+            const radioEl = document.getElementById('radioPlayer');
+            if (radioEl) { radioEl.pause(); radioEl.src = ''; }
+            const player = document.getElementById('quranAudioPlayer');
+            if (player) { player.style.display = 'none'; delete player.dataset.mode; }
+            document.body.dataset.audioPlayerVisible = 'false';
+        }
     }
     
     async registerServiceWorker() {
@@ -470,8 +616,9 @@ class IslamHubApp {
             nav.classList.add('active');
         });
         
-        // If app is in dropdown (waris, qibla, sirah, sholat, streaming), activate 'More Apps' button
-        const dropdownApps = ['waris', 'qibla', 'sirah', 'sholat', 'streaming'];
+        // If app is in dropdown (waris, qibla, sirah, sholat), activate 'More Apps' button
+        // Note: 'streaming' is now in the main nav bar, NOT the dropdown
+        const dropdownApps = ['waris', 'qibla', 'sirah', 'sholat', 'dzikir'];
         if (dropdownApps.includes(appName)) {
             const moreAppsBtn = document.getElementById('moreAppsBtn');
             if (moreAppsBtn) {
@@ -515,8 +662,9 @@ class IslamHubApp {
                 window.sirahApp.resetToMainPage();
             }
         } else if (appName === 'alquran') {
-            // Reset alquran app to main page
-            if (window.alquranApp) {
+            // Only reset to home when user re-taps the Quran tab while already on it.
+            // When coming FROM another app, preserve current state and any playing audio.
+            if (isAlreadyActive && window.alquranApp) {
                 window.alquranApp.resetToHome();
             }
         }

@@ -133,43 +133,7 @@ class StreamingApp {
                             </button>
                         </div>
                     `).join('')}
-                    
-                    <!-- Audio Player (Style Al-Quran/Dzikir) -->
-                    <div class="audio-player-container" id="audioPlayerContainer" style="display: none;">
-                        <div class="streaming-audio-info">
-                            <div class="streaming-radio-name" id="streamingRadioName">
-                                <i class="fas fa-radio"></i>
-                                <span>Radio Streaming</span>
-                            </div>
-                            <div class="streaming-radio-status" id="streamingRadioStatus">
-                                <span class="status-dot"></span>
-                                <span>Live</span>
-                            </div>
-                            <button class="streaming-close-btn" id="streamingCloseBtn" title="Tutup Player">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="streaming-audio-controls">
-                            <button class="streaming-audio-btn" id="streamingPlayPause">
-                                <i class="fas fa-pause"></i>
-                            </button>
-                            <div class="streaming-signal-indicator">
-                                <div class="signal-bars" id="signalBars">
-                                    <div class="signal-bar active"></div>
-                                    <div class="signal-bar active"></div>
-                                    <div class="signal-bar active"></div>
-                                    <div class="signal-bar active"></div>
-                                </div>
-                                <span class="signal-text">Koneksi Stabil</span>
-                            </div>
-                            <button class="streaming-mute-btn" id="streamingMuteBtn">
-                                <i class="fas fa-volume-up"></i>
-                            </button>
-                        </div>
-                        <audio id="radioPlayer">
-                            <source src="" type="audio/mpeg">
-                        </audio>
-                    </div>
+                    <!-- Radio audio is controlled via the global #quranAudioPlayer in #bottom-dock -->
                 </div>
 
                 <!-- Video Streaming Section -->
@@ -298,73 +262,45 @@ class StreamingApp {
             }
         });
         
-        // Setup audio player controls
-        const playPauseBtn = document.getElementById('streamingPlayPause');
-        const muteBtn = document.getElementById('streamingMuteBtn');
+        // Audio error/reconnect handling (radioPlayer is the persistent global element)
         const radioPlayer = document.getElementById('radioPlayer');
-        
-        if (playPauseBtn && radioPlayer) {
-            playPauseBtn.addEventListener('click', () => {
-                if (radioPlayer.paused) {
-                    radioPlayer.play();
-                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                } else {
-                    radioPlayer.pause();
-                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                }
-            });
-        }
-        
-        if (muteBtn && radioPlayer) {
-            muteBtn.addEventListener('click', () => {
-                radioPlayer.muted = !radioPlayer.muted;
-                if (radioPlayer.muted) {
-                    muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                    muteBtn.classList.add('muted');
-                } else {
-                    muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                    muteBtn.classList.remove('muted');
-                }
-            });
-        }
-        
-        // Close button
-        const closeBtn = document.getElementById('streamingCloseBtn');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                if (this.currentStream !== null) {
-                    this.stopRadio(this.currentStream);
-                }
-            });
-        }
-        
-        // Audio error/reconnect handling
         this.setupAudioErrorHandling(radioPlayer);
         
-        // Simulate signal strength animation
+        // Simulate signal strength animation (updates global player icon)
         this.startSignalAnimation();
     }
 
     setupAudioErrorHandling(radioPlayer) {
         if (!radioPlayer) return;
 
+        // #radioPlayer is now persistent in #bottom-dock. Guard against
+        // attaching duplicate listeners when a new streaming app instance is created.
+        if (radioPlayer._streamingHandlersAttached) return;
+        radioPlayer._streamingHandlersAttached = true;
+
+        // All handlers delegate to window.streamingApp so they always call
+        // methods on the CURRENT active instance (even after page re-init).
+
         // Error: network dropped, bad URL, etc.
         radioPlayer.addEventListener('error', () => {
-            if (this.currentStream !== null && !this.isRetrying) {
+            const sa = window.streamingApp;
+            if (sa && sa.currentStream !== null && !sa.isRetrying) {
                 console.warn('[Streaming] Audio error detected, scheduling retry...');
-                this.scheduleRetry('error');
+                sa.scheduleRetry('error');
             }
         });
 
         // Stalled: browser stopped receiving data unexpectedly
         radioPlayer.addEventListener('stalled', () => {
-            if (this.currentStream !== null && !this.isRetrying) {
+            const sa = window.streamingApp;
+            if (sa && sa.currentStream !== null && !sa.isRetrying) {
                 // Give it 8 seconds before treating stall as a real disconnect
-                clearTimeout(this.stalledTimeout);
-                this.stalledTimeout = setTimeout(() => {
-                    if (this.currentStream !== null && !this.isRetrying) {
+                clearTimeout(sa.stalledTimeout);
+                sa.stalledTimeout = setTimeout(() => {
+                    const sa2 = window.streamingApp;
+                    if (sa2 && sa2.currentStream !== null && !sa2.isRetrying) {
                         console.warn('[Streaming] Stream stalled, scheduling retry...');
-                        this.scheduleRetry('stalled');
+                        sa2.scheduleRetry('stalled');
                     }
                 }, 8000);
             }
@@ -372,12 +308,14 @@ class StreamingApp {
 
         // Waiting: temporary buffer underrun — reset stall timer
         radioPlayer.addEventListener('waiting', () => {
-            if (this.currentStream !== null && !this.isRetrying) {
-                clearTimeout(this.stalledTimeout);
-                this.stalledTimeout = setTimeout(() => {
-                    if (this.currentStream !== null && !this.isRetrying) {
+            const sa = window.streamingApp;
+            if (sa && sa.currentStream !== null && !sa.isRetrying) {
+                clearTimeout(sa.stalledTimeout);
+                sa.stalledTimeout = setTimeout(() => {
+                    const sa2 = window.streamingApp;
+                    if (sa2 && sa2.currentStream !== null && !sa2.isRetrying) {
                         console.warn('[Streaming] Stream waiting too long, scheduling retry...');
-                        this.scheduleRetry('waiting');
+                        sa2.scheduleRetry('waiting');
                     }
                 }, 15000);
             }
@@ -385,32 +323,36 @@ class StreamingApp {
 
         // Playing: connection healthy, reset retry counters
         radioPlayer.addEventListener('playing', () => {
-            if (this.isRetrying || this.retryCount > 0) {
+            const sa = window.streamingApp;
+            if (!sa) return;
+            if (sa.isRetrying || sa.retryCount > 0) {
                 console.log('[Streaming] Stream recovered, resetting retry state.');
             }
-            this.resetRetryState();
-            this.updateSignalStatus('live');
-            clearTimeout(this.stalledTimeout);
+            sa.resetRetryState();
+            sa.updateSignalStatus('live');
+            clearTimeout(sa.stalledTimeout);
         });
 
         // Ended: live streams shouldn't end — treat as disconnect
         radioPlayer.addEventListener('ended', () => {
-            if (this.currentStream !== null && !this.isRetrying) {
+            const sa = window.streamingApp;
+            if (sa && sa.currentStream !== null && !sa.isRetrying) {
                 console.warn('[Streaming] Stream ended unexpectedly, scheduling retry...');
-                this.scheduleRetry('ended');
+                sa.scheduleRetry('ended');
             }
         });
 
         // Device came back online → retry immediately if we were retrying
-        this._onlineHandler = () => {
-            if (this.currentStream !== null) {
+        radioPlayer._onlineHandler = () => {
+            const sa = window.streamingApp;
+            if (sa && sa.currentStream !== null) {
                 console.log('[Streaming] Network online, retrying stream immediately...');
-                clearTimeout(this.retryTimeout);
-                this.retryTimeout = null;
-                this.retryStream();
+                clearTimeout(sa.retryTimeout);
+                sa.retryTimeout = null;
+                sa.retryStream();
             }
         };
-        window.addEventListener('online', this._onlineHandler);
+        window.addEventListener('online', radioPlayer._onlineHandler);
     }
 
     scheduleRetry(reason) {
@@ -489,63 +431,49 @@ class StreamingApp {
     }
 
     updateSignalStatus(status) {
-        const signalText = document.querySelector('.signal-text');
-        const radioStatusPlayer = document.getElementById('streamingRadioStatus');
-        const signalBars = document.querySelectorAll('.signal-bar');
-        const playPauseBtn = document.getElementById('streamingPlayPause');
+        // Update radio card status on the streaming page
+        if (this.currentStream !== null) {
+            const radioStatus = document.getElementById(`radioStatus${this.currentStream}`);
+            if (status === 'reconnecting') {
+                if (radioStatus) radioStatus.innerHTML = '<span class="status-dot loading"></span><span>Menghubungkan ulang...</span>';
+            } else if (status === 'live') {
+                if (radioStatus) radioStatus.innerHTML = '<span class="status-dot live"></span><span>Sedang Streaming</span>';
+            } else if (status === 'failed') {
+                if (radioStatus) radioStatus.innerHTML = '<span class="status-dot"></span><span>Koneksi Gagal</span>';
+            }
+        }
 
-        if (status === 'reconnecting') {
-            if (signalText) signalText.textContent = 'Menghubungkan ulang...';
-            if (radioStatusPlayer) radioStatusPlayer.innerHTML = '<span class="status-dot loading"></span><span>Reconnecting...</span>';
-            if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-            signalBars.forEach(bar => bar.classList.remove('active'));
-        } else if (status === 'live') {
-            if (signalText) signalText.textContent = 'Koneksi Stabil';
-            if (radioStatusPlayer) radioStatusPlayer.innerHTML = '<span class="status-dot"></span><span>Live Streaming</span>';
-            if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            signalBars.forEach(bar => bar.classList.add('active'));
-        } else if (status === 'failed') {
-            if (signalText) signalText.textContent = 'Koneksi Gagal';
-            if (radioStatusPlayer) radioStatusPlayer.innerHTML = '<span class="status-dot"></span><span>Terputus</span>';
-            if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        // Update global player's play button icon and signal dot to reflect state
+        const playPauseBtn = document.getElementById('audioPlayPause');
+        const signalDot = document.getElementById('audioSignalDot');
+        const inRadioMode = document.getElementById('quranAudioPlayer')?.dataset.mode === 'radio';
+        if (playPauseBtn && inRadioMode) {
+            if (status === 'reconnecting') {
+                playPauseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            } else if (status === 'live') {
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else if (status === 'failed') {
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        }
+        if (signalDot && inRadioMode) {
+            if (status === 'reconnecting') {
+                signalDot.className = 'status-dot loading';
+                signalDot.style.display = 'inline-block';
+            } else if (status === 'live') {
+                signalDot.className = 'status-dot live';
+                signalDot.style.display = 'inline-block';
+            } else if (status === 'failed') {
+                signalDot.className = 'status-dot';
+                signalDot.style.display = 'inline-block';
+            }
         }
     }
     
     startSignalAnimation() {
-        const signalBars = document.querySelectorAll('.signal-bar');
-        if (signalBars.length === 0) return;
-        
-        // Clear existing interval if any
-        if (this.signalAnimationInterval) {
-            clearInterval(this.signalAnimationInterval);
-        }
-        
-        // Animate signal bars to simulate live connection strength
-        this.signalAnimationInterval = setInterval(() => {
-            const radioPlayer = document.getElementById('radioPlayer');
-            const isPlaying = radioPlayer && !radioPlayer.paused && !radioPlayer.ended;
-            
-            if (isPlaying) {
-                // When playing, show full signal with subtle animation
-                signalBars.forEach((bar, index) => {
-                    const shouldShow = Math.random() > 0.1; // 90% chance
-                    if (shouldShow) {
-                        bar.classList.add('active');
-                    } else {
-                        bar.classList.remove('active');
-                    }
-                });
-            } else {
-                // When not playing, show only first bar
-                signalBars.forEach((bar, index) => {
-                    if (index === 0) {
-                        bar.classList.add('active');
-                    } else {
-                        bar.classList.remove('active');
-                    }
-                });
-            }
-        }, 1200);
+        // No signal bar animation in the global player – the status dot on the
+        // streaming page's radio card already indicates live/connecting state.
+        // This is a no-op kept for future extensibility.
     }
     
     destroy() {
@@ -559,21 +487,17 @@ class StreamingApp {
         this.resetRetryState();
         this.isRetrying = false;
         
-        // Remove online listener
-        if (this._onlineHandler) {
-            window.removeEventListener('online', this._onlineHandler);
-            this._onlineHandler = null;
-        }
-        
-        // Stop any playing radio
-        if (this.currentStream !== null) {
-            this.stopRadio(this.currentStream);
-        }
+        // NOTE: audio error handlers on #radioPlayer are retained (it's a persistent
+        // global element) and delegate to window.streamingApp at call time, so they
+        // are always pointing to the correct instance.
+
+        // NOTE: Do NOT stop radio on destroy – user may navigate away and expect
+        // radio to keep playing (global player keeps it alive via #bottom-dock).
+        console.log('[Streaming] Destroyed (radio continues in global player if playing)');
     }
 
     toggleRadio(stationIndex) {
         const radioPlayer = document.getElementById('radioPlayer');
-        const audioContainer = document.getElementById('audioPlayerContainer');
         const btnRadio = document.getElementById(`btnRadio${stationIndex}`);
         const radioStatus = document.getElementById(`radioStatus${stationIndex}`);
         const station = this.radioStations[stationIndex];
@@ -587,12 +511,12 @@ class StreamingApp {
             // Stop current streaming
             this.stopRadio(stationIndex);
         } else {
-            // Start streaming
-            this.startRadio(stationIndex, station, radioPlayer, audioContainer, btnRadio, radioStatus);
+            // Start streaming (no audioContainer – global player is always shown)
+            this.startRadio(stationIndex, station, radioPlayer, btnRadio, radioStatus);
         }
     }
 
-    async startRadio(stationIndex, station, radioPlayer, audioContainer, btnRadio, radioStatus) {
+    async startRadio(stationIndex, station, radioPlayer, btnRadio, radioStatus) {
         try {
             // Reset retry state for fresh start
             this.resetRetryState();
@@ -602,7 +526,7 @@ class StreamingApp {
             btnRadio.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Menghubungkan...</span>';
             radioStatus.innerHTML = '<span class="status-dot loading"></span><span>Menghubungkan...</span>';
 
-            // Set radio source
+            // Set radio source (persistent global element in #bottom-dock)
             radioPlayer.src = station.url;
             radioPlayer.volume = 1.0;
             
@@ -610,28 +534,10 @@ class StreamingApp {
             await radioPlayer.play();
             
             this.currentStream = stationIndex;
-            audioContainer.style.display = 'block';
             
-            // Update custom player info
-            const radioName = document.getElementById('streamingRadioName');
-            const radioStatusPlayer = document.getElementById('streamingRadioStatus');
-            const playPauseBtn = document.getElementById('streamingPlayPause');
-            const muteBtn = document.getElementById('streamingMuteBtn');
-            
-            if (radioName) {
-                radioName.innerHTML = `<i class="fas fa-radio"></i><span>${station.name}</span>`;
-            }
-            if (radioStatusPlayer) {
-                radioStatusPlayer.innerHTML = '<span class="status-dot"></span><span>Live Streaming</span>';
-            }
-            if (playPauseBtn) {
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            }
-            if (muteBtn) {
-                muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                muteBtn.classList.remove('muted');
-                radioPlayer.muted = false;
-            }
+            // The global #quranAudioPlayer will pick this up via _globalPlayerUpdate
+            // (called every second). Trigger immediately for snappy UI.
+            if (window.islamHub) window.islamHub._globalPlayerUpdate();
             
             btnRadio.innerHTML = '<i class="fas fa-stop"></i><span>Stop</span>';
             btnRadio.classList.add('active');
@@ -661,7 +567,6 @@ class StreamingApp {
         if (indexToStop === null) return;
         
         const radioPlayer = document.getElementById('radioPlayer');
-        const audioContainer = document.getElementById('audioPlayerContainer');
         const btnRadio = document.getElementById(`btnRadio${indexToStop}`);
         const radioStatus = document.getElementById(`radioStatus${indexToStop}`);
         
@@ -676,7 +581,10 @@ class StreamingApp {
         
         this.currentStream = null;
         
-        if (audioContainer) audioContainer.style.display = 'none';
+        // Global player will hide itself via _globalPlayerUpdate (called every second).
+        // Trigger immediately for snappy UI.
+        if (window.islamHub) window.islamHub._globalPlayerUpdate();
+        
         if (btnRadio) {
             btnRadio.innerHTML = '<i class="fas fa-play"></i><span>Putar Radio</span>';
             btnRadio.classList.remove('active');

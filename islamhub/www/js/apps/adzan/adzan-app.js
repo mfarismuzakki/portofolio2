@@ -2372,11 +2372,13 @@ export default class AdzanApp {
         }
         // Priority 3: Al-Quran mode surat / juz (pakai quranAudioElement DOM)
         const quranEl = document.getElementById('quranAudioElement');
-        if (quranEl && quranEl.src && !quranEl.ended) {
+        if (quranEl && quranEl.currentSrc && !quranEl.ended) {
             const isPlaying = !quranEl.paused;
+            // Read name from the live DOM element so it always reflects the current track
+            const domTitle = document.getElementById('audioSurahName')?.textContent?.trim();
             const surahName = qa?.currentSurahData?.name;
             const juzNum = qa?.currentJuz;
-            const title = surahName ? `Surat ${surahName}` : (juzNum ? `Juz ${juzNum}` : 'Muratal Al-Qur\'an');
+            const title = domTitle || (surahName ? `Surat ${surahName}` : (juzNum ? `Juz ${juzNum}` : 'Muratal Al-Qur\'an'));
             return {
                 type: 'quran-surah',
                 title,
@@ -2455,11 +2457,12 @@ export default class AdzanApp {
                 const qa = window.alquranApp;
                 if (qa) qa._stopAudio();
             } else if (type === 'quran-surah') {
-                if (audioEl) { audioEl.pause(); audioEl.src = ''; }
+                if (audioEl) { audioEl.pause(); audioEl.src = ''; audioEl.load(); }
                 const quranPlayer = document.getElementById('quranAudioPlayer');
-                if (quranPlayer) quranPlayer.style.display = 'none';
+                if (quranPlayer) { quranPlayer.style.display = 'none'; delete quranPlayer.dataset.mode; }
+                document.body.dataset.audioPlayerVisible = 'false';
                 const qa = window.alquranApp;
-                if (qa) { qa.isPlaying = false; qa.currentPlayingVerse = null; }
+                if (qa) { qa.isPlaying = false; qa.currentPlayingVerse = null; qa.audioSetupDone = false; }
             }
         } catch (e) { console.error('admStopAudio error', e); }
         // Immediately hide bar without waiting for next poll
