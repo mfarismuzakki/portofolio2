@@ -2450,9 +2450,15 @@ export default class AdzanApp {
         const { type, audioEl } = state;
         try {
             if (type === 'radio') {
-                if (audioEl) { audioEl.pause(); audioEl.src = ''; }
+                // Delegate to stopRadio() so retry timers (retryTimeout, stalledTimeout)
+                // are properly cleared — prevents radio from auto-restarting after stop,
+                // which would block adzan audio from playing.
                 const sa = window.streamingApp;
-                if (sa) sa.currentStream = null;
+                if (sa && sa.currentStream !== null) {
+                    sa.stopRadio(sa.currentStream);
+                } else if (audioEl) {
+                    audioEl.pause(); audioEl.src = '';
+                }
             } else if (type === 'quran-page') {
                 const qa = window.alquranApp;
                 if (qa) qa._stopAudio();
