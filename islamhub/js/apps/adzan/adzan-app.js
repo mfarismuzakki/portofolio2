@@ -2465,12 +2465,12 @@ export default class AdzanApp {
                 if (qa) { qa.isPlaying = false; qa.currentPlayingVerse = null; qa.audioSetupDone = false; }
             }
         } catch (e) { console.error('admStopAudio error', e); }
-        // Immediately hide bar without waiting for next poll
+        // Immediately hide bar without waiting for next poll.
+        // _updateAudioBar() already hides the bar on the next 1-second tick because
+        // _getAudioState() returns null once audio is stopped. The display mode clock
+        // and countdown remain unaffected (displayModeActive stays true).
         const bar = document.getElementById('admAudioBar');
         if (bar) bar.style.display = 'none';
-        // Prevent bar from reappearing by stopping interval and marking inactive
-        this.displayModeActive = false;
-        clearInterval(this.displayModeAudioBarInterval);
     }
 
     _getBasePath() {
