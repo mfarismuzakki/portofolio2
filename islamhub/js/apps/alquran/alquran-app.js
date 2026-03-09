@@ -38,7 +38,8 @@ export default class AlQuranApp {
             autoPlayNext: false,
             autoRepeat: 1,
             hideLastRead: false,
-            hideMemorization: false
+            hideMemorization: false,
+            readingTheme: 'dark'
         });
 
         this.isMemorizationMode = false;
@@ -69,10 +70,43 @@ export default class AlQuranApp {
         this._applyFontSettings();
     }
 
+    // Apply reading theme to the quran container
+    _applyReadingTheme() {
+        const theme = this.settings.readingTheme || 'dark';
+        const themes = {
+            dark:   { bg: '',          text: '',          textSec: '',        border: '',                        accent: '' },
+            black:  { bg: '#000000',   text: '#e8e0d0',   textSec: '#a09880', border: 'rgba(255,255,255,0.08)',  accent: '#a0c8b0' },
+            sepia:  { bg: '#f3ead8',   text: '#3d2b1f',   textSec: '#7a5c3e', border: 'rgba(100,70,40,0.2)',     accent: '#8b6040' },
+            gray:   { bg: '#2a2d32',   text: '#d4d4d4',   textSec: '#909090', border: 'rgba(255,255,255,0.1)',   accent: '#90b8c8' },
+            white:  { bg: '#f8f8f8',   text: '#1a1a1a',   textSec: '#555555', border: 'rgba(0,0,0,0.1)',         accent: '#2a7a9a' }
+        };
+        const t = themes[theme] || themes.dark;
+        const container = this.container;
+        if (!container) return;
+
+        if (theme === 'dark') {
+            // Remove overrides — let default CSS variables take over
+            container.style.removeProperty('--qt-bg');
+            container.style.removeProperty('--qt-text');
+            container.style.removeProperty('--qt-text-sec');
+            container.style.removeProperty('--qt-border');
+            container.style.removeProperty('--qt-accent');
+            container.removeAttribute('data-reading-theme');
+        } else {
+            container.style.setProperty('--qt-bg', t.bg);
+            container.style.setProperty('--qt-text', t.text);
+            container.style.setProperty('--qt-text-sec', t.textSec);
+            container.style.setProperty('--qt-border', t.border);
+            container.style.setProperty('--qt-accent', t.accent);
+            container.setAttribute('data-reading-theme', theme);
+        }
+    }
+
     // Apply font settings to all Arabic text elements
     _applyFontSettings() {
         const fontSize = this.settings.arabicFontSize || 1.8;
         const fontFamily = this.settings.arabicFont || 'uthmanic';
+        this._applyReadingTheme();
 
         // Apply font size via CSS custom property
         document.documentElement.style.setProperty('--arabic-font-size', `${fontSize}rem`);
@@ -1085,7 +1119,7 @@ export default class AlQuranApp {
             html.push('<div class="surah-list-simple" id="surahListSimple">');
             for (const s of this.QURAN_SURAHS) {
                 html.push(`
-                    <div class="surah-row" data-number="${s.number}" data-name="${s.name.toLowerCase()}" data-arabic="${s.nameArabic}">
+                    <div class="surah-row" data-number="${s.number}" data-name="${s.name.toLowerCase()}" data-arabic="${s.nameArabic}" data-surah="${s.number}" style="cursor:pointer">
                         <div class="surah-row-number">${s.number}</div>
                         <div class="surah-row-content">
                             <div class="surah-row-names">
@@ -1099,9 +1133,6 @@ export default class AlQuranApp {
                             </div>
                         </div>
                         <div class="surah-row-actions">
-                            <button class="surah-row-btn" data-surah="${s.number}" title="Baca ${s.name}">
-                                <i class="fas fa-book-open"></i>
-                            </button>
                             <button class="surah-row-btn-verse" data-surah="${s.number}" data-total-verses="${s.verses}" title="Lompat ke ayat">
                                 <i class="fas fa-list-ol"></i>
                             </button>
@@ -1156,14 +1187,12 @@ export default class AlQuranApp {
             // setTimeout(() => searchInput.focus(), 100);
         }
 
-        // Event listener untuk tombol "Baca Surat"
-        modal.querySelectorAll('.surah-row-btn').forEach(btn => btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            const surahNum = parseInt(btn.dataset.surah);
-
-            // Close modal immediately and let inline loader handle loading state
+        // Event listener untuk klik row (baca surat)
+        modal.querySelectorAll('.surah-row').forEach(row => row.addEventListener('click', async (e) => {
+            // Ignore if the verse-jump button was clicked
+            if (e.target.closest('.surah-row-btn-verse')) return;
+            const surahNum = parseInt(row.dataset.surah);
             modal.remove();
-
             try {
                 await this.readSurah(surahNum);
             } catch (error) {
@@ -1528,6 +1557,22 @@ export default class AlQuranApp {
                             </div>
                         </div>
 
+                        <!-- Theme Settings Section -->
+                        <div class="settings-section">
+                            <h4 class="settings-section-title">
+                                <i class="fas fa-palette"></i> Tema Warna Baca
+                            </h4>
+                            <div class="setting-item">
+                                <div class="reading-theme-picker">
+                                    <button class="theme-swatch theme-dark ${(this.settings.readingTheme||'dark') === 'dark' ? 'active' : ''}" data-theme="dark" title="Gelap"><span>Gelap</span></button>
+                                    <button class="theme-swatch theme-black ${this.settings.readingTheme === 'black' ? 'active' : ''}" data-theme="black" title="Hitam"><span>Hitam</span></button>
+                                    <button class="theme-swatch theme-gray ${this.settings.readingTheme === 'gray' ? 'active' : ''}" data-theme="gray" title="Abu-abu"><span>Abu</span></button>
+                                    <button class="theme-swatch theme-sepia ${this.settings.readingTheme === 'sepia' ? 'active' : ''}" data-theme="sepia" title="Coklat"><span>Coklat</span></button>
+                                    <button class="theme-swatch theme-white ${this.settings.readingTheme === 'white' ? 'active' : ''}" data-theme="white" title="Putih"><span>Putih</span></button>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Display Settings Section -->
                         <div class="settings-section">
                             <h4 class="settings-section-title">
@@ -1613,6 +1658,18 @@ export default class AlQuranApp {
         modal.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => modal.remove()));
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.remove();
+        });
+
+        // Theme picker
+        modal.querySelectorAll('[data-theme]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.theme;
+                modal.querySelectorAll('[data-theme]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.settings.readingTheme = theme;
+                this._saveJSON('alquran_settings', this.settings);
+                this._applyReadingTheme();
+            });
         });
 
         document.getElementById('set_hide_translit').addEventListener('change', (e) => {
@@ -1707,7 +1764,8 @@ export default class AlQuranApp {
                         autoPlayNext: false,
                         autoRepeat: 1,
                         hideLastRead: false,
-                        hideMemorization: false
+                        hideMemorization: false,
+                        readingTheme: 'dark'
                     };
                     this._saveJSON('alquran_settings', this.settings);
                     modal.remove();
@@ -2312,20 +2370,22 @@ export default class AlQuranApp {
                     <span class="verse-number-ornament">&#xFD3F;${arabicNumber}&#xFD3E;</span>
                 `;
             } else {
-                // Translation mode - lengkap dengan tombol play audio
+                // Translation mode - quran.com style
                 verseEl.className = 'verse-item-clean';
                 verseEl.innerHTML = `
-                    <div class="verse-number-badge">${verse.number}</div>
+                    <div class="verse-header-bar">
+                        <span class="verse-ref-badge">${verseSurah}:${verse.number}</span>
+                        <div class="verse-actions-row">
+                            <button class="verse-action-btn" data-play-verse-audio="${verseKey}" title="Putar Audio Ayat"><i class="fas fa-play"></i></button>
+                            <button class="verse-action-btn" data-copy-verse="${verseKey}" title="Salin Ayat"><i class="fas fa-copy"></i></button>
+                            <button class="verse-action-btn ${isBookmarked ? 'active' : ''}" data-bookmark-verse="${verseKey}" title="Bookmark"><i class="${isBookmarked ? 'fas' : 'far'} fa-bookmark"></i></button>
+                            ${!this.settings.hideMemorization ? `<button class="verse-action-btn" data-memorize-verse="${verseKey}" title="Tandai Hafal"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
+                            ${verse.tafsir ? `<button class="verse-action-btn" data-tafsir-verse="${verseKey}" title="Lihat Tafsir"><i class="fas fa-book-open"></i></button>` : ''}
+                        </div>
+                    </div>
                     <div class="verse-arabic ${this.settings.arabicFont}">${verse.arabic}</div>
                     ${!this.settings.hideTransliteration ? `<div class="verse-transliteration">${verse.transliteration}</div>` : ''}
                     ${!this.settings.hideTranslation ? `<div class="verse-translation">${verse.translation}</div>` : ''}
-                    <div class="verse-actions-inline">
-                        <button class="verse-btn-inline" data-play-verse-audio="${verseKey}" title="Putar Audio Ayat"><i class="fas fa-play-circle"></i></button>
-                        <button class="verse-btn-inline" data-copy-verse="${verseKey}" title="Salin Ayat"><i class="fas fa-copy"></i></button>
-                        <button class="verse-btn-inline" data-bookmark-verse="${verseKey}" title="Bookmark"><i class="${isBookmarked ? 'fas' : 'far'} fa-bookmark"></i></button>
-                        ${!this.settings.hideMemorization ? `<button class="verse-btn-inline" data-memorize-verse="${verseKey}" title="Tandai Hafal"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
-                        ${verse.tafsir ? `<button class="verse-btn-inline" data-tafsir-verse="${verseKey}" title="Lihat Tafsir"><i class="fas fa-book-open"></i></button>` : ''}
-                    </div>
                 `;
             }
             versesContainer.appendChild(verseEl);
@@ -2716,20 +2776,22 @@ export default class AlQuranApp {
                     <span class="verse-number-ornament">&#xFD3F;${arabicNumber}&#xFD3E;</span>
                 `;
             } else {
-                // Translation mode - lengkap dengan tombol play audio
+                // Translation mode - quran.com style
                 verseEl.className = 'verse-item-clean';
                 verseEl.innerHTML = `
-                    <div class="verse-number-badge">${verse.number}</div>
+                    <div class="verse-header-bar">
+                        <span class="verse-ref-badge">${surah.number}:${verse.number}</span>
+                        <div class="verse-actions-row">
+                            <button class="verse-action-btn" data-play-verse-audio="${verse.number}" title="Putar Audio Ayat"><i class="fas fa-play"></i></button>
+                            <button class="verse-action-btn" data-copy-verse="${verse.number}" title="Salin Ayat"><i class="fas fa-copy"></i></button>
+                            <button class="verse-action-btn ${isBookmarked ? 'active' : ''}" data-bookmark-verse="${verse.number}" title="Bookmark"><i class="${isBookmarked ? 'fas' : 'far'} fa-bookmark"></i></button>
+                            ${!this.settings.hideMemorization ? `<button class="verse-action-btn" data-memorize-verse="${verse.number}" title="Tandai Hafal"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
+                            ${verse.tafsir ? `<button class="verse-action-btn" data-tafsir-verse="${verse.number}" title="Lihat Tafsir"><i class="fas fa-book-open"></i></button>` : ''}
+                        </div>
+                    </div>
                     <div class="verse-arabic ${this.settings.arabicFont}">${verse.arabic}</div>
                     ${!this.settings.hideTransliteration ? `<div class="verse-transliteration">${verse.transliteration}</div>` : ''}
                     ${!this.settings.hideTranslation ? `<div class="verse-translation">${verse.translation}</div>` : ''}
-                    <div class="verse-actions-inline">
-                        <button class="verse-btn-inline" data-play-verse-audio="${verse.number}" title="Putar Audio Ayat"><i class="fas fa-play-circle"></i></button>
-                        <button class="verse-btn-inline" data-copy-verse="${verse.number}" title="Salin Ayat"><i class="fas fa-copy"></i></button>
-                        <button class="verse-btn-inline" data-bookmark-verse="${verse.number}" title="Bookmark"><i class="${isBookmarked ? 'fas' : 'far'} fa-bookmark"></i></button>
-                        ${!this.settings.hideMemorization ? `<button class="verse-btn-inline" data-memorize-verse="${verse.number}" title="Tandai Hafal"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
-                        ${verse.tafsir ? `<button class="verse-btn-inline" data-tafsir-verse="${verse.number}" title="Lihat Tafsir"><i class="fas fa-book-open"></i></button>` : ''}
-                    </div>
                 `;
             }
             versesContainer.appendChild(verseEl);
@@ -3191,16 +3253,13 @@ export default class AlQuranApp {
         for (const surah of this.QURAN_SURAHS) {
             const isActive = this.currentSurah === surah.number;
             html += `
-                <div class="sidebar-item ${isActive ? 'active' : ''}" data-surah="${surah.number}">
+                <div class="sidebar-item ${isActive ? 'active' : ''}" data-read-surah="${surah.number}" style="cursor:pointer">
                     <div class="sidebar-item-number">${surah.number}</div>
                     <div class="sidebar-item-info">
                         <div class="sidebar-item-title">${surah.name}</div>
                         <div class="sidebar-item-meta">${surah.nameArabic} • ${surah.verses} ayat</div>
                     </div>
                     <div class="sidebar-item-actions">
-                        <button class="sidebar-item-btn" data-read-surah="${surah.number}" title="Baca surat">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
                         <button class="sidebar-item-btn" data-verse-jump="${surah.number}" data-total-verses="${surah.verses}" title="Lompat ke ayat">
                             <i class="fas fa-list-ol"></i>
                         </button>
@@ -3210,11 +3269,11 @@ export default class AlQuranApp {
         }
         container.innerHTML = html;
 
-        // Add click handlers for read surah
-        container.querySelectorAll('[data-read-surah]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const surahNum = parseInt(btn.dataset.readSurah);
+        // Clicking anywhere on the row reads the surah
+        container.querySelectorAll('[data-read-surah]').forEach(row => {
+            row.addEventListener('click', (e) => {
+                if (e.target.closest('[data-verse-jump]')) return;
+                const surahNum = parseInt(row.dataset.readSurah);
                 this.readSurah(surahNum);
                 this.toggleSidebar();
             });

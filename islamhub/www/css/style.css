@@ -45,6 +45,8 @@ html {
   scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: #00d4ff rgba(255, 255, 255, 0.1);
+  /* Keep scrollbar track above fixed bottom nav */
+  scroll-padding-bottom: 75px;
 }
 
 html, body {
@@ -95,6 +97,11 @@ body::before {
 ::-webkit-scrollbar-thumb:hover {
   background: #00e5ff;
   box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+}
+
+/* Scrollbar track stops above the fixed bottom navigation */
+html::-webkit-scrollbar-track {
+  margin-bottom: 75px;
 }
 
 /* ===== ANIMATIONS ===== */

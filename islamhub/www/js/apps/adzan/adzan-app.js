@@ -1836,6 +1836,14 @@ export default class AdzanApp {
                                 <div class="adm-theme-preview adm-theme-preview-cyan"></div>
                                 <span>Modern (Cyan)</span>
                             </div>
+                            <div class="adm-theme-option ${s.theme === 'green' ? 'active' : ''}" data-theme="green">
+                                <div class="adm-theme-preview adm-theme-preview-green"></div>
+                                <span>Alam (Hijau)</span>
+                            </div>
+                            <div class="adm-theme-option ${s.theme === 'blue' ? 'active' : ''}" data-theme="blue">
+                                <div class="adm-theme-preview adm-theme-preview-blue"></div>
+                                <span>Langit (Biru)</span>
+                            </div>
                         </div>
                     </div>
                     <div>
