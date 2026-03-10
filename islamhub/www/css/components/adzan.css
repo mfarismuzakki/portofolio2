@@ -1621,32 +1621,36 @@
 /* Responsive */
 @media (max-width: 768px) {
   .adm-top-bar {
-    grid-template-columns: auto 1fr auto;
-    padding: 10px max(14px, env(safe-area-inset-right)) 10px max(12px, env(safe-area-inset-left));
-    gap: 8px;
+    /* Row 1: clock (left) + actions (right)
+       Row 2: masjid name (full width)
+       Row 3: date info (full width) */
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto auto;
+    padding: 10px max(16px, env(safe-area-inset-right)) 10px max(14px, env(safe-area-inset-left));
+    gap: 6px 10px;
     overflow: visible;
   }
 
   .adm-clock-wrap {
+    grid-column: 1;
+    grid-row: 1;
     justify-self: start;
-    flex-shrink: 0;
+    align-self: center;
+    min-width: 0;   /* allow shrink */
   }
 
   .adm-clock {
-    font-size: 1.6rem;
+    font-size: clamp(1.5rem, 7vw, 2rem);
   }
 
   .adm-clock-secs {
-    font-size: 0.85rem;
-  }
-
-  .adm-center-info {
-    position: static;
-    text-align: center;
-    justify-self: center;
+    font-size: clamp(0.75rem, 3.5vw, 1rem);
   }
 
   .adm-top-actions {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
     flex-shrink: 0;
     gap: 6px;
   }
@@ -1658,14 +1662,21 @@
     font-size: 0.95rem;
   }
 
-  .adm-date-wrap {
+  .adm-center-info {
     grid-column: 1 / -1;
     grid-row: 2;
+    text-align: center;
+    justify-self: center;
+  }
+
+  .adm-date-wrap {
+    grid-column: 1 / -1;
+    grid-row: 3;
     text-align: center;
   }
 
   .adm-masjid-name {
-    font-size: clamp(0.72rem, 3.2vw, 0.95rem);
+    font-size: clamp(0.75rem, 3.5vw, 1rem);
     gap: 4px;
     white-space: nowrap;
     overflow: hidden;

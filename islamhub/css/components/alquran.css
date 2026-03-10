@@ -430,8 +430,8 @@
 .arabic-text {
     font-size: 1.75rem;
     /* Larger font like Quran.com */
-    line-height: 2.6;
-    /* Spacious line height for readability */
+    line-height: 2.8;
+    /* Spacious line height for readability and harakat */
     text-align: right;
     color: var(--text-primary);
     font-family: 'Uthmanic Hafs', 'KFGQPC Uthmani', 'Amiri Quran', serif;
@@ -439,8 +439,8 @@
     direction: rtl;
     word-spacing: 0.12em;
     /* Consistent word spacing like Quran.com */
-    letter-spacing: -0.01em;
-    /* Tighter for Arabic script */
+    letter-spacing: 0;
+    /* Neutral letter-spacing for Arabic script */
 }
 
 /* Arabic Font Families */
@@ -476,6 +476,14 @@
 
 .arabic-text.naskh {
     font-family: 'Naskh', 'Traditional Arabic', serif;
+}
+
+/* Noto Naskh Arabic - high quality screen rendering */
+.arabic-text.noto-naskh,
+.verse-arabic.noto-naskh,
+.verse-arabic-inline.noto-naskh,
+.basmalah-arabic.noto-naskh {
+    font-family: 'Noto Naskh Arabic', 'Noto Sans Arabic', serif !important;
 }
 
 .arabic-text.kufi {
@@ -3399,7 +3407,7 @@
     border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 0;
-    padding: 24px 8px;
+    padding: 32px 20px;
     position: relative;
     transition: background 0.2s ease;
     margin-bottom: 0;
@@ -3490,18 +3498,19 @@
 
 .verse-item-clean .verse-arabic {
     font-family: 'Amiri Quran', 'Uthmanic Hafs', 'KFGQPC Uthmani', serif;
-    font-size: 1.55rem;
-    line-height: 2.2;
+    font-size: 1.75rem;
+    line-height: 3.0;
     text-align: right;
     color: var(--text-primary);
-    margin-bottom: 14px;
-    margin-top: 0;
+    margin-bottom: 20px;
+    margin-top: 4px;
     margin-left: 0;
     margin-right: 0;
     direction: rtl;
-    word-spacing: 0.05em;
-    letter-spacing: 0.01em;
+    word-spacing: 0.15em;
+    letter-spacing: 0;
     font-weight: 400;
+    overflow: visible;
 }
 
 .verse-item-clean .verse-transliteration {
@@ -3509,7 +3518,7 @@
     color: rgba(0, 255, 255, 0.7);
     font-style: italic;
     margin-bottom: 10px;
-    line-height: 1.6;
+    line-height: 1.8;
     margin-left: 0;
     /* Hapus margin kiri */
     margin-right: 0;
@@ -3517,9 +3526,9 @@
 }
 
 .verse-item-clean .verse-translation {
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: var(--text-secondary);
-    line-height: 1.7;
+    line-height: 1.85;
     margin-left: 0;
     /* Hapus margin kiri */
     margin-right: 0;
@@ -3786,6 +3795,7 @@
     max-width: 900px;
     margin: 0 auto;
     padding: 2rem;
+    overflow: visible;
 }
 
 /* Basmalah styling - Quran.com style */
@@ -3798,13 +3808,13 @@
 
 .basmalah-arabic {
     font-family: 'Uthmanic Hafs', 'KFGQPC Uthmani', 'Amiri Quran', serif;
-    font-size: 1.8rem;
+    font-size: 2rem;
     color: rgba(255, 255, 255, 0.95);
     font-weight: 400;
     direction: rtl;
-    letter-spacing: -0.01em;
-    word-spacing: 0.12em;
-    line-height: 2.2;
+    letter-spacing: 0;
+    word-spacing: 0.15em;
+    line-height: 2.8;
     display: block;
     text-align: center;
 }
@@ -3818,15 +3828,16 @@
 }
 
 .surah-mode.reading-view .basmalah-arabic {
-    font-size: 1.8rem;
+    font-size: 2rem;
     display: block;
     font-weight: 400;
-    letter-spacing: -0.01em;
-    word-spacing: 0.12em;
+    letter-spacing: 0;
+    word-spacing: 0.15em;
     text-align: center !important;
     text-align-last: center !important;
     direction: rtl;
     unicode-bidi: isolate;
+    line-height: 2.8;
 }
 
 /* Translation mode - Flat quran.com style */
@@ -3834,7 +3845,7 @@
     background: transparent;
     border: none;
     border-radius: 0;
-    padding: 2.5rem 2rem;
+    padding: 1rem 1.25rem 3rem 1.25rem;
 }
 
 /* Reading mode - Remove all card styling and make text continuous like mushaf */
@@ -3842,14 +3853,14 @@
     background: transparent;
     border: none;
     border-radius: 0;
-    padding: 0.75rem 0.5rem;
+    padding: 1.5rem 1.25rem 2rem 1.25rem;
     text-align: justify;
     text-align-last: right;
     direction: rtl;
-    line-height: 1.8;
-    font-size: 1.55rem;
+    line-height: 3.2;
+    font-size: 1.75rem;
     max-width: 720px;
-    word-spacing: 0.02em;
+    word-spacing: 0.15em;
     letter-spacing: 0;
     display: block;
 }
@@ -3884,16 +3895,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 20px;
-    height: 20px;
+    min-width: 26px;
+    height: 26px;
     padding: 0;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.5rem;
-    font-weight: 600;
-    margin: 0 0.15em;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.55rem;
+    font-weight: 700;
+    margin: 0 0.2em;
     vertical-align: middle;
     font-family: var(--font-primary);
 }

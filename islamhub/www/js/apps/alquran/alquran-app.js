@@ -121,7 +121,7 @@ export default class AlQuranApp {
             const elements = document.querySelectorAll(selector);
             elements.forEach(el => {
                 // Remove existing font classes
-                el.classList.remove('uthmanic', 'amiri', 'scheherazade', 'uthmani', 'naskh', 'kufi');
+                el.classList.remove('uthmanic', 'amiri', 'scheherazade', 'uthmani', 'naskh', 'kufi', 'noto-naskh');
                 // Add new font class
                 el.classList.add(fontFamily);
                 // Apply font size
@@ -594,7 +594,9 @@ export default class AlQuranApp {
             console.log('[openPage] Opening page:', pageNum);
 
             // Find which surah contains this page
-            const surah = this.QURAN_SURAHS.find(s => pageNum >= s.startPage && pageNum <= s.endPage);
+            // Prefer the surah that STARTS on this page (handles shared boundary pages like 582)
+            const surah = this.QURAN_SURAHS.find(s => s.startPage === pageNum)
+                       || this.QURAN_SURAHS.find(s => pageNum >= s.startPage && pageNum <= s.endPage);
 
             if (!surah) {
                 this._notify('Halaman tidak ditemukan', 'error');
@@ -1551,6 +1553,7 @@ export default class AlQuranApp {
                                     <option value="amiri" ${(this.settings.arabicFont || 'amiri') === 'amiri' ? 'selected' : ''}>Amiri Quran (Default)</option>
                                     <option value="uthmanic" ${this.settings.arabicFont === 'uthmanic' ? 'selected' : ''}>Uthmanic Hafs</option>
                                     <option value="scheherazade" ${this.settings.arabicFont === 'scheherazade' ? 'selected' : ''}>Scheherazade New</option>
+                                    <option value="noto-naskh" ${this.settings.arabicFont === 'noto-naskh' ? 'selected' : ''}>Noto Naskh Arabic</option>
                                 </select>
                             </div>
                         </div>
