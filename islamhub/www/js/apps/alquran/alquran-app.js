@@ -1982,14 +1982,18 @@ export default class AlQuranApp {
             const startPage = surah.startPage;
             const endPage = surah.endPage;
 
-            // Load all pages that contain this surah
-            let surahDescription = '';
-            for (let pageNum = startPage; pageNum <= endPage; pageNum++) {
-                // Update loader progress
-                const progress = Math.round(((pageNum - startPage + 1) / (endPage - startPage + 1)) * 100);
-                this._updateInlineLoader(`Memuat Surat... ${progress}%`);
+            // Build list of page numbers for this surah
+            const pageNums = [];
+            for (let p = startPage; p <= endPage; p++) pageNums.push(p);
 
-                const pageData = await this.loadPageData(pageNum);
+            // Load all pages in parallel — cached reads are near-instant, network fetches are faster in parallel
+            const allPageData = await Promise.all(pageNums.map(p => this.loadPageData(p)));
+
+            // Extract verses from loaded pages
+            let surahDescription = '';
+            for (let i = 0; i < pageNums.length; i++) {
+                const pageData = allPageData[i];
+                const pageNum = pageNums[i];
 
                 if (pageData && pageData.surahs) {
                     // Extract verses for this specific surah from the page
@@ -2071,15 +2075,17 @@ export default class AlQuranApp {
             const allVerses = [];
             const surahsInJuz = new Set();
             const totalPages = juz.endPage - juz.startPage + 1;
-            let loadedPages = 0;
 
-            for (let pageNum = juz.startPage; pageNum <= juz.endPage; pageNum++) {
-                // Update loader progress
-                loadedPages++;
-                const progress = Math.round((loadedPages / totalPages) * 100);
-                this._updateInlineLoader(`Memuat Juz... ${progress}%`);
+            // Build list of page numbers for this juz
+            const pageNums = [];
+            for (let p = juz.startPage; p <= juz.endPage; p++) pageNums.push(p);
 
-                const pageData = await this.loadPageData(pageNum);
+            // Load all pages in parallel — cached reads are near-instant, network fetches are faster in parallel
+            const allPageData = await Promise.all(pageNums.map(p => this.loadPageData(p)));
+
+            for (let i = 0; i < pageNums.length; i++) {
+                const pageData = allPageData[i];
+                const pageNum = pageNums[i];
 
                 if (pageData && pageData.surahs) {
                     for (const surahInPage of pageData.surahs) {
