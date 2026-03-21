@@ -250,15 +250,8 @@ export default class AdzanApp {
                 // Update date with Hijri
                 if (data.data.date && data.data.date.hijri) {
                     const hijri = data.data.date.hijri;
-                    // TEMPORARY: Koreksi -1 khusus Ramadan 1447H
-                    // Kalender Indonesia (rukyat) dimulai 1 hari setelah hisab
-                    // Hapus setelah Ramadan 1447H selesai
-                    const apiMonth = parseInt(hijri.month?.number || 0);
-                    const apiDay = parseInt(hijri.day || 0);
-                    const needsAdjust = (apiMonth === 9) || (apiMonth === 10 && apiDay === 1);
-                    const hijriAdjusted = needsAdjust ? this._adjustHijriDate(hijri, -1) : hijri;
-                    this.hijriData = hijriAdjusted;
-                    this.updateDate(hijriAdjusted);
+                    this.hijriData = hijri;
+                    this.updateDate(hijri);
                 }
                 
                 this.renderPrayerTimes();

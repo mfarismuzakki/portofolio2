@@ -93,7 +93,7 @@ const QURAN_SURAHS = [
     { number: 89, name: "Al-Fajr", nameArabic: "الفجر", verses: 30, revelation: "Makkah", startPage: 593, endPage: 594 },
     { number: 90, name: "Al-Balad", nameArabic: "البلد", verses: 20, revelation: "Makkah", startPage: 594, endPage: 594 },
     { number: 91, name: "Ash-Shams", nameArabic: "الشمس", verses: 15, revelation: "Makkah", startPage: 595, endPage: 595 },
-    { number: 92, name: "Al-Layl", nameArabic: "الليل", verses: 21, revelation: "Makkah", startPage: 595, endPage: 595 },
+    { number: 92, name: "Al-Layl", nameArabic: "الليل", verses: 21, revelation: "Makkah", startPage: 595, endPage: 596 },
     { number: 93, name: "Ad-Duha", nameArabic: "الضحى", verses: 11, revelation: "Makkah", startPage: 595, endPage: 596 },
     { number: 94, name: "Ash-Sharh", nameArabic: "الشرح", verses: 8, revelation: "Makkah", startPage: 596, endPage: 596 },
     { number: 95, name: "At-Tin", nameArabic: "التين", verses: 8, revelation: "Makkah", startPage: 597, endPage: 597 },
