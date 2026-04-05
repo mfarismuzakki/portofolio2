@@ -864,7 +864,6 @@
 .adm-bg {
   position: absolute;
   inset: 0;
-  background-image: url('../../assets/images/adzanbg.jpg');
   background-size: cover;
   background-position: center 70%;
   z-index: 0;
@@ -982,36 +981,70 @@
   position: relative;
   z-index: 1;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 0 28px 24px;
-}
-
-.adm-next-info {
-  text-align: center;
-  padding: 10px 32px;
-  background: rgba(0,0,0,0.55);
-  border-radius: 50px;
-  border: 1px solid rgba(255,255,255,0.2);
-  backdrop-filter: blur(8px);
-  display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  padding: 0 28px 20px;
 }
 
-.adm-next-label {
-  font-size: clamp(1rem, 1.8vw, 1.3rem);
-  color: rgba(255,255,255,0.75);
-  font-weight: 400;
-  letter-spacing: 1px;
+/* Center countdown display */
+.adm-center-display {
+  text-align: center;
+  padding: 22px 36px 28px;
+  background: rgba(0,0,0,0.58);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  backdrop-filter: blur(14px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  max-width: 520px;
+  width: 92%;
+}
+
+.adm-center-next-label {
+  font-size: clamp(0.7rem, 1.2vw, 0.95rem);
+  color: rgba(255,255,255,0.55);
   text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 400;
 }
 
-.adm-next-name {
-  font-size: clamp(1.3rem, 2.5vw, 2rem);
-  font-weight: 800;
+.adm-center-next-name {
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 900;
   color: #fff;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.adm-center-next-arabic {
+  font-family: 'Scheherazade New', 'Amiri', 'Times New Roman', serif;
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  color: rgba(255,255,255,0.7);
+  direction: rtl;
+  line-height: 1.4;
+  min-height: 0;
+}
+
+.adm-center-countdown {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 900;
+  color: #f5930a;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin: 6px 0 4px;
+  text-shadow: 0 0 30px rgba(245,147,10,0.4);
+}
+
+.adm-center-next-time {
+  font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+  color: rgba(255,255,255,0.55);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: 1px;
 }
 
 /* Bottom - Prayer Grid */
@@ -1067,6 +1100,19 @@
   padding: 2px 10px;
   border-radius: 20px;
   margin-top: 2px;
+}
+
+/* Arabic prayer name row */
+.adm-prayer-arabic {
+  font-family: 'Scheherazade New', 'Amiri', 'Times New Roman', serif;
+  font-size: clamp(0.65rem, 1vw, 0.85rem);
+  color: #999;
+  direction: rtl;
+  line-height: 1.3;
+}
+
+.adm-prayer-col.adm-next .adm-prayer-arabic {
+  color: rgba(255,255,255,0.7);
 }
 
 /* Sunnah Prayer Panel in main area */
@@ -1272,8 +1318,8 @@
 /* Theme picker */
 .adm-theme-options {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
 }
 .adm-theme-option {
   cursor: pointer;
@@ -2078,5 +2124,638 @@
   }
   .adm-audio-bar-sub {
     display: none;
+  }
+}
+
+/* ===== NEW THEME PREVIEWS ===== */
+.adm-theme-preview-maroon {
+  background: linear-gradient(180deg, #140505 50%, #c84040 100%);
+}
+.adm-theme-preview-white {
+  background: linear-gradient(180deg, #fffcf0 50%, #c87800 100%);
+}
+
+/* ===== CENTER COUNTDOWN ACCENT COLORS PER THEME ===== */
+.adzan-display-mode[data-adm-theme="default"] .adm-center-countdown { color: #f5930a; text-shadow: 0 0 30px rgba(245,147,10,0.4); }
+.adzan-display-mode[data-adm-theme="cyan"] .adm-center-countdown { color: #00ffc8; text-shadow: 0 0 30px rgba(0,255,200,0.4); }
+.adzan-display-mode[data-adm-theme="green"] .adm-center-countdown { color: #22c55e; text-shadow: 0 0 30px rgba(34,197,94,0.4); }
+.adzan-display-mode[data-adm-theme="blue"] .adm-center-countdown { color: #60a5fa; text-shadow: 0 0 30px rgba(96,165,250,0.4); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-center-countdown { color: #e86464; text-shadow: 0 0 30px rgba(232,100,100,0.4); }
+.adzan-display-mode[data-adm-theme="white"] .adm-center-countdown { color: #c87800; text-shadow: 0 0 30px rgba(200,120,0,0.3); }
+
+/* ===== FONT SIZE SCALING ===== */
+.adzan-display-mode[data-adm-fontsize="sm"] .adm-clock { font-size: clamp(2rem, 4vw, 3.2rem); }
+.adzan-display-mode[data-adm-fontsize="sm"] .adm-clock-secs { font-size: clamp(1rem, 1.8vw, 1.4rem); }
+.adzan-display-mode[data-adm-fontsize="sm"] .adm-prayer-time { font-size: clamp(1.1rem, 2.2vw, 1.8rem); }
+.adzan-display-mode[data-adm-fontsize="sm"] .adm-center-countdown { font-size: clamp(2.2rem, 6vw, 4.5rem); }
+.adzan-display-mode[data-adm-fontsize="sm"] .adm-center-next-name { font-size: clamp(1.4rem, 2.5vw, 2.2rem); }
+
+.adzan-display-mode[data-adm-fontsize="lg"] .adm-clock { font-size: clamp(3.5rem, 6.5vw, 5.5rem); }
+.adzan-display-mode[data-adm-fontsize="lg"] .adm-clock-secs { font-size: clamp(1.8rem, 3.2vw, 2.6rem); }
+.adzan-display-mode[data-adm-fontsize="lg"] .adm-prayer-time { font-size: clamp(1.6rem, 3.5vw, 2.8rem); }
+.adzan-display-mode[data-adm-fontsize="lg"] .adm-prayer-label { font-size: clamp(0.85rem, 1.6vw, 1.25rem); }
+.adzan-display-mode[data-adm-fontsize="lg"] .adm-center-countdown { font-size: clamp(4rem, 10vw, 8rem); }
+.adzan-display-mode[data-adm-fontsize="lg"] .adm-center-next-name { font-size: clamp(2.2rem, 4.5vw, 3.5rem); }
+
+/* ===== BACKGROUND STYLES ===== */
+.adzan-display-mode[data-adm-bg="haram"] .adm-bg,
+.adzan-display-mode:not([data-adm-bg]) .adm-bg {
+  background-image: url('../../assets/images/masjid_haram.jpg');
+  background-position: center 40%;
+}
+.adzan-display-mode[data-adm-bg="nabawi"] .adm-bg {
+  background-image: url('../../assets/images/masjid_nabawi.jpg');
+  background-position: center 50%;
+}
+.adzan-display-mode[data-adm-bg="aqsa"] .adm-bg {
+  background-image: url('../../assets/images/masjid_aqsa.jpg');
+  background-position: center 55%;
+}
+.adzan-display-mode[data-adm-bg="istanbul"] .adm-bg {
+  background-image: url('../../assets/images/masjid_istanbul.jpg');
+  background-position: center 50%;
+}
+
+.adzan-display-mode[data-adm-bg="dark"] .adm-bg {
+  background-image: none;
+  background: linear-gradient(135deg, #070b16 0%, #111827 50%, #060d1a 100%);
+}
+.adzan-display-mode[data-adm-bg="dark"] .adm-bg::after { background: none; }
+
+.adzan-display-mode[data-adm-bg="emerald"] .adm-bg {
+  background-image: none;
+  background: linear-gradient(160deg, #041008 0%, #072415 35%, #042010 65%, #030c05 100%);
+}
+.adzan-display-mode[data-adm-bg="emerald"] .adm-bg::after {
+  background: radial-gradient(ellipse at 50% 40%, rgba(34,197,94,0.07) 0%, transparent 55%);
+}
+
+.adzan-display-mode[data-adm-bg="ramadan"] .adm-bg {
+  background-image: none;
+  background: linear-gradient(160deg, #1a0d30 0%, #2d1460 45%, #180a2e 100%);
+}
+.adzan-display-mode[data-adm-bg="ramadan"] .adm-bg::after {
+  background:
+    radial-gradient(ellipse at 25% 55%, rgba(168,85,247,0.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 75% 30%, rgba(251,191,36,0.07) 0%, transparent 40%);
+}
+
+/* ===== MAROON THEME ===== */
+.adzan-display-mode[data-adm-theme="maroon"] .adm-top-bar {
+  background: rgba(18, 4, 4, 0.97);
+  border-bottom: 1px solid rgba(180,40,40,0.25);
+}
+.adzan-display-mode[data-adm-theme="maroon"] .adm-clock { color: #e86464; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-clock-secs { color: rgba(232,100,100,0.6); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-masjid-name { color: #ffeaea; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-masjid-name i { color: #e86464; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-hijri { color: #ffeaea; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-gregorian { color: rgba(255,220,220,0.6); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-close-btn,
+.adzan-display-mode[data-adm-theme="maroon"] .adm-settings-btn {
+  background: rgba(180,40,40,0.1); border-color: rgba(180,40,40,0.3); color: rgba(232,100,100,0.9);
+}
+.adzan-display-mode[data-adm-theme="maroon"] .adm-close-btn:hover { background: rgba(220,0,0,0.2); border-color: rgba(220,0,0,0.5); color: #ff6e6e; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-settings-btn:hover { background: rgba(180,40,40,0.2); color: #e86464; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-bottom { background: rgba(14, 4, 4, 0.98); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-prayer-col { border-color: rgba(180,40,40,0.15); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-prayer-label { color: rgba(232,100,100,0.6); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-prayer-arabic { color: rgba(232,100,100,0.4); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-prayer-time { color: rgba(255,220,220,0.95); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-prayer-col.adm-active { background: rgba(180,40,40,0.08); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-prayer-col.adm-next {
+  background: linear-gradient(180deg, rgba(140,20,20,0.9) 0%, rgba(200,50,50,0.85) 100%);
+}
+.adzan-display-mode[data-adm-theme="maroon"] .adm-prayer-col.adm-next .adm-prayer-label { color: rgba(255,200,200,0.9); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-prayer-col.adm-next .adm-prayer-arabic { color: rgba(255,200,200,0.65); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-prayer-col.adm-next .adm-prayer-time { color: #fff; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-ticker-wrap { background: rgba(8,2,2,0.97); border-top-color: rgba(180,40,40,0.12); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-ticker-label { color: rgba(232,100,100,0.75); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-sunnah-card { border-color: rgba(200,80,80,0.35); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-sunnah-icon,
+.adzan-display-mode[data-adm-theme="maroon"] .adm-sunnah-name { color: #e86464; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-adzan-alert-box { border-color: #c84040; box-shadow: 0 0 60px rgba(200,64,64,0.5); }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-adzan-alert-name { color: #e86464; }
+@keyframes adm-alert-pulse-maroon {
+  from { box-shadow: 0 0 40px rgba(200,64,64,0.4); }
+  to   { box-shadow: 0 0 80px rgba(200,64,64,0.8); }
+}
+.adzan-display-mode[data-adm-theme="maroon"] .adm-adzan-alert-box { animation: adm-alert-pulse-maroon 1s ease infinite alternate; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-theme-option.active,
+.adzan-display-mode[data-adm-theme="maroon"] .adm-toggle input:checked + .adm-toggle-slider { border-color: #c84040; background: #a02020; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-theme-option.active span { color: #e86464; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-settings-header i,
+.adzan-display-mode[data-adm-theme="maroon"] .adm-settings-row-label i { color: #e86464; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-fontsize-btn.active { border-color: #c84040; background: rgba(200,64,64,0.18); color: #e86464; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-bg-option.active { border-color: #c84040; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-bg-option.active span { color: #e86464; }
+
+/* ===== WHITE / TERANG THEME ===== */
+.adzan-display-mode[data-adm-theme="white"] .adm-top-bar {
+  background: rgba(255, 252, 245, 0.98);
+  border-bottom: 2px solid rgba(180,140,0,0.25);
+}
+.adzan-display-mode[data-adm-theme="white"] .adm-clock { color: #3a6b1a; }
+.adzan-display-mode[data-adm-theme="white"] .adm-clock-secs { color: rgba(58,107,26,0.6); }
+.adzan-display-mode[data-adm-theme="white"] .adm-masjid-name { color: #1a1a1a; }
+.adzan-display-mode[data-adm-theme="white"] .adm-masjid-name i { color: #c87800; }
+.adzan-display-mode[data-adm-theme="white"] .adm-hijri { color: #1a1a1a; }
+.adzan-display-mode[data-adm-theme="white"] .adm-gregorian { color: #555; }
+.adzan-display-mode[data-adm-theme="white"] .adm-close-btn,
+.adzan-display-mode[data-adm-theme="white"] .adm-settings-btn { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #333; }
+.adzan-display-mode[data-adm-theme="white"] .adm-close-btn:hover { background: rgba(220,0,0,0.12); border-color: rgba(220,0,0,0.35); color: #c00; }
+.adzan-display-mode[data-adm-theme="white"] .adm-settings-btn:hover { background: rgba(0,0,0,0.14); color: #000; }
+.adzan-display-mode[data-adm-theme="white"] .adm-bottom { background: rgba(255,252,245,0.98); border-top: 2px solid rgba(180,140,0,0.2); }
+.adzan-display-mode[data-adm-theme="white"] .adm-prayer-col { border-color: rgba(0,0,0,0.09); }
+.adzan-display-mode[data-adm-theme="white"] .adm-prayer-label { color: #666; }
+.adzan-display-mode[data-adm-theme="white"] .adm-prayer-arabic { color: #aaa; }
+.adzan-display-mode[data-adm-theme="white"] .adm-prayer-time { color: #1a1a1a; }
+.adzan-display-mode[data-adm-theme="white"] .adm-prayer-col.adm-active { background: #f4ede0; }
+.adzan-display-mode[data-adm-theme="white"] .adm-prayer-col.adm-next { background: linear-gradient(180deg, #c87800 0%, #e8a800 100%); }
+.adzan-display-mode[data-adm-theme="white"] .adm-prayer-col.adm-next .adm-prayer-label { color: rgba(255,255,255,0.9); }
+.adzan-display-mode[data-adm-theme="white"] .adm-prayer-col.adm-next .adm-prayer-arabic { color: rgba(255,255,255,0.65); }
+.adzan-display-mode[data-adm-theme="white"] .adm-prayer-col.adm-next .adm-prayer-time { color: #fff; }
+.adzan-display-mode[data-adm-theme="white"] .adm-ticker-wrap { background: rgba(10,28,8,0.97); border-top-color: rgba(200,150,0,0.2); }
+.adzan-display-mode[data-adm-theme="white"] .adm-ticker-label { color: rgba(230,180,0,0.8); }
+.adzan-display-mode[data-adm-theme="white"] .adm-sunnah-card { border-color: rgba(200,150,0,0.35); }
+.adzan-display-mode[data-adm-theme="white"] .adm-sunnah-icon,
+.adzan-display-mode[data-adm-theme="white"] .adm-sunnah-name { color: #e8a800; }
+.adzan-display-mode[data-adm-theme="white"] .adm-adzan-alert-box { border-color: #c87800; box-shadow: 0 0 60px rgba(200,120,0,0.45); }
+.adzan-display-mode[data-adm-theme="white"] .adm-adzan-alert-name { color: #c87800; }
+@keyframes adm-alert-pulse-white {
+  from { box-shadow: 0 0 40px rgba(200,120,0,0.4); }
+  to   { box-shadow: 0 0 80px rgba(200,120,0,0.8); }
+}
+.adzan-display-mode[data-adm-theme="white"] .adm-adzan-alert-box { animation: adm-alert-pulse-white 1s ease infinite alternate; }
+.adzan-display-mode[data-adm-theme="white"] .adm-theme-option.active,
+.adzan-display-mode[data-adm-theme="white"] .adm-toggle input:checked + .adm-toggle-slider { border-color: #c87800; background: #a06000; }
+.adzan-display-mode[data-adm-theme="white"] .adm-theme-option.active span { color: #c87800; }
+.adzan-display-mode[data-adm-theme="white"] .adm-settings-header i,
+.adzan-display-mode[data-adm-theme="white"] .adm-settings-row-label i { color: #c87800; }
+.adzan-display-mode[data-adm-theme="white"] .adm-fontsize-btn.active { border-color: #c87800; background: rgba(200,120,0,0.18); color: #c87800; }
+.adzan-display-mode[data-adm-theme="white"] .adm-bg-option.active { border-color: #c87800; }
+.adzan-display-mode[data-adm-theme="white"] .adm-bg-option.active span { color: #c87800; }
+
+/* ===== SETTINGS UI ADDITIONS ===== */
+
+/* Text input in settings panel */
+.adm-text-input {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 8px;
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 0.87rem;
+  font-family: inherit;
+  width: 100%;
+  transition: border-color 0.2s;
+  margin-top: 8px;
+  box-sizing: border-box;
+}
+.adm-text-input:focus { outline: none; border-color: #f5930a; background: rgba(255,255,255,0.11); }
+.adm-text-input::placeholder { color: rgba(255,255,255,0.33); }
+
+/* Settings row with column layout (for inputs) */
+.adm-settings-row-col {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+/* Font size buttons */
+.adm-fontsize-buttons {
+  display: flex;
+  gap: 8px;
+}
+.adm-fontsize-btn {
+  flex: 1;
+  padding: 9px 6px;
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.14);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.adm-fontsize-btn:hover { border-color: rgba(255,255,255,0.35); color: #fff; }
+.adm-fontsize-btn.active { border-color: #f5930a; background: rgba(245,147,10,0.18); color: #f5930a; }
+
+/* BG style options */
+.adm-bg-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.adm-bg-option {
+  cursor: pointer;
+  border-radius: 10px;
+  border: 2px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 8px;
+  transition: border-color 0.2s;
+}
+.adm-bg-option:hover { border-color: rgba(255,255,255,0.32); }
+.adm-bg-option.active { border-color: #f5930a; }
+.adm-bg-preview {
+  width: 100%;
+  height: 52px;
+  margin-bottom: 6px;
+}
+.adm-bg-preview-haram {
+  background: url('../../assets/images/masjid_haram.jpg') center 40%/cover;
+  filter: brightness(0.6);
+}
+.adm-bg-preview-nabawi {
+  background: url('../../assets/images/masjid_nabawi.jpg') center 50%/cover;
+  filter: brightness(0.6);
+}
+.adm-bg-preview-aqsa {
+  background: url('../../assets/images/masjid_aqsa.jpg') center 55%/cover;
+  filter: brightness(0.6);
+}
+.adm-bg-preview-istanbul {
+  background: url('../../assets/images/masjid_istanbul.jpg') center 50%/cover;
+  filter: brightness(0.6);
+}
+.adm-bg-preview-dark {
+  background: linear-gradient(135deg, #070b16 0%, #111827 100%);
+}
+.adm-bg-preview-emerald {
+  background: linear-gradient(135deg, #041008 0%, #072415 100%);
+}
+.adm-bg-preview-ramadan {
+  background: linear-gradient(160deg, #1a0d30 0%, #2d1460 100%);
+}
+.adm-bg-option span {
+  font-size: 0.74rem;
+  color: rgba(255,255,255,0.62);
+  font-weight: 600;
+}
+.adm-bg-option.active span { color: #f5930a; }
+
+/* BG section labels */
+.adm-bg-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+/* Photo bg options: 4 cols */
+.adm-bg-options-photos {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+/* Gradient bg options: 3 cols */
+.adm-bg-options-gradients {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* Radio settings note in settings panel */
+.adm-radio-settings-note {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.5;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.adm-radio-settings-note i { color: #f5930a; }
+
+/* ===== RADIO BUTTON IN TOP BAR ===== */
+.adm-radio-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.1);
+  color: #333;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.adm-radio-btn:hover {
+  background: rgba(245,147,10,0.15);
+  border-color: rgba(245,147,10,0.5);
+  color: #c47200;
+}
+.adm-radio-btn.active {
+  background: rgba(245,147,10,0.2);
+  border-color: #f5930a;
+  color: #c47200;
+}
+
+/* ===== RADIO PANEL (floating side panel) ===== */
+.adm-radio-panel {
+  position: absolute;
+  top: 0;
+  right: -340px;
+  width: 320px;
+  height: 100%;
+  background: rgba(10, 14, 26, 0.97);
+  backdrop-filter: blur(16px);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: -4px 0 40px rgba(0,0,0,0.6);
+  border-left: 1px solid rgba(255,255,255,0.07);
+}
+.adm-radio-panel.open {
+  right: 0;
+}
+.adm-radio-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f5930a;
+}
+.adm-radio-panel-header i { margin-right: 8px; }
+.adm-radio-panel-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+  line-height: 1;
+}
+.adm-radio-panel-close:hover { background: rgba(220,0,0,0.2); border-color: rgba(220,0,0,0.4); color: #ff6b6b; }
+.adm-radio-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ===== RADIO STATION ITEM IN PANEL ===== */
+.adm-radio-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.adm-radio-item:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.14);
+}
+.adm-radio-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.adm-radio-item-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.adm-radio-item-desc {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.45);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.adm-radio-item-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.adm-radio-item-btn:hover {
+  background: rgba(245,147,10,0.25);
+  border-color: #f5930a;
+  color: #f5930a;
+}
+.adm-radio-item-btn.playing {
+  background: #f5930a;
+  border-color: #f5930a;
+  color: #fff;
+  box-shadow: 0 0 14px rgba(245,147,10,0.5);
+}
+.adm-radio-item-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== PANEL TABS (Radio / Muratal) ===== */
+.adm-panel-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 0 0 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 4px;
+}
+.adm-panel-tab {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.55);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.adm-panel-tab:hover {
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.85);
+}
+.adm-panel-tab.adm-panel-tab-active {
+  background: rgba(245,147,10,0.2);
+  border-color: #f5930a;
+  color: #f5930a;
+}
+.adm-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ===== MURATAL CONTROLS (repeat toggle + search) ===== */
+.adm-muratal-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0 4px;
+}
+.adm-muratal-ctrl-label {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.45);
+  flex-shrink: 0;
+}
+.adm-muratal-repeat-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.adm-muratal-repeat-btn:hover { background: rgba(245,147,10,0.2); color: #f5930a; border-color: #f5930a; }
+.adm-muratal-repeat-btn.active { background: rgba(245,147,10,0.25); color: #f5930a; border-color: #f5930a; box-shadow: 0 0 10px rgba(245,147,10,0.35); }
+.adm-muratal-search-wrap {
+  position: relative;
+}
+.adm-muratal-search {
+  width: 100%;
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.adm-muratal-search:focus { border-color: rgba(245,147,10,0.5); }
+.adm-muratal-search::placeholder { color: rgba(255,255,255,0.3); }
+.adm-muratal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-right: 2px;
+}
+.adm-muratal-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 9px 10px;
+  transition: background 0.2s;
+}
+.adm-muratal-item:hover { background: rgba(255,255,255,0.07); }
+.adm-muratal-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(245,147,10,0.7);
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.adm-muratal-info { flex: 1; min-width: 0; }
+.adm-muratal-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.adm-muratal-meta {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.38);
+  margin-top: 2px;
+}
+.adm-muratal-empty {
+  color: rgba(255,255,255,0.38);
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* ===== RESPONSIVE FOR NEW ELEMENTS ===== */
+@media (max-width: 768px) {
+  .adm-center-display {
+    padding: 14px 20px 18px;
+    gap: 2px;
+    max-width: 96vw;
+  }
+  .adm-center-countdown {
+    font-size: clamp(2.2rem, 10vw, 3.8rem);
+  }
+  .adm-center-next-name {
+    font-size: clamp(1.4rem, 5vw, 2rem);
+  }
+  .adm-theme-options {
+    grid-template-columns: 1fr 1fr;
+  }
+  .adm-bg-options-photos {
+    grid-template-columns: 1fr 1fr;
+  }
+  .adm-radio-panel {
+    width: 290px;
+    right: -300px;
+  }
+}
+@media (max-width: 480px) {
+  .adm-center-display {
+    padding: 10px 14px 14px;
+  }
+  .adm-center-countdown {
+    font-size: clamp(2rem, 12vw, 3rem);
+  }
+  .adm-radio-panel {
+    width: 100%;
+    right: -105%;
+    left: auto;
+    border-left: none;
+    bottom: 0;
+    height: auto;
+    max-height: 60vh;
+    top: auto;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px 16px 0 0;
+    transition: bottom 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .adm-radio-panel.open {
+    right: 0;
+    bottom: 0;
   }
 }

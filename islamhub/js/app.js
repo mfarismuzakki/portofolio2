@@ -150,14 +150,17 @@ class IslamHubApp {
 
         // Global player handles BOTH quran and radio.
         // Radio mode activates when radio plays and quran is NOT playing.
+        // Also activates for muratal from Adzan Display Mode (radioPlayer.dataset.mode === 'muratal').
         const sa = window.streamingApp;
         const quranEl = document.getElementById('quranAudioElement');
         const quranActive = quranEl && quranEl.currentSrc && !quranEl.paused;
-        const radioActive = sa && (sa.currentStream !== null && sa.currentStream !== undefined);
+        const radioEl = document.getElementById('radioPlayer');
+        const radioActive = (sa && (sa.currentStream !== null && sa.currentStream !== undefined)) ||
+            (radioEl && radioEl.dataset.mode === 'muratal' && radioEl.currentSrc && !radioEl.ended);
 
         if (radioActive && !quranActive && player.dataset.mode !== 'quran') {
-            const station = sa.radioStations?.[sa.currentStream];
-            const radioEl = document.getElementById('radioPlayer');
+            const isMuratalMode = radioEl && radioEl.dataset.mode === 'muratal';
+            const station = isMuratalMode ? null : sa?.radioStations?.[sa.currentStream];
             const isPlaying = radioEl ? !radioEl.paused : false;
 
             player.dataset.mode = 'radio';
@@ -172,8 +175,8 @@ class IslamHubApp {
             const muteBtn   = document.getElementById('audioMute');
             const progressEl = player.querySelector('.audio-progress');
 
-            if (nameEl) nameEl.textContent = station?.name || 'Radio Streaming';
-            if (counterEl) { counterEl.textContent = station?.description || 'Live'; counterEl.style.display = 'inline'; }
+            if (nameEl) nameEl.textContent = isMuratalMode ? (radioEl.dataset.muratalName || 'Muratal Al-Qur\'an') : (station?.name || 'Radio Streaming');
+            if (counterEl) { counterEl.textContent = isMuratalMode ? 'Muratal • Alafasy' : (station?.description || 'Live'); counterEl.style.display = 'inline'; }
             if (playBtn?.querySelector('i')) playBtn.querySelector('i').className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
             if (prevBtn) prevBtn.style.display = 'none';
             if (nextBtn) nextBtn.style.display = 'none';

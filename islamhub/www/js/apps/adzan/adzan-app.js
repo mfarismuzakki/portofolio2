@@ -37,6 +37,9 @@ export default class AdzanApp {
         this.displayModeClockTimer = null;
         this.displayModeTickerTimer = null;
         this.displayModeTickerIndex = 0;
+        this._dmCurrentMuratal = null; // surah number currently playing as muratal from DM panel
+        this._dmMuratalRepeat = false;  // repeat muratal on end
+        this._dmRadioLoadingIdx = null; // station index currently showing loading spinner
     }
 
     async init() {
@@ -1707,10 +1710,16 @@ export default class AdzanApp {
     }
 
     _loadDMSettings() {
+        const defaults = {
+            theme: 'default', showSunnah: true, adzanSound: false,
+            adzanFullAudio: false, adzanFile: 'Mishary-Rashid-Alafasy',
+            masjidName: '', showImsak: false, showSyuruq: true,
+            showArabic: false, fontSize: 'md', bgStyle: 'haram'
+        };
         try {
             const saved = localStorage.getItem('adm-settings');
-            return saved ? JSON.parse(saved) : { theme: 'default', showSunnah: true, adzanSound: false, adzanFullAudio: false, adzanFile: 'Mishary-Rashid-Alafasy' };
-        } catch { return { theme: 'default', showSunnah: true, adzanSound: false, adzanFullAudio: false, adzanFile: 'Mishary-Rashid-Alafasy' }; }
+            return saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
+        } catch { return defaults; }
     }
 
     _saveDMSettings() {
@@ -1722,12 +1731,39 @@ export default class AdzanApp {
         if (!overlay) return;
         overlay.setAttribute('data-adm-theme', this._dmSettings.theme);
         overlay.setAttribute('data-adm-sunnah', String(this._dmSettings.showSunnah));
+        overlay.setAttribute('data-adm-fontsize', this._dmSettings.fontSize || 'md');
+        overlay.setAttribute('data-adm-bg', this._dmSettings.bgStyle || 'haram');
+        // Update masjid name display
+        const masjidEl = overlay.querySelector('.adm-masjid-name');
+        if (masjidEl) {
+            const name = this._dmSettings.masjidName || this.locationDisplay;
+            masjidEl.innerHTML = `<i class="fas fa-mosque"></i> ${name}`;
+        }
         // Sync theme option cards
         document.querySelectorAll('.adm-theme-option').forEach(el => {
             el.classList.toggle('active', el.dataset.theme === this._dmSettings.theme);
         });
         const sunnahToggle = document.getElementById('admToggleSunnah');
         if (sunnahToggle) sunnahToggle.checked = this._dmSettings.showSunnah;
+        const imsakToggle = document.getElementById('admToggleImsak');
+        if (imsakToggle) imsakToggle.checked = !!this._dmSettings.showImsak;
+        const syuruqToggle = document.getElementById('admToggleSyuruq');
+        if (syuruqToggle) syuruqToggle.checked = this._dmSettings.showSyuruq !== false;
+        const arabicToggle = document.getElementById('admToggleArabic');
+        if (arabicToggle) arabicToggle.checked = !!this._dmSettings.showArabic;
+        const masjidInput = document.getElementById('admMasjidNameInput');
+        if (masjidInput) masjidInput.value = this._dmSettings.masjidName || '';
+        // Font size buttons
+        document.querySelectorAll('.adm-fontsize-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.size === (this._dmSettings.fontSize || 'md'));
+        });
+        // BG style options
+        document.querySelectorAll('.adm-bg-option').forEach(el => {
+            el.classList.toggle('active', el.dataset.bg === (this._dmSettings.bgStyle || 'haram'));
+        });
+        // Rebuild grid to reflect display toggles
+        this._buildDisplayModePrayerGrid();
+        // Sound settings
         const soundToggle = document.getElementById('admToggleSound');
         if (soundToggle) soundToggle.checked = this._dmSettings.adzanSound;
         const fullAudioToggle = document.getElementById('admToggleFullAudio');
@@ -1738,7 +1774,6 @@ export default class AdzanApp {
         if (previewRow) previewRow.style.display = this._dmSettings.adzanFullAudio ? '' : 'none';
         const fileSelect = document.getElementById('admAdzanFileSelect');
         if (fileSelect) fileSelect.value = this._dmSettings.adzanFile || 'Mishary-Rashid-Alafasy';
-        // Sync cyan theme toggle-slider color via CSS var
         const activeThemeImg = document.querySelector(`.adm-theme-option[data-theme="${this._dmSettings.theme}"]`);
         if (activeThemeImg) activeThemeImg.scrollIntoView({ block: 'nearest' });
     }
@@ -1761,6 +1796,8 @@ export default class AdzanApp {
         overlay.className = 'adzan-display-mode';
         overlay.setAttribute('data-adm-theme', s.theme);
         overlay.setAttribute('data-adm-sunnah', String(s.showSunnah));
+        overlay.setAttribute('data-adm-fontsize', s.fontSize || 'md');
+        overlay.setAttribute('data-adm-bg', s.bgStyle || 'haram');
         overlay.innerHTML = `
             <div class="adm-bg"></div>
             <div class="adm-top-bar">
@@ -1769,20 +1806,27 @@ export default class AdzanApp {
                     <div class="adm-clock-secs" id="admSecs">:00</div>
                 </div>
                 <div class="adm-center-info">
-                    <div class="adm-masjid-name"><i class="fas fa-mosque"></i> ${this.locationDisplay}</div>
+                    <div class="adm-masjid-name"><i class="fas fa-mosque"></i> ${s.masjidName || this.locationDisplay}</div>
                 </div>
                 <div class="adm-date-wrap">
                     <div class="adm-hijri" id="admHijri">${this._getHijriString()}</div>
                     <div class="adm-gregorian" id="admGregorian"></div>
                 </div>
                 <div class="adm-top-actions">
+                    <button class="adm-radio-btn" id="admRadioBtn" title="Radio &amp; Muratal"><i class="fas fa-radio"></i></button>
                     <button class="adm-settings-btn" id="admSettingsBtn" title="Pengaturan"><i class="fas fa-cog"></i></button>
                     <button class="adm-close-btn" id="admClose" title="Tutup"><i class="fas fa-times"></i></button>
                 </div>
             </div>
             <div class="adm-main-area">
                 <div class="adm-sunnah-panel" id="admSunnahPanel"></div>
-                <div class="adm-next-info" id="admNextInfo"></div>
+                <div class="adm-center-display" id="admCenterDisplay">
+                    <div class="adm-center-next-label">Sholat Berikutnya</div>
+                    <div class="adm-center-next-name" id="admCenterNextName">—</div>
+                    <div class="adm-center-next-arabic" id="admCenterNextArabic"></div>
+                    <div class="adm-center-countdown" id="admCenterCountdown">--:--:--</div>
+                    <div class="adm-center-next-time" id="admCenterNextTime"></div>
+                </div>
             </div>
             <div class="adm-bottom">
                 <div class="adm-prayer-grid" id="admPrayerGrid"></div>
@@ -1837,6 +1881,21 @@ export default class AdzanApp {
                                 <div class="adm-theme-preview adm-theme-preview-blue"></div>
                                 <span>Langit (Biru)</span>
                             </div>
+                            <div class="adm-theme-option ${s.theme === 'maroon' ? 'active' : ''}" data-theme="maroon">
+                                <div class="adm-theme-preview adm-theme-preview-maroon"></div>
+                                <span>Merah Tua</span>
+                            </div>
+                            <div class="adm-theme-option ${s.theme === 'white' ? 'active' : ''}" data-theme="white">
+                                <div class="adm-theme-preview adm-theme-preview-white"></div>
+                                <span>Putih (Terang)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="adm-settings-section-title">Identitas</div>
+                        <div class="adm-settings-row adm-settings-row-col">
+                            <div class="adm-settings-row-label"><i class="fas fa-mosque"></i> Nama Masjid</div>
+                            <input type="text" id="admMasjidNameInput" class="adm-text-input" placeholder="Contoh: Masjid Al-Ikhlas..." value="${s.masjidName || ''}">
                         </div>
                     </div>
                     <div>
@@ -1847,6 +1906,72 @@ export default class AdzanApp {
                                 <input type="checkbox" id="admToggleSunnah" ${s.showSunnah ? 'checked' : ''}>
                                 <span class="adm-toggle-slider"></span>
                             </label>
+                        </div>
+                        <div class="adm-settings-row">
+                            <div class="adm-settings-row-label"><i class="fas fa-clock"></i> Tampilkan Imsak</div>
+                            <label class="adm-toggle">
+                                <input type="checkbox" id="admToggleImsak" ${s.showImsak ? 'checked' : ''}>
+                                <span class="adm-toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="adm-settings-row">
+                            <div class="adm-settings-row-label"><i class="fas fa-sun"></i> Tampilkan Syuruq</div>
+                            <label class="adm-toggle">
+                                <input type="checkbox" id="admToggleSyuruq" ${s.showSyuruq !== false ? 'checked' : ''}>
+                                <span class="adm-toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="adm-settings-row">
+                            <div class="adm-settings-row-label"><i class="fas fa-language"></i> Nama Arab Sholat</div>
+                            <label class="adm-toggle">
+                                <input type="checkbox" id="admToggleArabic" ${s.showArabic ? 'checked' : ''}>
+                                <span class="adm-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="adm-settings-section-title">Ukuran Teks</div>
+                        <div class="adm-fontsize-buttons">
+                            <button class="adm-fontsize-btn ${s.fontSize === 'sm' ? 'active' : ''}" data-size="sm">Kecil</button>
+                            <button class="adm-fontsize-btn ${!s.fontSize || s.fontSize === 'md' ? 'active' : ''}" data-size="md">Sedang</button>
+                            <button class="adm-fontsize-btn ${s.fontSize === 'lg' ? 'active' : ''}" data-size="lg">Besar</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="adm-settings-section-title">Latar Belakang</div>
+                        <div class="adm-bg-section-label">Foto Masjid</div>
+                        <div class="adm-bg-options adm-bg-options-photos">
+                            <div class="adm-bg-option ${!s.bgStyle || s.bgStyle === 'haram' || s.bgStyle === 'image' ? 'active' : ''}" data-bg="haram">
+                                <div class="adm-bg-preview adm-bg-preview-haram"></div>
+                                <span>Masjidil Haram</span>
+                            </div>
+                            <div class="adm-bg-option ${s.bgStyle === 'nabawi' ? 'active' : ''}" data-bg="nabawi">
+                                <div class="adm-bg-preview adm-bg-preview-nabawi"></div>
+                                <span>Masjid Nabawi</span>
+                            </div>
+                            <div class="adm-bg-option ${s.bgStyle === 'aqsa' ? 'active' : ''}" data-bg="aqsa">
+                                <div class="adm-bg-preview adm-bg-preview-aqsa"></div>
+                                <span>Masjid Al-Aqsa</span>
+                            </div>
+                            <div class="adm-bg-option ${s.bgStyle === 'istanbul' ? 'active' : ''}" data-bg="istanbul">
+                                <div class="adm-bg-preview adm-bg-preview-istanbul"></div>
+                                <span>Masjid Istanbul</span>
+                            </div>
+                        </div>
+                        <div class="adm-bg-section-label" style="margin-top:10px">Gradien</div>
+                        <div class="adm-bg-options adm-bg-options-gradients">
+                            <div class="adm-bg-option ${s.bgStyle === 'dark' ? 'active' : ''}" data-bg="dark">
+                                <div class="adm-bg-preview adm-bg-preview-dark"></div>
+                                <span>Gelap</span>
+                            </div>
+                            <div class="adm-bg-option ${s.bgStyle === 'emerald' ? 'active' : ''}" data-bg="emerald">
+                                <div class="adm-bg-preview adm-bg-preview-emerald"></div>
+                                <span>Islami</span>
+                            </div>
+                            <div class="adm-bg-option ${s.bgStyle === 'ramadan' ? 'active' : ''}" data-bg="ramadan">
+                                <div class="adm-bg-preview adm-bg-preview-ramadan"></div>
+                                <span>Ramadan</span>
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -1889,6 +2014,15 @@ export default class AdzanApp {
                 </div>
             </div>
 
+            <!-- Radio & Muratal Panel -->
+            <div class="adm-radio-panel" id="admRadioPanel">
+                <div class="adm-radio-panel-header">
+                    <span><i class="fas fa-radio"></i> Radio &amp; Muratal</span>
+                    <button class="adm-radio-panel-close" id="admRadioPanelClose" title="Tutup"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="adm-radio-panel-body" id="admRadioPanelBody"></div>
+            </div>
+
             <!-- Adzan alert overlay -->
             <div class="adm-adzan-alert" id="admAdzanAlert">
                 <div class="adm-adzan-alert-box">
@@ -1906,6 +2040,8 @@ export default class AdzanApp {
         document.getElementById('admClose').addEventListener('click', () => this.closeDisplayMode());
         document.getElementById('admSettingsBtn').addEventListener('click', () => this._openDMSettingsPanel());
         document.getElementById('admSettingsHeaderClose').addEventListener('click', () => this._openDMSettingsPanel());
+        document.getElementById('admRadioBtn').addEventListener('click', () => this._toggleDMRadioPanel());
+        document.getElementById('admRadioPanelClose').addEventListener('click', () => this._toggleDMRadioPanel(false));
 
         // Theme option clicks
         overlay.querySelectorAll('.adm-theme-option').forEach(el => {
@@ -1972,6 +2108,63 @@ export default class AdzanApp {
             this._stopAdzanAudio();
         });
 
+        // Masjid name input (debounced)
+        document.getElementById('admMasjidNameInput')?.addEventListener('input', (e) => {
+            clearTimeout(this._masjidNameTimer);
+            this._masjidNameTimer = setTimeout(() => {
+                this._dmSettings.masjidName = e.target.value.trim();
+                this._saveDMSettings();
+                const masjidEl = overlay.querySelector('.adm-masjid-name');
+                if (masjidEl) masjidEl.innerHTML = `<i class="fas fa-mosque"></i> ${this._dmSettings.masjidName || this.locationDisplay}`;
+            }, 600);
+        });
+
+        // Imsak toggle
+        document.getElementById('admToggleImsak')?.addEventListener('change', (e) => {
+            this._dmSettings.showImsak = e.target.checked;
+            this._saveDMSettings();
+            this._buildDisplayModePrayerGrid();
+        });
+
+        // Syuruq toggle
+        document.getElementById('admToggleSyuruq')?.addEventListener('change', (e) => {
+            this._dmSettings.showSyuruq = e.target.checked;
+            this._saveDMSettings();
+            this._buildDisplayModePrayerGrid();
+        });
+
+        // Arabic names toggle
+        document.getElementById('admToggleArabic')?.addEventListener('change', (e) => {
+            this._dmSettings.showArabic = e.target.checked;
+            this._saveDMSettings();
+            this._buildDisplayModePrayerGrid();
+        });
+
+        // Font size buttons
+        overlay.querySelectorAll('.adm-fontsize-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this._dmSettings.fontSize = btn.dataset.size;
+                this._saveDMSettings();
+                overlay.setAttribute('data-adm-fontsize', btn.dataset.size);
+                overlay.querySelectorAll('.adm-fontsize-btn').forEach(b =>
+                    b.classList.toggle('active', b.dataset.size === btn.dataset.size));
+            });
+        });
+
+        // BG style options
+        overlay.querySelectorAll('.adm-bg-option').forEach(el => {
+            el.addEventListener('click', () => {
+                this._dmSettings.bgStyle = el.dataset.bg;
+                this._saveDMSettings();
+                overlay.setAttribute('data-adm-bg', el.dataset.bg);
+                overlay.querySelectorAll('.adm-bg-option').forEach(b =>
+                    b.classList.toggle('active', b.dataset.bg === el.dataset.bg));
+            });
+        });
+
+        // Populate and bind radio station buttons
+        this._buildDMRadioList();
+
         this._dmEscHandler = (e) => { if (e.key === 'Escape') this.closeDisplayMode(); };
         document.addEventListener('keydown', this._dmEscHandler);
 
@@ -2036,11 +2229,19 @@ export default class AdzanApp {
         const grid = document.getElementById('admPrayerGrid');
         if (!grid || !this.prayerTimes || Object.keys(this.prayerTimes).length === 0) return;
 
+        const s = this._dmSettings || {};
         const n = new Date();
         const nowMins = n.getHours() * 60 + n.getMinutes();
         const nowH = n.getHours() + n.getMinutes() / 60 + n.getSeconds() / 3600;
-        const orderedNames = ['Subuh', 'Syuruq', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
-        const labels = { Subuh: 'Shubuh', Syuruq: 'Syuruq', Dzuhur: 'Dzuhur', Ashar: 'Ashar', Maghrib: 'Maghrib', Isya: "Isya'" };
+
+        let orderedNames = ['Subuh', 'Syuruq', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
+        if (s.showImsak) orderedNames = ['Imsak', ...orderedNames];
+        if (s.showSyuruq === false) orderedNames = orderedNames.filter(n => n !== 'Syuruq');
+
+        const labels = { Imsak: 'Imsak', Subuh: 'Shubuh', Syuruq: 'Syuruq', Dzuhur: 'Dzuhur', Ashar: 'Ashar', Maghrib: 'Maghrib', Isya: "Isya'" };
+        const arabicNames = { Imsak: 'الإمساك', Subuh: 'الفجر', Syuruq: 'الشروق', Dzuhur: 'الظهر', Ashar: 'العصر', Maghrib: 'المغرب', Isya: 'العشاء' };
+
+        grid.style.gridTemplateColumns = `repeat(${orderedNames.length}, 1fr)`;
 
         let activePrayer = null;
         for (const name of orderedNames) {
@@ -2067,20 +2268,23 @@ export default class AdzanApp {
             if (!t) return '';
             const isActive = name === activePrayer;
             const isNext = nextPrayer && name === nextPrayer.name;
+            const arabicHtml = s.showArabic ? `<div class="adm-prayer-arabic">${arabicNames[name] || ''}</div>` : '';
             return `
                 <div class="adm-prayer-col ${isActive ? 'adm-active' : ''} ${isNext ? 'adm-next' : ''}">
                     <div class="adm-prayer-label">${labels[name] || name}</div>
+                    ${arabicHtml}
                     <div class="adm-prayer-time">${t}</div>
-                    ${isNext ? `<div class="adm-prayer-countdown" id="admCountdownDisplay">--:--:--</div>` : ''}
                 </div>
             `;
         }).join('');
 
         if (nextPrayer) {
-            const nextInfoEl = document.getElementById('admNextInfo');
-            if (nextInfoEl) {
-                nextInfoEl.innerHTML = `<span class="adm-next-label">Menuju</span> <span class="adm-next-name">${labels[nextPrayer.name] || nextPrayer.name}</span>`;
-            }
+            const centerNameEl = document.getElementById('admCenterNextName');
+            if (centerNameEl) centerNameEl.textContent = labels[nextPrayer.name] || nextPrayer.name;
+            const centerArabicEl = document.getElementById('admCenterNextArabic');
+            if (centerArabicEl) centerArabicEl.textContent = s.showArabic ? (arabicNames[nextPrayer.name] || '') : '';
+            const centerTimeEl = document.getElementById('admCenterNextTime');
+            if (centerTimeEl) centerTimeEl.textContent = nextPrayer.time;
         }
     }
 
@@ -2097,8 +2301,9 @@ export default class AdzanApp {
         const hrs = Math.floor(totalSecs / 3600);
         const mins = Math.floor((totalSecs % 3600) / 60);
         const secs = totalSecs % 60;
-        const cdEl = document.getElementById('admCountdownDisplay');
-        if (cdEl) cdEl.textContent = `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+        const cdStr = `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+        const centerCdEl = document.getElementById('admCenterCountdown');
+        if (centerCdEl) centerCdEl.textContent = cdStr;
 
         // Rebuild grid when next prayer changes (e.g. crossed into next prayer)
         const nowMins = n.getHours() * 60 + n.getMinutes();
@@ -2311,6 +2516,335 @@ export default class AdzanApp {
         if (alertEl) alertEl.classList.remove('show');
     }
 
+    _buildDMRadioList() {
+        const list = document.getElementById('admRadioPanelBody');
+        if (!list) return;
+        const sa = window.streamingApp;
+        const fallback = [
+            { name: 'Radio Rodja', description: 'Dakwah Ahlus Sunnah Wal Jama\'ah', url: 'https://radioislamindonesia.com/rodja-low.mp3' },
+            { name: 'Radio Tarbiyyah Sunnah', description: 'Kajian Islam Online', url: 'https://radioislamindonesia.com/tarbiyah.mp3' }
+        ];
+        const stations = sa?.radioStations?.length ? sa.radioStations : fallback;
+        const surahs = (window.QURAN_SURAHS || []);
+
+        list.innerHTML = `
+            <div class="adm-panel-tabs">
+                <button class="adm-panel-tab adm-panel-tab-active" data-tab="radio"><i class="fas fa-radio"></i> Radio</button>
+                <button class="adm-panel-tab" data-tab="muratal"><i class="fas fa-quran"></i> Muratal Surah</button>
+            </div>
+            <div class="adm-tab-content" id="admTabRadio">
+                ${stations.map((st, i) => `
+                    <div class="adm-radio-item">
+                        <div class="adm-radio-item-info">
+                            <div class="adm-radio-item-name">${st.name}</div>
+                            <div class="adm-radio-item-desc">${st.description || ''}</div>
+                        </div>
+                        <button class="adm-radio-item-btn" id="admRadioItemBtn${i}" data-idx="${i}" title="Putar / Stop">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="adm-tab-content" id="admTabMuratal" style="display:none">
+                <div class="adm-muratal-controls">
+                    <span class="adm-muratal-ctrl-label">Ulangi:</span>
+                    <button class="adm-muratal-repeat-btn ${this._dmMuratalRepeat ? 'active' : ''}" id="admMuratalRepeatToggle" title="Ulangi otomatis">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                </div>
+                <div class="adm-muratal-search-wrap">
+                    <input type="text" id="admMuratalSearch" class="adm-muratal-search" placeholder="Cari surat...">
+                </div>
+                <div class="adm-muratal-list" id="admMuratalList">
+                    ${surahs.length ? surahs.map(s => `
+                        <div class="adm-muratal-item" data-name="${s.name.toLowerCase()}">
+                            <div class="adm-muratal-num">${s.number}</div>
+                            <div class="adm-muratal-info">
+                                <div class="adm-muratal-name">${s.name}</div>
+                                <div class="adm-muratal-meta">${s.nameArabic} &bull; ${s.verses} ayat</div>
+                            </div>
+                            <button class="adm-radio-item-btn" id="admMuratalBtn${s.number}" data-surah="${s.number}" data-surah-name="${s.name}" title="Putar / Stop">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    `).join('') : '<div class="adm-muratal-empty">Data surat tidak tersedia</div>'}
+                </div>
+            </div>
+        `;
+
+        // Tab switching
+        list.querySelectorAll('.adm-panel-tab').forEach(tab => {
+            tab.addEventListener('click', () => this._dmSwitchRadioTab(tab.dataset.tab));
+        });
+        // Radio station buttons
+        list.querySelectorAll('.adm-radio-item-btn[data-idx]').forEach(btn => {
+            btn.addEventListener('click', () => this._dmToggleRadio(parseInt(btn.dataset.idx, 10)));
+        });
+        // Muratal buttons
+        list.querySelectorAll('[data-surah]').forEach(btn => {
+            btn.addEventListener('click', () => this._dmPlayMuratal(parseInt(btn.dataset.surah), btn.dataset.surahName));
+        });
+        // Repeat toggle
+        const repeatBtn = document.getElementById('admMuratalRepeatToggle');
+        if (repeatBtn) {
+            repeatBtn.addEventListener('click', () => {
+                this._dmMuratalRepeat = !this._dmMuratalRepeat;
+                repeatBtn.classList.toggle('active', this._dmMuratalRepeat);
+                // Sync to alquran module (0 = infinite, 1 = play once)
+                const qa = window.alquranApp;
+                if (qa && qa._muratalState) qa._muratalState.repeat = this._dmMuratalRepeat ? 0 : 1;
+            });
+        }
+        // Muratal search
+        const searchInput = document.getElementById('admMuratalSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                const q = searchInput.value.toLowerCase();
+                document.querySelectorAll('#admMuratalList .adm-muratal-item').forEach(item => {
+                    item.style.display = item.dataset.name.includes(q) ? '' : 'none';
+                });
+            });
+        }
+        this._dmUpdateRadioBtnStates();
+        this._dmUpdateMuratalBtnStates();
+    }
+
+    _dmSwitchRadioTab(tab) {
+        const radioTab = document.getElementById('admTabRadio');
+        const muratalTab = document.getElementById('admTabMuratal');
+        const tabs = document.querySelectorAll('.adm-panel-tab');
+        if (!radioTab || !muratalTab) return;
+        tabs.forEach(t => t.classList.toggle('adm-panel-tab-active', t.dataset.tab === tab));
+        radioTab.style.display = tab === 'radio' ? '' : 'none';
+        muratalTab.style.display = tab === 'muratal' ? '' : 'none';
+    }
+
+    _dmToggleRadio(stationIdx) {
+        const sa = window.streamingApp;
+
+        if (!sa) {
+            // streamingApp not loaded yet — load it on demand then retry
+            const btn = document.getElementById(`admRadioItemBtn${stationIdx}`);
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+            this._dmRadioLoadingIdx = stationIdx;
+            const hub = window.islamHub;
+            if (hub) {
+                hub.loadApp('streaming')
+                    .then(() => this._dmToggleRadio(stationIdx))
+                    .catch(() => {
+                        this._dmRadioLoadingIdx = null;
+                        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-play"></i>'; }
+                    });
+            }
+            return;
+        }
+
+        // Stop muratal if playing (via alquranApp or direct radioPlayer)
+        if (this._dmCurrentMuratal !== null) this._dmStopMuratal();
+
+        const radioPlayer = document.getElementById('radioPlayer');
+        const isCurrentlyPlaying = sa.currentStream === stationIdx;
+
+        if (!isCurrentlyPlaying) {
+            // Show loading spinner on DM button immediately (on every play attempt)
+            const btn = document.getElementById(`admRadioItemBtn${stationIdx}`);
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+            this._dmRadioLoadingIdx = stationIdx;
+
+            if (radioPlayer) {
+                const clearLoading = () => {
+                    this._dmRadioLoadingIdx = null;
+                    this._dmUpdateRadioBtnStates();
+                    this._updateAudioBar();
+                };
+                const onError = () => {
+                    radioPlayer.removeEventListener('playing', onPlaying);
+                    clearLoading();
+                };
+                const onPlaying = () => {
+                    radioPlayer.removeEventListener('error', onError);
+                    clearLoading();
+                };
+                radioPlayer.addEventListener('playing', onPlaying, { once: true });
+                radioPlayer.addEventListener('error', onError, { once: true });
+            }
+        }
+
+        // Delegate entirely to streamingApp — same path as the kajian/streaming page
+        sa.toggleRadio(stationIdx);
+
+        // For the stop case: update DM states immediately
+        if (isCurrentlyPlaying) {
+            this._dmRadioLoadingIdx = null;
+            this._dmUpdateRadioBtnStates();
+            setTimeout(() => this._updateAudioBar(), 100);
+        }
+    }
+
+    _dmPlayMuratal(surahNum, surahName) {
+        const qa = window.alquranApp;
+        const sa = window.streamingApp;
+        const btn = document.getElementById(`admMuratalBtn${surahNum}`);
+
+        // Toggle off if this surah is already playing
+        if (this._dmCurrentMuratal === surahNum) {
+            this._dmStopMuratal();
+            return;
+        }
+
+        // Stop any existing radio stream
+        if (sa && sa.currentStream !== null) sa.stopRadio(sa.currentStream);
+
+        // Stop any other muratal
+        if (this._dmCurrentMuratal !== null) this._dmStopMuratal(false);
+
+        // Loading indicator
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+
+        this._dmCurrentMuratal = surahNum;
+
+        if (qa) {
+            // Delegate to Al-Quran module — plays via #quranAudioElement, reuses global player
+            qa._muratalState.repeat = this._dmMuratalRepeat ? 0 : 1;
+            qa.playMuratalSurah(surahNum, surahName);
+
+            const audioEl = document.getElementById('quranAudioElement');
+            const onPlaying = () => {
+                audioEl?.removeEventListener('error', onError);
+                this._dmUpdateMuratalBtnStates();
+                this._updateAudioBar();
+            };
+            const onError = () => {
+                audioEl?.removeEventListener('playing', onPlaying);
+                this._dmCurrentMuratal = null;
+                this._dmUpdateMuratalBtnStates();
+                this._updateAudioBar();
+            };
+            audioEl?.addEventListener('playing', onPlaying, { once: true });
+            audioEl?.addEventListener('error', onError, { once: true });
+        } else {
+            // Fallback: direct play via #radioPlayer when alquranApp is not loaded
+            const radioPlayer = document.getElementById('radioPlayer');
+            if (!radioPlayer) { this._dmCurrentMuratal = null; return; }
+            const url = `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${surahNum}.mp3`;
+            radioPlayer.src = url;
+            radioPlayer.dataset.mode = 'muratal';
+            radioPlayer.dataset.muratalSurah = String(surahNum);
+            radioPlayer.dataset.muratalName = surahName || `Surat ${surahNum}`;
+            radioPlayer.volume = 1.0;
+            const onMuratalPlaying = () => {
+                radioPlayer.removeEventListener('error', onMuratalError);
+                this._dmUpdateMuratalBtnStates();
+                this._updateAudioBar();
+                if (window.islamHub) window.islamHub._globalPlayerUpdate?.();
+            };
+            const onMuratalError = () => {
+                radioPlayer.removeEventListener('playing', onMuratalPlaying);
+                this._dmCurrentMuratal = null;
+                delete radioPlayer.dataset.mode;
+                delete radioPlayer.dataset.muratalSurah;
+                delete radioPlayer.dataset.muratalName;
+                this._dmUpdateMuratalBtnStates();
+                this._updateAudioBar();
+            };
+            radioPlayer.addEventListener('playing', onMuratalPlaying, { once: true });
+            radioPlayer.addEventListener('error', onMuratalError, { once: true });
+            radioPlayer.play().catch(err => {
+                console.warn('[DM Muratal] Play failed:', err);
+                radioPlayer.removeEventListener('playing', onMuratalPlaying);
+                radioPlayer.removeEventListener('error', onMuratalError);
+                onMuratalError();
+            });
+        }
+    }
+
+    _dmStopMuratal(updateUI = true) {
+        const qa = window.alquranApp;
+        const radioPlayer = document.getElementById('radioPlayer');
+        this._dmCurrentMuratal = null;
+
+        // Stop via alquranApp (primary path)
+        if (qa && qa._muratalState?.surahNumber) {
+            qa.stopMuratal(false);
+        }
+        // Fallback: stop radioPlayer if in muratal mode (when alquranApp not loaded)
+        if (radioPlayer && radioPlayer.dataset.mode === 'muratal') {
+            radioPlayer.pause();
+            radioPlayer.src = '';
+            radioPlayer.removeAttribute('data-mode');
+            radioPlayer.removeAttribute('data-muratal-surah');
+            radioPlayer.removeAttribute('data-muratal-name');
+        }
+        if (updateUI) {
+            this._dmUpdateMuratalBtnStates();
+            setTimeout(() => this._updateAudioBar(), 100);
+            if (window.islamHub) window.islamHub._globalPlayerUpdate?.();
+        }
+    }
+
+    _dmUpdateRadioBtnStates() {
+        const sa = window.streamingApp;
+        const currentIdx = sa ? sa.currentStream : null;
+        const radioPlayer = document.getElementById('radioPlayer');
+        const isActuallyPlaying = radioPlayer && !radioPlayer.paused;
+        const stationCount = sa?.radioStations?.length || 2;
+        for (let i = 0; i < stationCount; i++) {
+            const btn = document.getElementById(`admRadioItemBtn${i}`);
+            if (!btn) continue;
+            // Don't overwrite the loading spinner while a station is connecting
+            if (i === this._dmRadioLoadingIdx) continue;
+            const isThisPlaying = currentIdx === i && isActuallyPlaying && radioPlayer.dataset.mode !== 'muratal';
+            btn.disabled = false;
+            btn.innerHTML = isThisPlaying ? '<i class="fas fa-stop"></i>' : '<i class="fas fa-play"></i>';
+            btn.classList.toggle('playing', isThisPlaying);
+        }
+    }
+
+    _dmUpdateMuratalBtnStates() {
+        const qa = window.alquranApp;
+        const radioPlayer = document.getElementById('radioPlayer');
+
+        // Determine which surah (if any) is currently playing as muratal
+        let activeSurah = null;
+        let isActivePlaying = false;
+        if (qa && qa._muratalState?.surahNumber) {
+            activeSurah = qa._muratalState.surahNumber;
+            const audioEl = document.getElementById('quranAudioElement');
+            isActivePlaying = !!audioEl && !audioEl.paused;
+        } else if (radioPlayer?.dataset.mode === 'muratal') {
+            activeSurah = this._dmCurrentMuratal;
+            isActivePlaying = !radioPlayer.paused;
+        }
+
+        const surahs = window.QURAN_SURAHS || [];
+        surahs.forEach(s => {
+            const btn = document.getElementById(`admMuratalBtn${s.number}`);
+            if (!btn) return;
+            const isThis = isActivePlaying && activeSurah === s.number;
+            btn.disabled = false;
+            btn.innerHTML = isThis ? '<i class="fas fa-stop"></i>' : '<i class="fas fa-play"></i>';
+            btn.classList.toggle('playing', isThis);
+        });
+    }
+
+    _toggleDMRadioPanel(forceOpen) {
+        const panel = document.getElementById('admRadioPanel');
+        const btn = document.getElementById('admRadioBtn');
+        if (!panel) return;
+        const isOpen = panel.classList.contains('open');
+        const shouldOpen = forceOpen !== undefined ? forceOpen : !isOpen;
+        panel.classList.toggle('open', shouldOpen);
+        if (btn) btn.classList.toggle('active', shouldOpen);
+        // Close settings panel if both were open
+        if (shouldOpen) {
+            const settingsPanel = document.getElementById('admSettingsPanel');
+            if (settingsPanel?.classList.contains('open')) {
+                settingsPanel.classList.remove('open');
+            }
+        }
+        // Audio keeps playing when panel closes — DM audio bar continues to show controls
+    }
+
     closeDisplayMode() {
         this._stopAdzanAudio();
         this.displayModeActive = false;
@@ -2336,18 +2870,36 @@ export default class AdzanApp {
         const stopBtn = document.getElementById('admAudioStop');
         if (stopBtn) stopBtn.addEventListener('click', () => this._admStopAudio());
         this._updateAudioBar();
+        this._dmUpdateRadioBtnStates();
+        this._dmUpdateMuratalBtnStates();
         this.displayModeAudioBarInterval = setInterval(() => {
             if (!this.displayModeActive) { clearInterval(this.displayModeAudioBarInterval); return; }
             this._updateAudioBar();
+            this._dmUpdateRadioBtnStates();
+            this._dmUpdateMuratalBtnStates();
         }, 1000);
     }
 
     _getAudioState() {
-        // Priority 1: Radio streaming
+        const radioEl = document.getElementById('radioPlayer');
         const sa = window.streamingApp;
+
+        // Priority 1a: Muratal surah from DM panel (radioPlayer in muratal mode)
+        if (radioEl && radioEl.dataset.mode === 'muratal' && radioEl.currentSrc && !radioEl.ended) {
+            return {
+                type: 'dm-muratal',
+                title: radioEl.dataset.muratalName || 'Muratal Al-Qur\'an',
+                sub: 'Muratal Surat • Alafasy',
+                icon: 'fas fa-quran',
+                audioEl: radioEl,
+                isPlaying: !radioEl.paused,
+                isMuted: radioEl.muted
+            };
+        }
+
+        // Priority 1b: Radio streaming via streamingApp
         if (sa && sa.currentStream !== null) {
             const station = sa.radioStations?.[sa.currentStream];
-            const radioEl = document.getElementById('radioPlayer');
             return {
                 type: 'radio',
                 title: station?.name || 'Radio Streaming',
@@ -2424,7 +2976,7 @@ export default class AdzanApp {
         const state = this._getAudioState();
         if (!state) return;
         const { type, audioEl, isPlaying } = state;
-        if (type === 'radio') {
+        if (type === 'radio' || type === 'dm-muratal') {
             if (isPlaying) { audioEl.pause(); }
             else { audioEl.play().catch(() => {}); }
         } else if (type === 'quran-page') {
@@ -2460,16 +3012,23 @@ export default class AdzanApp {
                 } else if (audioEl) {
                     audioEl.pause(); audioEl.src = '';
                 }
+            } else if (type === 'dm-muratal') {
+                this._dmStopMuratal();
             } else if (type === 'quran-page') {
                 const qa = window.alquranApp;
                 if (qa) qa._stopAudio();
             } else if (type === 'quran-surah') {
-                if (audioEl) { audioEl.pause(); audioEl.src = ''; audioEl.load(); }
-                const quranPlayer = document.getElementById('quranAudioPlayer');
-                if (quranPlayer) { quranPlayer.style.display = 'none'; delete quranPlayer.dataset.mode; }
-                document.body.dataset.audioPlayerVisible = 'false';
                 const qa = window.alquranApp;
+                if (qa && typeof qa.stopMuratal === 'function') {
+                    qa.stopMuratal(false);
+                } else {
+                    if (audioEl) { audioEl.pause(); audioEl.src = ''; audioEl.load(); }
+                    const quranPlayer = document.getElementById('quranAudioPlayer');
+                    if (quranPlayer) { quranPlayer.style.display = 'none'; delete quranPlayer.dataset.mode; }
+                    document.body.dataset.audioPlayerVisible = 'false';
+                }
                 if (qa) { qa.isPlaying = false; qa.currentPlayingVerse = null; qa.audioSetupDone = false; }
+                this._dmCurrentMuratal = null;
             }
         } catch (e) { console.error('admStopAudio error', e); }
         // Immediately hide bar without waiting for next poll.

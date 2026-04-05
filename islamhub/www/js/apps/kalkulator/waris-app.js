@@ -1069,10 +1069,11 @@ export default class WarisApp {
     }
 
     formatCurrency(amount) {
+        const rounded = Math.round(amount);
         if (this.currency === 'IDR') {
-            return 'Rp ' + amount.toLocaleString('id-ID');
+            return 'Rp ' + rounded.toLocaleString('id-ID');
         }
-        return amount.toLocaleString();
+        return rounded.toLocaleString();
     }
 
     resetCalculator() {

@@ -521,10 +521,9 @@ class StreamingApp {
             // Reset retry state for fresh start
             this.resetRetryState();
 
-            // Show loading
-            btnRadio.disabled = true;
-            btnRadio.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Menghubungkan...</span>';
-            radioStatus.innerHTML = '<span class="status-dot loading"></span><span>Menghubungkan...</span>';
+            // Show loading (btnRadio/radioStatus may be null when called from adzan panel)
+            if (btnRadio) { btnRadio.disabled = true; btnRadio.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Menghubungkan...</span>'; }
+            if (radioStatus) radioStatus.innerHTML = '<span class="status-dot loading"></span><span>Menghubungkan...</span>';
 
             // Set radio source (persistent global element in #bottom-dock)
             radioPlayer.src = station.url;
@@ -539,19 +538,16 @@ class StreamingApp {
             // (called every second). Trigger immediately for snappy UI.
             if (window.islamHub) window.islamHub._globalPlayerUpdate();
             
-            btnRadio.innerHTML = '<i class="fas fa-stop"></i><span>Stop</span>';
-            btnRadio.classList.add('active');
-            btnRadio.disabled = false;
-            radioStatus.innerHTML = '<span class="status-dot live"></span><span>Sedang Streaming</span>';
+            if (btnRadio) { btnRadio.innerHTML = '<i class="fas fa-stop"></i><span>Stop</span>'; btnRadio.classList.add('active'); btnRadio.disabled = false; }
+            if (radioStatus) radioStatus.innerHTML = '<span class="status-dot live"></span><span>Sedang Streaming</span>';
             
             console.log(`[Streaming] ${station.name} started`);
         } catch (error) {
             console.error('[Streaming] Radio error:', error);
             
             // Reset button
-            btnRadio.disabled = false;
-            btnRadio.innerHTML = '<i class="fas fa-play"></i><span>Putar Radio</span>';
-            radioStatus.innerHTML = '<span class="status-dot"></span><span>Error</span>';
+            if (btnRadio) { btnRadio.disabled = false; btnRadio.innerHTML = '<i class="fas fa-play"></i><span>Putar Radio</span>'; }
+            if (radioStatus) radioStatus.innerHTML = '<span class="status-dot"></span><span>Error</span>';
             
             this.showStreamingPopup(
                 `Gagal memulai streaming ${station.name}. Pastikan koneksi internet Anda stabil.`,

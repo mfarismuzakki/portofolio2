@@ -54,6 +54,9 @@ export default class AlQuranApp {
 
         // Sidebar state
         this.sidebarOpen = false;
+
+        // Muratal surah state
+        this._muratalState = { surahNumber: null, surahName: null, repeat: 1, count: 0, isPlaying: false };
     }
 
     async init() {
@@ -187,6 +190,7 @@ export default class AlQuranApp {
         quickNav.innerHTML = `
             <button class="nav-btn" data-action="surahList"><i class="fas fa-list"></i><span>Daftar Surat</span></button>
             <button class="nav-btn" data-action="pageList"><i class="fas fa-file"></i><span>Buka Halaman</span></button>
+            <button class="nav-btn" data-action="muratal"><i class="fas fa-headphones"></i><span>Muratal</span></button>
             <button class="nav-btn" data-action="bookmarks"><i class="fas fa-heart"></i><span>Tersimpan</span></button>
             <button class="nav-btn" data-action="offline"><i class="fas fa-download"></i><span>Mode Offline</span></button>
             <button class="nav-btn" data-action="settings"><i class="fas fa-cog"></i><span>Pengaturan</span></button>
@@ -257,6 +261,7 @@ export default class AlQuranApp {
                 const action = btn.dataset.action;
                 if (action === 'surahList') this._showSurahList();
                 else if (action === 'pageList') this._showPageJumpModal();
+                else if (action === 'muratal') this._showMuratalPage();
                 else if (action === 'bookmarks') this._showBookmarksModal();
                 else if (action === 'offline') this._showOfflineModal();
                 else if (action === 'progress') this._showMemorizationProgress();
@@ -3210,6 +3215,262 @@ export default class AlQuranApp {
 
     _saveJSON(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
     _loadJSON(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+
+    // ===== MURATAL SURAH =====
+
+    _showMuratalPage() {
+        const surahs = this.QURAN_SURAHS || [];
+        const st = this._muratalState;
+
+        const html = `
+            <div class="alq-muratal-page" id="alqMuratalPage">
+                <div class="alq-muratal-header">
+                    <button class="alq-muratal-back" id="alqMuratalBack"><i class="fas fa-arrow-left"></i></button>
+                    <div class="alq-muratal-title"><i class="fas fa-headphones"></i> Muratal Al-Qur'an</div>
+                </div>
+
+                <!-- Now Playing -->
+                <div class="alq-muratal-now" id="alqMuratalNow" style="display:none">
+                    <div class="alq-muratal-now-icon"><i class="fas fa-music"></i></div>
+                    <div class="alq-muratal-now-info">
+                        <div class="alq-muratal-now-title" id="alqMuratalNowTitle">-</div>
+                        <div class="alq-muratal-now-sub" id="alqMuratalNowSub">Sedang diputar</div>
+                    </div>
+                    <div class="alq-muratal-now-ctrl">
+                        <button class="alq-muratal-ctrl-btn" id="alqMuratalPlayPause" title="Play/Pause"><i class="fas fa-pause"></i></button>
+                        <button class="alq-muratal-ctrl-btn alq-muratal-stop-btn" id="alqMuratalStop" title="Stop"><i class="fas fa-stop"></i></button>
+                    </div>
+                </div>
+
+                <!-- Options -->
+                <div class="alq-muratal-options">
+                    <div class="alq-muratal-opt-label"><i class="fas fa-redo-alt"></i> Repeat:</div>
+                    <div class="alq-muratal-repeat-group">
+                        <button class="alq-repeat-btn ${st.repeat === 1 ? 'active' : ''}" data-repeat="1">1×</button>
+                        <button class="alq-repeat-btn ${st.repeat === 3 ? 'active' : ''}" data-repeat="3">3×</button>
+                        <button class="alq-repeat-btn ${st.repeat === 5 ? 'active' : ''}" data-repeat="5">5×</button>
+                        <button class="alq-repeat-btn ${st.repeat === 0 ? 'active' : ''}" data-repeat="0">∞</button>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="alq-muratal-search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="alqMuratalSearch" class="alq-muratal-search" placeholder="Cari surat...">
+                </div>
+
+                <!-- Surah list -->
+                <div class="alq-muratal-list" id="alqMuratalList">
+                    ${surahs.map(s => `
+                        <div class="alq-muratal-item" data-surah-name="${s.name.toLowerCase()}">
+                            <div class="alq-muratal-num">${s.number}</div>
+                            <div class="alq-muratal-info">
+                                <div class="alq-muratal-name">${s.name}</div>
+                                <div class="alq-muratal-meta">${s.nameArabic} &bull; ${s.verses} ayat &bull; ${s.revelation}</div>
+                            </div>
+                            <button class="alq-muratal-btn" id="alqMuratalBtn${s.number}" data-surah="${s.number}" data-surah-name="${s.name}">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        if (this.container) {
+            this.container.innerHTML = html;
+        }
+
+        // Back button
+        document.getElementById('alqMuratalBack')?.addEventListener('click', () => {
+            this.stopMuratal();
+            this.render();
+        });
+
+        // Repeat buttons
+        document.querySelectorAll('.alq-repeat-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this._muratalState.repeat = parseInt(btn.dataset.repeat);
+                this._muratalState.count = 0;
+                document.querySelectorAll('.alq-repeat-btn').forEach(b => b.classList.toggle('active', b === btn));
+            });
+        });
+
+        // Play/pause in now-playing bar
+        document.getElementById('alqMuratalPlayPause')?.addEventListener('click', () => {
+            const audioEl = document.getElementById('quranAudioElement');
+            if (!audioEl) return;
+            if (audioEl.paused) { audioEl.play().catch(() => {}); this._muratalState.isPlaying = true; }
+            else { audioEl.pause(); this._muratalState.isPlaying = false; }
+            this._updateMuratalNowPlaying();
+        });
+
+        // Stop button
+        document.getElementById('alqMuratalStop')?.addEventListener('click', () => {
+            this.stopMuratal();
+        });
+
+        // Surah play buttons
+        document.querySelectorAll('.alq-muratal-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.playMuratalSurah(parseInt(btn.dataset.surah), btn.dataset.surahName);
+            });
+        });
+
+        // Search
+        document.getElementById('alqMuratalSearch')?.addEventListener('input', e => {
+            const q = e.target.value.toLowerCase();
+            document.querySelectorAll('#alqMuratalList .alq-muratal-item').forEach(item => {
+                item.style.display = item.dataset.surahName.includes(q) ? '' : 'none';
+            });
+        });
+
+        // Restore current playing state if any
+        if (st.surahNumber && st.isPlaying) this._updateMuratalNowPlaying();
+    }
+
+    playMuratalSurah(surahNumber, surahName) {
+        const audioEl = document.getElementById('quranAudioElement');
+        const audioPlayer = document.getElementById('quranAudioPlayer');
+        if (!audioEl || !audioPlayer) return;
+
+        const btn = document.getElementById(`alqMuratalBtn${surahNumber}`);
+
+        // Toggle off if same surah
+        if (this._muratalState.surahNumber === surahNumber && this._muratalState.isPlaying) {
+            this.stopMuratal();
+            return;
+        }
+
+        // Immediate loader on button
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+
+        // Stop any previous audio
+        this.stopMuratal(false);
+
+        // Setup state
+        this._muratalState.surahNumber = surahNumber;
+        this._muratalState.surahName = surahName || `Surat ${surahNumber}`;
+        this._muratalState.count = 0;
+        this._muratalState.isPlaying = true;
+
+        // Quran audio CDN: Mishary Alafasy full surah
+        const url = `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${surahNumber}.mp3`;
+        audioEl.src = url;
+        audioPlayer.dataset.mode = 'quran';
+        audioPlayer.style.display = 'block';
+        document.body.dataset.audioPlayerVisible = 'true';
+
+        // Update global player info
+        const nameEl = document.getElementById('audioSurahName');
+        if (nameEl) nameEl.textContent = `Muratal - ${this._muratalState.surahName}`;
+        const counterEl = document.getElementById('audioVerseCounter');
+        if (counterEl) { counterEl.style.display = 'none'; counterEl.textContent = ''; }
+        const signalDot = document.getElementById('audioSignalDot');
+        if (signalDot) signalDot.style.display = 'none';
+        const prevBtn = document.getElementById('audioPrevVerse');
+        const nextBtn = document.getElementById('audioNextVerse');
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+        const progress = audioPlayer.querySelector('.audio-progress');
+        if (progress) progress.style.display = '';
+        const closeBtn = document.getElementById('audioClose');
+        if (closeBtn) closeBtn.onclick = () => this.stopMuratal();
+
+        // Ended handler (repeat logic)
+        const onEnded = () => {
+            this._muratalState.count++;
+            const repeat = this._muratalState.repeat;
+            if (repeat === 0 || this._muratalState.count < repeat) {
+                // Repeat: replay
+                audioEl.currentTime = 0;
+                audioEl.play().catch(() => {});
+                audioEl.addEventListener('ended', onEnded, { once: true });
+            } else {
+                // Done
+                this._muratalState.isPlaying = false;
+                this._muratalState.count = 0;
+                this._updateMuratalNowPlaying();
+                this._updateMuratalBtnState(surahNumber, false);
+                const ppBtn = document.getElementById('audioPlayPause');
+                if (ppBtn) ppBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        };
+        audioEl.addEventListener('ended', onEnded, { once: true });
+
+        audioEl.play()
+            .then(() => {
+                this._updateMuratalNowPlaying();
+                this._updateMuratalBtnState(surahNumber, true, false);
+                const ppBtn = document.getElementById('audioPlayPause');
+                if (ppBtn) ppBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                // Setup global player controls
+                if (!this.audioSetupDone) {
+                    const surahInfo = this.QURAN_SURAHS?.find(s => s.number === surahNumber);
+                    if (surahInfo) { this._setupAudioControls(surahInfo); this.audioSetupDone = true; }
+                }
+            })
+            .catch(err => {
+                console.warn('[Muratal] Play failed:', err);
+                this._muratalState.isPlaying = false;
+                this._muratalState.surahNumber = null;
+                this._updateMuratalBtnState(surahNumber, false);
+                this._updateMuratalNowPlaying();
+            });
+    }
+
+    stopMuratal(updateUI = true) {
+        const audioEl = document.getElementById('quranAudioElement');
+        const audioPlayer = document.getElementById('quranAudioPlayer');
+        if (audioEl) {
+            try { audioEl.pause(); audioEl.src = ''; audioEl.load(); } catch (e) {}
+        }
+        if (audioPlayer && audioPlayer.dataset.mode === 'quran') {
+            audioPlayer.style.display = 'none';
+            delete audioPlayer.dataset.mode;
+            document.body.dataset.audioPlayerVisible = 'false';
+        }
+        const prev = this._muratalState.surahNumber;
+        this._muratalState.surahNumber = null;
+        this._muratalState.surahName = null;
+        this._muratalState.isPlaying = false;
+        this._muratalState.count = 0;
+        this.isPlaying = false;
+        this.audioSetupDone = false;
+        if (updateUI) {
+            if (prev) this._updateMuratalBtnState(prev, false);
+            this._updateMuratalNowPlaying();
+        }
+    }
+
+    _updateMuratalNowPlaying() {
+        const nowEl = document.getElementById('alqMuratalNow');
+        const titleEl = document.getElementById('alqMuratalNowTitle');
+        const subEl = document.getElementById('alqMuratalNowSub');
+        const ppBtn = document.getElementById('alqMuratalPlayPause');
+        const st = this._muratalState;
+        if (!nowEl) return;
+        if (st.surahNumber) {
+            nowEl.style.display = 'flex';
+            if (titleEl) titleEl.textContent = st.surahName || `Surat ${st.surahNumber}`;
+            const repeat = st.repeat === 0 ? '∞' : `${st.repeat}×`;
+            if (subEl) subEl.textContent = st.isPlaying ? `Sedang diputar • Repeat: ${repeat}` : 'Dijeda';
+            if (ppBtn) ppBtn.innerHTML = st.isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+        } else {
+            nowEl.style.display = 'none';
+        }
+    }
+
+    _updateMuratalBtnState(surahNumber, isPlaying, isLoading = false) {
+        const btn = document.getElementById(`alqMuratalBtn${surahNumber}`);
+        if (!btn) return;
+        btn.disabled = isLoading;
+        if (isLoading) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+        else { btn.innerHTML = isPlaying ? '<i class="fas fa-stop"></i>' : '<i class="fas fa-play"></i>'; }
+        btn.classList.toggle('playing', isPlaying);
+    }
+
+    // ===== END MURATAL =====
 
     _getBasePath() {
         // Get base path for assets - handles subdirectory deployment
