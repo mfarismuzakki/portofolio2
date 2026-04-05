@@ -1714,7 +1714,8 @@ export default class AdzanApp {
             theme: 'default', showSunnah: true, adzanSound: false,
             adzanFullAudio: false, adzanFile: 'Mishary-Rashid-Alafasy',
             masjidName: '', showImsak: false, showSyuruq: true,
-            showArabic: false, fontSize: 'md', bgStyle: 'haram'
+            showArabic: false, fontSize: 'md', bgStyle: 'haram',
+            centerStyle: 'box', centerSize: 'md'
         };
         try {
             const saved = localStorage.getItem('adm-settings');
@@ -1761,6 +1762,17 @@ export default class AdzanApp {
         document.querySelectorAll('.adm-bg-option').forEach(el => {
             el.classList.toggle('active', el.dataset.bg === (this._dmSettings.bgStyle || 'haram'));
         });
+        // Center style and size
+        overlay.setAttribute('data-adm-center-style', this._dmSettings.centerStyle || 'box');
+        overlay.setAttribute('data-adm-center-size', this._dmSettings.centerSize || 'md');
+        document.querySelectorAll('.adm-center-style-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.style === (this._dmSettings.centerStyle || 'box'));
+        });
+        document.querySelectorAll('.adm-center-size-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.csize === (this._dmSettings.centerSize || 'md'));
+        });
+        const centerSizeRow = document.getElementById('admCenterSizeRow');
+        if (centerSizeRow) centerSizeRow.style.display = (this._dmSettings.centerStyle === 'footer') ? 'none' : '';
         // Rebuild grid to reflect display toggles
         this._buildDisplayModePrayerGrid();
         // Sound settings
@@ -1798,6 +1810,8 @@ export default class AdzanApp {
         overlay.setAttribute('data-adm-sunnah', String(s.showSunnah));
         overlay.setAttribute('data-adm-fontsize', s.fontSize || 'md');
         overlay.setAttribute('data-adm-bg', s.bgStyle || 'haram');
+        overlay.setAttribute('data-adm-center-style', s.centerStyle || 'box');
+        overlay.setAttribute('data-adm-center-size', s.centerSize || 'md');
         overlay.innerHTML = `
             <div class="adm-bg"></div>
             <div class="adm-top-bar">
@@ -1927,6 +1941,25 @@ export default class AdzanApp {
                                 <input type="checkbox" id="admToggleArabic" ${s.showArabic ? 'checked' : ''}>
                                 <span class="adm-toggle-slider"></span>
                             </label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="adm-settings-section-title">Kotak Informasi Tengah</div>
+                        <div class="adm-settings-row adm-settings-row-col" style="gap:10px">
+                            <div class="adm-settings-row-label"><i class="fas fa-th-large"></i> Gaya Tampilan</div>
+                            <div class="adm-center-style-buttons">
+                                <button class="adm-center-style-btn ${!s.centerStyle || s.centerStyle === 'box' ? 'active' : ''}" data-style="box" title="Kotak di tengah layar"><i class="fas fa-square"></i> Kotak</button>
+                                <button class="adm-center-style-btn ${s.centerStyle === 'minimal' ? 'active' : ''}" data-style="minimal" title="Tanpa latar kotak"><i class="fas fa-font"></i> Minimal</button>
+                                <button class="adm-center-style-btn ${s.centerStyle === 'footer' ? 'active' : ''}" data-style="footer" title="Countdown di panel bawah"><i class="fas fa-bars"></i> Footer</button>
+                            </div>
+                        </div>
+                        <div class="adm-settings-row" id="admCenterSizeRow"${s.centerStyle === 'footer' ? ' style="display:none"' : ''}>
+                            <div class="adm-settings-row-label"><i class="fas fa-expand-alt"></i> Ukuran Kotak</div>
+                            <div class="adm-center-size-buttons">
+                                <button class="adm-center-size-btn ${s.centerSize === 'sm' ? 'active' : ''}" data-csize="sm">Kecil</button>
+                                <button class="adm-center-size-btn ${!s.centerSize || s.centerSize === 'md' ? 'active' : ''}" data-csize="md">Sedang</button>
+                                <button class="adm-center-size-btn ${s.centerSize === 'lg' ? 'active' : ''}" data-csize="lg">Besar</button>
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -2162,6 +2195,31 @@ export default class AdzanApp {
             });
         });
 
+        // Center style buttons
+        overlay.querySelectorAll('.adm-center-style-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this._dmSettings.centerStyle = btn.dataset.style;
+                this._saveDMSettings();
+                overlay.setAttribute('data-adm-center-style', btn.dataset.style);
+                overlay.querySelectorAll('.adm-center-style-btn').forEach(b =>
+                    b.classList.toggle('active', b.dataset.style === btn.dataset.style));
+                const sizeRow = document.getElementById('admCenterSizeRow');
+                if (sizeRow) sizeRow.style.display = btn.dataset.style === 'footer' ? 'none' : '';
+                this._buildDisplayModePrayerGrid();
+            });
+        });
+
+        // Center size buttons
+        overlay.querySelectorAll('.adm-center-size-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this._dmSettings.centerSize = btn.dataset.csize;
+                this._saveDMSettings();
+                overlay.setAttribute('data-adm-center-size', btn.dataset.csize);
+                overlay.querySelectorAll('.adm-center-size-btn').forEach(b =>
+                    b.classList.toggle('active', b.dataset.csize === btn.dataset.csize));
+            });
+        });
+
         // Populate and bind radio station buttons
         this._buildDMRadioList();
 
@@ -2263,17 +2321,20 @@ export default class AdzanApp {
         }
         this._dmNextPrayer = nextPrayer;
 
+        const isFooterMode = (s.centerStyle === 'footer');
         grid.innerHTML = orderedNames.map(name => {
             const t = this.prayerTimes[name];
             if (!t) return '';
             const isActive = name === activePrayer;
             const isNext = nextPrayer && name === nextPrayer.name;
             const arabicHtml = s.showArabic ? `<div class="adm-prayer-arabic">${arabicNames[name] || ''}</div>` : '';
+            const cdHtml = isNext && isFooterMode ? '<div class="adm-next-col-cd" id="admFooterCdCountdown">--:--:--</div>' : '';
             return `
                 <div class="adm-prayer-col ${isActive ? 'adm-active' : ''} ${isNext ? 'adm-next' : ''}">
                     <div class="adm-prayer-label">${labels[name] || name}</div>
                     ${arabicHtml}
                     <div class="adm-prayer-time">${t}</div>
+                    ${cdHtml}
                 </div>
             `;
         }).join('');
@@ -2304,6 +2365,8 @@ export default class AdzanApp {
         const cdStr = `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
         const centerCdEl = document.getElementById('admCenterCountdown');
         if (centerCdEl) centerCdEl.textContent = cdStr;
+        const footerCdEl = document.getElementById('admFooterCdCountdown');
+        if (footerCdEl) footerCdEl.textContent = cdStr;
 
         // Rebuild grid when next prayer changes (e.g. crossed into next prayer)
         const nowMins = n.getHours() * 60 + n.getMinutes();

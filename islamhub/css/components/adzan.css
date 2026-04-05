@@ -1,4 +1,4 @@
-/* ===== ADZAN APP STYLES ===== */
+﻿/* ===== ADZAN APP STYLES ===== */
 .adzan-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -1788,7 +1788,7 @@
   }
 }
 
-/* ===== ADZAN FULL AUDIO — new elements ===== */
+/* ===== ADZAN FULL AUDIO â€” new elements ===== */
 
 /* Styled select for adzan file picker */
 .adm-select {
@@ -1891,7 +1891,7 @@
   50%       { transform: scaleY(1);   opacity: 1; }
 }
 
-/* Stop adzan button — inside alert overlay */
+/* Stop adzan button â€” inside alert overlay */
 .adm-adzan-stop-btn {
   margin-top: 20px;
   display: inline-flex;
@@ -2058,7 +2058,7 @@
   border-color: #ff6b6b !important;
 }
 
-/* ===== CYAN THEME — Audio Bar ===== */
+/* ===== CYAN THEME â€” Audio Bar ===== */
 .adzan-display-mode[data-adm-theme="cyan"] .adm-audio-bar {
   background: rgba(0, 8, 20, 0.92);
   border-top-color: rgba(0, 255, 200, 0.08);
@@ -2758,4 +2758,119 @@
     right: 0;
     bottom: 0;
   }
+}
+
+/* ===== CENTER DISPLAY STYLE VARIANTS ===== */
+
+/* --- Minimal style: no box background, just text --- */
+.adzan-display-mode[data-adm-center-style="minimal"] .adm-center-display {
+  background: none;
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+/* --- Footer style: no center box, countdown in footer bar --- */
+.adzan-display-mode[data-adm-center-style="footer"] .adm-center-display {
+  display: none;
+}
+.adzan-display-mode[data-adm-center-style="footer"] .adm-main-area {
+  pointer-events: none;
+}
+
+/* ===== CENTER DISPLAY SIZE VARIANTS ===== */
+
+/* Small */
+.adzan-display-mode[data-adm-center-size="sm"] .adm-center-display {
+  padding: 14px 24px 18px;
+  gap: 2px;
+  max-width: 380px;
+}
+.adzan-display-mode[data-adm-center-size="sm"] .adm-center-next-label { font-size: 0.62rem; }
+.adzan-display-mode[data-adm-center-size="sm"] .adm-center-next-name { font-size: clamp(1.2rem, 2.2vw, 1.8rem); }
+.adzan-display-mode[data-adm-center-size="sm"] .adm-center-countdown { font-size: clamp(2rem, 5vw, 3.6rem); }
+.adzan-display-mode[data-adm-center-size="sm"] .adm-center-next-time { font-size: 0.75rem; }
+
+/* Large */
+.adzan-display-mode[data-adm-center-size="lg"] .adm-center-display {
+  padding: 32px 52px 42px;
+  gap: 6px;
+  max-width: 680px;
+}
+.adzan-display-mode[data-adm-center-size="lg"] .adm-center-next-label { font-size: 0.9rem; }
+.adzan-display-mode[data-adm-center-size="lg"] .adm-center-next-name { font-size: clamp(2.6rem, 5vw, 4rem); }
+.adzan-display-mode[data-adm-center-size="lg"] .adm-center-countdown { font-size: clamp(4.5rem, 12vw, 9rem); }
+.adzan-display-mode[data-adm-center-size="lg"] .adm-center-next-time { font-size: clamp(1rem, 1.8vw, 1.35rem); }
+
+/* ===== SETTINGS: CENTER STYLE BUTTONS ===== */
+.adm-center-style-buttons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+.adm-center-style-btn {
+  flex: 1;
+  padding: 9px 6px;
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.14);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.adm-center-style-btn:hover { border-color: rgba(255,255,255,0.35); color: #fff; }
+.adm-center-style-btn.active { border-color: #f5930a; background: rgba(245,147,10,0.18); color: #f5930a; }
+
+/* ===== SETTINGS: CENTER SIZE BUTTONS ===== */
+.adm-center-size-buttons {
+  display: flex;
+  gap: 8px;
+}
+.adm-center-size-btn {
+  flex: 1;
+  padding: 8px 6px;
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.14);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.adm-center-size-btn:hover { border-color: rgba(255,255,255,0.35); color: #fff; }
+.adm-center-size-btn.active { border-color: #f5930a; background: rgba(245,147,10,0.18); color: #f5930a; }
+
+/* ===== CENTER DISPLAY STYLE VARIANTS ===== */
+
+/* --- Minimal style: no box background, just text --- */
+.adzan-display-mode[data-adm-center-style="minimal"] .adm-center-display {
+  background: none;
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+/* ===== IN-COLUMN COUNTDOWN (footer style) ===== */
+.adm-next-col-cd {
+  font-size: clamp(0.75rem, 1.3vw, 1rem);
+  font-weight: 800;
+  color: rgba(255,255,255,0.92);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.3px;
+  line-height: 1;
+  margin-top: 2px;
+  background: rgba(0,0,0,0.18);
+  padding: 3px 10px;
+  border-radius: 20px;
 }
