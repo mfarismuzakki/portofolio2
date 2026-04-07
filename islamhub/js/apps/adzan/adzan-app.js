@@ -1,6 +1,8 @@
 /* ===== Adzan App - IslamHub ===== */
 /* Logic from adzan_realtime with adaptations for IslamHub */
 
+import islamHubConfig from '../../config.js';
+
 export default class AdzanApp {
     constructor(globalState, mainApp) {
         this.state = globalState;
@@ -130,7 +132,7 @@ export default class AdzanApp {
 
                 <!-- Prayer Times Table -->
                 <div class="prayer-times-section">
-                    <h3><i class="fas fa-mosque"></i> Jadwal Sholat Hari Ini</h3>
+                    <h3 id="prayerTimesHeading"><i class="fas fa-mosque"></i> Jadwal Sholat Hari Ini</h3>
                     <div class="method-selector">
                         <label for="methodSelect">Metode: </label>
                         <select id="methodSelect">
@@ -141,6 +143,23 @@ export default class AdzanApp {
                             <option value="Makkah">Umm al-Qura</option>
                             <option value="Karachi">University of Karachi</option>
                         </select>
+                    </div>
+
+                    <!-- Date Offset Selector -->
+                    <div class="date-offset-selector" id="dateOffsetSelector">
+                        <label>Koreksi Hijriah:</label>
+                        <div class="date-offset-controls">
+                            <button class="btn-offset-step" id="btnOffsetMinus" type="button" title="Mundur 1 hari">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="date-offset-label" id="dateOffsetLabel">Tanpa koreksi</span>
+                            <button class="btn-offset-step" id="btnOffsetPlus" type="button" title="Maju 1 hari">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <button class="btn-offset-reset" id="btnOffsetReset" type="button" title="Kembali ke hari ini" style="display:none;">
+                                <i class="fas fa-rotate-left"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="prayer-times-grid" id="prayerTimesGrid">
@@ -589,7 +608,34 @@ export default class AdzanApp {
             const monthName = bulanMap[normalizedMonth] || hijri.month.en || '';
             
             if (monthName && hijri.day && hijri.year) {
-                fullDate += ` • ${hijri.day} ${monthName} ${hijri.year} H`;
+                const offset = islamHubConfig.dateOffsetDays;
+                if (offset === 0) {
+                    // Tanpa koreksi — tampilkan normal
+                    fullDate += ` • ${hijri.day} ${monthName} ${hijri.year} H`;
+                    const dateEl = document.getElementById('currentDate');
+                    if (dateEl) dateEl.textContent = fullDate;
+                    return;
+                }
+
+                // Ada koreksi — terapkan ke Hijriah dan tampilkan perubahan
+                const corrected = this._adjustHijriDate(hijri, offset);
+                const normalizedCorrected = normalizeMonthName(corrected.month.en || '');
+                const correctedMonthName = bulanMap[normalizedCorrected] || corrected.month.en || '';
+
+                const originalStr = `${hijri.day} ${monthName} ${hijri.year} H`;
+                const correctedStr = `${corrected.day} ${correctedMonthName} ${corrected.year} H`;
+                const koreksiLabel = islamHubConfig.getOffsetLabel();
+
+                const dateEl = document.getElementById('currentDate');
+                if (dateEl) {
+                    dateEl.innerHTML =
+                        `${fullDate} • ` +
+                        `<span class="hijri-original">${originalStr}</span>` +
+                        ` <span class="hijri-arrow">→</span> ` +
+                        `<span class="hijri-corrected">${correctedStr}</span>` +
+                        ` <span class="hijri-correction-badge">${koreksiLabel}</span>`;
+                }
+                return;
             }
         }
         
@@ -604,6 +650,36 @@ export default class AdzanApp {
         
         if (locationNameEl) {
             locationNameEl.textContent = this.locationDisplay;
+        }
+    }
+
+    /**
+     * Perbarui tampilan UI kontrol offset tanggal sesuai nilai konfigurasi saat ini.
+     */
+    _updateDateOffsetUI() {
+        const label = document.getElementById('dateOffsetLabel');
+        const resetBtn = document.getElementById('btnOffsetReset');
+        const selector = document.getElementById('dateOffsetSelector');
+        const heading = document.getElementById('prayerTimesHeading');
+
+        const offset = islamHubConfig.dateOffsetDays;
+
+        if (label) {
+            label.textContent = islamHubConfig.getOffsetLabel();
+        }
+
+        if (resetBtn) {
+            resetBtn.style.display = offset !== 0 ? 'inline-flex' : 'none';
+        }
+
+        // Tandai container jika offset aktif (bukan hari ini)
+        if (selector) {
+            selector.classList.toggle('offset-active', offset !== 0);
+        }
+
+        // Judul jadwal sholat selalu "Hari Ini" (koreksi hanya mempengaruhi tanggal Hijriah)
+        if (heading) {
+            heading.innerHTML = '<i class="fas fa-mosque"></i> Jadwal Sholat Hari Ini';
         }
     }
 
@@ -696,6 +772,36 @@ export default class AdzanApp {
             methodSelect.value = this.method;
             methodSelect.addEventListener('change', (e) => {
                 this.method = e.target.value;
+                this.fetchPrayerTimes();
+            });
+        }
+
+        // Date offset controls
+        this._updateDateOffsetUI();
+
+        const btnOffsetMinus = document.getElementById('btnOffsetMinus');
+        if (btnOffsetMinus) {
+            btnOffsetMinus.addEventListener('click', () => {
+                islamHubConfig.dateOffsetDays = islamHubConfig.dateOffsetDays - 1;
+                this._updateDateOffsetUI();
+                this.fetchPrayerTimes();
+            });
+        }
+
+        const btnOffsetPlus = document.getElementById('btnOffsetPlus');
+        if (btnOffsetPlus) {
+            btnOffsetPlus.addEventListener('click', () => {
+                islamHubConfig.dateOffsetDays = islamHubConfig.dateOffsetDays + 1;
+                this._updateDateOffsetUI();
+                this.fetchPrayerTimes();
+            });
+        }
+
+        const btnOffsetReset = document.getElementById('btnOffsetReset');
+        if (btnOffsetReset) {
+            btnOffsetReset.addEventListener('click', () => {
+                islamHubConfig.dateOffsetDays = 0;
+                this._updateDateOffsetUI();
                 this.fetchPrayerTimes();
             });
         }
@@ -1675,7 +1781,8 @@ export default class AdzanApp {
 
     _getHijriString() {
         if (!this.hijriData) return '';
-        const hijri = this.hijriData;
+        const offset = islamHubConfig.dateOffsetDays;
+        const hijri = offset !== 0 ? this._adjustHijriDate(this.hijriData, offset) : this.hijriData;
         const bulanMap = {
             'muharram': 'Muharram', 'safar': 'Safar',
             'rabi al-awwal': 'Rabiul Awal', 'rabi al-awal': 'Rabiul Awal',
@@ -1827,7 +1934,7 @@ export default class AdzanApp {
                     <div class="adm-gregorian" id="admGregorian"></div>
                 </div>
                 <div class="adm-top-actions">
-                    <button class="adm-radio-btn" id="admRadioBtn" title="Radio &amp; Muratal"><i class="fas fa-radio"></i></button>
+                    <button class="adm-radio-btn" id="admRadioBtn" title="Media &amp; Kajian"><i class="fas fa-broadcast-tower"></i></button>
                     <button class="adm-settings-btn" id="admSettingsBtn" title="Pengaturan"><i class="fas fa-cog"></i></button>
                     <button class="adm-close-btn" id="admClose" title="Tutup"><i class="fas fa-times"></i></button>
                 </div>
@@ -1840,6 +1947,14 @@ export default class AdzanApp {
                     <div class="adm-center-next-arabic" id="admCenterNextArabic"></div>
                     <div class="adm-center-countdown" id="admCenterCountdown">--:--:--</div>
                     <div class="adm-center-next-time" id="admCenterNextTime"></div>
+                </div>
+                <!-- Video Kajian Overlay -->
+                <div class="adm-video-overlay" id="admVideoOverlay">
+                    <div class="adm-video-iframe-header">
+                        <span class="adm-video-iframe-title" id="admVideoIframeTitle"></span>
+                        <button class="adm-video-iframe-close" id="admVideoIframeClose"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="adm-video-iframe-body" id="admVideoIframeBody"></div>
                 </div>
             </div>
             <div class="adm-bottom">
@@ -1949,6 +2064,7 @@ export default class AdzanApp {
                             <div class="adm-settings-row-label"><i class="fas fa-th-large"></i> Gaya Tampilan</div>
                             <div class="adm-center-style-buttons">
                                 <button class="adm-center-style-btn ${!s.centerStyle || s.centerStyle === 'box' ? 'active' : ''}" data-style="box" title="Kotak di tengah layar"><i class="fas fa-square"></i> Kotak</button>
+                                <button class="adm-center-style-btn ${s.centerStyle === 'glass' ? 'active' : ''}" data-style="glass" title="Kotak transparan"><i class="far fa-square"></i> Kaca</button>
                                 <button class="adm-center-style-btn ${s.centerStyle === 'minimal' ? 'active' : ''}" data-style="minimal" title="Tanpa latar kotak"><i class="fas fa-font"></i> Minimal</button>
                                 <button class="adm-center-style-btn ${s.centerStyle === 'footer' ? 'active' : ''}" data-style="footer" title="Countdown di panel bawah"><i class="fas fa-bars"></i> Footer</button>
                             </div>
@@ -2047,10 +2163,10 @@ export default class AdzanApp {
                 </div>
             </div>
 
-            <!-- Radio & Muratal Panel -->
+            <!-- Media & Kajian Panel -->
             <div class="adm-radio-panel" id="admRadioPanel">
                 <div class="adm-radio-panel-header">
-                    <span><i class="fas fa-radio"></i> Radio &amp; Muratal</span>
+                    <span><i class="fas fa-broadcast-tower"></i> Media &amp; Kajian</span>
                     <button class="adm-radio-panel-close" id="admRadioPanelClose" title="Tutup"><i class="fas fa-times"></i></button>
                 </div>
                 <div class="adm-radio-panel-body" id="admRadioPanelBody"></div>
@@ -2075,6 +2191,7 @@ export default class AdzanApp {
         document.getElementById('admSettingsHeaderClose').addEventListener('click', () => this._openDMSettingsPanel());
         document.getElementById('admRadioBtn').addEventListener('click', () => this._toggleDMRadioPanel());
         document.getElementById('admRadioPanelClose').addEventListener('click', () => this._toggleDMRadioPanel(false));
+        document.getElementById('admVideoIframeClose').addEventListener('click', () => this._dmStopVideo());
 
         // Theme option clicks
         overlay.querySelectorAll('.adm-theme-option').forEach(el => {
@@ -2255,6 +2372,13 @@ export default class AdzanApp {
                 dateEl.textContent = d;
             }
 
+            // Update Hijri date (reflects correction offset)
+            const hijriEl = document.getElementById('admHijri');
+            if (hijriEl) {
+                const h = this._getHijriString();
+                if (h) hijriEl.textContent = h;
+            }
+
             // Only update countdown text, prayer grid is built once
             this._updateDisplayModeCountdown(now);
 
@@ -2296,8 +2420,8 @@ export default class AdzanApp {
         if (s.showImsak) orderedNames = ['Imsak', ...orderedNames];
         if (s.showSyuruq === false) orderedNames = orderedNames.filter(n => n !== 'Syuruq');
 
-        const labels = { Imsak: 'Imsak', Subuh: 'Shubuh', Syuruq: 'Syuruq', Dzuhur: 'Dzuhur', Ashar: 'Ashar', Maghrib: 'Maghrib', Isya: "Isya'" };
-        const arabicNames = { Imsak: 'الإمساك', Subuh: 'الفجر', Syuruq: 'الشروق', Dzuhur: 'الظهر', Ashar: 'العصر', Maghrib: 'المغرب', Isya: 'العشاء' };
+        const labels = { Imsak: 'Imsak (Tanbih)', Subuh: 'Shubuh', Syuruq: 'Syuruq', Dzuhur: 'Dzuhur', Ashar: 'Ashar', Maghrib: 'Maghrib', Isya: "Isya'" };
+        const arabicNames = { Imsak: 'التنبيه/الإمساك', Subuh: 'الفجر', Syuruq: 'الشروق', Dzuhur: 'الظهر', Ashar: 'العصر', Maghrib: 'المغرب', Isya: 'العشاء' };
 
         grid.style.gridTemplateColumns = `repeat(${orderedNames.length}, 1fr)`;
 
@@ -2590,10 +2714,54 @@ export default class AdzanApp {
         const stations = sa?.radioStations?.length ? sa.radioStations : fallback;
         const surahs = (window.QURAN_SURAHS || []);
 
+        // Video fallback data
+        const fallbackLive = [
+            { name: 'Makkah Live', url: 'https://www.youtube.com/embed/JAp-_85-mbA', description: 'Live streaming Masjidil Haram Makkah', icon: 'fas fa-kaaba' },
+            { name: 'Madinah Live', url: 'https://www.youtube.com/embed/4IfiKULlBYg', description: 'Live streaming Masjid Nabawi Madinah', icon: 'fas fa-mosque' }
+        ];
+        const fallbackVideoChannels = [
+            { name: 'Khalid Basalamah TV', url: 'https://www.youtube.com/embed/63ftY04qXVk', description: 'Kajian Ilmiah 24/7', logo: 'assets/logo/khalid_tv.jpg' },
+            { name: 'Syafiq Riza Basalamah TV', url: 'https://www.youtube.com/embed/UBEBkz6SKTk', description: 'Siaran 24 Jam Kajian Islam', logo: 'assets/logo/syafiq_tv.jpg' },
+            { name: 'Rodja TV', url: 'https://rodja.tv/live/', description: 'TV Dakwah Ahlus Sunnah', logo: 'assets/logo/rodja_tv.png' }
+        ];
+        const liveHaramain = sa?.liveHaramain?.length ? sa.liveHaramain : fallbackLive;
+        const videoChannels = sa?.videoChannels?.length ? sa.videoChannels : fallbackVideoChannels;
+
+        // Build video tab HTML
+        let videoTabHtml = '';
+        videoTabHtml += `<div class="adm-video-section-title"><i class="fas fa-kaaba"></i> Live Haramain</div>`;
+        liveHaramain.forEach(ch => {
+            videoTabHtml += `
+                <div class="adm-video-channel-item" data-url="${ch.url}" data-name="${ch.name}">
+                    <div class="adm-video-channel-icon adm-vc-icon-haramain"><i class="${ch.icon || 'fas fa-mosque'}"></i></div>
+                    <div class="adm-video-channel-info">
+                        <div class="adm-video-channel-name">${ch.name}</div>
+                        <div class="adm-video-channel-desc">${ch.description || ''}</div>
+                    </div>
+                    <button class="adm-video-play-btn"><i class="fas fa-play"></i></button>
+                </div>`;
+        });
+        videoTabHtml += `<div class="adm-video-section-title" style="margin-top:14px"><i class="fas fa-video"></i> Kajian Video</div>`;
+        videoChannels.forEach(ch => {
+            const logoHtml = ch.logo
+                ? `<img src="${ch.logo}" class="adm-vc-logo" alt="${ch.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="adm-video-channel-icon adm-vc-icon-kajian" style="display:none"><i class="fas fa-tv"></i></div>`
+                : `<div class="adm-video-channel-icon adm-vc-icon-kajian"><i class="fas fa-tv"></i></div>`;
+            videoTabHtml += `
+                <div class="adm-video-channel-item" data-url="${ch.url}" data-name="${ch.name}">
+                    <div class="adm-vc-logo-wrap">${logoHtml}</div>
+                    <div class="adm-video-channel-info">
+                        <div class="adm-video-channel-name">${ch.name}</div>
+                        <div class="adm-video-channel-desc">${ch.description || ''}</div>
+                    </div>
+                    <button class="adm-video-play-btn"><i class="fas fa-play"></i></button>
+                </div>`;
+        });
+
         list.innerHTML = `
             <div class="adm-panel-tabs">
                 <button class="adm-panel-tab adm-panel-tab-active" data-tab="radio"><i class="fas fa-radio"></i> Radio</button>
-                <button class="adm-panel-tab" data-tab="muratal"><i class="fas fa-quran"></i> Muratal Surah</button>
+                <button class="adm-panel-tab" data-tab="muratal"><i class="fas fa-quran"></i> Muratal</button>
+                <button class="adm-panel-tab" data-tab="video"><i class="fas fa-tv"></i> Video</button>
             </div>
             <div class="adm-tab-content" id="admTabRadio">
                 ${stations.map((st, i) => `
@@ -2633,6 +2801,9 @@ export default class AdzanApp {
                     `).join('') : '<div class="adm-muratal-empty">Data surat tidak tersedia</div>'}
                 </div>
             </div>
+            <div class="adm-tab-content" id="admTabVideo" style="display:none">
+                ${videoTabHtml}
+            </div>
         `;
 
         // Tab switching
@@ -2646,6 +2817,12 @@ export default class AdzanApp {
         // Muratal buttons
         list.querySelectorAll('[data-surah]').forEach(btn => {
             btn.addEventListener('click', () => this._dmPlayMuratal(parseInt(btn.dataset.surah), btn.dataset.surahName));
+        });
+        // Video channel items
+        list.querySelectorAll('.adm-video-channel-item').forEach(item => {
+            const playFn = () => this._dmPlayVideo(item.dataset.url, item.dataset.name);
+            item.addEventListener('click', playFn);
+            item.querySelector('.adm-video-play-btn')?.addEventListener('click', e => { e.stopPropagation(); playFn(); });
         });
         // Repeat toggle
         const repeatBtn = document.getElementById('admMuratalRepeatToggle');
@@ -2675,11 +2852,13 @@ export default class AdzanApp {
     _dmSwitchRadioTab(tab) {
         const radioTab = document.getElementById('admTabRadio');
         const muratalTab = document.getElementById('admTabMuratal');
+        const videoTab = document.getElementById('admTabVideo');
         const tabs = document.querySelectorAll('.adm-panel-tab');
         if (!radioTab || !muratalTab) return;
         tabs.forEach(t => t.classList.toggle('adm-panel-tab-active', t.dataset.tab === tab));
         radioTab.style.display = tab === 'radio' ? '' : 'none';
         muratalTab.style.display = tab === 'muratal' ? '' : 'none';
+        if (videoTab) videoTab.style.display = tab === 'video' ? '' : 'none';
     }
 
     _dmToggleRadio(stationIdx) {
@@ -2861,6 +3040,7 @@ export default class AdzanApp {
             btn.innerHTML = isThisPlaying ? '<i class="fas fa-stop"></i>' : '<i class="fas fa-play"></i>';
             btn.classList.toggle('playing', isThisPlaying);
         }
+        this._dmSyncMainRadioBtn();
     }
 
     _dmUpdateMuratalBtnStates() {
@@ -2888,6 +3068,52 @@ export default class AdzanApp {
             btn.innerHTML = isThis ? '<i class="fas fa-stop"></i>' : '<i class="fas fa-play"></i>';
             btn.classList.toggle('playing', isThis);
         });
+        this._dmSyncMainRadioBtn();
+    }
+
+    /**
+     * Sync tombol media utama (admRadioBtn) — menyala jika ada audio/video yang sedang diputar.
+     */
+    _dmSyncMainRadioBtn() {
+        const mainBtn = document.getElementById('admRadioBtn');
+        if (!mainBtn) return;
+        const radioPlayer = document.getElementById('radioPlayer');
+        const sa = window.streamingApp;
+        const qa = window.alquranApp;
+        const radioPlaying = sa && sa.currentStream !== null && sa.currentStream !== undefined
+            && radioPlayer && !radioPlayer.paused && radioPlayer.dataset.mode !== 'muratal';
+        const muratalPlaying = (radioPlayer?.dataset.mode === 'muratal' && radioPlayer && !radioPlayer.paused)
+            || (qa?._muratalState?.surahNumber && !document.getElementById('quranAudioElement')?.paused);
+        const videoActive = document.getElementById('admVideoOverlay')?.classList.contains('open') || false;
+        mainBtn.classList.toggle('active', !!(radioPlaying || muratalPlaying || videoActive));
+    }
+
+    // ===== VIDEO KAJIAN OVERLAY =====
+
+    _dmPlayVideo(url, name) {
+        // Close radio panel before showing video
+        this._toggleDMRadioPanel(false);
+        const overlay = document.getElementById('admVideoOverlay');
+        const body = document.getElementById('admVideoIframeBody');
+        const title = document.getElementById('admVideoIframeTitle');
+        if (!body) return;
+        let src = url;
+        if (src.includes('youtube.com/embed')) {
+            src += (src.includes('?') ? '&' : '?') + 'autoplay=1&rel=0';
+        }
+        body.innerHTML = `<iframe src="${src}" frameborder="0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" class="adm-video-iframe"></iframe>`;
+        if (title) title.textContent = name || '';
+        if (overlay) overlay.classList.add('open');
+        const btn = document.getElementById('admRadioBtn');
+        if (btn) btn.classList.add('active');
+    }
+
+    _dmStopVideo() {
+        const body = document.getElementById('admVideoIframeBody');
+        if (body) body.innerHTML = '';
+        const overlay = document.getElementById('admVideoOverlay');
+        if (overlay) overlay.classList.remove('open');
+        this._dmSyncMainRadioBtn();
     }
 
     _toggleDMRadioPanel(forceOpen) {
@@ -2898,7 +3124,7 @@ export default class AdzanApp {
         const shouldOpen = forceOpen !== undefined ? forceOpen : !isOpen;
         panel.classList.toggle('open', shouldOpen);
         if (btn) btn.classList.toggle('active', shouldOpen);
-        // Close settings panel if both were open
+        // Close settings and video panels if opening
         if (shouldOpen) {
             const settingsPanel = document.getElementById('admSettingsPanel');
             if (settingsPanel?.classList.contains('open')) {

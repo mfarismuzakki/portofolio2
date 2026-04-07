@@ -164,6 +164,101 @@
   box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
 }
 
+/* ── Date Offset Selector ───────────────────────── */
+.date-offset-selector {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.date-offset-selector label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.date-offset-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.date-offset-label {
+  color: var(--text-primary);
+  font-family: var(--font-secondary);
+  font-size: 0.9rem;
+  min-width: 80px;
+  text-align: center;
+  padding: 4px 8px;
+  background: var(--surface);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.date-offset-selector.offset-active .date-offset-label {
+  color: var(--primary-cyan);
+  border-color: var(--primary-cyan);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+}
+
+.btn-offset-step,
+.btn-offset-reset {
+  background: var(--surface);
+  color: var(--text-secondary);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-offset-step:hover,
+.btn-offset-reset:hover {
+  border-color: var(--primary-cyan);
+  color: var(--primary-cyan);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.15);
+}
+
+.btn-offset-reset {
+  color: var(--text-muted, #888);
+  font-size: 0.75rem;
+}
+
+/* ── Hijri date correction inline display ───────────────── */
+.hijri-original {
+  text-decoration: line-through;
+  opacity: 0.45;
+}
+
+.hijri-arrow {
+  color: var(--primary-cyan);
+  opacity: 0.7;
+}
+
+.hijri-corrected {
+  color: var(--primary-cyan);
+  font-weight: 600;
+}
+
+.hijri-correction-badge {
+  display: inline-block;
+  font-size: 0.72em;
+  color: var(--primary-cyan);
+  background: rgba(0, 255, 255, 0.08);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  border-radius: 4px;
+  padding: 0 5px;
+  vertical-align: middle;
+  line-height: 1.6;
+}
+
 .prayer-times-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -1233,7 +1328,9 @@
   align-items: center;
   gap: 8px;
 }
-.adm-settings-btn {
+.adm-settings-btn,
+.adm-radio-btn,
+.adm-video-btn {
   background: rgba(0,0,0,0.1);
   border: 1px solid rgba(0,0,0,0.2);
   border-radius: 8px;
@@ -1251,6 +1348,19 @@
 .adm-settings-btn:hover {
   background: rgba(0,0,0,0.18);
   color: #000;
+}
+.adm-radio-btn:hover,
+.adm-video-btn:hover {
+  background: rgba(0,0,0,0.18);
+  color: #000;
+}
+/* Radio/video button active — default/gold theme */
+.adm-radio-btn.active,
+.adm-video-btn.active {
+  background: rgba(245,147,10,0.18);
+  border-color: rgba(245,147,10,0.6);
+  color: #f5930a;
+  box-shadow: 0 0 10px rgba(245,147,10,0.35);
 }
 
 /* Settings Drawer */
@@ -1466,7 +1576,9 @@
   color: rgba(200,240,240,0.6);
 }
 .adzan-display-mode[data-adm-theme="cyan"] .adm-close-btn,
-.adzan-display-mode[data-adm-theme="cyan"] .adm-settings-btn {
+.adzan-display-mode[data-adm-theme="cyan"] .adm-settings-btn,
+.adzan-display-mode[data-adm-theme="cyan"] .adm-video-btn,
+.adzan-display-mode[data-adm-theme="cyan"] .adm-radio-btn {
   background: rgba(0,255,200,0.08);
   border-color: rgba(0,255,200,0.25);
   color: rgba(0,255,200,0.85);
@@ -1476,9 +1588,18 @@
   border-color: rgba(220,0,0,0.5);
   color: #ff6e6e;
 }
-.adzan-display-mode[data-adm-theme="cyan"] .adm-settings-btn:hover {
+.adzan-display-mode[data-adm-theme="cyan"] .adm-settings-btn:hover,
+.adzan-display-mode[data-adm-theme="cyan"] .adm-video-btn:hover,
+.adzan-display-mode[data-adm-theme="cyan"] .adm-radio-btn:hover {
   background: rgba(0,255,200,0.18);
   color: #00ffc8;
+}
+.adzan-display-mode[data-adm-theme="cyan"] .adm-radio-btn.active,
+.adzan-display-mode[data-adm-theme="cyan"] .adm-video-btn.active {
+  background: rgba(0,255,200,0.18);
+  border-color: rgba(0,255,200,0.7);
+  color: #00ffc8;
+  box-shadow: 0 0 10px rgba(0,255,200,0.35);
 }
 .adzan-display-mode[data-adm-theme="cyan"] .adm-bottom {
   background: rgba(5, 12, 22, 0.98);
@@ -1558,7 +1679,9 @@
 .adzan-display-mode[data-adm-theme="green"] .adm-hijri { color: #d1fae5; }
 .adzan-display-mode[data-adm-theme="green"] .adm-gregorian { color: rgba(209,250,229,0.6); }
 .adzan-display-mode[data-adm-theme="green"] .adm-close-btn,
-.adzan-display-mode[data-adm-theme="green"] .adm-settings-btn {
+.adzan-display-mode[data-adm-theme="green"] .adm-settings-btn,
+.adzan-display-mode[data-adm-theme="green"] .adm-video-btn,
+.adzan-display-mode[data-adm-theme="green"] .adm-radio-btn {
   background: rgba(34,197,94,0.08);
   border-color: rgba(34,197,94,0.25);
   color: rgba(34,197,94,0.85);
@@ -1566,8 +1689,17 @@
 .adzan-display-mode[data-adm-theme="green"] .adm-close-btn:hover {
   background: rgba(220,0,0,0.2); border-color: rgba(220,0,0,0.5); color: #ff6e6e;
 }
-.adzan-display-mode[data-adm-theme="green"] .adm-settings-btn:hover {
+.adzan-display-mode[data-adm-theme="green"] .adm-settings-btn:hover,
+.adzan-display-mode[data-adm-theme="green"] .adm-video-btn:hover,
+.adzan-display-mode[data-adm-theme="green"] .adm-radio-btn:hover {
   background: rgba(34,197,94,0.18); color: #22c55e;
+}
+.adzan-display-mode[data-adm-theme="green"] .adm-radio-btn.active,
+.adzan-display-mode[data-adm-theme="green"] .adm-video-btn.active {
+  background: rgba(34,197,94,0.2);
+  border-color: rgba(34,197,94,0.7);
+  color: #22c55e;
+  box-shadow: 0 0 10px rgba(34,197,94,0.35);
 }
 .adzan-display-mode[data-adm-theme="green"] .adm-bottom { background: rgba(3,14,7,0.98); }
 .adzan-display-mode[data-adm-theme="green"] .adm-prayer-col { border-color: rgba(34,197,94,0.1); }
@@ -1617,7 +1749,9 @@
 .adzan-display-mode[data-adm-theme="blue"] .adm-hijri { color: #dbeafe; }
 .adzan-display-mode[data-adm-theme="blue"] .adm-gregorian { color: rgba(219,234,254,0.6); }
 .adzan-display-mode[data-adm-theme="blue"] .adm-close-btn,
-.adzan-display-mode[data-adm-theme="blue"] .adm-settings-btn {
+.adzan-display-mode[data-adm-theme="blue"] .adm-settings-btn,
+.adzan-display-mode[data-adm-theme="blue"] .adm-video-btn,
+.adzan-display-mode[data-adm-theme="blue"] .adm-radio-btn {
   background: rgba(59,130,246,0.08);
   border-color: rgba(59,130,246,0.25);
   color: rgba(96,165,250,0.85);
@@ -1625,8 +1759,17 @@
 .adzan-display-mode[data-adm-theme="blue"] .adm-close-btn:hover {
   background: rgba(220,0,0,0.2); border-color: rgba(220,0,0,0.5); color: #ff6e6e;
 }
-.adzan-display-mode[data-adm-theme="blue"] .adm-settings-btn:hover {
+.adzan-display-mode[data-adm-theme="blue"] .adm-settings-btn:hover,
+.adzan-display-mode[data-adm-theme="blue"] .adm-video-btn:hover,
+.adzan-display-mode[data-adm-theme="blue"] .adm-radio-btn:hover {
   background: rgba(59,130,246,0.18); color: #60a5fa;
+}
+.adzan-display-mode[data-adm-theme="blue"] .adm-radio-btn.active,
+.adzan-display-mode[data-adm-theme="blue"] .adm-video-btn.active {
+  background: rgba(59,130,246,0.2);
+  border-color: rgba(96,165,250,0.7);
+  color: #60a5fa;
+  box-shadow: 0 0 10px rgba(59,130,246,0.35);
 }
 .adzan-display-mode[data-adm-theme="blue"] .adm-bottom { background: rgba(3,9,22,0.98); }
 .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-col { border-color: rgba(59,130,246,0.1); }
@@ -1702,7 +1845,9 @@
   }
 
   .adm-close-btn,
-  .adm-settings-btn {
+  .adm-settings-btn,
+  .adm-radio-btn,
+  .adm-video-btn {
     width: 36px;
     height: 36px;
     font-size: 0.95rem;
@@ -2212,11 +2357,22 @@
 .adzan-display-mode[data-adm-theme="maroon"] .adm-hijri { color: #ffeaea; }
 .adzan-display-mode[data-adm-theme="maroon"] .adm-gregorian { color: rgba(255,220,220,0.6); }
 .adzan-display-mode[data-adm-theme="maroon"] .adm-close-btn,
-.adzan-display-mode[data-adm-theme="maroon"] .adm-settings-btn {
+.adzan-display-mode[data-adm-theme="maroon"] .adm-settings-btn,
+.adzan-display-mode[data-adm-theme="maroon"] .adm-video-btn,
+.adzan-display-mode[data-adm-theme="maroon"] .adm-radio-btn {
   background: rgba(180,40,40,0.1); border-color: rgba(180,40,40,0.3); color: rgba(232,100,100,0.9);
 }
 .adzan-display-mode[data-adm-theme="maroon"] .adm-close-btn:hover { background: rgba(220,0,0,0.2); border-color: rgba(220,0,0,0.5); color: #ff6e6e; }
-.adzan-display-mode[data-adm-theme="maroon"] .adm-settings-btn:hover { background: rgba(180,40,40,0.2); color: #e86464; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-settings-btn:hover,
+.adzan-display-mode[data-adm-theme="maroon"] .adm-video-btn:hover,
+.adzan-display-mode[data-adm-theme="maroon"] .adm-radio-btn:hover { background: rgba(180,40,40,0.2); color: #e86464; }
+.adzan-display-mode[data-adm-theme="maroon"] .adm-radio-btn.active,
+.adzan-display-mode[data-adm-theme="maroon"] .adm-video-btn.active {
+  background: rgba(180,40,40,0.22);
+  border-color: rgba(232,100,100,0.7);
+  color: #e86464;
+  box-shadow: 0 0 10px rgba(200,64,64,0.35);
+}
 .adzan-display-mode[data-adm-theme="maroon"] .adm-bottom { background: rgba(14, 4, 4, 0.98); }
 .adzan-display-mode[data-adm-theme="maroon"] .adm-prayer-col { border-color: rgba(180,40,40,0.15); }
 .adzan-display-mode[data-adm-theme="maroon"] .adm-prayer-label { color: rgba(232,100,100,0.6); }
@@ -2262,9 +2418,20 @@
 .adzan-display-mode[data-adm-theme="white"] .adm-hijri { color: #1a1a1a; }
 .adzan-display-mode[data-adm-theme="white"] .adm-gregorian { color: #555; }
 .adzan-display-mode[data-adm-theme="white"] .adm-close-btn,
-.adzan-display-mode[data-adm-theme="white"] .adm-settings-btn { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #333; }
+.adzan-display-mode[data-adm-theme="white"] .adm-settings-btn,
+.adzan-display-mode[data-adm-theme="white"] .adm-video-btn,
+.adzan-display-mode[data-adm-theme="white"] .adm-radio-btn { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #333; }
 .adzan-display-mode[data-adm-theme="white"] .adm-close-btn:hover { background: rgba(220,0,0,0.12); border-color: rgba(220,0,0,0.35); color: #c00; }
-.adzan-display-mode[data-adm-theme="white"] .adm-settings-btn:hover { background: rgba(0,0,0,0.14); color: #000; }
+.adzan-display-mode[data-adm-theme="white"] .adm-settings-btn:hover,
+.adzan-display-mode[data-adm-theme="white"] .adm-video-btn:hover,
+.adzan-display-mode[data-adm-theme="white"] .adm-radio-btn:hover { background: rgba(0,0,0,0.14); color: #000; }
+.adzan-display-mode[data-adm-theme="white"] .adm-radio-btn.active,
+.adzan-display-mode[data-adm-theme="white"] .adm-video-btn.active {
+  background: rgba(200,120,0,0.14);
+  border-color: rgba(200,120,0,0.6);
+  color: #c87800;
+  box-shadow: 0 0 10px rgba(200,120,0,0.25);
+}
 .adzan-display-mode[data-adm-theme="white"] .adm-bottom { background: rgba(255,252,245,0.98); border-top: 2px solid rgba(180,140,0,0.2); }
 .adzan-display-mode[data-adm-theme="white"] .adm-prayer-col { border-color: rgba(0,0,0,0.09); }
 .adzan-display-mode[data-adm-theme="white"] .adm-prayer-label { color: #666; }
@@ -2431,8 +2598,9 @@
 }
 .adm-radio-settings-note i { color: #f5930a; }
 
-/* ===== RADIO BUTTON IN TOP BAR ===== */
-.adm-radio-btn {
+/* ===== RADIO & VIDEO BUTTONS IN TOP BAR ===== */
+.adm-radio-btn,
+.adm-video-btn {
   width: 40px;
   height: 40px;
   border-radius: 8px;
@@ -2447,12 +2615,14 @@
   transition: all 0.2s;
   flex-shrink: 0;
 }
-.adm-radio-btn:hover {
+.adm-radio-btn:hover,
+.adm-video-btn:hover {
   background: rgba(245,147,10,0.15);
   border-color: rgba(245,147,10,0.5);
   color: #c47200;
 }
-.adm-radio-btn.active {
+.adm-radio-btn.active,
+.adm-video-btn.active {
   background: rgba(245,147,10,0.2);
   border-color: #f5930a;
   color: #c47200;
@@ -2762,13 +2932,40 @@
 
 /* ===== CENTER DISPLAY STYLE VARIANTS ===== */
 
-/* --- Minimal style: no box background, just text --- */
+/* --- Glass style: transparent box with border only --- */
+.adzan-display-mode[data-adm-center-style="glass"] .adm-center-display {
+  background: rgba(0,0,0,0.12);
+  border: 1.5px solid rgba(255,255,255,0.28);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+/* --- Minimal style: no box, text with shadow for readability --- */
 .adzan-display-mode[data-adm-center-style="minimal"] .adm-center-display {
   background: none;
   border: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
+}
+.adzan-display-mode[data-adm-center-style="minimal"] .adm-center-next-label {
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6);
+}
+.adzan-display-mode[data-adm-center-style="minimal"] .adm-center-next-name {
+  text-shadow: 0 2px 12px rgba(0,0,0,0.85), 0 0 30px rgba(0,0,0,0.7);
+}
+.adzan-display-mode[data-adm-center-style="minimal"] .adm-center-next-arabic {
+  color: rgba(255,255,255,0.92);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+}
+.adzan-display-mode[data-adm-center-style="minimal"] .adm-center-countdown {
+  text-shadow: 0 2px 20px rgba(245,147,10,0.6), 0 0 40px rgba(0,0,0,0.8);
+}
+.adzan-display-mode[data-adm-center-style="minimal"] .adm-center-next-time {
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8);
 }
 
 /* --- Footer style: no center box, countdown in footer bar --- */
@@ -2852,13 +3049,40 @@
 
 /* ===== CENTER DISPLAY STYLE VARIANTS ===== */
 
-/* --- Minimal style: no box background, just text --- */
+/* --- Glass style: transparent box with border only --- */
+.adzan-display-mode[data-adm-center-style="glass"] .adm-center-display {
+  background: rgba(0,0,0,0.12);
+  border: 1.5px solid rgba(255,255,255,0.28);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+/* --- Minimal style: no box, text with shadow for readability --- */
 .adzan-display-mode[data-adm-center-style="minimal"] .adm-center-display {
   background: none;
   border: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
+}
+.adzan-display-mode[data-adm-center-style="minimal"] .adm-center-next-label {
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.6);
+}
+.adzan-display-mode[data-adm-center-style="minimal"] .adm-center-next-name {
+  text-shadow: 0 2px 12px rgba(0,0,0,0.85), 0 0 30px rgba(0,0,0,0.7);
+}
+.adzan-display-mode[data-adm-center-style="minimal"] .adm-center-next-arabic {
+  color: rgba(255,255,255,0.92);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+}
+.adzan-display-mode[data-adm-center-style="minimal"] .adm-center-countdown {
+  text-shadow: 0 2px 20px rgba(245,147,10,0.6), 0 0 40px rgba(0,0,0,0.8);
+}
+.adzan-display-mode[data-adm-center-style="minimal"] .adm-center-next-time {
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8);
 }
 
 /* ===== IN-COLUMN COUNTDOWN (footer style) ===== */
@@ -2873,4 +3097,188 @@
   background: rgba(0,0,0,0.18);
   padding: 3px 10px;
   border-radius: 20px;
+}
+
+/* ===== VIDEO KAJIAN OVERLAY ===== */
+.adm-video-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  display: none;
+  flex-direction: column;
+  background: rgba(5, 10, 22, 0.96);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+.adm-video-overlay.open {
+  display: flex;
+}
+
+/* overlay header (channel title + close btn) */
+.adm-video-iframe-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.adm-video-iframe-title {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+.adm-video-iframe-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+  flex-shrink: 0;
+}
+.adm-video-iframe-close:hover { background: rgba(220,0,0,0.2); border-color: rgba(220,0,0,0.4); color: #ff6b6b; }
+
+.adm-video-iframe-body {
+  flex: 1;
+  position: relative;
+  background: #000;
+}
+.adm-video-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* Video channel list (inside radio panel Video tab) */
+.adm-video-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: rgba(245,147,10,0.75);
+  padding: 4px 0 2px;
+}
+.adm-video-section-title i { margin-right: 7px; }
+
+.adm-video-channel-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.adm-video-channel-item:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(245,147,10,0.35);
+}
+
+.adm-vc-logo-wrap {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.adm-vc-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9px;
+}
+.adm-video-channel-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.adm-vc-icon-haramain {
+  background: rgba(0,180,120,0.18);
+  border: 1px solid rgba(0,200,140,0.25);
+  color: #00c88c;
+}
+.adm-vc-icon-kajian {
+  background: rgba(245,147,10,0.15);
+  border: 1px solid rgba(245,147,10,0.25);
+  color: #f5930a;
+}
+
+.adm-video-channel-info {
+  flex: 1;
+  min-width: 0;
+}
+.adm-video-channel-name {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.adm-video-channel-desc {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.4);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.adm-video-play-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(245,147,10,0.4);
+  background: rgba(245,147,10,0.12);
+  color: #f5930a;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.adm-video-play-btn:hover {
+  background: #f5930a;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(245,147,10,0.5);
+}
+.adm-video-empty {
+  color: rgba(255,255,255,0.35);
+  font-size: 0.82rem;
+  text-align: center;
+  padding: 24px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .adm-video-channel-item { padding: 8px 10px; gap: 10px; }
+  .adm-vc-logo-wrap, .adm-video-channel-icon { width: 34px; height: 34px; font-size: 1rem; }
 }

@@ -35,14 +35,14 @@ class StreamingApp {
         this.liveHaramain = [
             {
                 name: 'Makkah Live',
-                url: 'https://www.youtube.com/embed/HfN2GCUE4Ro',
+                url: 'https://www.youtube.com/embed/JAp-_85-mbA',
                 description: 'Live streaming 24/7 dari Masjidil Haram Makkah',
                 icon: 'fas fa-kaaba',
                 color: 'makkah'
             },
             {
                 name: 'Madinah Live',
-                url: 'https://www.youtube.com/embed/uzRUh-4oSj0',
+                url: 'https://www.youtube.com/embed/4IfiKULlBYg',
                 description: 'Live streaming 24/7 dari Masjid Nabawi Madinah',
                 icon: 'fas fa-mosque',
                 color: 'madinah'
