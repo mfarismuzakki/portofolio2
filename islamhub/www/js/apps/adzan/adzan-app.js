@@ -42,6 +42,8 @@ export default class AdzanApp {
         this._dmCurrentMuratal = null; // surah number currently playing as muratal from DM panel
         this._dmMuratalRepeat = false;  // repeat muratal on end
         this._dmRadioLoadingIdx = null; // station index currently showing loading spinner
+        this._cityIndex = null;         // cache: jadwal-index.json
+        this._citySchedule = null;      // cache: jadwal/{city}.json
     }
 
     async init() {
@@ -236,61 +238,147 @@ export default class AdzanApp {
         }
     }
 
+    _applyPrayerData(prayerTimes, hijriData) {
+        this.prayerTimes = prayerTimes;
+        if (hijriData) {
+            this.hijriData = hijriData;
+            this.updateDate(hijriData);
+        }
+        this.renderPrayerTimes();
+        this.calculateNextPrayer();
+        this.updateHomeWidget();
+    }
+
     async fetchPrayerTimes() {
+        // Coba baca dari file jadwal lokal terlebih dahulu
+        const local = await this._loadLocalSchedule();
+        if (local) {
+            this._applyPrayerData(local.prayerTimes, local.hijriData);
+            await this.updateSunnahPrayers();
+            if (this.notificationEnabled) this.scheduleNotifications();
+            return;
+        }
+
+        // File lokal tidak ada / beda lokasi — fallback ke API
+        await this._fetchFromAPI();
+    }
+
+    async _loadLocalSchedule() {
+        try {
+            // 1. Muat index kota (sekali, di-cache)
+            if (!this._cityIndex) {
+                const res = await fetch('js/data/jadwal-index.json');
+                if (!res.ok) return null;
+                this._cityIndex = await res.json();
+            }
+
+            // 2. Cari kota terdekat dari posisi user
+            const nearest = this._findNearestCity(this._cityIndex);
+            // Jika kota terdekat > 200 km, gunakan API agar akurasi terjaga
+            if (!nearest || nearest.distKm > 200) {
+                console.warn(`[Adzan] Kota terdekat ${nearest ? nearest.distKm.toFixed(0)+'km' : '?'}, pakai API`);
+                return null;
+            }
+
+            // 3. Muat file jadwal kota (re-load jika kota berubah)
+            if (!this._citySchedule || this._citySchedule._cityId !== nearest.id) {
+                const res = await fetch(`js/data/jadwal/${nearest.id}.json`);
+                if (!res.ok) return null;
+                this._citySchedule = await res.json();
+                this._citySchedule._cityId = nearest.id;
+                console.log(`[Adzan] Jadwal lokal: ${nearest.name} (${nearest.distKm.toFixed(1)} km)`);
+            }
+
+            // 4. Ambil data hari ini sesuai metode
+            const methodMap = { 'KEMENAG': 11, 'MWL': 3, 'ISNA': 2, 'Egypt': 5, 'Makkah': 4, 'Karachi': 1 };
+            const methodId = String(methodMap[this.method] || 11);
+            const now = new Date();
+            const monthKey = `${now.getFullYear()}-${now.getMonth() + 1}`;
+            const day = now.getDate();
+
+            const monthData = ((this._citySchedule.methods || {})[methodId] || {})[monthKey];
+            if (!monthData || !monthData[day - 1]) return null;
+
+            const entry = monthData[day - 1];
+            return {
+                prayerTimes: {
+                    Imsak:   entry.Im,
+                    Subuh:   entry.Fa,
+                    Syuruq:  entry.Sr,
+                    Dzuhur:  entry.Dh,
+                    Ashar:   entry.As,
+                    Maghrib: entry.Mg,
+                    Isya:    entry.Is
+                },
+                hijriData: entry.hijri || null
+            };
+        } catch (e) {
+            console.warn('[Adzan] Gagal baca jadwal lokal:', e);
+            return null;
+        }
+    }
+
+    _findNearestCity(cities) {
+        let nearest = null;
+        let minDist = Infinity;
+        for (const city of cities) {
+            const d = this._haversineKm(this.lat, this.lon, city.lat, city.lon);
+            if (d < minDist) { minDist = d; nearest = { ...city, distKm: d }; }
+        }
+        return nearest;
+    }
+
+    _haversineKm(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2)**2 +
+                  Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+                  Math.sin(dLon/2)**2;
+        return R * 2 * Math.asin(Math.sqrt(a));
+    }
+
+    async _fetchFromAPI() {
         try {
             const now = new Date();
             const timestamp = Math.floor(now.getTime() / 1000);
-            
-            // Map method to Aladhan API method numbers
             const methodMap = {
-                'KEMENAG': 11,
-                'MWL': 3,
-                'ISNA': 2,
-                'Egypt': 5,
-                'Makkah': 4,
-                'Karachi': 1
+                'KEMENAG': 11, 'MWL': 3, 'ISNA': 2,
+                'Egypt': 5, 'Makkah': 4, 'Karachi': 1
             };
-            
             const methodId = methodMap[this.method] || 11;
-            // Tidak pakai &adjustment=-1 karena tidak efektif, koreksi dilakukan manual di JS
             const url = `${this.API_URL}/${timestamp}?latitude=${this.lat}&longitude=${this.lon}&method=${methodId}`;
-            
-            const response = await fetch(url);
+
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 10000);
+            const response = await fetch(url, { signal: controller.signal });
+            clearTimeout(timeout);
             const data = await response.json();
-            
+
             if (data.code === 200 && data.data) {
-                this.prayerTimes = {
-                    Imsak: data.data.timings.Imsak,
-                    Subuh: data.data.timings.Fajr,
-                    Syuruq: data.data.timings.Sunrise,
-                    Dzuhur: data.data.timings.Dhuhr,
-                    Ashar: data.data.timings.Asr,
+                const prayerTimes = {
+                    Imsak:   data.data.timings.Imsak,
+                    Subuh:   data.data.timings.Fajr,
+                    Syuruq:  data.data.timings.Sunrise,
+                    Dzuhur:  data.data.timings.Dhuhr,
+                    Ashar:   data.data.timings.Asr,
                     Maghrib: data.data.timings.Maghrib,
-                    Isya: data.data.timings.Isha
+                    Isya:    data.data.timings.Isha
                 };
-                
-                // Update date with Hijri
-                if (data.data.date && data.data.date.hijri) {
-                    const hijri = data.data.date.hijri;
-                    this.hijriData = hijri;
-                    this.updateDate(hijri);
-                }
-                
-                this.renderPrayerTimes();
-                this.calculateNextPrayer();
-                this.updateHomeWidget();
-                
-                // Update sunnah prayers recommendations
+                const hijriData = (data.data.date && data.data.date.hijri) ? data.data.date.hijri : null;
+                this._applyPrayerData(prayerTimes, hijriData);
                 await this.updateSunnahPrayers();
-                
-                // Reschedule notifications if enabled
-                if (this.notificationEnabled) {
-                    this.scheduleNotifications();
-                }
+                if (this.notificationEnabled) this.scheduleNotifications();
             }
         } catch (error) {
-            console.error('Failed to fetch prayer times:', error);
-            this.showError('Gagal memuat jadwal sholat');
+            if (error.name === 'AbortError') {
+                console.warn('[Adzan] API timeout');
+            } else {
+                console.error('[Adzan] Gagal fetch API:', error);
+            }
+            if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) {
+                this.showError('Gagal memuat jadwal sholat. Coba jalankan ulang download-jadwal.py.');
+            }
         }
     }
 
