@@ -11,10 +11,10 @@ export default class AdzanApp {
         this.API_URL = 'https://api.aladhan.com/v1/timings';
         this.updateInterval = null;
         this.countdownInterval = null;
-        
+
         // Get base path for assets
         this.basePath = this._getBasePath();
-        
+
         // Default Jakarta
         this.lat = -6.2088;
         this.lon = 106.8456;
@@ -24,7 +24,7 @@ export default class AdzanApp {
         this.gmtOffset = '+7';
         this.locationDisplay = 'Jakarta, Indonesia';
         this.method = 'KEMENAG';
-        
+
         this.prayerTimes = {};
         this.nextPrayer = null;
         this.citySearchResults = [];
@@ -48,10 +48,10 @@ export default class AdzanApp {
 
     async init() {
         console.log('Initializing Adzan App...');
-        
+
         // Clear any old delivered notifications on app start
         await this.clearOldDeliveredNotifications();
-        
+
         await this.render();
         this.setupEventListeners(); // Setup event listeners after render
         await this.loadSavedLocation();
@@ -65,19 +65,19 @@ export default class AdzanApp {
             this.openDisplayMode();
         }
     }
-    
+
     async clearOldDeliveredNotifications() {
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
             try {
                 const { LocalNotifications } = window.Capacitor.Plugins;
-                
+
                 // Clear delivered notifications except persistent one if enabled
                 const delivered = await LocalNotifications.getDeliveredNotifications();
                 if (delivered.notifications && delivered.notifications.length > 0) {
-                    const toRemove = this.persistentNotificationEnabled 
+                    const toRemove = this.persistentNotificationEnabled
                         ? delivered.notifications.filter(n => n.id !== this.PERSISTENT_NOTIFICATION_ID)
                         : delivered.notifications;
-                    
+
                     if (toRemove.length > 0) {
                         console.log('[Native] Clearing', toRemove.length, 'old notifications on app start');
                         await LocalNotifications.removeDeliveredNotifications({
@@ -230,7 +230,7 @@ export default class AdzanApp {
                 this.timezone = data.timezone || 'Asia/Jakarta';
                 this.gmtOffset = data.gmtOffset || '+7';
                 this.locationDisplay = data.locationDisplay || this.city;
-                
+
                 this.updateLocationDisplay();
             }
         } catch (error) {
@@ -276,7 +276,7 @@ export default class AdzanApp {
             const nearest = this._findNearestCity(this._cityIndex);
             // Jika kota terdekat > 200 km, gunakan API agar akurasi terjaga
             if (!nearest || nearest.distKm > 200) {
-                console.warn(`[Adzan] Kota terdekat ${nearest ? nearest.distKm.toFixed(0)+'km' : '?'}, pakai API`);
+                console.warn(`[Adzan] Kota terdekat ${nearest ? nearest.distKm.toFixed(0) + 'km' : '?'}, pakai API`);
                 return null;
             }
 
@@ -300,15 +300,17 @@ export default class AdzanApp {
             if (!monthData || !monthData[day - 1]) return null;
 
             const entry = monthData[day - 1];
+            // Strip timezone suffix from API, e.g. "04:06" → "04:06"
+            const _ct = s => s ? s.replace(/\s*\(.*?\)\s*$/, '').trim() : s;
             return {
                 prayerTimes: {
-                    Imsak:   entry.Im,
-                    Subuh:   entry.Fa,
-                    Syuruq:  entry.Sr,
-                    Dzuhur:  entry.Dh,
-                    Ashar:   entry.As,
-                    Maghrib: entry.Mg,
-                    Isya:    entry.Is
+                    Imsak: _ct(entry.Im),
+                    Subuh: _ct(entry.Fa),
+                    Syuruq: _ct(entry.Sr),
+                    Dzuhur: _ct(entry.Dh),
+                    Ashar: _ct(entry.As),
+                    Maghrib: _ct(entry.Mg),
+                    Isya: _ct(entry.Is)
                 },
                 hijriData: entry.hijri || null
             };
@@ -332,9 +334,9 @@ export default class AdzanApp {
         const R = 6371;
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(dLat/2)**2 +
-                  Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
-                  Math.sin(dLon/2)**2;
+        const a = Math.sin(dLat / 2) ** 2 +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) ** 2;
         return R * 2 * Math.asin(Math.sqrt(a));
     }
 
@@ -357,13 +359,13 @@ export default class AdzanApp {
 
             if (data.code === 200 && data.data) {
                 const prayerTimes = {
-                    Imsak:   data.data.timings.Imsak,
-                    Subuh:   data.data.timings.Fajr,
-                    Syuruq:  data.data.timings.Sunrise,
-                    Dzuhur:  data.data.timings.Dhuhr,
-                    Ashar:   data.data.timings.Asr,
+                    Imsak: data.data.timings.Imsak,
+                    Subuh: data.data.timings.Fajr,
+                    Syuruq: data.data.timings.Sunrise,
+                    Dzuhur: data.data.timings.Dhuhr,
+                    Ashar: data.data.timings.Asr,
                     Maghrib: data.data.timings.Maghrib,
-                    Isya:    data.data.timings.Isha
+                    Isya: data.data.timings.Isha
                 };
                 const hijriData = (data.data.date && data.data.date.hijri) ? data.data.date.hijri : null;
                 this._applyPrayerData(prayerTimes, hijriData);
@@ -385,7 +387,7 @@ export default class AdzanApp {
     renderPrayerTimes() {
         const grid = document.getElementById('prayerTimesGrid');
         if (!grid) return;
-        
+
         const prayers = Object.entries(this.prayerTimes).filter(([name]) => name !== 'Imsak');
         grid.innerHTML = prayers.map(([name, time]) => `
             <div class="prayer-time-card" data-prayer="${name}">
@@ -402,45 +404,45 @@ export default class AdzanApp {
 
     calculateNextPrayer() {
         if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) return;
-        
+
         const now = new Date();
-        const nowHours = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
-        
+        const nowHours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+
         let nextPrayer = null;
         let minDiff = Infinity;
-        
+
         for (const [name, time] of Object.entries(this.prayerTimes)) {
             // Skip Syuruq and Imsak for next prayer calculation
             if (name === 'Syuruq' || name === 'Imsak') continue;
-            
+
             const [hours, minutes] = time.split(':').map(Number);
-            const prayerHours = hours + minutes/60;
-            
+            const prayerHours = hours + minutes / 60;
+
             // Calculate difference in hours
             let diff = prayerHours - nowHours;
-            
+
             // If prayer time has passed today, it's tomorrow (add 24 hours)
             if (diff <= 0) {
                 diff += 24;
             }
-            
+
             // Find the prayer with minimum difference (closest upcoming prayer)
             if (diff < minDiff) {
                 minDiff = diff;
                 nextPrayer = { name, time };
             }
         }
-        
+
         // Only update if we found a next prayer
         if (nextPrayer) {
             this.nextPrayer = nextPrayer;
             this.updateNextPrayerDisplay();
-            
+
             // Highlight next prayer in grid
             document.querySelectorAll('.prayer-time-card').forEach(card => {
                 card.classList.remove('next-prayer');
             });
-            
+
             const nextCard = document.querySelector(`[data-prayer="${nextPrayer.name}"]`);
             if (nextCard) {
                 nextCard.classList.add('next-prayer');
@@ -450,10 +452,10 @@ export default class AdzanApp {
 
     updateNextPrayerDisplay() {
         if (!this.nextPrayer) return;
-        
+
         const nameEl = document.getElementById('nextPrayerName');
         const timeEl = document.getElementById('nextPrayerTime');
-        
+
         if (nameEl) nameEl.textContent = this.nextPrayer.name;
         if (timeEl) timeEl.textContent = this.nextPrayer.time;
     }
@@ -462,7 +464,7 @@ export default class AdzanApp {
         if (this.countdownInterval) {
             clearInterval(this.countdownInterval);
         }
-        
+
         this.countdownInterval = setInterval(() => {
             this.updateCountdown();
         }, 1000);
@@ -470,39 +472,39 @@ export default class AdzanApp {
 
     updateCountdown() {
         if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) return;
-        
+
         const now = new Date();
-        const nowHours = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
-        
+        const nowHours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+
         // Recalculate next prayer every time (like adzan_realtime does)
         let nextKey = null;
         let minDiff = Infinity;
-        
+
         for (const [name, time] of Object.entries(this.prayerTimes)) {
             // Skip Syuruq and Imsak for next prayer calculation
             if (name === 'Syuruq' || name === 'Imsak') continue;
-            
+
             const [hours, minutes] = time.split(':').map(Number);
-            const prayerHours = hours + minutes/60;
-            
+            const prayerHours = hours + minutes / 60;
+
             let diff = prayerHours - nowHours;
-            
+
             // If negative, it's tomorrow
             if (diff <= 0) {
                 diff += 24;
             }
-            
+
             if (diff < minDiff) {
                 minDiff = diff;
                 nextKey = name;
             }
         }
-        
+
         // If we found a different next prayer, update it
         if (nextKey && (!this.nextPrayer || this.nextPrayer.name !== nextKey)) {
             this.nextPrayer = { name: nextKey, time: this.prayerTimes[nextKey] };
             this.updateNextPrayerDisplay();
-            
+
             // Update highlight
             document.querySelectorAll('.prayer-time-card').forEach(card => {
                 card.classList.remove('next-prayer');
@@ -512,31 +514,31 @@ export default class AdzanApp {
                 nextCard.classList.add('next-prayer');
             }
         }
-        
+
         if (!this.nextPrayer) return;
-        
+
         // Calculate countdown
         const [hours, minutes] = this.nextPrayer.time.split(':').map(Number);
-        const prayerHours = hours + minutes/60;
+        const prayerHours = hours + minutes / 60;
         let diffHours = prayerHours - nowHours;
-        
+
         if (diffHours <= 0) {
             diffHours += 24;
         }
-        
+
         const totalSeconds = Math.max(0, Math.round(diffHours * 3600));
         const hrs = Math.floor(totalSeconds / 3600);
         const mins = Math.floor((totalSeconds % 3600) / 60);
         const secs = totalSeconds % 60;
-        
+
         const countdown = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        
+
         // Update countdown display
         const countdownEl = document.getElementById('countdownTimer');
         if (countdownEl) {
             countdownEl.textContent = countdown;
         }
-        
+
         // Update widgets
         if (this.mainApp) {
             this.mainApp.updateHomeWidget({
@@ -545,7 +547,7 @@ export default class AdzanApp {
                 countdown: countdown,
                 city: this.city
             });
-            
+
             if (this.mainApp.updateFloatingWidget) {
                 this.mainApp.updateFloatingWidget({
                     prayerName: this.nextPrayer.name,
@@ -554,7 +556,7 @@ export default class AdzanApp {
                 });
             }
         }
-        
+
         // Update sunnah prayers every minute
         if (secs === 0) {
             this.updateSunnahPrayers();
@@ -564,26 +566,26 @@ export default class AdzanApp {
     updateClock() {
         const updateTime = () => {
             const now = new Date();
-            const timeString = now.toLocaleTimeString('id-ID', { 
-                hour: '2-digit', 
-                minute: '2-digit', 
+            const timeString = now.toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
                 second: '2-digit',
-                timeZone: this.timezone 
+                timeZone: this.timezone
             });
-            
+
             const timeEl = document.getElementById('currentTime');
             if (timeEl) {
                 timeEl.textContent = timeString;
             }
-            
+
             const gmtEl = document.getElementById('currentGMT');
             if (gmtEl) {
                 gmtEl.textContent = `GMT${this.gmtOffset}`;
             }
-            
+
             setTimeout(updateTime, 1000);
         };
-        
+
         updateTime();
     }
 
@@ -626,18 +628,18 @@ export default class AdzanApp {
 
     updateDate(hijri) {
         const now = new Date();
-        let dateString = now.toLocaleDateString('id-ID', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
+        let dateString = now.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         });
         // Ganti Minggu menjadi Ahad
         if (dateString.startsWith('Minggu')) {
             dateString = dateString.replace('Minggu', 'Ahad');
         }
         let fullDate = dateString;
-        
+
         if (hijri && hijri.month) {
             // Normalize month name like adzan_realtime
             function normalizeMonthName(s) {
@@ -645,7 +647,7 @@ export default class AdzanApp {
                 const t = s.normalize('NFD').replace(/\p{Diacritic}/gu, '');
                 return t.replace(/[\u02BC\u02BB\u2018\u2019']/g, '').trim().toLowerCase();
             }
-            
+
             const bulanMap = {
                 'muharram': 'Muharram',
                 'safar': 'Safar',
@@ -691,10 +693,10 @@ export default class AdzanApp {
                 'dhul-hijjah': 'Dzulhijjah',
                 'dzulhijjah': 'Dzulhijjah'
             };
-            
+
             const normalizedMonth = normalizeMonthName(hijri.month.en || '');
             const monthName = bulanMap[normalizedMonth] || hijri.month.en || '';
-            
+
             if (monthName && hijri.day && hijri.year) {
                 const offset = islamHubConfig.dateOffsetDays;
                 if (offset === 0) {
@@ -726,7 +728,7 @@ export default class AdzanApp {
                 return;
             }
         }
-        
+
         const dateEl = document.getElementById('currentDate');
         if (dateEl) {
             dateEl.textContent = fullDate;
@@ -735,7 +737,7 @@ export default class AdzanApp {
 
     updateLocationDisplay() {
         const locationNameEl = document.getElementById('locationName');
-        
+
         if (locationNameEl) {
             locationNameEl.textContent = this.locationDisplay;
         }
@@ -773,7 +775,7 @@ export default class AdzanApp {
 
     updateHomeWidget() {
         if (!this.mainApp || !this.nextPrayer) return;
-        
+
         // Just update the prayer info, countdown will be updated by updateCountdown()
         this.mainApp.updateHomeWidget({
             prayerName: this.nextPrayer.name,
@@ -798,7 +800,7 @@ export default class AdzanApp {
                 this.showLocationModal();
             });
         }
-        
+
         // Toggle notification button
         const btnToggleNotification = document.getElementById('btnToggleNotification');
         if (btnToggleNotification) {
@@ -806,7 +808,7 @@ export default class AdzanApp {
                 this.toggleNotifications();
             });
         }
-        
+
         // Modal close button
         const modalClose = document.getElementById('modalClose');
         if (modalClose) {
@@ -816,7 +818,7 @@ export default class AdzanApp {
                 this.hideLocationModal();
             });
         }
-        
+
         // Modal backdrop close (click outside)
         const modal = document.getElementById('locationModal');
         if (modal) {
@@ -827,7 +829,7 @@ export default class AdzanApp {
                 }
             });
         }
-        
+
         // ESC key to close modal
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
@@ -837,7 +839,7 @@ export default class AdzanApp {
                 }
             }
         });
-        
+
         // Search city
         const btnSearchCity = document.getElementById('btnSearchCity');
         if (btnSearchCity) {
@@ -845,7 +847,7 @@ export default class AdzanApp {
                 this.searchCity();
             });
         }
-        
+
         // Use GPS
         const btnUseGPS = document.getElementById('btnUseGPS');
         if (btnUseGPS) {
@@ -853,7 +855,7 @@ export default class AdzanApp {
                 this.useGPS();
             });
         }
-        
+
         // Method selector
         const methodSelect = document.getElementById('methodSelect');
         if (methodSelect) {
@@ -893,21 +895,21 @@ export default class AdzanApp {
                 this.fetchPrayerTimes();
             });
         }
-        
+
         // City input autocomplete
         const cityInput = document.getElementById('cityInput');
         if (cityInput) {
             cityInput.addEventListener('input', (e) => {
                 this.handleCityInput(e.target.value);
             });
-            
+
             cityInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     this.searchCity();
                 }
             });
         }
-        
+
         // Handle visibility change to reschedule notifications when app becomes visible
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden && this.notificationEnabled) {
@@ -949,12 +951,12 @@ export default class AdzanApp {
         const dropdown = document.getElementById('cityDropdown');
         const loader = document.getElementById('citySearchLoader');
         if (!dropdown) return;
-        
+
         // Clear previous timer
         if (this.searchDebounceTimer) {
             clearTimeout(this.searchDebounceTimer);
         }
-        
+
         if (value.length < 2) {
             dropdown.style.display = 'none';
             dropdown.innerHTML = '';
@@ -962,37 +964,37 @@ export default class AdzanApp {
             this.citySearchResults = [];
             return;
         }
-        
+
         // Show loader immediately (user is still typing)
         if (loader) loader.style.display = 'flex';
         dropdown.style.display = 'none';
-        
+
         // Wait for user to finish typing (500ms delay)
         this.searchDebounceTimer = setTimeout(async () => {
             await this.performCitySearch(value, dropdown, loader);
         }, 500);
     }
-    
+
     async performCitySearch(value, dropdown, loader) {
         // No need to show loader again, already shown in handleCityInput
-        
+
         try {
             const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(value)}&limit=10&addressdetails=1`;
-            const response = await fetch(url, {headers: {'Accept-Language': 'id'}});
+            const response = await fetch(url, { headers: { 'Accept-Language': 'id' } });
             const results = await response.json();
-            
+
             this.citySearchResults = results;
-            
+
             // Hide loader
             loader.style.display = 'none';
-            
+
             if (results && results.length > 0) {
                 dropdown.innerHTML = results.map((result, index) => {
                     const address = result.address || {};
                     const city = address.city || address.town || address.village || address.state || result.name;
                     const country = address.country || '';
                     const displayName = `${city}${country ? ', ' + country : ''}`;
-                    
+
                     return `
                         <div class="city-item" data-index="${index}">
                             <div class="city-icon">
@@ -1008,9 +1010,9 @@ export default class AdzanApp {
                         </div>
                     `;
                 }).join('');
-                
+
                 dropdown.style.display = 'block';
-                
+
                 // Add click listeners
                 dropdown.querySelectorAll('.city-item').forEach(item => {
                     item.addEventListener('click', () => {
@@ -1018,7 +1020,7 @@ export default class AdzanApp {
                         this.selectCity(results[index]);
                     });
                 });
-                
+
                 console.log('City suggestions loaded:', results.length);
             } else {
                 dropdown.innerHTML = `
@@ -1045,24 +1047,24 @@ export default class AdzanApp {
     async selectCity(selectedResult) {
         const input = document.getElementById('cityInput');
         const dropdown = document.getElementById('cityDropdown');
-        
+
         if (selectedResult) {
             this.lat = parseFloat(selectedResult.lat);
             this.lon = parseFloat(selectedResult.lon);
-            
+
             const address = selectedResult.address || {};
             this.city = address.city || address.town || address.village || address.state || selectedResult.name;
             this.country = address.country || 'Unknown';
             this.locationDisplay = `${this.city}, ${this.country}`;
-            
+
             // Get timezone from coordinates
             await this.fetchTimezoneFromCoords();
-            
+
             this.saveLocation();
             await this.fetchPrayerTimes();
             this.hideLocationModal();
             this.updateLocationDisplay();
-            
+
             if (input) input.value = '';
             if (dropdown) {
                 dropdown.style.display = 'none';
@@ -1075,34 +1077,34 @@ export default class AdzanApp {
     async searchCity() {
         const input = document.getElementById('cityInput');
         if (!input) return;
-        
+
         const cityName = input.value.trim();
         if (!cityName) {
             alert('Masukkan nama kota');
             return;
         }
-        
+
         const loader = document.getElementById('citySearchLoader');
         const dropdown = document.getElementById('cityDropdown');
         const modal = document.getElementById('locationModal');
-        
+
         try {
             // Show loader
             if (loader) loader.style.display = 'flex';
             if (dropdown) dropdown.style.display = 'none';
-            
+
             // Search for city
             const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cityName)}&limit=1&addressdetails=1`;
             const response = await fetch(url);
             const data = await response.json();
-            
+
             // Hide loader
             if (loader) loader.style.display = 'none';
-            
+
             if (data && data.length > 0) {
                 // Select city and close modal immediately
                 await this.selectCity(data[0]);
-                
+
                 // Clear input and hide modal
                 if (input) input.value = '';
                 if (modal) modal.classList.remove('show');
@@ -1124,14 +1126,14 @@ export default class AdzanApp {
     async useGPS() {
         const gpsLoader = document.getElementById('gpsLoader');
         const btnUseGPS = document.getElementById('btnUseGPS');
-        
+
         // Show loader and disable button
         if (gpsLoader) gpsLoader.style.display = 'flex';
         if (btnUseGPS) btnUseGPS.disabled = true;
-        
+
         try {
             let position;
-            
+
             // Check if running as native app (Capacitor)
             if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Geolocation) {
                 const { Geolocation } = window.Capacitor.Plugins;
@@ -1158,15 +1160,15 @@ export default class AdzanApp {
             } else {
                 throw new Error('GPS tidak didukung di perangkat ini');
             }
-            
+
             console.log('GPS Location:', this.lat, this.lon);
-            
+
             // Reverse geocode to get city name
             try {
                 const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${this.lat}&lon=${this.lon}&addressdetails=1`;
                 const response = await fetch(url);
                 const data = await response.json();
-                
+
                 const address = data.address || {};
                 this.city = address.city || address.town || address.village || address.state || 'Lokasi GPS';
                 this.country = address.country || 'Unknown';
@@ -1176,15 +1178,15 @@ export default class AdzanApp {
                 this.country = 'Unknown';
                 this.locationDisplay = this.city;
             }
-            
+
             // Get timezone from coordinates
             await this.fetchTimezoneFromCoords();
-            
+
             this.saveLocation();
             await this.fetchPrayerTimes();
             this.hideLocationModal();
             this.updateLocationDisplay();
-            
+
         } catch (error) {
             console.error('GPS error:', error);
             alert(`Gagal mengambil lokasi GPS: ${error.message || error}`);
@@ -1200,12 +1202,12 @@ export default class AdzanApp {
             // Use timezone API to get accurate timezone
             const timestamp = Math.floor(Date.now() / 1000);
             const url = `https://api.timezonedb.com/v2.1/get-time-zone?key=demo&format=json&by=position&lat=${this.lat}&lng=${this.lon}&time=${timestamp}`;
-            
+
             // Fallback to calculation if API fails
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                
+
                 if (data.status === 'OK') {
                     this.timezone = data.zoneName;
                     const offsetSeconds = data.gmtOffset;
@@ -1216,11 +1218,11 @@ export default class AdzanApp {
             } catch (apiError) {
                 console.log('Timezone API failed, using calculation');
             }
-            
+
             // Fallback: estimate timezone from longitude
             const offsetHours = Math.round(this.lon / 15);
             this.gmtOffset = offsetHours >= 0 ? `+${offsetHours}` : `${offsetHours}`;
-            
+
             // Try to guess timezone name (basic)
             const timezones = {
                 7: 'Asia/Jakarta',
@@ -1231,7 +1233,7 @@ export default class AdzanApp {
                 0: 'Europe/London',
                 1: 'Europe/Paris'
             };
-            
+
             this.timezone = timezones[offsetHours] || 'UTC';
         } catch (error) {
             console.error('Failed to fetch timezone:', error);
@@ -1243,14 +1245,14 @@ export default class AdzanApp {
     async updateSunnahPrayers() {
         try {
             const { sunnahPrayersCollection } = await import('../../data/sunnah-prayers.js');
-            
+
             const now = new Date();
             const currentTime = {
                 h: now.getHours(),
                 m: now.getMinutes(),
                 s: now.getSeconds()
             };
-            
+
             // Convert prayer times to decimal hours
             const times = {
                 fajr: this.convertToDecimal(this.prayerTimes.Subuh),
@@ -1260,20 +1262,20 @@ export default class AdzanApp {
                 maghrib: this.convertToDecimal(this.prayerTimes.Maghrib),
                 isha: this.convertToDecimal(this.prayerTimes.Isya)
             };
-            
+
             const sunnahList = document.getElementById('sunnahPrayersList');
             if (!sunnahList) return;
-            
+
             let html = '';
-            
+
             sunnahPrayersCollection.forEach(sunnah => {
                 const isAvailable = sunnah.timeCondition(times, currentTime);
-                const statusIcon = isAvailable ? 
-                    '<i class="fas fa-check-circle status-icon available"></i>' : 
+                const statusIcon = isAvailable ?
+                    '<i class="fas fa-check-circle status-icon available"></i>' :
                     '<i class="fas fa-times-circle status-icon not-available"></i>';
-                
+
                 const availableClass = isAvailable ? 'available' : 'not-available';
-                
+
                 html += `
                     <div class="sunnah-prayer-item ${availableClass}">
                         <div class="sunnah-prayer-name">
@@ -1287,9 +1289,9 @@ export default class AdzanApp {
                     </div>
                 `;
             });
-            
+
             sunnahList.innerHTML = html;
-            
+
         } catch (error) {
             console.error('Failed to load sunnah prayers:', error);
         }
@@ -1312,7 +1314,7 @@ export default class AdzanApp {
                 gmtOffset: this.gmtOffset,
                 locationDisplay: this.locationDisplay
             };
-            
+
             localStorage.setItem('islamhub_adzan_location', JSON.stringify(data));
         } catch (error) {
             console.error('Failed to save location:', error);
@@ -1325,24 +1327,24 @@ export default class AdzanApp {
     }
 
     // ============= NOTIFICATION FEATURES =============
-    
+
     async initNotifications() {
         console.log('[Notification] Initializing notifications...');
-        
+
         // Load notification state from localStorage
         const savedState = localStorage.getItem('islamhub_adzan_notifications_enabled');
         this.notificationEnabled = savedState === 'true';
-        
+
         // Check permission
         if ('Notification' in window) {
             this.notificationPermission = Notification.permission;
         }
-        
+
         // For native apps, check Capacitor permission and create channel
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
             try {
                 const { LocalNotifications } = window.Capacitor.Plugins;
-                
+
                 // Create notification channel for Android
                 try {
                     await LocalNotifications.createChannel({
@@ -1360,7 +1362,7 @@ export default class AdzanApp {
                 } catch (channelError) {
                     console.log('[Native] Channel creation error (might already exist):', channelError);
                 }
-                
+
                 const permStatus = await LocalNotifications.checkPermissions();
                 this.notificationPermission = permStatus.display;
                 console.log('[Native] Notification permission:', permStatus.display);
@@ -1368,16 +1370,16 @@ export default class AdzanApp {
                 console.error('[Native] Failed to check permissions:', error);
             }
         }
-        
+
         console.log('[Notification] State:', {
             enabled: this.notificationEnabled,
             permission: this.notificationPermission,
             hasPrayerTimes: !!this.prayerTimes && Object.keys(this.prayerTimes).length > 0
         });
-        
+
         // Update button state
         this.updateNotificationButton();
-        
+
         // Schedule notifications if enabled
         if (this.notificationEnabled && this.notificationPermission === 'granted') {
             console.log('[Notification] Auto-scheduling notifications...');
@@ -1386,14 +1388,14 @@ export default class AdzanApp {
             console.log('[Notification] Not scheduling - enabled:', this.notificationEnabled, 'permission:', this.notificationPermission);
         }
     }
-    
+
     updateNotificationButton() {
         const btn = document.getElementById('btnToggleNotification');
         if (!btn) return;
-        
+
         const icon = btn.querySelector('i');
         const text = btn.querySelector('span');
-        
+
         if (this.notificationEnabled) {
             btn.classList.add('active');
             btn.title = 'Notifikasi Aktif - Klik untuk Menonaktifkan';
@@ -1406,18 +1408,18 @@ export default class AdzanApp {
             if (text) text.textContent = 'Aktifkan Notifikasi';
         }
     }
-    
+
     async toggleNotifications() {
         // Check if running in Capacitor (native app)
         const isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform();
-        
+
         // For native apps, notifications are always available
         // For web, check browser support
         if (!isNativeApp && !('Notification' in window)) {
             this.showNotificationPopup('Browser Anda tidak mendukung notifikasi', 'error');
             return;
         }
-        
+
         // If currently disabled, enable it
         if (!this.notificationEnabled) {
             // For native apps, request permission via Capacitor
@@ -1429,24 +1431,24 @@ export default class AdzanApp {
                         this.showNotificationPopup('⚠️ Plugin notifikasi belum tersedia. Pastikan aplikasi sudah di-build dengan benar.', 'error');
                         return;
                     }
-                    
+
                     const { LocalNotifications } = window.Capacitor.Plugins;
-                    
+
                     // Check current permission
                     const permissionStatus = await LocalNotifications.checkPermissions();
                     console.log('Current notification permission:', permissionStatus);
-                    
+
                     // Request permission if not granted
                     if (permissionStatus.display !== 'granted') {
                         const result = await LocalNotifications.requestPermissions();
                         console.log('Permission request result:', result);
-                        
+
                         if (result.display !== 'granted') {
                             this.showNotificationPopup('❌ Izin notifikasi ditolak. Silakan aktifkan di pengaturan aplikasi', 'error');
                             return;
                         }
                     }
-                    
+
                     this.notificationPermission = 'granted';
                 } catch (error) {
                     console.error('Error requesting notification permission:', error);
@@ -1458,40 +1460,40 @@ export default class AdzanApp {
                 if (this.notificationPermission !== 'granted') {
                     const permission = await Notification.requestPermission();
                     this.notificationPermission = permission;
-                    
+
                     if (permission !== 'granted') {
                         this.showNotificationPopup('Izin notifikasi ditolak. Silakan aktifkan di pengaturan browser', 'error');
                         return;
                     }
                 }
             }
-            
+
             // Enable notifications
             this.notificationEnabled = true;
             localStorage.setItem('islamhub_adzan_notifications_enabled', 'true');
-            
+
             // Update button state immediately
             this.updateNotificationButton();
-            
+
             this.scheduleNotifications();
             this.showNotificationPopup('✓ Notifikasi waktu sholat diaktifkan', 'success');
-            
+
             // Show welcome notification to confirm it's working
             this.showWelcomeNotification();
-            
+
         } else {
             // Disable notifications
             this.notificationEnabled = false;
             localStorage.setItem('islamhub_adzan_notifications_enabled', 'false');
-            
+
             // Update button state immediately
             this.updateNotificationButton();
-            
+
             this.cancelScheduledNotifications();
             this.showNotificationPopup('✗ Notifikasi waktu sholat dinonaktifkan', 'info');
         }
     }
-    
+
     showNotificationPopup(message, type = 'info') {
         // Create popup element
         const popup = document.createElement('div');
@@ -1502,65 +1504,65 @@ export default class AdzanApp {
                 <span>${message}</span>
             </div>
         `;
-        
+
         document.body.appendChild(popup);
-        
+
         // Show with animation
         setTimeout(() => popup.classList.add('show'), 10);
-        
+
         // Hide and remove after 3 seconds
         setTimeout(() => {
             popup.classList.remove('show');
             setTimeout(() => popup.remove(), 300);
         }, 3000);
     }
-    
+
     async scheduleNotifications() {
         // Cancel existing scheduled notifications
         await this.cancelScheduledNotifications();
-        
+
         if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) {
             console.warn('No prayer times available for scheduling notifications');
             return;
         }
-        
+
         // Save prayer times to localStorage for service worker access
         localStorage.setItem('islamhub_prayer_times', JSON.stringify(this.prayerTimes));
         localStorage.setItem('islamhub_notification_scheduled_at', new Date().toISOString());
-        
+
         const now = new Date();
         // Use Indonesian names to match prayerTimes keys
         const prayers = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
-        
+
         // Check if running as native app (Capacitor)
         const isNative = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications;
-        
+
         if (isNative) {
             // Use Capacitor LocalNotifications for native apps
             const { LocalNotifications } = window.Capacitor.Plugins;
             const notifications = [];
-            
+
             prayers.forEach((prayer, index) => {
                 const prayerTime = this.prayerTimes[prayer];
                 if (!prayerTime) return;
-                
+
                 // Parse prayer time
                 const [hours, minutes] = prayerTime.split(':').map(Number);
                 const prayerDate = new Date();
                 prayerDate.setHours(hours, minutes, 0, 0);
-                
+
                 // Schedule notification 5 minutes BEFORE prayer time
                 const notificationDate = new Date(prayerDate.getTime() - 5 * 60 * 1000);
-                
+
                 // If notification time has passed today, schedule for tomorrow
                 // Add 2 minutes buffer to ensure we don't schedule for past time
                 if (notificationDate.getTime() <= now.getTime() + (2 * 60 * 1000)) {
                     notificationDate.setDate(notificationDate.getDate() + 1);
                     console.log(`[Native] ${prayer} time has passed, scheduling for tomorrow`);
                 }
-                
+
                 const timeUntilNotification = notificationDate.getTime() - now.getTime();
-                
+
                 // Only schedule if:
                 // 1. Time is in the future (> 0)
                 // 2. Within next 24 hours
@@ -1580,7 +1582,7 @@ export default class AdzanApp {
                             time: prayerTime
                         }
                     });
-                    
+
                     const hoursUntil = Math.floor(timeUntilNotification / (60 * 60 * 1000));
                     const minutesUntil = Math.floor((timeUntilNotification % (60 * 60 * 1000)) / 60000);
                     console.log(`[Native] ✓ Scheduled ${prayer} for ${notificationDate.toLocaleDateString()} ${notificationDate.toLocaleTimeString()} (in ${hoursUntil}h ${minutesUntil}m)`);
@@ -1588,7 +1590,7 @@ export default class AdzanApp {
                     console.log(`[Native] ✗ Skipped ${prayer} - time until notification: ${Math.round(timeUntilNotification / 60000)} minutes`);
                 }
             });
-            
+
             if (notifications.length > 0) {
                 try {
                     await LocalNotifications.schedule({ notifications });
@@ -1602,22 +1604,22 @@ export default class AdzanApp {
             prayers.forEach(prayer => {
                 const prayerTime = this.prayerTimes[prayer];
                 if (!prayerTime) return;
-                
+
                 // Parse prayer time
                 const [hours, minutes] = prayerTime.split(':').map(Number);
                 const prayerDate = new Date();
                 prayerDate.setHours(hours, minutes, 0, 0);
-                
+
                 // Schedule notification 5 minutes BEFORE prayer time
                 const notificationDate = new Date(prayerDate.getTime() - 5 * 60 * 1000);
-                
+
                 // If notification time has passed today, schedule for tomorrow
                 if (notificationDate <= now) {
                     notificationDate.setDate(notificationDate.getDate() + 1);
                 }
-                
+
                 const timeUntilNotification = notificationDate.getTime() - now.getTime();
-                
+
                 // Only schedule if within next 24 hours
                 if (timeUntilNotification > 0 && timeUntilNotification <= 24 * 60 * 60 * 1000) {
                     const timeoutId = setTimeout(() => {
@@ -1625,48 +1627,50 @@ export default class AdzanApp {
                         // Reschedule for next day
                         setTimeout(() => this.scheduleNotifications(), 1000);
                     }, timeUntilNotification);
-                    
+
                     this.scheduledNotifications.push(timeoutId);
-                    
+
                     console.log(`[Web] Scheduled notification for ${prayer} at ${notificationDate.toLocaleTimeString()} (in ${Math.round(timeUntilNotification / 60000)} minutes)`);
                 }
             });
-            
+
             console.log(`[Web] Scheduled ${this.scheduledNotifications.length} web notifications`);
         }
-        
+
         // Set up a periodic check every minute to ensure notifications aren't missed
         // This is a fallback in case setTimeout fails
         if (this.notificationCheckInterval) {
             clearInterval(this.notificationCheckInterval);
         }
-        
+
         this.notificationCheckInterval = setInterval(() => {
             this.checkPendingNotifications();
         }, 60000); // Check every minute
     }
-    
+
     async cancelScheduledNotifications() {
         // Cancel web timeouts
         this.scheduledNotifications.forEach(timeoutId => clearTimeout(timeoutId));
         this.scheduledNotifications = [];
-        
+
         // Cancel native notifications
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
             try {
                 const { LocalNotifications } = window.Capacitor.Plugins;
-                
+
                 // Cancel pending scheduled notifications (yang belum muncul)
-                await LocalNotifications.cancel({ notifications: [
-                    { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 999999 }
-                ]});
+                await LocalNotifications.cancel({
+                    notifications: [
+                        { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 999999 }
+                    ]
+                });
                 console.log('[Native] Cancelled all scheduled notifications');
-                
+
                 // Remove delivered notifications (yang sudah muncul di notification tray)
                 try {
                     const pending = await LocalNotifications.getPending();
                     console.log('[Native] Pending notifications:', pending.notifications.length);
-                    
+
                     // Clear all delivered notifications from notification tray
                     const delivered = await LocalNotifications.getDeliveredNotifications();
                     if (delivered.notifications && delivered.notifications.length > 0) {
@@ -1682,39 +1686,39 @@ export default class AdzanApp {
                 console.error('[Native] Failed to cancel notifications:', error);
             }
         }
-        
+
         if (this.notificationCheckInterval) {
             clearInterval(this.notificationCheckInterval);
             this.notificationCheckInterval = null;
         }
     }
-    
+
     checkPendingNotifications() {
         if (!this.notificationEnabled || this.notificationPermission !== 'granted') {
             return;
         }
-        
+
         if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) {
             return;
         }
-        
+
         const now = new Date();
         const currentMinute = `${now.getHours()}:${now.getMinutes()}`;
         const prayers = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
-        
+
         prayers.forEach(prayer => {
             const prayerTime = this.prayerTimes[prayer];
             if (!prayerTime) return;
-            
+
             // Parse prayer time
             const [hours, minutes] = prayerTime.split(':').map(Number);
             const prayerDate = new Date();
             prayerDate.setHours(hours, minutes, 0, 0);
-            
+
             // Calculate notification time (5 minutes before)
             const notificationDate = new Date(prayerDate.getTime() - 5 * 60 * 1000);
             const notificationMinute = `${notificationDate.getHours()}:${notificationDate.getMinutes()}`;
-            
+
             // Check if current time matches notification time
             if (currentMinute === notificationMinute) {
                 // Check if we haven't already sent this notification today
@@ -1723,7 +1727,7 @@ export default class AdzanApp {
                     console.log(`Fallback notification triggered for ${prayer}`);
                     this.showPrayerNotification(prayer, prayerTime);
                     this.lastNotificationCheck[checkKey] = true;
-                    
+
                     // Clean up old check keys (keep only today's)
                     const todayStr = now.toDateString();
                     Object.keys(this.lastNotificationCheck).forEach(key => {
@@ -1735,12 +1739,12 @@ export default class AdzanApp {
             }
         });
     }
-    
+
     async showPrayerNotification(prayerName, prayerTime) {
         if (!this.notificationEnabled || this.notificationPermission !== 'granted') {
             return;
         }
-        
+
         const prayerNames = {
             'Subuh': 'Subuh',
             'Dzuhur': 'Dzuhur',
@@ -1748,11 +1752,11 @@ export default class AdzanApp {
             'Maghrib': 'Maghrib',
             'Isya': 'Isya'
         };
-        
+
         const displayName = prayerNames[prayerName] || prayerName;
         const title = `🕌 Waktu ${displayName}`;
         const body = `⏰ 5 menit lagi waktu sholat ${displayName} (${prayerTime}). Bersiaplah untuk sholat.`;
-        
+
         const options = {
             body: body,
             icon: `${this.basePath}/assets/icons/icon-192x192.png`,
@@ -1762,7 +1766,7 @@ export default class AdzanApp {
             silent: false,
             vibrate: [500, 200, 500, 200, 500]
         };
-        
+
         // Try Service Worker first (better for mobile)
         if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
             try {
@@ -1773,7 +1777,7 @@ export default class AdzanApp {
                 console.log('Service Worker notification failed, using fallback:', error);
             }
         }
-        
+
         // Fallback to regular Notification API
         try {
             const notification = new Notification(title, options);
@@ -1786,29 +1790,29 @@ export default class AdzanApp {
             console.error('Prayer notification failed:', error);
         }
     }
-    
+
     async showWelcomeNotification() {
         console.log('[Welcome] Starting welcome notification...');
         console.log('[Welcome] Permission status:', this.notificationPermission);
-        
+
         if (this.notificationPermission !== 'granted') {
             console.log('[Welcome] Permission not granted, skipping');
             return;
         }
-        
+
         const title = '🕌 IslamHub - Notifikasi Aktif';
         const body = `Anda akan menerima notifikasi 5 menit sebelum waktu sholat tiba. Semoga istiqomah dalam ibadah 🤲`;
-        
+
         // Check if running as native app (Capacitor)
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
             try {
                 const { LocalNotifications } = window.Capacitor.Plugins;
-                
+
                 // Trigger haptic feedback for notification
                 if (window.Capacitor.Plugins.Haptics) {
                     await window.Capacitor.Plugins.Haptics.notification({ type: 'success' });
                 }
-                
+
                 // Schedule immediately without delay
                 const scheduleTime = new Date(Date.now() + 100); // Minimal delay
                 await LocalNotifications.schedule({
@@ -1830,7 +1834,7 @@ export default class AdzanApp {
                 console.error('[Native] Welcome notification failed:', error);
             }
         }
-        
+
         const options = {
             body: body,
             icon: `${this.basePath}/assets/icons/icon-192x192.png`,
@@ -1840,7 +1844,7 @@ export default class AdzanApp {
             silent: false,
             vibrate: [200, 100, 200]
         };
-        
+
         // Try Service Worker first (better for mobile web)
         if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
             try {
@@ -1851,7 +1855,7 @@ export default class AdzanApp {
                 console.log('Service Worker notification failed, using fallback:', error);
             }
         }
-        
+
         // Fallback to regular Notification API
         try {
             const notification = new Notification(title, options);
@@ -2472,7 +2476,7 @@ export default class AdzanApp {
 
             // Adzan sound check — fire on each prayer's minute once
             if (this._dmSettings?.adzanSound || this._dmSettings?.adzanFullAudio) {
-                const hm = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+                const hm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
                 const prayerNames = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
                 for (const name of prayerNames) {
                     const t = this.prayerTimes[name];
@@ -2574,7 +2578,7 @@ export default class AdzanApp {
         const hrs = Math.floor(totalSecs / 3600);
         const mins = Math.floor((totalSecs % 3600) / 60);
         const secs = totalSecs % 60;
-        const cdStr = `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+        const cdStr = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         const centerCdEl = document.getElementById('admCenterCountdown');
         if (centerCdEl) centerCdEl.textContent = cdStr;
         const footerCdEl = document.getElementById('admFooterCdCountdown');
@@ -2618,12 +2622,12 @@ export default class AdzanApp {
             const now = new Date();
             const nowObj = { h: now.getHours(), m: now.getMinutes(), s: now.getSeconds() };
             const times = {
-                fajr: this.prayerTimes['Subuh'] ? (() => { const [h,m] = this.prayerTimes['Subuh'].split(':').map(Number); return h + m/60; })() : NaN,
-                sunrise: this.prayerTimes['Syuruq'] ? (() => { const [h,m] = this.prayerTimes['Syuruq'].split(':').map(Number); return h + m/60; })() : NaN,
-                dhuhr: this.prayerTimes['Dzuhur'] ? (() => { const [h,m] = this.prayerTimes['Dzuhur'].split(':').map(Number); return h + m/60; })() : NaN,
-                asr: this.prayerTimes['Ashar'] ? (() => { const [h,m] = this.prayerTimes['Ashar'].split(':').map(Number); return h + m/60; })() : NaN,
-                maghrib: this.prayerTimes['Maghrib'] ? (() => { const [h,m] = this.prayerTimes['Maghrib'].split(':').map(Number); return h + m/60; })() : NaN,
-                isha: this.prayerTimes['Isya'] ? (() => { const [h,m] = this.prayerTimes['Isya'].split(':').map(Number); return h + m/60; })() : NaN,
+                fajr: this.prayerTimes['Subuh'] ? (() => { const [h, m] = this.prayerTimes['Subuh'].split(':').map(Number); return h + m / 60; })() : NaN,
+                sunrise: this.prayerTimes['Syuruq'] ? (() => { const [h, m] = this.prayerTimes['Syuruq'].split(':').map(Number); return h + m / 60; })() : NaN,
+                dhuhr: this.prayerTimes['Dzuhur'] ? (() => { const [h, m] = this.prayerTimes['Dzuhur'].split(':').map(Number); return h + m / 60; })() : NaN,
+                asr: this.prayerTimes['Ashar'] ? (() => { const [h, m] = this.prayerTimes['Ashar'].split(':').map(Number); return h + m / 60; })() : NaN,
+                maghrib: this.prayerTimes['Maghrib'] ? (() => { const [h, m] = this.prayerTimes['Maghrib'].split(':').map(Number); return h + m / 60; })() : NaN,
+                isha: this.prayerTimes['Isya'] ? (() => { const [h, m] = this.prayerTimes['Isya'].split(':').map(Number); return h + m / 60; })() : NaN,
             };
             const active = sunnahPrayersCollection.filter(s => {
                 try { return s.timeCondition(times, nowObj); } catch { return false; }
@@ -2654,7 +2658,7 @@ export default class AdzanApp {
                 this._audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
             if (this._audioCtx.state === 'suspended') this._audioCtx.resume();
-        } catch (e) {}
+        } catch (e) { }
     }
 
     _playAdzanSound(prayerName) {
@@ -3355,13 +3359,13 @@ export default class AdzanApp {
         const { type, audioEl, isPlaying } = state;
         if (type === 'radio' || type === 'dm-muratal') {
             if (isPlaying) { audioEl.pause(); }
-            else { audioEl.play().catch(() => {}); }
+            else { audioEl.play().catch(() => { }); }
         } else if (type === 'quran-page') {
             const qa = window.alquranApp;
             if (qa) qa.toggleAudio();
         } else if (type === 'quran-surah') {
             if (isPlaying) { audioEl.pause(); }
-            else { audioEl.play().catch(() => {}); }
+            else { audioEl.play().catch(() => { }); }
             if (window.alquranApp) window.alquranApp.isPlaying = !isPlaying;
         }
         setTimeout(() => this._updateAudioBar(), 120);

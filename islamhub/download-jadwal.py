@@ -150,18 +150,24 @@ def fetch_month(year, month, method_id, city_name, retry=2):
                 return None
 
 
+def _clean_time(s):
+    """Strip timezone suffix returned by Aladhan, e.g. '04:06' → '04:06'."""
+    import re
+    return re.sub(r'\s*\(.*?\)\s*$', '', s).strip()
+
+
 def trim_entry(entry):
     """Simpan hanya data yang dibutuhkan app — kurangi ukuran file ~10x."""
     t = entry["timings"]
     h = entry["date"]["hijri"]
     return {
-        "Im": t["Imsak"],
-        "Fa": t["Fajr"],
-        "Sr": t["Sunrise"],
-        "Dh": t["Dhuhr"],
-        "As": t["Asr"],
-        "Mg": t["Maghrib"],
-        "Is": t["Isha"],
+        "Im": _clean_time(t["Imsak"]),
+        "Fa": _clean_time(t["Fajr"]),
+        "Sr": _clean_time(t["Sunrise"]),
+        "Dh": _clean_time(t["Dhuhr"]),
+        "As": _clean_time(t["Asr"]),
+        "Mg": _clean_time(t["Maghrib"]),
+        "Is": _clean_time(t["Isha"]),
         "hijri": {
             "day":         h["day"],
             "weekday":     h["weekday"],
