@@ -34,7 +34,7 @@ const CONFIG_DEFAULTS = {
      * Ubah nilai ini untuk menyesuaikan tampilan tanggal Hijriah.
      * Contoh: -1 untuk mundur 1 hari, +1 untuk maju 1 hari, 0 tanpa koreksi.
      */
-    dateOffsetDays: -1
+    dateOffsetDays: 0
 };
 
 const STORAGE_KEY = 'islamhub_config';
