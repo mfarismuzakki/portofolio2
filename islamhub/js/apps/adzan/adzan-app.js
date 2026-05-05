@@ -910,12 +910,25 @@ export default class AdzanApp {
             });
         }
 
-        // Handle visibility change to reschedule notifications when app becomes visible
+        // Handle visibility change when app returns from background
         document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && this.notificationEnabled) {
-                console.log('App became visible, checking notification schedule...');
-                // Reschedule if needed
-                this.scheduleNotifications();
+            if (!document.hidden) {
+                if (this.notificationEnabled) {
+                    this.scheduleNotifications();
+                }
+                // Silently refresh prayer times so countdown stays accurate
+                this.fetchPrayerTimes().catch(() => {});
+
+                // If display mode (monitor masjid) is open, rebuild prayer grid with
+                // current time so _dmNextPrayer is recalculated after being backgrounded
+                if (this.displayModeActive) {
+                    this._buildDisplayModePrayerGrid();
+                    if (this.displayModeClockTimer) {
+                        clearTimeout(this.displayModeClockTimer);
+                        this.displayModeClockTimer = null;
+                    }
+                    this._startDisplayModeClock();
+                }
             }
         });
     }
@@ -2574,6 +2587,12 @@ export default class AdzanApp {
         const [dh, dm] = this._dmNextPrayer.time.split(':').map(Number);
         let freshDiff = (dh + dm / 60) - nowH;
         if (freshDiff <= 0) freshDiff += 24;
+        // Safety guard: if diff > 23h the stored next prayer is stale (e.g. phone was
+        // backgrounded past a prayer time and the exact-minute rebuild never fired)
+        if (freshDiff > 23) {
+            this._buildDisplayModePrayerGrid();
+            return;
+        }
         const totalSecs = Math.max(0, Math.round(freshDiff * 3600));
         const hrs = Math.floor(totalSecs / 3600);
         const mins = Math.floor((totalSecs % 3600) / 60);

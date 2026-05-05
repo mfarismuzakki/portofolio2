@@ -41,8 +41,8 @@ class IslamHubApp {
         this.setupMobileMenu();
         this.loadStateFromLocalStorage();
         
-        // Load Adzan app immediately for floating widget
-        await this.loadApp('adzan');
+        // Load Adzan app in background — prayer time fetch must not block the main loader
+        this.loadApp('adzan').catch(err => console.warn('[adzan] background load failed:', err));
         
         // Initialize hadith ticker
         await this.initializeHadithTicker();
@@ -265,15 +265,23 @@ class IslamHubApp {
                 registration.addEventListener('updatefound', () => {
                     const newWorker = registration.installing;
                     console.log('Service Worker update found!');
-                    
+
                     newWorker.addEventListener('statechange', () => {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                             console.log('New Service Worker installed');
-                            // Will trigger reload via message listener above
+                            this.showUpdateNotification();
                         }
                     });
                 });
-                
+
+                // When app returns from a long background session, check if an update
+                // installed while we were away — show banner without forcing a reload
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden && registration.waiting) {
+                        this.showUpdateNotification();
+                    }
+                });
+
                 // Initial update check
                 registration.update();
             } catch (error) {
