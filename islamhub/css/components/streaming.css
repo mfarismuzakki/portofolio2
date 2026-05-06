@@ -1116,3 +1116,137 @@
   height: 100%;
   border: none;
 }
+
+/* ===== Toolbar (Search + Filter) ===== */
+.streaming-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.streaming-search {
+  position: relative;
+  width: 100%;
+}
+
+.streaming-search input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  background: rgba(0, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.25s ease;
+}
+
+.streaming-search input:focus {
+  outline: none;
+  border-color: var(--primary-cyan, #00ffff);
+  box-shadow: 0 0 18px rgba(0, 255, 255, 0.25);
+  background: rgba(0, 255, 255, 0.08);
+}
+
+.streaming-search i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-cyan, #00ffff);
+  pointer-events: none;
+}
+
+.streaming-filters {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.streaming-filters::-webkit-scrollbar {
+  height: 4px;
+}
+
+.streaming-filters::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+.streaming-filter-btn {
+  flex-shrink: 0;
+  padding: 0.55rem 1rem;
+  background: rgba(0, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.streaming-filter-btn:hover {
+  background: rgba(0, 255, 255, 0.1);
+  border-color: var(--primary-cyan, #00ffff);
+  color: #fff;
+}
+
+.streaming-filter-btn.active {
+  background: linear-gradient(135deg, var(--primary-cyan, #00ffff), #ff00ff);
+  border-color: transparent;
+  color: #0a0e27;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+}
+
+/* Live stats banner */
+.streaming-livestats {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.livestats-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 0, 0, 0.06);
+  border: 1px solid rgba(255, 0, 0, 0.25);
+  border-radius: 50px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+}
+
+.livestats-item strong {
+  color: #ff5566;
+  font-weight: 700;
+  margin: 0 0.15rem;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #ff3333;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255, 51, 51, 0.7);
+  animation: livePulse 1.4s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(255, 51, 51, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(255, 51, 51, 1);
+    transform: scale(1.2);
+  }
+}

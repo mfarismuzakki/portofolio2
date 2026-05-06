@@ -680,19 +680,36 @@ export default class DzikirApp {
                 <div class="counter-section">
                     <h4><i class="fas fa-redo"></i> Pengulangan ${doa.repetition}x</h4>
                     <div class="counter-container">
-                        <div class="counter-display">
-                            <span class="counter-current" id="counterCurrent">0</span>
-                            <span class="counter-separator">/</span>
-                            <span class="counter-target" id="counterTarget">${doa.repetition}</span>
+                        <div class="counter-ring-wrapper">
+                            <svg class="counter-ring" viewBox="0 0 200 200" aria-hidden="true">
+                                <defs>
+                                    <linearGradient id="counterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#00ffff"/>
+                                        <stop offset="100%" stop-color="#ff00ff"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle class="counter-ring-bg" cx="100" cy="100" r="88"/>
+                                <circle class="counter-ring-progress" id="counterRingProgress"
+                                    cx="100" cy="100" r="88"
+                                    stroke="url(#counterGrad)"
+                                    stroke-dasharray="552.92"
+                                    stroke-dashoffset="552.92"
+                                    transform="rotate(-90 100 100)"/>
+                            </svg>
+                            <div class="counter-display">
+                                <span class="counter-current" id="counterCurrent">0</span>
+                                <span class="counter-separator">/</span>
+                                <span class="counter-target" id="counterTarget">${doa.repetition}</span>
+                            </div>
                         </div>
                         <div class="counter-controls">
-                            <button class="counter-btn" id="counterMinus">
+                            <button class="counter-btn" id="counterMinus" aria-label="Kurangi">
                                 <i class="fas fa-minus"></i>
                             </button>
-                            <button class="counter-btn primary" id="counterPlus">
+                            <button class="counter-btn primary" id="counterPlus" aria-label="Tambah">
                                 <i class="fas fa-plus"></i>
                             </button>
-                            <button class="counter-btn" id="counterReset">
+                            <button class="counter-btn" id="counterReset" aria-label="Reset">
                                 <i class="fas fa-redo"></i>
                             </button>
                         </div>
@@ -784,14 +801,22 @@ export default class DzikirApp {
 
     updateCounterDisplay() {
         const current = document.getElementById('counterCurrent');
+        const ring = document.getElementById('counterRingProgress');
+
         if (current) {
             current.textContent = this.counterState.current;
-            
-            // Add complete animation
             if (this.counterState.current === this.counterState.target) {
                 current.classList.add('complete');
                 setTimeout(() => current.classList.remove('complete'), 500);
             }
+        }
+
+        if (ring) {
+            const circumference = 552.92; // 2 * π * 88
+            const ratio = Math.min(1, this.counterState.current / Math.max(1, this.counterState.target));
+            ring.style.strokeDashoffset = String(circumference * (1 - ratio));
+            const wrapper = ring.closest('.counter-ring-wrapper');
+            if (wrapper) wrapper.classList.toggle('full', ratio >= 1);
         }
     }
 

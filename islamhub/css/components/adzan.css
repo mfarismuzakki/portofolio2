@@ -115,6 +115,99 @@
   color: var(--text-primary);
 }
 
+/* Countdown Progress Ring */
+.next-prayer-ring-wrapper {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.next-prayer-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.next-prayer-ring-bg {
+  fill: none;
+  stroke: rgba(0, 255, 255, 0.1);
+  stroke-width: 6;
+}
+
+.next-prayer-ring-progress {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
+  filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.5));
+}
+
+.next-prayer-ring-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.next-prayer-ring-content .prayer-name {
+  font-size: 1.4rem;
+  margin-bottom: 0;
+}
+
+.next-prayer-ring-content .countdown-timer {
+  font-size: 1.9rem;
+  letter-spacing: 1px;
+}
+
+.prayer-time-target {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--font-primary);
+  letter-spacing: 2px;
+}
+
+.next-prayer-ring-wrapper.imminent .next-prayer-ring-progress {
+  stroke: #ff8800 !important;
+  filter: drop-shadow(0 0 18px rgba(255, 136, 0, 0.9));
+  animation: nextPrayerImminent 1s ease-in-out infinite;
+}
+
+.next-prayer-ring-wrapper.imminent .countdown-timer {
+  color: #ffaa44;
+  text-shadow: 0 0 15px rgba(255, 170, 68, 0.6);
+  animation: nextPrayerImminentText 1s ease-in-out infinite;
+}
+
+@keyframes nextPrayerImminent {
+  0%, 100% { filter: drop-shadow(0 0 18px rgba(255, 136, 0, 0.9)); }
+  50% { filter: drop-shadow(0 0 28px rgba(255, 80, 0, 1)); }
+}
+
+@keyframes nextPrayerImminentText {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+@media (max-width: 480px) {
+  .next-prayer-ring-wrapper {
+    width: 200px;
+    height: 200px;
+  }
+  .next-prayer-ring-content .prayer-name {
+    font-size: 1.2rem;
+  }
+  .next-prayer-ring-content .countdown-timer {
+    font-size: 1.6rem;
+  }
+}
+
 /* Prayer Times Section */
 .prayer-times-section {
   margin-top: 30px;

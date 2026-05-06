@@ -1003,9 +1003,12 @@ export default class WarisApp {
             </div>
         `;
 
+        // Donut chart visualization of heir shares
+        html += this.renderShareChart(results.heirs);
+
         // Heirs distribution
         html += `<div class="waris-result-card"><h4><i class="fas fa-users"></i> Pembagian Ahli Waris</h4>`;
-        
+
         results.heirs.forEach(heir => {
             const heirName = this.getHeirName(heir.type);
             const amountPerPerson = heir.amount / heir.count;
@@ -1053,6 +1056,66 @@ export default class WarisApp {
 
         html += '</div>';
         container.innerHTML = html;
+    }
+
+    renderShareChart(heirs) {
+        if (!heirs || heirs.length === 0) return '';
+
+        const palette = [
+            '#00ffff', '#ff00ff', '#ffd700', '#00ff88',
+            '#ff6b6b', '#a855f7', '#ff8c42', '#4ade80',
+            '#06b6d4', '#f43f5e', '#facc15', '#22d3ee'
+        ];
+
+        const radius = 80;
+        const cx = 100, cy = 100;
+        const circ = 2 * Math.PI * radius;
+        const total = heirs.reduce((s, h) => s + (h.percentage || 0), 0) || 100;
+
+        let offset = 0;
+        let segments = '';
+        let legend = '';
+
+        heirs.forEach((heir, i) => {
+            const ratio = (heir.percentage || 0) / total;
+            const dash = circ * ratio;
+            const color = palette[i % palette.length];
+            const heirName = this.getHeirName(heir.type);
+
+            segments += `
+                <circle class="waris-chart-seg" cx="${cx}" cy="${cy}" r="${radius}"
+                    fill="none" stroke="${color}" stroke-width="32"
+                    stroke-dasharray="${dash} ${circ}"
+                    stroke-dashoffset="${-offset}"
+                    transform="rotate(-90 ${cx} ${cy})">
+                    <title>${heirName} — ${heir.percentage.toFixed(2)}%</title>
+                </circle>
+            `;
+
+            legend += `
+                <div class="waris-chart-legend-item">
+                    <span class="waris-chart-swatch" style="background:${color}"></span>
+                    <span class="waris-chart-legend-label">${heirName}</span>
+                    <span class="waris-chart-legend-pct">${heir.percentage.toFixed(2)}%</span>
+                </div>
+            `;
+
+            offset += dash;
+        });
+
+        return `
+            <div class="waris-result-card waris-chart-card">
+                <h4><i class="fas fa-chart-pie"></i> Visualisasi Pembagian</h4>
+                <div class="waris-chart-wrapper">
+                    <svg class="waris-chart-svg" viewBox="0 0 200 200">
+                        ${segments}
+                        <text x="100" y="95" text-anchor="middle" class="waris-chart-center-num">${heirs.length}</text>
+                        <text x="100" y="115" text-anchor="middle" class="waris-chart-center-lbl">AHLI WARIS</text>
+                    </svg>
+                    <div class="waris-chart-legend">${legend}</div>
+                </div>
+            </div>
+        `;
     }
 
     getHeirName(type) {

@@ -1,6 +1,27 @@
 // ===== Peraga 3D Sholat =====
 // Visualisasi 3D urutan gerakan sholat menggunakan Three.js
+//
+// Konvensi orientasi:
+// - Karakter menghadap arah -Z (= arah Kiblat)
+// - Sumbu +Y ke atas, lantai pada y = 0
+// - "Membungkuk ke depan" = torso.rotation.x NEGATIF
+// - "Menoleh ke kanan" = head.rotation.y NEGATIF (kanan = +X)
 
+// ----- Anatomi (semua nilai dipakai oleh applyPose) -----
+// Tinggi hip = legHipOffset(0.05) + upperLeg(0.55) + lowerLeg(0.45) + footHeight(0.08) = 1.13
+const ANATOMY = {
+    upperLegLen: 0.55,
+    lowerLegLen: 0.45,
+    footHeight: 0.08,
+    legHipOffset: 0.05,
+    standHipY: 1.13,    // hip saat berdiri (telapak kaki tepat di y=0)
+    kneelHipY: 0.45,    // hip saat duduk iftirasy / di atas tumit
+    sujudHipY: 0.45,    // sama dengan kneel; torso yang membungkuk ke depan
+};
+
+// ----- Pose state machine -----
+// Setiap entri menentukan keadaan tubuh secara eksplisit (state-based)
+// daripada angka rotasi mentah, supaya konsisten & mudah dirawat.
 const POSES = [
     {
         id: 'takbiratul_ihram',
@@ -11,102 +32,61 @@ const POSES = [
         translation: 'Allah Maha Besar',
         tip: 'Angkat kedua tangan setinggi telinga sambil mengucapkan takbir.',
         duration: 3000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: -1.4, y: 0, z: 0.3 },
-            armRightShoulder: { x: -1.4, y: 0, z: -0.3 },
-            armLeftElbow: -0.3,
-            armRightElbow: -0.3,
-            handPosition: 'up',
-            headTilt: 0,
-            sitting: false
-        }
+        body: 'stand',
+        arms: 'takbir',
+        head: { tilt: 0, turn: 0 }
     },
     {
         id: 'qiyam',
-        name: 'Berdiri (Qiyam) - Membaca Al-Fatihah',
+        name: 'Berdiri (Qiyam) — Membaca Al-Fatihah',
         ruling: 'Rukun ke-2 & ke-3',
         arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
         latin: 'Bismillahirrahmanirrahim',
         translation: 'Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang',
         tip: 'Berdiri tegak, tangan kanan di atas tangan kiri pada dada/perut, pandangan ke tempat sujud.',
         duration: 4000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0.3, y: -0.2, z: 0.4 },
-            armRightShoulder: { x: 0.3, y: 0.2, z: -0.4 },
-            armLeftElbow: -1.6,
-            armRightElbow: -1.6,
-            handPosition: 'crossed',
-            headTilt: 0.3,
-            sitting: false
-        }
+        body: 'stand',
+        arms: 'crossed',
+        head: { tilt: 0.25, turn: 0 }
     },
     {
         id: 'ruku',
         name: "Ruku' dengan Tuma'ninah",
         ruling: 'Rukun ke-4',
         arabic: 'سُبْحَانَ رَبِّيَ الْعَظِيمِ',
-        latin: 'Subhana Rabbiyal \'Adzim',
+        latin: "Subhana Rabbiyal 'Adzim",
         translation: 'Maha Suci Tuhanku Yang Maha Agung',
         tip: 'Membungkuk hingga punggung lurus sejajar, kedua tangan memegang lutut.',
         duration: 3500,
-        pose: {
-            torsoAngle: -1.4,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0, y: 0, z: -0.3 },
-            armLeftElbow: 0,
-            armRightElbow: 0,
-            handPosition: 'knees',
-            headTilt: 0,
-            sitting: false
-        }
+        body: 'ruku',
+        arms: 'knees',
+        head: { tilt: 0.0, turn: 0 }
     },
     {
         id: 'iktidal',
         name: "I'tidal dengan Tuma'ninah",
         ruling: 'Rukun ke-5',
         arabic: 'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ، رَبَّنَا وَلَكَ الْحَمْدُ',
-        latin: 'Sami\'allahu liman hamidah, Rabbana wa lakal hamd',
+        latin: "Sami'allahu liman hamidah, Rabbana wa lakal hamd",
         translation: 'Allah mendengar siapa yang memuji-Nya. Wahai Tuhan kami, segala puji bagi-Mu',
         tip: 'Bangkit dari ruku dan berdiri tegak kembali dengan tenang.',
         duration: 3000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0, y: 0, z: 0.2 },
-            armRightShoulder: { x: 0, y: 0, z: -0.2 },
-            armLeftElbow: 0,
-            armRightElbow: 0,
-            handPosition: 'down',
-            headTilt: 0,
-            sitting: false
-        }
+        body: 'stand',
+        arms: 'down',
+        head: { tilt: 0.1, turn: 0 }
     },
     {
         id: 'sujud_1',
         name: "Sujud Pertama dengan Tuma'ninah",
         ruling: 'Rukun ke-6',
         arabic: 'سُبْحَانَ رَبِّيَ الْأَعْلَى',
-        latin: 'Subhana Rabbiyal A\'la',
+        latin: "Subhana Rabbiyal A'la",
         translation: 'Maha Suci Tuhanku Yang Maha Tinggi',
         tip: 'Tujuh anggota sujud menyentuh lantai: dahi & hidung, kedua tangan, kedua lutut, kedua jari kaki.',
         duration: 3500,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 1.6,
-            armLeftShoulder: { x: 0.5, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.5, y: 0, z: -0.3 },
-            armLeftElbow: -0.3,
-            armRightElbow: -0.3,
-            handPosition: 'sujud',
-            headTilt: 0,
-            sitting: false,
-            sujud: true
-        }
+        body: 'sujud',
+        arms: 'sujud',
+        head: { tilt: 0, turn: 0 }
     },
     {
         id: 'duduk_diantara',
@@ -114,42 +94,25 @@ const POSES = [
         ruling: 'Rukun ke-7',
         arabic: 'رَبِّ اغْفِرْ لِي ، رَبِّ اغْفِرْ لِي',
         latin: 'Rabbighfirli, Rabbighfirli',
-        translation: 'Wahai Tuhanku, ampunilah aku. Wahai Tuhanku, ampunilah aku',
+        translation: 'Wahai Tuhanku, ampunilah aku',
         tip: 'Duduk iftirasy: telapak kaki kiri dijadikan alas, telapak kaki kanan ditegakkan.',
         duration: 3000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0.2, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.2, y: 0, z: -0.3 },
-            armLeftElbow: -0.5,
-            armRightElbow: -0.5,
-            handPosition: 'thighs',
-            headTilt: 0.2,
-            sitting: true
-        }
+        body: 'sit',
+        arms: 'thighs',
+        head: { tilt: 0.15, turn: 0 }
     },
     {
         id: 'sujud_2',
         name: "Sujud Kedua dengan Tuma'ninah",
         ruling: 'Rukun ke-8',
         arabic: 'سُبْحَانَ رَبِّيَ الْأَعْلَى',
-        latin: 'Subhana Rabbiyal A\'la',
+        latin: "Subhana Rabbiyal A'la",
         translation: 'Maha Suci Tuhanku Yang Maha Tinggi',
-        tip: 'Sujud kedua sebagaimana sujud pertama dengan tuma\'ninah.',
+        tip: "Sujud kedua sebagaimana sujud pertama dengan tuma'ninah.",
         duration: 3500,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 1.6,
-            armLeftShoulder: { x: 0.5, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.5, y: 0, z: -0.3 },
-            armLeftElbow: -0.3,
-            armRightElbow: -0.3,
-            handPosition: 'sujud',
-            headTilt: 0,
-            sitting: false,
-            sujud: true
-        }
+        body: 'sujud',
+        arms: 'sujud',
+        head: { tilt: 0, turn: 0 }
     },
     {
         id: 'duduk_tasyahud',
@@ -160,82 +123,130 @@ const POSES = [
         translation: 'Segala penghormatan, ibadah, dan kebaikan hanya milik Allah',
         tip: 'Duduk tawarruk: kaki kiri dimasukkan ke bawah betis kanan, telunjuk kanan diisyaratkan.',
         duration: 4500,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0.2, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.3, y: 0, z: -0.3 },
-            armLeftElbow: -0.5,
-            armRightElbow: -0.7,
-            handPosition: 'tasyahud',
-            headTilt: 0.2,
-            sitting: true
-        }
+        body: 'sit',
+        arms: 'tasyahud',
+        head: { tilt: 0.15, turn: 0 }
     },
     {
         id: 'sholawat',
         name: 'Membaca Sholawat atas Nabi',
         ruling: 'Rukun ke-11',
         arabic: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ',
-        latin: 'Allahumma shalli \'ala Muhammad wa \'ala ali Muhammad',
+        latin: "Allahumma shalli 'ala Muhammad wa 'ala ali Muhammad",
         translation: 'Ya Allah berikanlah rahmat kepada Muhammad dan keluarga Muhammad',
         tip: 'Diucapkan saat duduk tasyahud akhir setelah membaca tasyahud.',
         duration: 4000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0.2, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.3, y: 0, z: -0.3 },
-            armLeftElbow: -0.5,
-            armRightElbow: -0.7,
-            handPosition: 'tasyahud',
-            headTilt: 0.2,
-            sitting: true
-        }
+        body: 'sit',
+        arms: 'tasyahud',
+        head: { tilt: 0.15, turn: 0 }
     },
     {
         id: 'salam_kanan',
         name: 'Salam ke Kanan',
         ruling: 'Rukun ke-12',
         arabic: 'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ',
-        latin: 'Assalamu\'alaikum warahmatullah',
+        latin: "Assalamu'alaikum warahmatullah",
         translation: 'Semoga keselamatan dan rahmat Allah tercurah atasmu',
         tip: 'Menoleh ke arah kanan hingga pipi terlihat dari belakang.',
         duration: 3000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0.2, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.3, y: 0, z: -0.3 },
-            armLeftElbow: -0.5,
-            armRightElbow: -0.7,
-            handPosition: 'tasyahud',
-            headTurn: -1.0,
-            sitting: true
-        }
+        body: 'sit',
+        arms: 'tasyahud',
+        head: { tilt: 0.05, turn: -1.0 }
     },
     {
         id: 'salam_kiri',
         name: 'Salam ke Kiri',
         ruling: 'Penyempurna',
         arabic: 'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ',
-        latin: 'Assalamu\'alaikum warahmatullah',
+        latin: "Assalamu'alaikum warahmatullah",
         translation: 'Semoga keselamatan dan rahmat Allah tercurah atasmu',
         tip: 'Menoleh ke arah kiri hingga pipi terlihat dari belakang. Sholat selesai.',
         duration: 3000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0.2, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.3, y: 0, z: -0.3 },
-            armLeftElbow: -0.5,
-            armRightElbow: -0.7,
-            handPosition: 'tasyahud',
-            headTurn: 1.0,
-            sitting: true
-        }
+        body: 'sit',
+        arms: 'tasyahud',
+        head: { tilt: 0.05, turn: 1.0 }
     }
 ];
+
+// ----- Resolve a pose entry into numerical bone targets -----
+function resolvePose(pose) {
+    const A = ANATOMY;
+    const t = {
+        hipY: A.standHipY,
+        torsoX: 0,
+        legHipX: 0,
+        legKneeX: 0,
+        // arm targets: { shoulderX, shoulderZ, elbowX } per side
+        armL: { shoulderX: 0, shoulderY: 0, shoulderZ: 0.05, elbowX: 0 },
+        armR: { shoulderX: 0, shoulderY: 0, shoulderZ: -0.05, elbowX: 0 },
+        headX: pose.head?.tilt || 0,
+        headY: pose.head?.turn || 0
+    };
+
+    switch (pose.body) {
+        case 'stand':
+            t.hipY = A.standHipY;
+            break;
+        case 'ruku':
+            t.hipY = A.standHipY;
+            t.torsoX = -1.45; // bend forward ~83°
+            break;
+        case 'sit':
+            t.hipY = A.kneelHipY;
+            t.legHipX = 1.55;     // thighs flat forward
+            t.legKneeX = -3.1;    // calves fold back under thighs
+            break;
+        case 'sujud':
+            t.hipY = A.sujudHipY;
+            t.legHipX = 1.55;
+            t.legKneeX = -3.1;
+            t.torsoX = -1.55;     // bend forward 90° from kneel position
+            break;
+    }
+
+    switch (pose.arms) {
+        case 'takbir':
+            // Both hands raised next to ears, palms forward-ish
+            t.armL = { shoulderX: -1.55, shoulderY: 0, shoulderZ: 0.20, elbowX: -0.30 };
+            t.armR = { shoulderX: -1.55, shoulderY: 0, shoulderZ: -0.20, elbowX: -0.30 };
+            break;
+        case 'crossed':
+            // Hands folded on chest/abdomen
+            t.armL = { shoulderX: -0.20, shoulderY: -0.15, shoulderZ: 0.55, elbowX: -1.55 };
+            t.armR = { shoulderX: -0.20, shoulderY: 0.15, shoulderZ: -0.55, elbowX: -1.55 };
+            break;
+        case 'down':
+            t.armL = { shoulderX: 0, shoulderY: 0, shoulderZ: 0.10, elbowX: -0.05 };
+            t.armR = { shoulderX: 0, shoulderY: 0, shoulderZ: -0.10, elbowX: -0.05 };
+            break;
+        case 'knees':
+            // Hands gripping knees during ruku.
+            // Torso is tilted -1.45 around X. To make arms appear vertical (down)
+            // in world space, we need shoulderX to compensate ≈ +1.45.
+            t.armL = { shoulderX: 1.45, shoulderY: 0, shoulderZ: 0.10, elbowX: -0.10 };
+            t.armR = { shoulderX: 1.45, shoulderY: 0, shoulderZ: -0.10, elbowX: -0.10 };
+            break;
+        case 'sujud':
+            // Torso bent -1.55. We want arms to drop forward-down toward floor
+            // beside the head. Shoulder needs to over-rotate (≈ +2.75 rad) to
+            // counter the torso bend and angle the arms downward in world space.
+            t.armL = { shoulderX: 2.75, shoulderY: 0, shoulderZ: 0.10, elbowX: -0.10 };
+            t.armR = { shoulderX: 2.75, shoulderY: 0, shoulderZ: -0.10, elbowX: -0.10 };
+            break;
+        case 'thighs':
+            // Hands resting on thighs while sitting (palms down)
+            t.armL = { shoulderX: -0.10, shoulderY: 0, shoulderZ: 0.25, elbowX: -1.20 };
+            t.armR = { shoulderX: -0.10, shoulderY: 0, shoulderZ: -0.25, elbowX: -1.20 };
+            break;
+        case 'tasyahud':
+            // Right hand slightly more forward (telunjuk isyarat)
+            t.armL = { shoulderX: -0.10, shoulderY: 0, shoulderZ: 0.25, elbowX: -1.20 };
+            t.armR = { shoulderX: -0.05, shoulderY: 0, shoulderZ: -0.25, elbowX: -1.35 };
+            break;
+    }
+
+    return t;
+}
 
 export default class Peraga3D {
     constructor() {
@@ -250,14 +261,14 @@ export default class Peraga3D {
         this.playTimer = null;
         this.transitionStart = 0;
         this.transitionDuration = 800;
-        this.fromPose = null;
-        this.toPose = null;
-        this.currentPose = JSON.parse(JSON.stringify(POSES[0].pose));
-        this.cameraAngle = Math.PI / 4;
+        this.fromTargets = null;
+        this.toTargets = null;
+        this.currentTargets = resolvePose(POSES[0]);
+        this.cameraAngle = Math.PI * 0.85; // start looking from kiblat side, character faces camera-ish
         this.dragging = false;
         this.lastX = 0;
         this.lastY = 0;
-        this.cameraPitch = 0.2;
+        this.cameraPitch = 0.18;
         this.cameraRadius = 6;
         this.initialized = false;
     }
@@ -275,7 +286,7 @@ export default class Peraga3D {
         // Scene
         this.scene = new THREE.Scene();
         this.scene.background = null;
-        this.scene.fog = new THREE.Fog(0x0a0e27, 8, 20);
+        this.scene.fog = new THREE.Fog(0x0a0e27, 8, 22);
 
         // Camera
         this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
@@ -288,10 +299,10 @@ export default class Peraga3D {
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
         // Lights
-        const ambient = new THREE.AmbientLight(0x88aaff, 0.4);
+        const ambient = new THREE.AmbientLight(0x88aaff, 0.45);
         this.scene.add(ambient);
 
-        const keyLight = new THREE.DirectionalLight(0x00ffff, 0.9);
+        const keyLight = new THREE.DirectionalLight(0x00ffff, 0.85);
         keyLight.position.set(5, 8, 5);
         keyLight.castShadow = true;
         keyLight.shadow.mapSize.width = 1024;
@@ -304,34 +315,28 @@ export default class Peraga3D {
         keyLight.shadow.camera.bottom = -5;
         this.scene.add(keyLight);
 
-        const fillLight = new THREE.DirectionalLight(0xff00ff, 0.4);
+        const fillLight = new THREE.DirectionalLight(0xff00ff, 0.45);
         fillLight.position.set(-5, 4, -3);
         this.scene.add(fillLight);
 
-        const rimLight = new THREE.PointLight(0x00ffff, 0.6, 15);
-        rimLight.position.set(0, 3, -4);
+        const rimLight = new THREE.PointLight(0x00ffff, 0.7, 18);
+        rimLight.position.set(0, 4, -5);
         this.scene.add(rimLight);
 
-        // Floor (sajadah / prayer mat)
+        // World
         this.createFloor();
-
-        // Grid platform
         this.createPlatform();
-
-        // Kiblat indicator
         this.createKiblatMarker();
-
-        // Character
         this.createCharacter();
 
         // Apply initial pose
-        this.applyPose(this.currentPose);
+        this.applyTargets(this.currentTargets);
 
-        // Resize handler
+        // Resize
         this.handleResize();
         window.addEventListener('resize', () => this.handleResize());
 
-        // Drag interaction
+        // Drag
         this.setupInteraction(canvas);
 
         this.initialized = true;
@@ -339,14 +344,13 @@ export default class Peraga3D {
     }
 
     createFloor() {
-        // Prayer mat (sajadah) with arched motif
-        const matGeo = new THREE.PlaneGeometry(2.4, 4, 32, 32);
+        // Sajadah (prayer mat) menghadap arah Kiblat (-Z).
+        // Mihrab arch digambar di sisi yang akan jatuh di -Z setelah rotasi.
         const matCanvas = document.createElement('canvas');
         matCanvas.width = 256;
         matCanvas.height = 512;
         const ctx = matCanvas.getContext('2d');
 
-        // Background gradient
         const grad = ctx.createLinearGradient(0, 0, 0, 512);
         grad.addColorStop(0, '#1a1f3a');
         grad.addColorStop(0.5, '#2a1a4a');
@@ -354,17 +358,15 @@ export default class Peraga3D {
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, 256, 512);
 
-        // Border
         ctx.strokeStyle = '#00ffff';
         ctx.lineWidth = 6;
         ctx.strokeRect(8, 8, 240, 496);
 
-        // Inner border
         ctx.strokeStyle = 'rgba(255, 0, 255, 0.6)';
         ctx.lineWidth = 2;
         ctx.strokeRect(20, 20, 216, 472);
 
-        // Mihrab arch (top)
+        // Mihrab arch (top of canvas — will be at -Z direction = kiblat front)
         ctx.strokeStyle = '#00ffff';
         ctx.lineWidth = 3;
         ctx.beginPath();
@@ -374,7 +376,6 @@ export default class Peraga3D {
         ctx.lineTo(196, 90);
         ctx.stroke();
 
-        // Decorative pattern
         ctx.fillStyle = 'rgba(0, 255, 255, 0.3)';
         for (let y = 120; y < 480; y += 40) {
             for (let x = 40; x < 220; x += 40) {
@@ -385,6 +386,7 @@ export default class Peraga3D {
         }
 
         const matTexture = new THREE.CanvasTexture(matCanvas);
+        const matGeo = new THREE.PlaneGeometry(2.4, 4);
         const matMat = new THREE.MeshStandardMaterial({
             map: matTexture,
             roughness: 0.7,
@@ -392,11 +394,11 @@ export default class Peraga3D {
             emissive: 0x110022,
             emissiveIntensity: 0.2
         });
-
+        // After rotation.x = -π/2, plane's "+Y" (top of canvas) maps to -Z.
+        // We want canvas-top (mihrab arch) at -Z (front/kiblat). ✓
         this.sajadah = new THREE.Mesh(matGeo, matMat);
         this.sajadah.rotation.x = -Math.PI / 2;
-        this.sajadah.position.y = 0.01;
-        this.sajadah.position.z = 0.3;
+        this.sajadah.position.set(0, 0.01, -0.5); // shift mat slightly forward so character stands at the back end
         this.sajadah.receiveShadow = true;
         this.scene.add(this.sajadah);
     }
@@ -415,7 +417,6 @@ export default class Peraga3D {
         platform.receiveShadow = true;
         this.scene.add(platform);
 
-        // Glowing ring
         const ringGeo = new THREE.RingGeometry(3.6, 3.9, 64);
         const ringMat = new THREE.MeshBasicMaterial({
             color: 0x00ffff,
@@ -431,26 +432,25 @@ export default class Peraga3D {
     }
 
     createKiblatMarker() {
-        // Arrow indicating kiblat (forward direction)
         const group = new THREE.Group();
 
-        const coneGeo = new THREE.ConeGeometry(0.15, 0.4, 4);
+        const coneGeo = new THREE.ConeGeometry(0.18, 0.5, 16);
         const coneMat = new THREE.MeshStandardMaterial({
             color: 0xff00ff,
             emissive: 0xff00ff,
-            emissiveIntensity: 0.5
+            emissiveIntensity: 0.6
         });
         const cone = new THREE.Mesh(coneGeo, coneMat);
-        cone.rotation.x = Math.PI / 2;
-        cone.position.z = -2.4;
+        // Rotate cone tip to point in -Z direction (away from character, toward kiblat).
+        cone.rotation.x = -Math.PI / 2;
+        cone.position.set(0, 0.25, -2.8);
         group.add(cone);
 
-        // Kiblat label canvas
         const labelCanvas = document.createElement('canvas');
         labelCanvas.width = 256;
         labelCanvas.height = 64;
         const lctx = labelCanvas.getContext('2d');
-        lctx.fillStyle = 'rgba(255, 0, 255, 0.9)';
+        lctx.fillStyle = 'rgba(255, 0, 255, 0.95)';
         lctx.font = 'bold 32px Orbitron, sans-serif';
         lctx.textAlign = 'center';
         lctx.textBaseline = 'middle';
@@ -458,8 +458,8 @@ export default class Peraga3D {
         const labelTex = new THREE.CanvasTexture(labelCanvas);
         const labelMat = new THREE.SpriteMaterial({ map: labelTex, transparent: true });
         const label = new THREE.Sprite(labelMat);
-        label.position.set(0, 0.5, -2.4);
-        label.scale.set(1.5, 0.4, 1);
+        label.position.set(0, 0.7, -2.8);
+        label.scale.set(1.6, 0.4, 1);
         group.add(label);
 
         this.scene.add(group);
@@ -468,327 +468,322 @@ export default class Peraga3D {
 
     createCharacter() {
         const character = new THREE.Group();
-        const skinColor = 0xe8c8a0;
-        const robeColor = 0x16223d;
-        const robeAccent = 0x00ccff;
-        const capColor = 0xffffff;
 
+        // ----- Materials -----
         const skinMat = new THREE.MeshStandardMaterial({
-            color: skinColor,
-            roughness: 0.6,
-            metalness: 0.0
+            color: 0xeac8a3, roughness: 0.55, metalness: 0.0
         });
         const robeMat = new THREE.MeshStandardMaterial({
-            color: robeColor,
-            roughness: 0.4,
-            metalness: 0.3,
-            emissive: 0x001144,
-            emissiveIntensity: 0.2
+            color: 0x16223d, roughness: 0.45, metalness: 0.25,
+            emissive: 0x001133, emissiveIntensity: 0.25
         });
-        const robeAccentMat = new THREE.MeshStandardMaterial({
-            color: robeAccent,
-            roughness: 0.3,
-            metalness: 0.6,
-            emissive: 0x00aaaa,
-            emissiveIntensity: 0.4
+        const robeAccent = new THREE.MeshStandardMaterial({
+            color: 0x00d4ff, roughness: 0.3, metalness: 0.6,
+            emissive: 0x00aaaa, emissiveIntensity: 0.45
         });
-        const capMat = new THREE.MeshStandardMaterial({
-            color: capColor,
-            roughness: 0.5,
-            metalness: 0.1,
-            emissive: 0x222244,
-            emissiveIntensity: 0.1
+        const peciMat = new THREE.MeshStandardMaterial({
+            color: 0x0a0a0a, roughness: 0.3, metalness: 0.4,
+            emissive: 0x222244, emissiveIntensity: 0.25
+        });
+        const peciTrim = new THREE.MeshStandardMaterial({
+            color: 0xffd700, roughness: 0.3, metalness: 0.8,
+            emissive: 0xaa8800, emissiveIntensity: 0.4
+        });
+        const beardMat = new THREE.MeshStandardMaterial({
+            color: 0x222222, roughness: 0.9
         });
 
         // ===== Hip pivot (root) =====
         const hipGroup = new THREE.Group();
-        hipGroup.position.y = 1.0;
+        hipGroup.position.y = ANATOMY.standHipY;
         character.add(hipGroup);
 
-        // ===== Torso =====
+        // Hip joint (sphere) for smooth connection
+        const hipJoint = new THREE.Mesh(
+            new THREE.SphereGeometry(0.22, 20, 16),
+            robeMat
+        );
+        hipJoint.castShadow = true;
+        hipGroup.add(hipJoint);
+
+        // ===== Torso group (pivots at hip) =====
         const torsoGroup = new THREE.Group();
         hipGroup.add(torsoGroup);
 
-        const torsoGeo = new THREE.BoxGeometry(0.8, 1.0, 0.45);
-        const torso = new THREE.Mesh(torsoGeo, robeMat);
-        torso.position.y = 0.5;
-        torso.castShadow = true;
-        torsoGroup.add(torso);
+        // Tapered torso (cylinder, slightly smaller at top)
+        const torsoMesh = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.32, 0.40, 1.0, 24, 1),
+            robeMat
+        );
+        torsoMesh.position.y = 0.5;
+        torsoMesh.castShadow = true;
+        torsoGroup.add(torsoMesh);
 
-        // Robe collar (accent)
-        const collarGeo = new THREE.BoxGeometry(0.6, 0.15, 0.5);
-        const collar = new THREE.Mesh(collarGeo, robeAccentMat);
+        // Robe collar accent (torus)
+        const collar = new THREE.Mesh(
+            new THREE.TorusGeometry(0.30, 0.04, 12, 32),
+            robeAccent
+        );
+        collar.rotation.x = Math.PI / 2;
         collar.position.y = 0.95;
         torsoGroup.add(collar);
 
-        // ===== Head =====
+        // Vertical accent stripe down robe
+        const stripe = new THREE.Mesh(
+            new THREE.BoxGeometry(0.04, 0.85, 0.02),
+            robeAccent
+        );
+        stripe.position.set(0, 0.5, -0.36);
+        torsoGroup.add(stripe);
+
+        // ===== Head group =====
         const headGroup = new THREE.Group();
         headGroup.position.y = 1.0;
         torsoGroup.add(headGroup);
 
-        const headGeo = new THREE.BoxGeometry(0.42, 0.42, 0.42);
-        const head = new THREE.Mesh(headGeo, skinMat);
-        head.position.y = 0.25;
-        head.castShadow = true;
-        headGroup.add(head);
+        // Neck
+        const neck = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.10, 0.13, 0.12, 16),
+            skinMat
+        );
+        neck.position.y = 0.06;
+        neck.castShadow = true;
+        headGroup.add(neck);
 
-        // Cap (peci)
-        const capGeo = new THREE.CylinderGeometry(0.22, 0.24, 0.18, 16);
-        const cap = new THREE.Mesh(capGeo, capMat);
-        cap.position.y = 0.55;
-        cap.castShadow = true;
-        headGroup.add(cap);
+        // Head — slightly squashed sphere (egg shape)
+        const headMesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.22, 24, 20),
+            skinMat
+        );
+        headMesh.scale.set(1.0, 1.10, 0.95);
+        headMesh.position.y = 0.30;
+        headMesh.castShadow = true;
+        headGroup.add(headMesh);
 
-        // Beard (small)
-        const beardGeo = new THREE.BoxGeometry(0.32, 0.1, 0.05);
-        const beardMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.9 });
-        const beard = new THREE.Mesh(beardGeo, beardMat);
-        beard.position.set(0, 0.1, 0.22);
+        // Peci (kopiah) — cylinder + dome on top
+        const peciBase = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.21, 0.23, 0.18, 24),
+            peciMat
+        );
+        peciBase.position.y = 0.55;
+        peciBase.castShadow = true;
+        headGroup.add(peciBase);
+
+        const peciDome = new THREE.Mesh(
+            new THREE.SphereGeometry(0.21, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2),
+            peciMat
+        );
+        peciDome.position.y = 0.64;
+        peciDome.castShadow = true;
+        headGroup.add(peciDome);
+
+        // Peci trim (gold band at base)
+        const peciTrimRing = new THREE.Mesh(
+            new THREE.TorusGeometry(0.225, 0.012, 8, 32),
+            peciTrim
+        );
+        peciTrimRing.rotation.x = Math.PI / 2;
+        peciTrimRing.position.y = 0.46;
+        headGroup.add(peciTrimRing);
+
+        // Beard (small box on chin) — at -Z because character faces -Z
+        const beard = new THREE.Mesh(
+            new THREE.SphereGeometry(0.10, 16, 12),
+            beardMat
+        );
+        beard.scale.set(1.4, 0.6, 0.5);
+        beard.position.set(0, 0.20, -0.18);
         headGroup.add(beard);
 
-        // Eyes (glow)
-        const eyeGeo = new THREE.SphereGeometry(0.025, 8, 8);
+        // Eyes (glow, on -Z side because face is -Z)
+        const eyeGeo = new THREE.SphereGeometry(0.025, 10, 10);
         const eyeMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
         const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
-        eyeL.position.set(-0.08, 0.27, 0.22);
+        eyeL.position.set(-0.08, 0.34, -0.20);
         headGroup.add(eyeL);
         const eyeR = new THREE.Mesh(eyeGeo, eyeMat);
-        eyeR.position.set(0.08, 0.27, 0.22);
+        eyeR.position.set(0.08, 0.34, -0.20);
         headGroup.add(eyeR);
 
-        // ===== Left Arm =====
-        const armLeftShoulder = new THREE.Group();
-        armLeftShoulder.position.set(-0.45, 0.9, 0);
-        torsoGroup.add(armLeftShoulder);
+        // ===== Arms =====
+        // Left side = +X (robust convention; "kanan-kiri" pas dilihat dari belakang)
+        const armRig = (sideX) => {
+            const shoulder = new THREE.Group();
+            shoulder.position.set(sideX, 0.85, 0);
+            torsoGroup.add(shoulder);
 
-        const upperArmLGeo = new THREE.BoxGeometry(0.18, 0.5, 0.18);
-        const upperArmL = new THREE.Mesh(upperArmLGeo, robeMat);
-        upperArmL.position.y = -0.25;
-        upperArmL.castShadow = true;
-        armLeftShoulder.add(upperArmL);
+            // Shoulder joint sphere
+            const shoulderBall = new THREE.Mesh(
+                new THREE.SphereGeometry(0.13, 16, 12),
+                robeMat
+            );
+            shoulderBall.castShadow = true;
+            shoulder.add(shoulderBall);
 
-        const armLeftElbow = new THREE.Group();
-        armLeftElbow.position.y = -0.5;
-        armLeftShoulder.add(armLeftElbow);
+            // Upper arm (cylinder)
+            const upperArm = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.09, 0.08, 0.50, 16),
+                robeMat
+            );
+            upperArm.position.y = -0.27;
+            upperArm.castShadow = true;
+            shoulder.add(upperArm);
 
-        const lowerArmLGeo = new THREE.BoxGeometry(0.16, 0.45, 0.16);
-        const lowerArmL = new THREE.Mesh(lowerArmLGeo, robeMat);
-        lowerArmL.position.y = -0.225;
-        lowerArmL.castShadow = true;
-        armLeftElbow.add(lowerArmL);
+            // Elbow group at end of upper arm
+            const elbow = new THREE.Group();
+            elbow.position.y = -0.52;
+            shoulder.add(elbow);
 
-        const handLGeo = new THREE.BoxGeometry(0.15, 0.18, 0.1);
-        const handL = new THREE.Mesh(handLGeo, skinMat);
-        handL.position.y = -0.55;
-        handL.castShadow = true;
-        armLeftElbow.add(handL);
+            // Elbow joint sphere
+            const elbowBall = new THREE.Mesh(
+                new THREE.SphereGeometry(0.085, 14, 10),
+                robeMat
+            );
+            elbow.add(elbowBall);
 
-        // ===== Right Arm =====
-        const armRightShoulder = new THREE.Group();
-        armRightShoulder.position.set(0.45, 0.9, 0);
-        torsoGroup.add(armRightShoulder);
+            // Forearm (cylinder, sleeve to skin)
+            const lowerArm = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.075, 0.07, 0.40, 16),
+                robeMat
+            );
+            lowerArm.position.y = -0.23;
+            lowerArm.castShadow = true;
+            elbow.add(lowerArm);
 
-        const upperArmRGeo = new THREE.BoxGeometry(0.18, 0.5, 0.18);
-        const upperArmR = new THREE.Mesh(upperArmRGeo, robeMat);
-        upperArmR.position.y = -0.25;
-        upperArmR.castShadow = true;
-        armRightShoulder.add(upperArmR);
+            // Hand (slightly squashed sphere)
+            const hand = new THREE.Mesh(
+                new THREE.SphereGeometry(0.08, 14, 10),
+                skinMat
+            );
+            hand.scale.set(0.9, 1.2, 0.7);
+            hand.position.y = -0.50;
+            hand.castShadow = true;
+            elbow.add(hand);
 
-        const armRightElbow = new THREE.Group();
-        armRightElbow.position.y = -0.5;
-        armRightShoulder.add(armRightElbow);
+            return { shoulder, elbow };
+        };
 
-        const lowerArmRGeo = new THREE.BoxGeometry(0.16, 0.45, 0.16);
-        const lowerArmR = new THREE.Mesh(lowerArmRGeo, robeMat);
-        lowerArmR.position.y = -0.225;
-        lowerArmR.castShadow = true;
-        armRightElbow.add(lowerArmR);
+        const armL = armRig(-0.42); // left side (+character left, -X world if looking from kiblat)
+        const armR = armRig(0.42);
 
-        const handRGeo = new THREE.BoxGeometry(0.15, 0.18, 0.1);
-        const handR = new THREE.Mesh(handRGeo, skinMat);
-        handR.position.y = -0.55;
-        handR.castShadow = true;
-        armRightElbow.add(handR);
+        // ===== Legs =====
+        const legRig = (sideX) => {
+            const hip = new THREE.Group();
+            hip.position.set(sideX, -ANATOMY.legHipOffset, 0);
+            hipGroup.add(hip);
 
-        // ===== Left Leg =====
-        const legLeftHip = new THREE.Group();
-        legLeftHip.position.set(-0.2, 0, 0);
-        hipGroup.add(legLeftHip);
+            // Hip joint
+            const hipBall = new THREE.Mesh(
+                new THREE.SphereGeometry(0.13, 16, 12),
+                robeMat
+            );
+            hip.add(hipBall);
 
-        const upperLegLGeo = new THREE.BoxGeometry(0.22, 0.55, 0.22);
-        const upperLegL = new THREE.Mesh(upperLegLGeo, robeMat);
-        upperLegL.position.y = -0.275;
-        upperLegL.castShadow = true;
-        legLeftHip.add(upperLegL);
+            // Upper leg
+            const upperLeg = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.13, 0.11, ANATOMY.upperLegLen, 18),
+                robeMat
+            );
+            upperLeg.position.y = -ANATOMY.upperLegLen / 2;
+            upperLeg.castShadow = true;
+            hip.add(upperLeg);
 
-        const legLeftKnee = new THREE.Group();
-        legLeftKnee.position.y = -0.55;
-        legLeftHip.add(legLeftKnee);
+            // Knee group
+            const knee = new THREE.Group();
+            knee.position.y = -ANATOMY.upperLegLen;
+            hip.add(knee);
 
-        const lowerLegLGeo = new THREE.BoxGeometry(0.2, 0.45, 0.2);
-        const lowerLegL = new THREE.Mesh(lowerLegLGeo, robeMat);
-        lowerLegL.position.y = -0.225;
-        lowerLegL.castShadow = true;
-        legLeftKnee.add(lowerLegL);
+            const kneeBall = new THREE.Mesh(
+                new THREE.SphereGeometry(0.105, 14, 10),
+                robeMat
+            );
+            knee.add(kneeBall);
 
-        const footLGeo = new THREE.BoxGeometry(0.22, 0.1, 0.35);
-        const footL = new THREE.Mesh(footLGeo, skinMat);
-        footL.position.set(0, -0.5, 0.08);
-        footL.castShadow = true;
-        legLeftKnee.add(footL);
+            // Lower leg
+            const lowerLeg = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.10, 0.08, ANATOMY.lowerLegLen, 16),
+                robeMat
+            );
+            lowerLeg.position.y = -ANATOMY.lowerLegLen / 2;
+            lowerLeg.castShadow = true;
+            knee.add(lowerLeg);
 
-        // ===== Right Leg =====
-        const legRightHip = new THREE.Group();
-        legRightHip.position.set(0.2, 0, 0);
-        hipGroup.add(legRightHip);
+            // Ankle/foot — point forward (-Z)
+            const foot = new THREE.Mesh(
+                new THREE.BoxGeometry(0.18, ANATOMY.footHeight, 0.32),
+                skinMat
+            );
+            foot.position.set(0, -ANATOMY.lowerLegLen - ANATOMY.footHeight / 2, -0.07);
+            foot.castShadow = true;
+            knee.add(foot);
 
-        const upperLegRGeo = new THREE.BoxGeometry(0.22, 0.55, 0.22);
-        const upperLegR = new THREE.Mesh(upperLegRGeo, robeMat);
-        upperLegR.position.y = -0.275;
-        upperLegR.castShadow = true;
-        legRightHip.add(upperLegR);
+            return { hip, knee };
+        };
 
-        const legRightKnee = new THREE.Group();
-        legRightKnee.position.y = -0.55;
-        legRightHip.add(legRightKnee);
-
-        const lowerLegRGeo = new THREE.BoxGeometry(0.2, 0.45, 0.2);
-        const lowerLegR = new THREE.Mesh(lowerLegRGeo, robeMat);
-        lowerLegR.position.y = -0.225;
-        lowerLegR.castShadow = true;
-        legRightKnee.add(lowerLegR);
-
-        const footRGeo = new THREE.BoxGeometry(0.22, 0.1, 0.35);
-        const footR = new THREE.Mesh(footRGeo, skinMat);
-        footR.position.set(0, -0.5, 0.08);
-        footR.castShadow = true;
-        legRightKnee.add(footR);
+        const legL = legRig(-0.18);
+        const legR = legRig(0.18);
 
         this.parts = {
             character,
             hip: hipGroup,
             torso: torsoGroup,
             head: headGroup,
-            armLeftShoulder, armLeftElbow,
-            armRightShoulder, armRightElbow,
-            legLeftHip, legLeftKnee,
-            legRightHip, legRightKnee,
-            handL, handR
+            armLShoulder: armL.shoulder, armLElbow: armL.elbow,
+            armRShoulder: armR.shoulder, armRElbow: armR.elbow,
+            legLHip: legL.hip, legLKnee: legL.knee,
+            legRHip: legR.hip, legRKnee: legR.knee
         };
 
         this.scene.add(character);
         this.character = character;
     }
 
-    applyPose(pose) {
-        if (!this.parts.hip) return;
+    applyTargets(t) {
         const p = this.parts;
+        if (!p.hip) return;
 
-        // Sitting vs standing
-        if (pose.sitting) {
-            p.hip.position.y = 0.55;
-            p.legLeftHip.rotation.x = -1.5;
-            p.legLeftKnee.rotation.x = 2.8;
-            p.legRightHip.rotation.x = -1.5;
-            p.legRightKnee.rotation.x = 2.8;
-            p.legLeftHip.rotation.z = 0;
-            p.legRightHip.rotation.z = 0;
-            p.torso.rotation.x = 0;
-        } else if (pose.sujud) {
-            // Sujud pose: hip low, knees fully bent, torso forward
-            p.hip.position.y = 0.65;
-            p.legLeftHip.rotation.x = -1.4;
-            p.legLeftKnee.rotation.x = 2.6;
-            p.legRightHip.rotation.x = -1.4;
-            p.legRightKnee.rotation.x = 2.6;
-            p.torso.rotation.x = -1.5;
-        } else {
-            // Standing
-            p.hip.position.y = 1.0;
-            p.legLeftHip.rotation.x = pose.kneeBend ? -pose.kneeBend * 0.3 : 0;
-            p.legRightHip.rotation.x = pose.kneeBend ? -pose.kneeBend * 0.3 : 0;
-            p.legLeftKnee.rotation.x = pose.kneeBend || 0;
-            p.legRightKnee.rotation.x = pose.kneeBend || 0;
-            p.torso.rotation.x = pose.torsoAngle || 0;
-        }
+        p.hip.position.y = t.hipY;
+        p.torso.rotation.set(t.torsoX, 0, 0);
+        p.head.rotation.set(t.headX, t.headY, 0);
 
-        // Arms
-        if (pose.armLeftShoulder) {
-            p.armLeftShoulder.rotation.x = pose.armLeftShoulder.x;
-            p.armLeftShoulder.rotation.y = pose.armLeftShoulder.y;
-            p.armLeftShoulder.rotation.z = pose.armLeftShoulder.z;
-        }
-        if (pose.armRightShoulder) {
-            p.armRightShoulder.rotation.x = pose.armRightShoulder.x;
-            p.armRightShoulder.rotation.y = pose.armRightShoulder.y;
-            p.armRightShoulder.rotation.z = pose.armRightShoulder.z;
-        }
-        p.armLeftElbow.rotation.x = pose.armLeftElbow || 0;
-        p.armRightElbow.rotation.x = pose.armRightElbow || 0;
+        p.legLHip.rotation.set(t.legHipX, 0, 0);
+        p.legRHip.rotation.set(t.legHipX, 0, 0);
+        p.legLKnee.rotation.set(t.legKneeX, 0, 0);
+        p.legRKnee.rotation.set(t.legKneeX, 0, 0);
 
-        // Special hand positions
-        if (pose.handPosition === 'crossed') {
-            // Hands folded on chest/abdomen
-            p.armLeftShoulder.rotation.x = 0.3;
-            p.armLeftShoulder.rotation.z = 0.4;
-            p.armLeftElbow.rotation.x = -1.6;
-            p.armRightShoulder.rotation.x = 0.3;
-            p.armRightShoulder.rotation.z = -0.4;
-            p.armRightElbow.rotation.x = -1.6;
-        } else if (pose.handPosition === 'knees') {
-            // Hands gripping knees during ruku
-            p.armLeftShoulder.rotation.x = 0.6;
-            p.armLeftShoulder.rotation.z = 0.1;
-            p.armLeftElbow.rotation.x = 0;
-            p.armRightShoulder.rotation.x = 0.6;
-            p.armRightShoulder.rotation.z = -0.1;
-            p.armRightElbow.rotation.x = 0;
-        } else if (pose.handPosition === 'sujud') {
-            // Hands on floor next to head
-            p.armLeftShoulder.rotation.x = 0.8;
-            p.armLeftShoulder.rotation.z = 0.4;
-            p.armLeftElbow.rotation.x = -0.8;
-            p.armRightShoulder.rotation.x = 0.8;
-            p.armRightShoulder.rotation.z = -0.4;
-            p.armRightElbow.rotation.x = -0.8;
-        } else if (pose.handPosition === 'thighs' || pose.handPosition === 'tasyahud') {
-            // Hands resting on thighs
-            p.armLeftShoulder.rotation.x = 0.0;
-            p.armLeftShoulder.rotation.z = 0.3;
-            p.armLeftElbow.rotation.x = -1.0;
-            p.armRightShoulder.rotation.x = 0.0;
-            p.armRightShoulder.rotation.z = -0.3;
-            p.armRightElbow.rotation.x = -1.0;
-        }
+        p.armLShoulder.rotation.set(t.armL.shoulderX, t.armL.shoulderY, t.armL.shoulderZ);
+        p.armRShoulder.rotation.set(t.armR.shoulderX, t.armR.shoulderY, t.armR.shoulderZ);
+        p.armLElbow.rotation.set(t.armL.elbowX, 0, 0);
+        p.armRElbow.rotation.set(t.armR.elbowX, 0, 0);
 
-        // Head
-        p.head.rotation.x = pose.headTilt || 0;
-        p.head.rotation.y = pose.headTurn || 0;
-
-        this.currentPose = JSON.parse(JSON.stringify(pose));
+        this.currentTargets = JSON.parse(JSON.stringify(t));
     }
 
-    interpolatePose(from, to, t) {
+    interpolateTargets(from, to, t) {
         const lerp = (a, b, t) => a + (b - a) * t;
-        const ease = t * t * (3 - 2 * t); // smoothstep
+        const ease = t * t * (3 - 2 * t);
 
-        // Apply boolean flags from the target pose immediately at the midpoint
-        if (ease < 0.5) {
-            this.applyPose(from);
-        } else {
-            this.applyPose(to);
-        }
-
-        // Then smooth-interpolate continuous values
-        if (this.parts.hip) {
-            const fromY = from.sitting ? 0.55 : (from.sujud ? 0.65 : 1.0);
-            const toY = to.sitting ? 0.55 : (to.sujud ? 0.65 : 1.0);
-            this.parts.hip.position.y = lerp(fromY, toY, ease);
-
-            this.parts.torso.rotation.x = lerp(from.torsoAngle || 0, to.torsoAngle || 0, ease);
-            this.parts.head.rotation.x = lerp(from.headTilt || 0, to.headTilt || 0, ease);
-            this.parts.head.rotation.y = lerp(from.headTurn || 0, to.headTurn || 0, ease);
-        }
+        const out = {
+            hipY: lerp(from.hipY, to.hipY, ease),
+            torsoX: lerp(from.torsoX, to.torsoX, ease),
+            legHipX: lerp(from.legHipX, to.legHipX, ease),
+            legKneeX: lerp(from.legKneeX, to.legKneeX, ease),
+            headX: lerp(from.headX, to.headX, ease),
+            headY: lerp(from.headY, to.headY, ease),
+            armL: {
+                shoulderX: lerp(from.armL.shoulderX, to.armL.shoulderX, ease),
+                shoulderY: lerp(from.armL.shoulderY, to.armL.shoulderY, ease),
+                shoulderZ: lerp(from.armL.shoulderZ, to.armL.shoulderZ, ease),
+                elbowX: lerp(from.armL.elbowX, to.armL.elbowX, ease)
+            },
+            armR: {
+                shoulderX: lerp(from.armR.shoulderX, to.armR.shoulderX, ease),
+                shoulderY: lerp(from.armR.shoulderY, to.armR.shoulderY, ease),
+                shoulderZ: lerp(from.armR.shoulderZ, to.armR.shoulderZ, ease),
+                elbowX: lerp(from.armR.elbowX, to.armR.elbowX, ease)
+            }
+        };
+        this.applyTargets(out);
     }
 
     setStep(index, animate = true) {
@@ -797,29 +792,24 @@ export default class Peraga3D {
         this.currentStep = safeIdx;
 
         if (animate && oldIndex !== safeIdx) {
-            this.fromPose = JSON.parse(JSON.stringify(this.currentPose));
-            this.toPose = POSES[safeIdx].pose;
+            this.fromTargets = JSON.parse(JSON.stringify(this.currentTargets));
+            this.toTargets = resolvePose(POSES[safeIdx]);
             this.transitionStart = performance.now();
         } else {
-            this.applyPose(POSES[safeIdx].pose);
-            this.fromPose = null;
+            this.applyTargets(resolvePose(POSES[safeIdx]));
+            this.fromTargets = null;
+            this.toTargets = null;
         }
 
         this.updateUI();
     }
 
     nextStep() {
-        if (this.currentStep < POSES.length - 1) {
-            this.setStep(this.currentStep + 1);
-        } else {
-            this.setStep(0);
-        }
+        if (this.currentStep < POSES.length - 1) this.setStep(this.currentStep + 1);
+        else this.setStep(0);
     }
-
     prevStep() {
-        if (this.currentStep > 0) {
-            this.setStep(this.currentStep - 1);
-        }
+        if (this.currentStep > 0) this.setStep(this.currentStep - 1);
     }
 
     play() {
@@ -828,16 +818,14 @@ export default class Peraga3D {
         this.updatePlayButton();
         this.queueNext();
     }
-
     pause() {
         this.isPlaying = false;
         clearTimeout(this.playTimer);
         this.updatePlayButton();
     }
-
     queueNext() {
         if (!this.isPlaying) return;
-        const currentDuration = POSES[this.currentStep].duration || 3000;
+        const dur = POSES[this.currentStep].duration || 3000;
         clearTimeout(this.playTimer);
         this.playTimer = setTimeout(() => {
             if (this.currentStep >= POSES.length - 1) {
@@ -846,17 +834,15 @@ export default class Peraga3D {
             }
             this.nextStep();
             this.queueNext();
-        }, currentDuration);
+        }, dur);
     }
-
     reset() {
         this.pause();
         this.setStep(0);
-        this.cameraAngle = Math.PI / 4;
-        this.cameraPitch = 0.2;
+        this.cameraAngle = Math.PI * 0.85;
+        this.cameraPitch = 0.18;
         this.cameraRadius = 6;
     }
-
     toggleAutoRotate() {
         this.autoRotate = !this.autoRotate;
         const btn = document.getElementById('peragaRotateBtn');
@@ -866,10 +852,10 @@ export default class Peraga3D {
     updateCamera() {
         if (!this.camera) return;
         const x = Math.sin(this.cameraAngle) * this.cameraRadius * Math.cos(this.cameraPitch);
-        const y = 1.5 + Math.sin(this.cameraPitch) * this.cameraRadius;
+        const y = 1.2 + Math.sin(this.cameraPitch) * this.cameraRadius;
         const z = Math.cos(this.cameraAngle) * this.cameraRadius * Math.cos(this.cameraPitch);
         this.camera.position.set(x, y, z);
-        this.camera.lookAt(0, 0.8, 0);
+        this.camera.lookAt(0, 0.7, -0.4);
     }
 
     handleResize() {
@@ -907,17 +893,12 @@ export default class Peraga3D {
         window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
         window.addEventListener('mouseup', onUp);
         canvas.addEventListener('touchstart', e => {
-            if (e.touches.length === 1) {
-                onDown(e.touches[0].clientX, e.touches[0].clientY);
-            }
+            if (e.touches.length === 1) onDown(e.touches[0].clientX, e.touches[0].clientY);
         }, { passive: true });
         canvas.addEventListener('touchmove', e => {
-            if (e.touches.length === 1) {
-                onMove(e.touches[0].clientX, e.touches[0].clientY);
-            }
+            if (e.touches.length === 1) onMove(e.touches[0].clientX, e.touches[0].clientY);
         }, { passive: true });
         canvas.addEventListener('touchend', onUp);
-
         canvas.addEventListener('wheel', e => {
             e.preventDefault();
             this.cameraRadius = Math.max(3, Math.min(12, this.cameraRadius + e.deltaY * 0.005));
@@ -927,7 +908,6 @@ export default class Peraga3D {
     updateUI() {
         const pose = POSES[this.currentStep];
         const $ = (id) => document.getElementById(id);
-
         if ($('peragaStepNum')) $('peragaStepNum').textContent = this.currentStep + 1;
         if ($('peragaStepTotal')) $('peragaStepTotal').textContent = POSES.length;
         if ($('peragaPoseName')) $('peragaPoseName').textContent = pose.name;
@@ -938,7 +918,6 @@ export default class Peraga3D {
         if ($('peragaBacaanTranslation')) $('peragaBacaanTranslation').textContent = `"${pose.translation}"`;
         if ($('peragaBacaanTip')) $('peragaBacaanTip').innerHTML = `<i class="fas fa-lightbulb"></i> ${pose.tip}`;
 
-        // Update timeline
         const timeline = document.getElementById('peragaTimeline');
         if (timeline && timeline.children.length === POSES.length) {
             Array.from(timeline.children).forEach((dot, i) => {
@@ -979,8 +958,7 @@ export default class Peraga3D {
         if ($('peragaPrevBtn')) $('peragaPrevBtn').addEventListener('click', () => { this.pause(); this.prevStep(); });
         if ($('peragaNextBtn')) $('peragaNextBtn').addEventListener('click', () => { this.pause(); this.nextStep(); });
         if ($('peragaPlayBtn')) $('peragaPlayBtn').addEventListener('click', () => {
-            if (this.isPlaying) this.pause();
-            else this.play();
+            if (this.isPlaying) this.pause(); else this.play();
         });
         if ($('peragaResetBtn')) $('peragaResetBtn').addEventListener('click', () => this.reset());
         if ($('peragaRotateBtn')) {
@@ -993,25 +971,20 @@ export default class Peraga3D {
         if (!this.renderer) return;
         requestAnimationFrame(() => this.animate());
 
-        // Auto rotate camera
-        if (this.autoRotate && !this.dragging) {
-            this.cameraAngle += 0.003;
-        }
+        if (this.autoRotate && !this.dragging) this.cameraAngle += 0.003;
         this.updateCamera();
 
-        // Pose transition
-        if (this.fromPose && this.toPose) {
+        if (this.fromTargets && this.toTargets) {
             const elapsed = performance.now() - this.transitionStart;
             const t = Math.min(1, elapsed / this.transitionDuration);
-            this.interpolatePose(this.fromPose, this.toPose, t);
+            this.interpolateTargets(this.fromTargets, this.toTargets, t);
             if (t >= 1) {
-                this.applyPose(this.toPose);
-                this.fromPose = null;
-                this.toPose = null;
+                this.applyTargets(this.toTargets);
+                this.fromTargets = null;
+                this.toTargets = null;
             }
         }
 
-        // Pulse the glow ring
         if (this.glowRing) {
             const time = performance.now() * 0.001;
             this.glowRing.material.opacity = 0.3 + Math.sin(time * 2) * 0.2;
@@ -1027,7 +1000,6 @@ export default class Peraga3D {
         this.handleResize();
         this.updateUI();
     }
-
     onHide() {
         this.pause();
     }

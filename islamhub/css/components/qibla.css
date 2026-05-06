@@ -236,6 +236,10 @@
 /* Qibla Info */
 .qibla-info {
     text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
 }
 
 .qibla-degree {
@@ -243,6 +247,55 @@
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
+}
+
+/* Alignment Banner — slides in when phone points to qibla */
+.qibla-alignment-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1rem auto 0.5rem;
+    padding: 0.6rem 1.4rem;
+    background: linear-gradient(135deg, #00ff88, #00ccff);
+    color: #0a0e27;
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 1.5px;
+    border-radius: 50px;
+    width: max-content;
+    max-width: 90%;
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+}
+
+.qibla-alignment-banner.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    animation: qiblaAlignedPulse 1.6s ease-in-out infinite;
+}
+
+.qibla-alignment-banner i {
+    font-size: 1.1rem;
+}
+
+@keyframes qiblaAlignedPulse {
+    0%, 100% {
+        box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 50px rgba(0, 255, 136, 0.9), 0 0 80px rgba(0, 204, 255, 0.5);
+    }
+}
+
+/* Compass glows green when aligned */
+.compass-container.aligned {
+    filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.8));
+    transition: filter 0.3s ease;
 }
 
 .qibla-degree span {

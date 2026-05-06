@@ -23,6 +23,10 @@ export default class QiblaApp {
         this.isTracking = false;
         this.isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
         this.lastAlpha = null;
+        this.alignmentTolerance = 5; // degrees
+        this.isAligned = false;
+        this.lastAlignmentVibration = 0;
+        this.cityName = null;
     }
 
     async init() {
@@ -78,10 +82,20 @@ export default class QiblaApp {
                         <div class="compass-center"></div>
                     </div>
                     
+                    <!-- Alignment Banner -->
+                    <div class="qibla-alignment-banner" id="qiblaAlignmentBanner">
+                        <i class="fas fa-check-circle"></i>
+                        <span>MENGHADAP KIBLAT</span>
+                    </div>
+
                     <div class="qibla-info">
                         <div class="qibla-degree">
                             <span id="qiblaDirection">---°</span>
                             <label>Arah Kiblat</label>
+                        </div>
+                        <div class="qibla-degree">
+                            <span id="currentHeading">---°</span>
+                            <label>Arah HP</label>
                         </div>
                     </div>
                 </div>
@@ -89,6 +103,13 @@ export default class QiblaApp {
                 <!-- Location Info -->
                 <div class="location-info" id="locationInfo" style="display: none;">
                     <div class="info-grid">
+                        <div class="info-item">
+                            <i class="fas fa-city"></i>
+                            <div>
+                                <label>Lokasi</label>
+                                <span id="cityName">Menentukan...</span>
+                            </div>
+                        </div>
                         <div class="info-item">
                             <i class="fas fa-location-dot"></i>
                             <div>
@@ -191,7 +212,10 @@ export default class QiblaApp {
 
             // Update UI
             this.updateLocationInfo();
-            
+
+            // Reverse geocode for city name (non-blocking)
+            this.reverseGeocode().catch(() => {});
+
             // Start compass
             await this.startCompass();
 
@@ -373,18 +397,65 @@ export default class QiblaApp {
     updateCompass() {
         const compass = document.getElementById('compassContainer');
         const needle = document.getElementById('qiblaNeedle');
+        const headingEl = document.getElementById('currentHeading');
 
         if (compass) {
-            // Rotate compass ring opposite to device heading
-            // So North (N) points to actual north
             compass.style.transform = `rotate(${-this.currentHeading}deg)`;
         }
 
         if (needle && this.qiblaDirection !== 0) {
-            // Needle should point to qibla direction
-            // Qibla direction is already calculated as absolute bearing from North
-            // No need to add currentHeading here - compass ring already handles device rotation
             needle.style.transform = `rotate(${this.qiblaDirection}deg)`;
+        }
+
+        if (headingEl) {
+            headingEl.textContent = `${Math.round(this.currentHeading)}°`;
+        }
+
+        this.updateAlignment();
+    }
+
+    updateAlignment() {
+        if (!this.isTracking || this.qiblaDirection === 0) return;
+
+        // Difference between phone facing direction and qibla bearing.
+        // When the user holds the phone so its top points to qibla, currentHeading == qiblaDirection.
+        let diff = Math.abs(this.qiblaDirection - this.currentHeading);
+        if (diff > 180) diff = 360 - diff;
+
+        const aligned = diff <= this.alignmentTolerance;
+        const banner = document.getElementById('qiblaAlignmentBanner');
+        const compass = document.getElementById('compassContainer');
+
+        if (aligned !== this.isAligned) {
+            this.isAligned = aligned;
+            if (banner) banner.classList.toggle('show', aligned);
+            if (compass) compass.classList.toggle('aligned', aligned);
+
+            // Subtle haptic feedback when alignment is achieved
+            if (aligned && navigator.vibrate) {
+                const now = Date.now();
+                if (now - this.lastAlignmentVibration > 2000) {
+                    navigator.vibrate([60, 40, 60]);
+                    this.lastAlignmentVibration = now;
+                }
+            }
+        }
+    }
+
+    async reverseGeocode() {
+        const cityEl = document.getElementById('cityName');
+        try {
+            const url = `https://nominatim.openstreetmap.org/reverse?lat=${this.userLat}&lon=${this.userLon}&format=json&accept-language=id`;
+            const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+            if (!res.ok) throw new Error('geocode failed');
+            const data = await res.json();
+            const a = data.address || {};
+            const city = a.city || a.town || a.village || a.county || a.state || '';
+            const country = a.country || '';
+            this.cityName = [city, country].filter(Boolean).join(', ') || data.display_name || '—';
+            if (cityEl) cityEl.textContent = this.cityName;
+        } catch (err) {
+            if (cityEl) cityEl.textContent = '—';
         }
     }
 
