@@ -1927,7 +1927,8 @@ export default class AdzanApp {
             adzanFullAudio: false, adzanFile: 'Mishary-Rashid-Alafasy',
             masjidName: '', showImsak: false, showSyuruq: true,
             showArabic: false, fontSize: 'md', bgStyle: 'haram',
-            centerStyle: 'box', centerSize: 'md'
+            centerStyle: 'box', centerSize: 'md',
+            countdownColor: '#f5930a'
         };
         try {
             const saved = localStorage.getItem('adm-settings');
@@ -1985,6 +1986,13 @@ export default class AdzanApp {
         });
         const centerSizeRow = document.getElementById('admCenterSizeRow');
         if (centerSizeRow) centerSizeRow.style.display = (this._dmSettings.centerStyle === 'footer') ? 'none' : '';
+        // Apply countdown color
+        const cdColor = this._dmSettings.countdownColor || '#f5930a';
+        overlay.style.setProperty('--adm-countdown-color', cdColor);
+        const colorInput = document.getElementById('admCountdownColor');
+        if (colorInput) colorInput.value = cdColor;
+        const colorPreview = document.getElementById('admCountdownColorPreview');
+        if (colorPreview) colorPreview.style.background = cdColor;
         // Rebuild grid to reflect display toggles
         this._buildDisplayModePrayerGrid();
         // Sound settings
@@ -2189,6 +2197,26 @@ export default class AdzanApp {
                             <button class="adm-fontsize-btn ${s.fontSize === 'sm' ? 'active' : ''}" data-size="sm">Kecil</button>
                             <button class="adm-fontsize-btn ${!s.fontSize || s.fontSize === 'md' ? 'active' : ''}" data-size="md">Sedang</button>
                             <button class="adm-fontsize-btn ${s.fontSize === 'lg' ? 'active' : ''}" data-size="lg">Besar</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="adm-settings-section-title">Warna Countdown</div>
+                        <div class="adm-settings-row">
+                            <div class="adm-settings-row-label"><i class="fas fa-palette"></i> Warna Timer</div>
+                            <div class="adm-color-picker-wrap">
+                                <div class="adm-color-preview" id="admCountdownColorPreview" style="background:${s.countdownColor || '#f5930a'}"></div>
+                                <input type="color" id="admCountdownColor" value="${s.countdownColor || '#f5930a'}" class="adm-color-input">
+                            </div>
+                        </div>
+                        <div class="adm-color-presets">
+                            <button class="adm-color-preset" data-color="#f5930a" style="background:#f5930a" title="Oranye (Default)"></button>
+                            <button class="adm-color-preset" data-color="#00e676" style="background:#00e676" title="Hijau"></button>
+                            <button class="adm-color-preset" data-color="#00bcd4" style="background:#00bcd4" title="Cyan"></button>
+                            <button class="adm-color-preset" data-color="#ffd600" style="background:#ffd600" title="Kuning"></button>
+                            <button class="adm-color-preset" data-color="#ff5252" style="background:#ff5252" title="Merah"></button>
+                            <button class="adm-color-preset" data-color="#ffffff" style="background:#ffffff" title="Putih"></button>
+                            <button class="adm-color-preset" data-color="#e040fb" style="background:#e040fb" title="Ungu"></button>
+                            <button class="adm-color-preset" data-color="#448aff" style="background:#448aff" title="Biru"></button>
                         </div>
                     </div>
                     <div>
@@ -2439,6 +2467,32 @@ export default class AdzanApp {
                 overlay.setAttribute('data-adm-center-size', btn.dataset.csize);
                 overlay.querySelectorAll('.adm-center-size-btn').forEach(b =>
                     b.classList.toggle('active', b.dataset.csize === btn.dataset.csize));
+            });
+        });
+
+        // Countdown color picker
+        const colorInput = document.getElementById('admCountdownColor');
+        if (colorInput) {
+            colorInput.addEventListener('input', (e) => {
+                this._dmSettings.countdownColor = e.target.value;
+                this._saveDMSettings();
+                overlay.style.setProperty('--adm-countdown-color', e.target.value);
+                const preview = document.getElementById('admCountdownColorPreview');
+                if (preview) preview.style.background = e.target.value;
+            });
+        }
+
+        // Countdown color presets
+        overlay.querySelectorAll('.adm-color-preset').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const color = btn.dataset.color;
+                this._dmSettings.countdownColor = color;
+                this._saveDMSettings();
+                overlay.style.setProperty('--adm-countdown-color', color);
+                const input = document.getElementById('admCountdownColor');
+                if (input) input.value = color;
+                const preview = document.getElementById('admCountdownColorPreview');
+                if (preview) preview.style.background = color;
             });
         });
 

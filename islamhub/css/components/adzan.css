@@ -1,4 +1,4 @@
-﻿/* ===== ADZAN APP STYLES ===== */
+/* ===== ADZAN APP STYLES ===== */
 .adzan-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -1126,7 +1126,7 @@
 .adm-center-countdown {
   font-size: clamp(3rem, 8vw, 6rem);
   font-weight: 900;
-  color: #f5930a;
+  color: var(--adm-countdown-color, #f5930a);
   font-variant-numeric: tabular-nums;
   letter-spacing: -2px;
   line-height: 1;
@@ -1510,6 +1510,56 @@
 }
 .adm-toggle input:checked + .adm-toggle-slider { background: #f5930a; }
 .adm-toggle input:checked + .adm-toggle-slider::before { transform: translateX(20px); }
+
+/* Countdown Color Picker */
+.adm-color-picker-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.adm-color-preview {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.adm-color-input {
+  width: 40px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  padding: 0;
+}
+.adm-color-input::-webkit-color-swatch-wrapper { padding: 2px; }
+.adm-color-input::-webkit-color-swatch {
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+}
+.adm-color-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 0 4px;
+}
+.adm-color-preset {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+.adm-color-preset:hover {
+  transform: scale(1.15);
+  border-color: rgba(255,255,255,0.5);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
 
 /* Adzan alert overlay */
 .adm-adzan-alert {

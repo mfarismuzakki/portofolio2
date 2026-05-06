@@ -1,20 +1,28 @@
 /* ===== FLOATING PRAYER WIDGET ===== */
 .floating-prayer-widget {
   position: fixed;
-  bottom: 90px; /* Raised to avoid navbar overlap */
+  bottom: 90px;
   right: 20px;
-  background: rgba(10, 10, 15, 0.95);
-  backdrop-filter: blur(20px);
-  border: 2px solid var(--primary-cyan);
-  border-radius: 16px;
-  padding: 15px 20px;
-  min-width: 200px;
-  box-shadow: var(--shadow-glow);
+  background: rgba(8, 12, 24, 0.92);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  border-radius: 18px;
+  padding: 16px 22px;
+  min-width: 210px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(0, 255, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
   z-index: 30;
   display: none;
   opacity: 0;
-  transition: opacity 0.3s ease;
-  animation: bounce 2s ease-in-out infinite;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  animation: widgetFloat 3s ease-in-out infinite;
+}
+
+@keyframes widgetFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 /* Hide widget when Al-Quran app is active to avoid blocking audio player */
@@ -25,26 +33,28 @@ body[data-current-app="alquran"] .widget-restore-btn {
 
 /* Adjust widget position on streaming page to avoid audio player overlap */
 body[data-current-app="streaming"] .floating-prayer-widget {
-  bottom: 200px; /* Raised above audio player */
+  bottom: 200px;
 }
 
 .widget-content {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 14px;
   position: relative;
 }
 
 .widget-icon {
-  width: 45px;
-  height: 45px;
-  background: rgba(0, 255, 255, 0.2);
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(0, 128, 255, 0.1));
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--primary-cyan);
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+  flex-shrink: 0;
 }
 
 .widget-info {
@@ -52,24 +62,28 @@ body[data-current-app="streaming"] .floating-prayer-widget {
 }
 
 .widget-prayer-name {
-  font-family: var(--font-primary);
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  font-family: var(--font-secondary);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  margin-bottom: 2px;
 }
 
 .widget-countdown {
   font-family: var(--font-primary);
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--primary-cyan);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
 }
 
 .widget-city {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  margin-top: 3px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
 }
 
 .widget-pulse {
@@ -77,12 +91,12 @@ body[data-current-app="streaming"] .floating-prayer-widget {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 55px;
-  height: 55px;
-  border: 2px solid var(--primary-cyan);
+  width: 54px;
+  height: 54px;
+  border: 1.5px solid var(--primary-cyan);
   border-radius: 50%;
   animation: pulse 2s ease-in-out infinite;
-  opacity: 0.5;
+  opacity: 0.35;
 }
 
 /* Widget Toggle Button */
@@ -90,10 +104,10 @@ body[data-current-app="streaming"] .floating-prayer-widget {
   position: absolute;
   top: -8px;
   right: -8px;
-  width: 28px;
-  height: 28px;
-  background: rgba(0, 255, 255, 0.2);
-  border: 2px solid var(--primary-cyan);
+  width: 26px;
+  height: 26px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1.5px solid rgba(0, 255, 255, 0.3);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -102,24 +116,25 @@ body[data-current-app="streaming"] .floating-prayer-widget {
   transition: all 0.3s ease;
   z-index: 10;
   color: var(--primary-cyan);
-  font-size: 0.75rem;
+  font-size: 0.65rem;
+  backdrop-filter: blur(8px);
 }
 
 .widget-toggle-btn:hover {
-  background: rgba(0, 255, 255, 0.3);
-  transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+  background: rgba(0, 255, 255, 0.15);
+  transform: scale(1.15);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
 }
 
 /* Widget Restore Button */
 .widget-restore-btn {
   position: fixed;
-  bottom: 90px; /* Raised to match expanded widget position */
+  bottom: 90px;
   right: 20px;
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   background: linear-gradient(135deg, var(--primary-cyan) 0%, var(--electric-blue) 100%);
-  border: 2px solid var(--primary-cyan);
+  border: none;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -128,9 +143,11 @@ body[data-current-app="streaming"] .floating-prayer-widget {
   transition: all 0.3s ease;
   z-index: 999;
   color: var(--dark-bg);
-  font-size: 1.3rem;
-  box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4);
-  animation: bounce 2s ease-in-out infinite;
+  font-size: 1.2rem;
+  box-shadow:
+    0 4px 20px rgba(0, 255, 255, 0.35),
+    0 0 0 3px rgba(0, 255, 255, 0.1);
+  animation: widgetFloat 3s ease-in-out infinite;
 }
 
 /* Adjust restore button on streaming page */
@@ -140,20 +157,26 @@ body[data-current-app="streaming"] .widget-restore-btn {
 
 .widget-restore-btn:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 30px rgba(0, 255, 255, 0.6);
+  box-shadow:
+    0 6px 30px rgba(0, 255, 255, 0.5),
+    0 0 0 5px rgba(0, 255, 255, 0.15);
 }
 
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
-  body[data-current-app="streaming"] .floating-prayer-widget {
-    bottom: 180px !important; 
-    right: 15px;
-    min-width: 180px;
+  .floating-prayer-widget {
+    right: 12px;
+    min-width: 190px;
     padding: 12px 16px;
   }
-  
+
+  body[data-current-app="streaming"] .floating-prayer-widget {
+    bottom: 180px !important;
+    right: 12px;
+  }
+
   body[data-current-app="streaming"] .widget-restore-btn {
     bottom: 180px !important;
-    right: 15px;
+    right: 12px;
   }
 }

@@ -139,8 +139,8 @@ class IslamHubApp {
             }
         }, true); // capture phase
 
-        // Update every second for radio state changes
-        setInterval(() => this._globalPlayerUpdate(), 1000);
+        // Update every 3s for radio state changes (reduced from 1s for performance)
+        setInterval(() => this._globalPlayerUpdate(), 3000);
         this._globalPlayerUpdate();
     }
 
@@ -1636,7 +1636,7 @@ class IslamHubApp {
 
     // Cache Management Methods
     setupCacheManagement() {
-        const APP_VERSION = '1.2.1';
+        const APP_VERSION = '1.3.0';
         const STORAGE_VERSION_KEY = 'islamhub_app_version';
         
         // Check version and show update notification if needed
@@ -1889,7 +1889,7 @@ class IslamHubApp {
             });
             
             // Save current version and clear notification flags
-            localStorage.setItem('islamhub_app_version', '1.2.1');
+            localStorage.setItem('islamhub_app_version', '1.3.0');
             localStorage.removeItem('islamhub_update_notification_shown');
             
             // 4. Clear sessionStorage
@@ -1947,7 +1947,7 @@ class IslamHubApp {
         console.log('Emergency reset initiated...');
         
         // Clear all update-related localStorage
-        localStorage.setItem('islamhub_app_version', '1.2.2');
+        localStorage.setItem('islamhub_app_version', '1.3.0');
         localStorage.removeItem('islamhub_update_notification_shown');
         localStorage.removeItem('islamhub_last_active_app');
         

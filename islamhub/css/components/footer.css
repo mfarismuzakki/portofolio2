@@ -18,8 +18,8 @@ body[data-current-app]:not([data-current-app="home"]) .app-footer {
     flex-direction: column;
     gap: 0;
 }.footer-section {
-    background: rgba(0, 255, 255, 0.05);
-    border: 1px solid rgba(0, 255, 255, 0.2);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(0, 255, 255, 0.1);
     border-radius: 0;
     padding: 16px 20px;
     text-align: center;
@@ -29,18 +29,19 @@ body[data-current-app]:not([data-current-app="home"]) .app-footer {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    backdrop-filter: blur(8px);
 }
 
 .footer-section:first-child {
-    border-radius: 12px 12px 0 0;
+    border-radius: 16px 16px 0 0;
 }
 
 .footer-section:last-child {
-    border-radius: 0 0 12px 12px;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 0 0 16px 16px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
 }.footer-section:hover {
-  background: rgba(0, 255, 255, 0.08);
-  border-color: rgba(0, 255, 255, 0.3);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border-color: rgba(0, 255, 255, 0.2);
 }
 
 .footer-icon-text {

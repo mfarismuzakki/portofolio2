@@ -22,10 +22,9 @@
 
 /* Main Container */
 .alquran-container {
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 20px 2px;
-    /* Padding minimal kiri-kanan */
+    padding: 20px 16px;
     padding-bottom: 20px;
     color: var(--text-primary);
     min-height: 100vh;
@@ -329,11 +328,11 @@
 
 /* Quran Content */
 .quran-content {
-    background: var(--surface);
-    border-radius: 15px;
-    padding: 30px;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
     margin-bottom: 30px;
-    border: 1px solid rgba(0, 255, 255, 0.2);
+    border: none;
     min-height: 400px;
 }
 
@@ -382,65 +381,58 @@
 .verses-container {
     display: flex;
     flex-direction: column;
-    gap: 25px;
-    padding: 0 4px;
-    /* Minimal padding kiri-kanan */
+    gap: 0;
+    padding: 0;
 }
 
 .verse-item {
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 12px;
-    padding: 24px 20px;
-    /* More padding for better spacing */
-    border: 1px solid rgba(0, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    background: transparent;
+    border-radius: 0;
+    padding: 28px 20px;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: background 0.2s ease;
     position: relative;
-    margin-bottom: 16px;
-    /* Better spacing between verses */
+    margin-bottom: 0;
 }
 
 .verse-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(0, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .verse-number {
     position: absolute;
-    top: -10px;
+    top: 28px;
     right: 20px;
-    background: var(--gradient-primary);
-    color: var(--dark-bg);
-    width: 35px;
-    height: 35px;
+    background: rgba(0, 255, 255, 0.08);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    color: var(--primary-cyan);
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: var(--font-primary);
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 .verse-content {
-    margin-right: 50px;
-    margin-bottom: 16px;
-    /* Better spacing */
+    margin-right: 56px;
+    margin-bottom: 18px;
 }
 
 .arabic-text {
-    font-size: 1.75rem;
-    /* Larger font like Quran.com */
-    line-height: 2.8;
-    /* Spacious line height for readability and harakat */
+    font-size: 2rem;
+    line-height: 3.2;
     text-align: right;
-    color: var(--text-primary);
+    color: rgba(255, 255, 255, 0.97);
     font-family: 'Uthmanic Hafs', 'KFGQPC Uthmani', 'Amiri Quran', serif;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     direction: rtl;
     word-spacing: 0.12em;
-    /* Consistent word spacing like Quran.com */
     letter-spacing: 0;
-    /* Neutral letter-spacing for Arabic script */
 }
 
 /* Arabic Font Families */
@@ -492,19 +484,17 @@
 
 .transliteration-text {
     font-size: 1rem;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.55);
     font-style: italic;
-    margin-bottom: 12px;
-    line-height: 1.7;
+    margin-bottom: 14px;
+    line-height: 1.75;
     font-family: var(--font-secondary);
 }
 
 .translation-text {
-    font-size: 1.05rem;
-    /* Slightly larger for readability */
-    color: rgba(255, 255, 255, 0.85);
-    line-height: 1.8;
-    /* Better line height for translation */
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.85;
     font-family: var(--font-secondary);
 }
 
@@ -3498,10 +3488,10 @@
 
 .verse-item-clean .verse-arabic {
     font-family: 'Amiri Quran', 'Uthmanic Hafs', 'KFGQPC Uthmani', serif;
-    font-size: 1.75rem;
-    line-height: 3.0;
+    font-size: 2rem;
+    line-height: 3.2;
     text-align: right;
-    color: var(--text-primary);
+    color: rgba(255, 255, 255, 0.97);
     margin-bottom: 20px;
     margin-top: 4px;
     margin-left: 0;
@@ -3526,8 +3516,8 @@
 }
 
 .verse-item-clean .verse-translation {
-    font-size: 1rem;
-    color: var(--text-secondary);
+    font-size: 1.08rem;
+    color: rgba(255, 255, 255, 0.75);
     line-height: 1.85;
     margin-left: 0;
     /* Hapus margin kiri */
@@ -3801,14 +3791,15 @@
 /* Basmalah styling - Quran.com style */
 .basmalah-text {
     text-align: center !important;
-    margin: 2.5rem auto 2rem auto;
-    padding: 1rem 0;
+    margin: 2rem auto 1.5rem auto;
+    padding: 1.2rem 0;
     direction: ltr;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .basmalah-arabic {
     font-family: 'Uthmanic Hafs', 'KFGQPC Uthmani', 'Amiri Quran', serif;
-    font-size: 2rem;
+    font-size: 2.2rem;
     color: rgba(255, 255, 255, 0.95);
     font-weight: 400;
     direction: rtl;
@@ -3845,7 +3836,7 @@
     background: transparent;
     border: none;
     border-radius: 0;
-    padding: 1rem 1.25rem 3rem 1.25rem;
+    padding: 0.5rem 0 3rem 0;
 }
 
 /* Reading mode - Remove all card styling and make text continuous like mushaf */
@@ -3853,12 +3844,12 @@
     background: transparent;
     border: none;
     border-radius: 0;
-    padding: 1.5rem 1.25rem 2rem 1.25rem;
+    padding: 1.5rem 0 2rem 0;
     text-align: justify;
     text-align-last: right;
     direction: rtl;
     line-height: 3.2;
-    font-size: 1.75rem;
+    font-size: 2rem;
     max-width: 720px;
     word-spacing: 0.15em;
     letter-spacing: 0;
