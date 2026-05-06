@@ -223,6 +223,29 @@ export default class AlQuranApp {
             }
         }
 
+        // Popular Surahs - quick discovery row
+        const popularNumbers = [1, 55, 67, 18, 56, 112, 113, 114];
+        const popularCards = popularNumbers
+            .map(num => this.QURAN_SURAHS.find(s => s.number === num))
+            .filter(Boolean)
+            .map(s => `
+                <div class="popular-surah-card" data-action="openSurah" data-surah="${s.number}">
+                    <span class="popular-surah-num">${s.number}</span>
+                    <div class="popular-surah-arabic">${s.nameArabic}</div>
+                    <div class="popular-surah-name">${s.name}</div>
+                    <div class="popular-surah-meta">${s.verses} ayat</div>
+                </div>
+            `).join('');
+        const popularSection = document.createElement('div');
+        popularSection.className = 'popular-surahs-section';
+        popularSection.innerHTML = `
+            <div class="popular-surahs-header">
+                <h3><i class="fas fa-star"></i> Surah Pilihan</h3>
+                <button class="see-all" data-action="surahList">Lihat Semua <i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="popular-surahs-scroll">${popularCards}</div>
+        `;
+
         // Info Section - Mushaf & Tafsir
         const infoSection = document.createElement('div');
         infoSection.className = 'quran-info-simple';
@@ -241,6 +264,7 @@ export default class AlQuranApp {
             wrapper.appendChild(lastReadDiv.firstElementChild);
         }
         wrapper.appendChild(quickNav);
+        wrapper.appendChild(popularSection);
         wrapper.appendChild(infoSection);
 
         this.container.appendChild(wrapper);
@@ -250,10 +274,10 @@ export default class AlQuranApp {
     }
 
     _attachLocalElements() {
-        // quick nav
-        const navButtons = this.container.querySelectorAll('.quick-nav .nav-btn');
+        // quick nav + see-all link share the same action vocabulary
+        const actionButtons = this.container.querySelectorAll('.quick-nav .nav-btn, .popular-surahs-header .see-all');
 
-        navButtons.forEach(btn => {
+        actionButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -266,6 +290,17 @@ export default class AlQuranApp {
                 else if (action === 'offline') this._showOfflineModal();
                 else if (action === 'progress') this._showMemorizationProgress();
                 else if (action === 'settings') this._showSettingsModal();
+            });
+        });
+
+        // Popular surah cards — open the surah directly
+        const popularCards = this.container.querySelectorAll('.popular-surah-card[data-action="openSurah"]');
+        popularCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const num = parseInt(card.dataset.surah);
+                if (num) this.readSurah(num);
             });
         });
 
