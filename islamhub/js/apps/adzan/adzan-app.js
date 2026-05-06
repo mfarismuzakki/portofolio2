@@ -1986,9 +1986,9 @@ export default class AdzanApp {
         });
         const centerSizeRow = document.getElementById('admCenterSizeRow');
         if (centerSizeRow) centerSizeRow.style.display = (this._dmSettings.centerStyle === 'footer') ? 'none' : '';
-        // Apply countdown color
+        // Apply countdown color (inline override beats per-theme CSS rules)
         const cdColor = this._dmSettings.countdownColor || '#f5930a';
-        overlay.style.setProperty('--adm-countdown-color', cdColor);
+        this._applyDMCountdownColor(overlay, cdColor);
         const colorInput = document.getElementById('admCountdownColor');
         if (colorInput) colorInput.value = cdColor;
         const colorPreview = document.getElementById('admCountdownColorPreview');
@@ -2476,7 +2476,7 @@ export default class AdzanApp {
             colorInput.addEventListener('input', (e) => {
                 this._dmSettings.countdownColor = e.target.value;
                 this._saveDMSettings();
-                overlay.style.setProperty('--adm-countdown-color', e.target.value);
+                this._applyDMCountdownColor(overlay, e.target.value);
                 const preview = document.getElementById('admCountdownColorPreview');
                 if (preview) preview.style.background = e.target.value;
             });
@@ -2488,7 +2488,7 @@ export default class AdzanApp {
                 const color = btn.dataset.color;
                 this._dmSettings.countdownColor = color;
                 this._saveDMSettings();
-                overlay.style.setProperty('--adm-countdown-color', color);
+                this._applyDMCountdownColor(overlay, color);
                 const input = document.getElementById('admCountdownColor');
                 if (input) input.value = color;
                 const preview = document.getElementById('admCountdownColorPreview');
@@ -2657,6 +2657,21 @@ export default class AdzanApp {
         const footerCdEl = document.getElementById('admFooterCdCountdown');
         if (footerCdEl) footerCdEl.textContent = cdStr;
 
+        // Apply custom countdown color inline so it beats the per-theme CSS rules
+        // (which set `color` directly and would otherwise override the CSS variable)
+        const cdColor = this._dmSettings?.countdownColor;
+        if (cdColor) {
+            const shadow = `0 0 30px ${this._hexWithAlpha(cdColor, 0.4)}`;
+            if (centerCdEl) {
+                centerCdEl.style.color = cdColor;
+                centerCdEl.style.textShadow = shadow;
+            }
+            if (footerCdEl) {
+                footerCdEl.style.color = cdColor;
+                footerCdEl.style.textShadow = shadow;
+            }
+        }
+
         // Rebuild grid when next prayer changes (e.g. crossed into next prayer)
         const nowMins = n.getHours() * 60 + n.getMinutes();
         const [ndh, ndm] = this._dmNextPrayer.time.split(':').map(Number);
@@ -2668,6 +2683,28 @@ export default class AdzanApp {
     _updateDisplayModePrayers(now) {
         // Legacy wrapper - just rebuild grid
         this._buildDisplayModePrayerGrid();
+    }
+
+    _hexWithAlpha(hex, alpha) {
+        const m = String(hex || '').replace('#', '').match(/^([0-9a-f]{3}|[0-9a-f]{6})$/i);
+        if (!m) return `rgba(245,147,10,${alpha})`;
+        let h = m[1];
+        if (h.length === 3) h = h.split('').map(c => c + c).join('');
+        const r = parseInt(h.slice(0, 2), 16);
+        const g = parseInt(h.slice(2, 4), 16);
+        const b = parseInt(h.slice(4, 6), 16);
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    _applyDMCountdownColor(overlay, color) {
+        if (!overlay || !color) return;
+        overlay.style.setProperty('--adm-countdown-color', color);
+        const shadow = `0 0 30px ${this._hexWithAlpha(color, 0.4)}`;
+        // Inline styles win over per-theme CSS rules that set color directly
+        overlay.querySelectorAll('#admCenterCountdown, #admFooterCdCountdown').forEach(el => {
+            el.style.color = color;
+            el.style.textShadow = shadow;
+        });
     }
 
     _startDisplayModeTicker() {
