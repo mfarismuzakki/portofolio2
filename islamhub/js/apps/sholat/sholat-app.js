@@ -8,10 +8,11 @@ export default class SholatApp {
         this.sholatData = [];
         this.bacaanData = [];
         this.sunnahData = [];
-        this.currentTab = 'rukun'; // rukun, bacaan, sunnah
+        this.currentTab = 'rukun'; // rukun, bacaan, sunnah, peraga
         this.searchQuery = '';
         this.currentFilter = 'all';
         this.currentItem = null; // For modal
+        this.peraga3D = null;
     }
 
     async init() {
@@ -98,7 +99,20 @@ export default class SholatApp {
 
     displayContent() {
         const container = document.getElementById('sholatContentGrid');
+        const peragaPanel = document.getElementById('sholatPeraga');
         if (!container) return;
+
+        // Toggle 3D peraga viewer visibility
+        if (this.currentTab === 'peraga') {
+            container.style.display = 'none';
+            if (peragaPanel) peragaPanel.style.display = 'block';
+            this.showPeraga3D();
+            return;
+        } else {
+            container.style.display = '';
+            if (peragaPanel) peragaPanel.style.display = 'none';
+            if (this.peraga3D) this.peraga3D.onHide();
+        }
 
         // Handle favorites tab
         if (this.currentTab === 'favorit') {
@@ -586,6 +600,31 @@ export default class SholatApp {
     truncate(text, length) {
         if (!text) return '';
         return text.length > length ? text.substring(0, length) + '...' : text;
+    }
+
+    async showPeraga3D() {
+        if (!this.peraga3D) {
+            try {
+                const module = await import('./peraga-3d.js');
+                const Peraga3D = module.default;
+                this.peraga3D = new Peraga3D();
+            } catch (err) {
+                console.error('Gagal memuat Peraga 3D:', err);
+                const panel = document.getElementById('sholatPeraga');
+                if (panel) {
+                    panel.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>Gagal memuat Peraga 3D</p>
+                            <small>${err.message || ''}</small>
+                        </div>
+                    `;
+                }
+                return;
+            }
+        }
+        // Defer init until canvas is visible & sized
+        requestAnimationFrame(() => this.peraga3D.onShow());
     }
 
     showLoading() {

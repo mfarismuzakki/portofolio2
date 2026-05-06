@@ -920,3 +920,441 @@
 .sholat-delete-favorite i {
     font-size: 0.9rem;
 }
+
+/* ===== PERAGA 3D ===== */
+.sholat-tab-3d {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+    border-color: rgba(255, 0, 255, 0.4);
+}
+
+.sholat-tab-3d::after {
+    content: 'NEW';
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: linear-gradient(135deg, #ff00ff, #ff0080);
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.6);
+    animation: peragaPulse 2s ease-in-out infinite;
+}
+
+.sholat-tab-3d.active {
+    background: linear-gradient(135deg, #ff00ff, #00ffff);
+}
+
+@keyframes peragaPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.85; }
+}
+
+.sholat-peraga {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.peraga-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    min-height: 380px;
+    max-height: 65vh;
+    background:
+        radial-gradient(ellipse at top, rgba(0, 255, 255, 0.15), transparent 60%),
+        radial-gradient(ellipse at bottom, rgba(255, 0, 255, 0.1), transparent 70%),
+        linear-gradient(180deg, #0a0e27 0%, #1a1245 100%);
+    border-radius: 20px;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    overflow: hidden;
+    box-shadow:
+        0 0 40px rgba(0, 255, 255, 0.2),
+        inset 0 0 60px rgba(255, 0, 255, 0.05);
+}
+
+.peraga-stage::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+#peragaCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+    position: relative;
+    z-index: 2;
+}
+
+#peragaCanvas:active {
+    cursor: grabbing;
+}
+
+.peraga-overlay-top {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.peraga-step-badge {
+    background: rgba(0, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    border-radius: 10px;
+    padding: 0.4rem 0.8rem;
+    color: var(--primary-cyan, #00ffff);
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.peraga-step-num {
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.peraga-step-total {
+    opacity: 0.7;
+    font-size: 0.8rem;
+}
+
+.peraga-pose-name {
+    flex: 1;
+    background: rgba(10, 14, 39, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 0, 255, 0.3);
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-align: right;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.peraga-overlay-controls {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(10, 14, 39, 0.8);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 50px;
+    padding: 0.5rem 0.75rem;
+    z-index: 5;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.peraga-ctrl {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    background: rgba(0, 255, 255, 0.08);
+    color: #00ffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.peraga-ctrl:hover {
+    background: rgba(0, 255, 255, 0.2);
+    transform: scale(1.08);
+    border-color: var(--primary-cyan, #00ffff);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+}
+
+.peraga-ctrl:active {
+    transform: scale(0.95);
+}
+
+.peraga-ctrl-main {
+    width: 54px;
+    height: 54px;
+    background: linear-gradient(135deg, #00ffff, #ff00ff);
+    color: #0a0e27;
+    border: none;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+    font-size: 1.1rem;
+}
+
+.peraga-ctrl-main:hover {
+    background: linear-gradient(135deg, #ff00ff, #00ffff);
+    color: #0a0e27;
+    box-shadow: 0 0 35px rgba(255, 0, 255, 0.6);
+}
+
+.peraga-ctrl-main.playing {
+    animation: peragaPlayPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes peragaPlayPulse {
+    0%, 100% { box-shadow: 0 0 25px rgba(0, 255, 255, 0.5); }
+    50% { box-shadow: 0 0 40px rgba(255, 0, 255, 0.8); }
+}
+
+.peraga-ctrl-small {
+    width: 36px;
+    height: 36px;
+    font-size: 0.75rem;
+}
+
+.peraga-ctrl-small.active {
+    background: rgba(255, 0, 255, 0.25);
+    border-color: #ff00ff;
+    color: #ff00ff;
+    box-shadow: 0 0 12px rgba(255, 0, 255, 0.5);
+}
+
+/* Timeline */
+.peraga-timeline {
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 255, 255, 0.04);
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    border-radius: 14px;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: thin;
+}
+
+.peraga-timeline::-webkit-scrollbar {
+    height: 4px;
+}
+
+.peraga-timeline::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+.peraga-dot {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    background: rgba(10, 14, 39, 0.6);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+.peraga-dot::after {
+    content: '';
+    position: absolute;
+    right: -0.4rem;
+    top: 50%;
+    width: 0.4rem;
+    height: 1px;
+    background: rgba(0, 255, 255, 0.2);
+}
+
+.peraga-dot:last-child::after { display: none; }
+
+.peraga-dot:hover {
+    background: rgba(0, 255, 255, 0.15);
+    border-color: var(--primary-cyan, #00ffff);
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.peraga-dot.done {
+    background: rgba(0, 255, 255, 0.2);
+    border-color: rgba(0, 255, 255, 0.6);
+    color: #00ffff;
+}
+
+.peraga-dot.active {
+    background: linear-gradient(135deg, #00ffff, #ff00ff);
+    border-color: transparent;
+    color: #0a0e27;
+    transform: scale(1.2);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+}
+
+/* Bacaan Panel */
+.peraga-bacaan-panel {
+    background: linear-gradient(135deg,
+        rgba(0, 255, 255, 0.06) 0%,
+        rgba(255, 0, 255, 0.06) 100%);
+    border: 1px solid rgba(0, 255, 255, 0.25);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.peraga-bacaan-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+}
+
+.peraga-bacaan-header h3 {
+    color: var(--primary-cyan, #00ffff);
+    font-size: 1.1rem;
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+
+.peraga-bacaan-ruling {
+    background: linear-gradient(135deg, #ff00ff, #ff0080);
+    color: #fff;
+    padding: 0.25rem 0.7rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.peraga-bacaan-arabic {
+    font-family: 'Amiri Quran', 'Scheherazade New', serif;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    color: #fff;
+    text-align: center;
+    line-height: 1.8;
+    direction: rtl;
+    margin: 1rem 0;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+    animation: peragaFade 0.6s ease-out;
+}
+
+.peraga-bacaan-latin {
+    color: rgba(0, 255, 255, 0.95);
+    font-style: italic;
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 0.75rem;
+    animation: peragaFade 0.6s ease-out;
+}
+
+.peraga-bacaan-translation {
+    color: rgba(255, 255, 255, 0.85);
+    text-align: center;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    animation: peragaFade 0.6s ease-out;
+}
+
+.peraga-bacaan-tip {
+    background: rgba(255, 215, 0, 0.08);
+    border-left: 3px solid #ffc107;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+.peraga-bacaan-tip i {
+    color: #ffc107;
+    margin-right: 0.4rem;
+}
+
+@keyframes peragaFade {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .peraga-stage {
+        min-height: 320px;
+        aspect-ratio: 4 / 5;
+        max-height: 70vh;
+    }
+
+    .peraga-overlay-top {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .peraga-pose-name {
+        text-align: center;
+        font-size: 0.85rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+    .peraga-overlay-controls {
+        gap: 0.35rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .peraga-ctrl {
+        width: 38px;
+        height: 38px;
+    }
+
+    .peraga-ctrl-main {
+        width: 48px;
+        height: 48px;
+    }
+
+    .peraga-ctrl-small {
+        width: 32px;
+        height: 32px;
+    }
+
+    .peraga-bacaan-panel {
+        padding: 1rem;
+    }
+
+    .peraga-dot {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .peraga-step-badge {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    .peraga-bacaan-arabic {
+        font-size: 1.5rem;
+    }
+}

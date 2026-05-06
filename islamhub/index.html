@@ -601,9 +601,58 @@
                         <button class="sholat-tab" data-tab="sunnah">
                             <i class="fas fa-star"></i> Sunnah Sholat
                         </button>
+                        <button class="sholat-tab sholat-tab-3d" data-tab="peraga">
+                            <i class="fas fa-cube"></i> Peraga 3D
+                        </button>
                         <button class="sholat-tab" data-tab="favorit">
                             <i class="fas fa-heart"></i> Favorit
                         </button>
+                    </div>
+
+                    <!-- 3D Peraga Viewer -->
+                    <div class="sholat-peraga" id="sholatPeraga" style="display: none;">
+                        <div class="peraga-stage">
+                            <canvas id="peragaCanvas"></canvas>
+                            <div class="peraga-overlay-top">
+                                <div class="peraga-step-badge">
+                                    <span class="peraga-step-num" id="peragaStepNum">1</span>
+                                    <span class="peraga-step-total">/ <span id="peragaStepTotal">14</span></span>
+                                </div>
+                                <div class="peraga-pose-name" id="peragaPoseName">Takbiratul Ihram</div>
+                            </div>
+                            <div class="peraga-overlay-controls">
+                                <button class="peraga-ctrl" id="peragaPrevBtn" title="Sebelumnya">
+                                    <i class="fas fa-step-backward"></i>
+                                </button>
+                                <button class="peraga-ctrl peraga-ctrl-main" id="peragaPlayBtn" title="Putar Otomatis">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button class="peraga-ctrl" id="peragaNextBtn" title="Selanjutnya">
+                                    <i class="fas fa-step-forward"></i>
+                                </button>
+                                <button class="peraga-ctrl peraga-ctrl-small" id="peragaResetBtn" title="Reset Tampilan">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                                <button class="peraga-ctrl peraga-ctrl-small" id="peragaRotateBtn" title="Auto-rotate Kamera">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Progress Timeline -->
+                        <div class="peraga-timeline" id="peragaTimeline"></div>
+
+                        <!-- Bacaan Panel -->
+                        <div class="peraga-bacaan-panel" id="peragaBacaanPanel">
+                            <div class="peraga-bacaan-header">
+                                <h3 id="peragaBacaanName">Takbiratul Ihram</h3>
+                                <span class="peraga-bacaan-ruling" id="peragaBacaanRuling">Rukun</span>
+                            </div>
+                            <div class="peraga-bacaan-arabic" id="peragaBacaanArabic"></div>
+                            <div class="peraga-bacaan-latin" id="peragaBacaanLatin"></div>
+                            <div class="peraga-bacaan-translation" id="peragaBacaanTranslation"></div>
+                            <div class="peraga-bacaan-tip" id="peragaBacaanTip"></div>
+                        </div>
                     </div>
 
                     <!-- Filters (dynamic based on tab) -->
@@ -833,6 +882,9 @@
     <!-- Al-Quran Data Scripts -->
     <script src="js/data/alquran/quran-data.js"></script>
     <script src="js/data/alquran/quran-verses.js"></script>
+
+    <!-- Three.js for 3D Peraga Sholat -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
         <!-- Main App Script -->
     <script type="module" src="js/app.js?v=1.2.4"></script>
