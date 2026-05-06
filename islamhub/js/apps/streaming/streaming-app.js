@@ -105,8 +105,38 @@ class StreamingApp {
                     <p class="subtitle">Radio dan video streaming kajian Islam live 24/7</p>
                 </div>
 
+                <!-- Filter & Search Bar -->
+                <div class="streaming-toolbar">
+                    <div class="streaming-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="streamingSearchInput" placeholder="Cari channel atau radio...">
+                    </div>
+                    <div class="streaming-filters">
+                        <button class="streaming-filter-btn active" data-filter="all">
+                            <i class="fas fa-th"></i> Semua
+                        </button>
+                        <button class="streaming-filter-btn" data-filter="radio">
+                            <i class="fas fa-radio"></i> Radio
+                        </button>
+                        <button class="streaming-filter-btn" data-filter="video">
+                            <i class="fas fa-tv"></i> Video TV
+                        </button>
+                        <button class="streaming-filter-btn" data-filter="haramain">
+                            <i class="fas fa-kaaba"></i> Haramain
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Now Stats -->
+                <div class="streaming-livestats">
+                    <div class="livestats-item">
+                        <span class="live-dot"></span>
+                        <span><strong id="liveCountTotal">${this.radioStations.length + this.videoChannels.length + this.liveHaramain.length}</strong> Channel Live Sekarang</span>
+                    </div>
+                </div>
+
                 <!-- Radio Streaming Section -->
-                <div class="streaming-section">
+                <div class="streaming-section" data-section="radio">
                     <div class="section-header">
                         <i class="fas fa-radio"></i>
                         <h2>Streaming Radio Kajian</h2>
@@ -137,7 +167,7 @@ class StreamingApp {
                 </div>
 
                 <!-- Video Streaming Section -->
-                <div class="streaming-section">
+                <div class="streaming-section" data-section="video">
                     <div class="section-header">
                         <i class="fas fa-tv"></i>
                         <h2>Streaming Video Kajian</h2>
@@ -170,7 +200,7 @@ class StreamingApp {
                 </div>
 
                 <!-- Live Haramain Section -->
-                <div class="streaming-section">
+                <div class="streaming-section" data-section="haramain">
                     <div class="section-header">
                         <i class="fas fa-kaaba"></i>
                         <h2>Live Makkah & Madinah</h2>
@@ -261,13 +291,66 @@ class StreamingApp {
                 btn.addEventListener('click', () => this.toggleRadio(index));
             }
         });
-        
+
+        // Filter buttons
+        document.querySelectorAll('.streaming-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.streaming-filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.applyStreamingFilter(btn.dataset.filter, this._currentSearch || '');
+            });
+        });
+
+        // Search input
+        const searchInput = document.getElementById('streamingSearchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                this._currentSearch = e.target.value.toLowerCase();
+                const activeFilter = document.querySelector('.streaming-filter-btn.active')?.dataset.filter || 'all';
+                this.applyStreamingFilter(activeFilter, this._currentSearch);
+            });
+        }
+
         // Audio error/reconnect handling (radioPlayer is the persistent global element)
         const radioPlayer = document.getElementById('radioPlayer');
         this.setupAudioErrorHandling(radioPlayer);
-        
+
         // Simulate signal strength animation (updates global player icon)
         this.startSignalAnimation();
+    }
+
+    applyStreamingFilter(filter, searchTerm) {
+        const sections = document.querySelectorAll('.streaming-section');
+        let visibleCount = 0;
+
+        sections.forEach(section => {
+            const sectionType = section.dataset.section;
+            const matchesFilter = filter === 'all' || sectionType === filter;
+
+            if (!matchesFilter) {
+                section.style.display = 'none';
+                return;
+            }
+
+            // Filter individual cards by search term
+            const cards = section.querySelectorAll('.radio-card, .video-card');
+            let sectionHasVisible = false;
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const matchesSearch = !searchTerm || text.includes(searchTerm);
+                card.style.display = matchesSearch ? '' : 'none';
+                if (matchesSearch) {
+                    sectionHasVisible = true;
+                    visibleCount++;
+                }
+            });
+
+            section.style.display = sectionHasVisible ? '' : 'none';
+        });
+
+        const liveCount = document.getElementById('liveCountTotal');
+        if (liveCount) liveCount.textContent = visibleCount;
     }
 
     setupAudioErrorHandling(radioPlayer) {

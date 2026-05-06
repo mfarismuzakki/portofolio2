@@ -957,3 +957,103 @@
         transform: translateY(0);
     }
 }
+
+/* ===== DONUT CHART (Waris share visualization) ===== */
+.waris-chart-card { overflow: hidden; }
+
+.waris-chart-wrapper {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.waris-chart-svg {
+    width: 220px;
+    height: 220px;
+    filter: drop-shadow(0 4px 20px rgba(0, 255, 255, 0.25));
+}
+
+.waris-chart-seg {
+    transition: stroke-width 0.3s ease, opacity 0.3s ease;
+    transform-origin: center;
+    animation: warisChartGrow 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.waris-chart-seg:hover {
+    stroke-width: 38;
+    cursor: pointer;
+}
+
+@keyframes warisChartGrow {
+    from { stroke-dasharray: 0 1000; }
+}
+
+.waris-chart-center-num {
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    fill: var(--primary-cyan, #00ffff);
+}
+
+.waris-chart-center-lbl {
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    fill: rgba(255, 255, 255, 0.6);
+}
+
+.waris-chart-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.waris-chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(0, 255, 255, 0.04);
+    border: 1px solid rgba(0, 255, 255, 0.12);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.waris-chart-legend-item:hover {
+    background: rgba(0, 255, 255, 0.08);
+    border-color: rgba(0, 255, 255, 0.3);
+    transform: translateX(4px);
+}
+
+.waris-chart-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.waris-chart-legend-label {
+    flex: 1;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.waris-chart-legend-pct {
+    color: var(--primary-cyan, #00ffff);
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+    .waris-chart-wrapper { grid-template-columns: 1fr; }
+    .waris-chart-svg {
+        margin: 0 auto;
+        width: 200px;
+        height: 200px;
+    }
+}
