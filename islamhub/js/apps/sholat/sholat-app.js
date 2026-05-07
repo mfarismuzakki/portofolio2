@@ -8,7 +8,7 @@ export default class SholatApp {
         this.sholatData = [];
         this.bacaanData = [];
         this.sunnahData = [];
-        this.currentTab = 'rukun'; // rukun, bacaan, sunnah, peraga
+        this.currentTab = 'peraga'; // peraga, rukun, syarat, bacaan, sunnah, favorit
         this.searchQuery = '';
         this.currentFilter = 'all';
         this.currentItem = null; // For modal

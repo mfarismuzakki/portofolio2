@@ -206,9 +206,12 @@ function resolvePose(pose) {
 
     switch (pose.arms) {
         case 'takbir':
-            // Both hands raised next to ears, palms forward-ish
-            t.armL = { shoulderX: -1.55, shoulderY: 0, shoulderZ: 0.20, elbowX: -0.30 };
-            t.armR = { shoulderX: -1.55, shoulderY: 0, shoulderZ: -0.20, elbowX: -0.30 };
+            // Upper arms vertical (hands raised by ears), forearm bent forward
+            // so hands are at ear level, palms facing toward kiblat (-Z).
+            // shoulderX = π takes hanging arm (-Y) up to (+Y).
+            // elbowX = -1.3 bends forearm forward and slightly up.
+            t.armL = { shoulderX: Math.PI, shoulderY: 0, shoulderZ: 0.15, elbowX: -1.30 };
+            t.armR = { shoulderX: Math.PI, shoulderY: 0, shoulderZ: -0.15, elbowX: -1.30 };
             break;
         case 'crossed':
             // Hands folded on chest/abdomen
