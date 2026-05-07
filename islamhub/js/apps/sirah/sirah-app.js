@@ -8,7 +8,7 @@ export default class SirahApp {
         this.prophets = [];
         this.currentProphet = null;
         this.currentTab = 'biodata';
-        this.currentFilter = 'all';
+        this.currentFilter = 'timeline';
         this.searchQuery = '';
         this.favorites = this.loadFavorites();
     }
@@ -38,7 +38,10 @@ export default class SirahApp {
                     </button>
                 </div>                <!-- Filter Tabs -->
                 <div class="filter-tabs" id="sirahFilterTabs">
-                    <button class="filter-tab active" data-filter="all">
+                    <button class="filter-tab active" data-filter="timeline">
+                        <i class="fas fa-stream"></i> Timeline
+                    </button>
+                    <button class="filter-tab" data-filter="all">
                         <i class="fas fa-list"></i> Semua
                     </button>
                     <button class="filter-tab" data-filter="nabi">
@@ -210,6 +213,15 @@ export default class SirahApp {
         const grid = document.getElementById('prophetsGrid');
         if (!grid) return;
 
+        // Timeline mode = chronological prophets/rasul rendering
+        if (this.currentFilter === 'timeline') {
+            grid.classList.add('sirah-timeline-mode');
+            this.renderTimeline(grid);
+            return;
+        } else {
+            grid.classList.remove('sirah-timeline-mode');
+        }
+
         let filtered = this.prophets;
 
         // Filter by category
@@ -224,7 +236,7 @@ export default class SirahApp {
         // Filter by search query
         if (this.searchQuery.trim()) {
             const query = this.searchQuery.toLowerCase();
-            filtered = filtered.filter(p => 
+            filtered = filtered.filter(p =>
                 p.name.toLowerCase().includes(query) ||
                 (p.arabicName && p.arabicName.includes(query)) ||
                 (p.title && p.title.toLowerCase().includes(query)) ||
@@ -311,6 +323,149 @@ export default class SirahApp {
         });
     }
 
+    renderTimeline(grid) {
+        // Chronological eras for grouping the 25 nabi/rasul (data file order is canonical).
+        const eras = [
+            { id: 'pra-banjir', title: 'Era Pra-Banjir Besar',
+              icon: 'fas fa-mountain',
+              note: 'Sejak penciptaan manusia hingga sebelum banjir besar Nabi Nuh',
+              ids: ['adam', 'idris'] },
+            { id: 'banjir-arab',  title: 'Era Pasca-Banjir & Arab Kuno',
+              icon: 'fas fa-water',
+              note: "Bangkitnya kaum 'Aad, Tsamud, dan keluarga Ibrahim",
+              ids: ['nuh', 'hud', 'shalih'] },
+            { id: 'ibrahim', title: 'Era Keluarga Ibrahim',
+              icon: 'fas fa-kaaba',
+              note: "Bapak para Nabi (Khalilullah) dan keturunannya",
+              ids: ['ibrahim', 'lut', 'ismail', 'ishaq', 'yaqub', 'yusuf', 'ayyub', 'syuaib'] },
+            { id: 'bani-israel', title: 'Era Bani Israel',
+              icon: 'fas fa-scroll',
+              note: "Para nabi dari keturunan Ya'qub (Bani Israel)",
+              ids: ['musa', 'harun', 'daud', 'sulaiman', 'yunus', 'zakariya', 'ilyas', 'alyasa', 'yahya', 'isa'] },
+            { id: 'akhir-zaman', title: 'Era Akhir Zaman',
+              icon: 'fas fa-moon',
+              note: 'Khatamun Nabiyyin — penutup para nabi',
+              ids: ['muhammad'] }
+        ];
+
+        // Filter timeline by search if query exists
+        const matchesQuery = (p) => {
+            if (!this.searchQuery.trim()) return true;
+            const q = this.searchQuery.toLowerCase();
+            return p.name.toLowerCase().includes(q) ||
+                   (p.arabicName && p.arabicName.includes(q)) ||
+                   (p.title && p.title.toLowerCase().includes(q)) ||
+                   (p.biography && p.biography.toLowerCase().includes(q));
+        };
+
+        let html = `
+            <div class="sirah-timeline-intro">
+                <div class="timeline-intro-icon"><i class="fas fa-stream"></i></div>
+                <div class="timeline-intro-text">
+                    <h3>Timeline 25 Nabi & Rasul</h3>
+                    <p>Urutan kronologis para utusan Allah dari Adam hingga Muhammad ﷺ. Klik setiap kartu untuk membaca kisah lengkap.</p>
+                </div>
+                <div class="timeline-intro-stats">
+                    <div class="timeline-stat">
+                        <span class="timeline-stat-num">25</span>
+                        <span class="timeline-stat-lbl">Nabi & Rasul</span>
+                    </div>
+                </div>
+            </div>
+            <div class="sirah-timeline">
+        `;
+
+        let globalIndex = 0;
+        let totalRendered = 0;
+
+        eras.forEach((era, eraIdx) => {
+            const eraProphets = era.ids
+                .map(id => this.prophets.find(p => p.id === id))
+                .filter(p => p && matchesQuery(p));
+
+            if (eraProphets.length === 0) return;
+
+            html += `
+                <div class="timeline-era" data-era="${era.id}">
+                    <div class="timeline-era-marker">
+                        <div class="era-marker-dot">
+                            <i class="${era.icon}"></i>
+                        </div>
+                        <div class="era-marker-label">
+                            <span class="era-num">Era ${eraIdx + 1}</span>
+                            <h4>${era.title}</h4>
+                            <p>${era.note}</p>
+                        </div>
+                    </div>
+                    <div class="timeline-era-items">
+            `;
+
+            eraProphets.forEach((prophet, idx) => {
+                const side = globalIndex % 2 === 0 ? 'left' : 'right';
+                const isFavorite = this.favorites.some(f => f.id === prophet.id);
+                const arabicFirstWord = prophet.arabicName ? prophet.arabicName.split(' ')[0] : '';
+                const preview = (prophet.biography || '').substring(0, 130) +
+                                ((prophet.biography || '').length > 130 ? '…' : '');
+                const eventCount = (prophet.majorEvents || []).length;
+                const lessonCount = (prophet.lessons || []).length;
+
+                html += `
+                    <div class="timeline-item timeline-${side}" data-person-id="${prophet.id}" style="--delay:${idx * 80}ms">
+                        <div class="timeline-item-num">${globalIndex + 1}</div>
+                        <div class="timeline-item-line"></div>
+                        <div class="timeline-card">
+                            ${isFavorite ? '<i class="fas fa-heart timeline-card-fav"></i>' : ''}
+                            <div class="timeline-card-arabic">${arabicFirstWord}</div>
+                            <div class="timeline-card-body">
+                                <h5 class="timeline-card-name">${prophet.name}
+                                    <span class="timeline-card-as">'alaihissalam</span>
+                                </h5>
+                                ${prophet.title ? `<p class="timeline-card-title">${prophet.title}</p>` : ''}
+                                ${prophet.period ? `<div class="timeline-card-period"><i class="fas fa-clock"></i> ${prophet.period}</div>` : ''}
+                                ${preview ? `<p class="timeline-card-preview">${preview}</p>` : ''}
+                                <div class="timeline-card-stats">
+                                    ${eventCount ? `<span class="timeline-stat-chip"><i class="fas fa-bookmark"></i> ${eventCount} peristiwa</span>` : ''}
+                                    ${lessonCount ? `<span class="timeline-stat-chip"><i class="fas fa-lightbulb"></i> ${lessonCount} hikmah</span>` : ''}
+                                </div>
+                                <button class="timeline-card-cta">
+                                    Baca kisah lengkap <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                globalIndex++;
+                totalRendered++;
+            });
+
+            html += `
+                    </div>
+                </div>
+            `;
+        });
+
+        if (totalRendered === 0) {
+            html += `
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <p>Tidak ada hasil ditemukan untuk "${this.searchQuery}"</p>
+                </div>
+            `;
+        }
+
+        html += '</div>';
+        grid.innerHTML = html;
+
+        // Click handler
+        grid.querySelectorAll('.timeline-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const id = item.dataset.personId;
+                this.showProphetDetail(id);
+            });
+        });
+    }
+
     showProphetDetail(prophetId) {
         const prophet = this.prophets.find(p => p.id === prophetId);
         if (!prophet) return;
@@ -378,12 +533,20 @@ export default class SirahApp {
     }
 
     renderBiodata(prophet) {
+        const categoryLabel = prophet.category === 'nabi' ? 'Nabi' :
+                              prophet.category === 'rasul' ? 'Rasul' :
+                              prophet.category === 'sahabat' ? 'Sahabat' :
+                              prophet.category;
         return `
             <div class="tab-content">
-                <div class="prophet-detail-header">
-                    <h2>${prophet.name}</h2>
-                    <p class="arabic-name">${prophet.arabicName || ''}</p>
-                    <p class="prophet-title-detail">${prophet.title || ''}</p>
+                <div class="prophet-detail-hero">
+                    <div class="prophet-hero-arabic">${prophet.arabicName || ''}</div>
+                    <div class="prophet-hero-content">
+                        <span class="prophet-hero-badge">${categoryLabel}${prophet.subcategory ? ' · ' + prophet.subcategory.replace(/_/g, ' ') : ''}</span>
+                        <h2>${prophet.name}</h2>
+                        ${prophet.title ? `<p class="prophet-hero-title">${prophet.title}</p>` : ''}
+                        ${prophet.period ? `<div class="prophet-hero-period"><i class="fas fa-clock"></i> ${prophet.period}</div>` : ''}
+                    </div>
                 </div>
 
                 <div class="info-section">
