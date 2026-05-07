@@ -27,6 +27,155 @@ export default class DzikirApp {
         await this.render();
         await this.loadCategories();
         this.setupEventListeners();
+        this.initDzikirWheel();
+    }
+
+    // ----- Daily Dzikir Cycle Wheel -----
+    initDzikirWheel() {
+        // 8 time slots covering 24 hours. Each spans 3h (45° in the SVG circle).
+        // startHour is when the slot begins; filter is the dzikir filter category.
+        const slots = [
+            { id: 'subuh',   label: 'Subuh',   icon: '🌅', startHour: 4,  filter: 'pagi',   color: '#7dd3fc' },
+            { id: 'pagi',    label: 'Pagi',    icon: '☀️', startHour: 7,  filter: 'pagi',   color: '#fbbf24' },
+            { id: 'dhuha',   label: 'Dhuha',   icon: '🌞', startHour: 10, filter: 'harian', color: '#fcd34d' },
+            { id: 'dzuhur',  label: 'Dzuhur',  icon: '🌤️', startHour: 12, filter: 'harian', color: '#fde047' },
+            { id: 'ashar',   label: 'Ashar',   icon: '🌇', startHour: 15, filter: 'sore',   color: '#fb923c' },
+            { id: 'maghrib', label: 'Maghrib', icon: '🌆', startHour: 18, filter: 'sore',   color: '#f97316' },
+            { id: 'isya',    label: 'Isya',    icon: '🌃', startHour: 19, filter: 'khusus', color: '#a78bfa' },
+            { id: 'tidur',   label: 'Tidur',   icon: '🌙', startHour: 22, filter: 'khusus', color: '#6366f1' },
+        ];
+
+        const segGroup = document.getElementById('wheelSegments');
+        if (!segGroup) return;
+
+        const slotCount = slots.length;
+        const segAngle = 360 / slotCount; // 45° each
+        const radius = 75;
+        const labelRadius = 56;
+        const innerRadius = 40;
+
+        // Build SVG path for each segment
+        slots.forEach((slot, i) => {
+            // Map startHour (0-24) to angle. Hour 0 → -90° (top of clock, 12 o'clock).
+            // 24h = 360°, so each hour = 15°.
+            const startAng = (slot.startHour / 24) * 360 - 90;
+            const nextSlot = slots[(i + 1) % slotCount];
+            const endHour = i === slotCount - 1 ? slots[0].startHour + 24 : nextSlot.startHour;
+            const endAng = (endHour / 24) * 360 - 90;
+            const sweep = endAng - startAng;
+            const largeArc = sweep > 180 ? 1 : 0;
+
+            const a1 = startAng * Math.PI / 180;
+            const a2 = endAng * Math.PI / 180;
+            const xOuter1 = Math.cos(a1) * radius;
+            const yOuter1 = Math.sin(a1) * radius;
+            const xOuter2 = Math.cos(a2) * radius;
+            const yOuter2 = Math.sin(a2) * radius;
+            const xInner1 = Math.cos(a1) * innerRadius;
+            const yInner1 = Math.sin(a1) * innerRadius;
+            const xInner2 = Math.cos(a2) * innerRadius;
+            const yInner2 = Math.sin(a2) * innerRadius;
+
+            const d = `M ${xInner1} ${yInner1}
+                       L ${xOuter1} ${yOuter1}
+                       A ${radius} ${radius} 0 ${largeArc} 1 ${xOuter2} ${yOuter2}
+                       L ${xInner2} ${yInner2}
+                       A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${xInner1} ${yInner1}
+                       Z`;
+
+            // Label position (middle of arc)
+            const midAng = (startAng + endAng) / 2 * Math.PI / 180;
+            const lx = Math.cos(midAng) * labelRadius;
+            const ly = Math.sin(midAng) * labelRadius;
+
+            const segId = `wheel-seg-${slot.id}`;
+            segGroup.insertAdjacentHTML('beforeend', `
+                <g class="wheel-slot" data-slot="${slot.id}" data-filter="${slot.filter}" data-label="${slot.label}">
+                    <path id="${segId}" d="${d}" fill="${slot.color}" fill-opacity="0.18" stroke="${slot.color}" stroke-width="0.6"/>
+                    <text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle"
+                          font-size="6" fill="#fff" font-weight="600" pointer-events="none"
+                          style="font-family: Orbitron, sans-serif;">
+                        ${slot.label.toUpperCase()}
+                    </text>
+                    <text x="${lx}" y="${ly + 7}" text-anchor="middle" dominant-baseline="middle"
+                          font-size="9" pointer-events="none">${slot.icon}</text>
+                </g>
+            `);
+        });
+
+        // Click handlers — apply matching filter
+        segGroup.querySelectorAll('.wheel-slot').forEach(el => {
+            el.addEventListener('click', () => {
+                const filter = el.dataset.filter;
+                const label = el.dataset.label;
+                this.applyWheelFilter(filter, label);
+                el.classList.add('clicked');
+                setTimeout(() => el.classList.remove('clicked'), 600);
+            });
+        });
+
+        // Animate clock hand to current time
+        this.updateWheelClock(slots);
+        if (this._wheelTimer) clearInterval(this._wheelTimer);
+        this._wheelTimer = setInterval(() => this.updateWheelClock(slots), 30000);
+    }
+
+    updateWheelClock(slots) {
+        const now = new Date();
+        const hh = now.getHours();
+        const mm = now.getMinutes();
+        const fractionalHour = hh + mm / 60;
+        const angleDeg = (fractionalHour / 24) * 360 - 90; // -90° offset for top start
+        const angleRad = angleDeg * Math.PI / 180;
+        const handLen = 72;
+        const tipX = Math.cos(angleRad) * handLen;
+        const tipY = Math.sin(angleRad) * handLen;
+
+        const hand = document.getElementById('wheelHand');
+        const tip = document.getElementById('wheelHandTip');
+        if (hand) {
+            hand.setAttribute('x2', tipX.toFixed(2));
+            hand.setAttribute('y2', tipY.toFixed(2));
+        }
+        if (tip) {
+            tip.setAttribute('cx', tipX.toFixed(2));
+            tip.setAttribute('cy', tipY.toFixed(2));
+        }
+
+        // Find current slot
+        let currentSlot = slots[slots.length - 1];
+        for (let i = 0; i < slots.length; i++) {
+            const start = slots[i].startHour;
+            const next = i === slots.length - 1 ? 24 + slots[0].startHour : slots[i + 1].startHour;
+            if (fractionalHour >= start && fractionalHour < next) {
+                currentSlot = slots[i];
+                break;
+            } else if (start > 20 && fractionalHour < slots[0].startHour) {
+                // Late night wraps to last slot (Tidur)
+                currentSlot = slots[slots.length - 1];
+            }
+        }
+
+        // Update label & highlight current segment
+        const timeEl = document.getElementById('wheelNowTime');
+        const lblEl = document.getElementById('wheelNowLabel');
+        if (timeEl) timeEl.textContent =
+            String(hh).padStart(2, '0') + ':' + String(mm).padStart(2, '0');
+        if (lblEl) lblEl.textContent = `Waktu ${currentSlot.label}`;
+
+        document.querySelectorAll('.wheel-slot').forEach(el => {
+            el.classList.toggle('current', el.dataset.slot === currentSlot.id);
+        });
+    }
+
+    applyWheelFilter(filter, label) {
+        // Trigger the existing filter tab system so categories update
+        const targetTab = document.querySelector(`.filter-tab[data-filter="${filter}"]`);
+        if (targetTab) targetTab.click();
+
+        // Smooth-scroll to category grid
+        const grid = document.getElementById('categoriesGrid');
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     async render() {
@@ -35,6 +184,34 @@ export default class DzikirApp {
                 <div class="dzikir-header">
                     <h2><i class="fas fa-hands"></i> Dzikir & Doa Harian</h2>
                     <p class="subtitle">Kumpulan dzikir dan doa dari Al-Quran dan Hadist Shahih</p>
+                </div>
+
+                <!-- Daily Cycle Wheel -->
+                <div class="dzikir-wheel-section">
+                    <div class="dzikir-wheel-info">
+                        <span class="dzikir-wheel-now-time" id="wheelNowTime">--:--</span>
+                        <span class="dzikir-wheel-now-label" id="wheelNowLabel">Memuat...</span>
+                        <p class="dzikir-wheel-hint">Klik segmen untuk dzikir di waktu tersebut</p>
+                    </div>
+                    <div class="dzikir-wheel-container">
+                        <svg class="dzikir-wheel" id="dzikirWheel" viewBox="-100 -100 200 200" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="wheelHandGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#00ffff"/>
+                                    <stop offset="100%" stop-color="#ff00ff"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- 8 segments are drawn dynamically by JS -->
+                            <g id="wheelSegments"></g>
+                            <!-- Inner ring -->
+                            <circle cx="0" cy="0" r="38" fill="rgba(10,14,39,0.85)" stroke="rgba(0,255,255,0.3)" stroke-width="0.5"/>
+                            <!-- Time hand (current time) -->
+                            <line id="wheelHand" x1="0" y1="0" x2="0" y2="-72" stroke="url(#wheelHandGrad)" stroke-width="2" stroke-linecap="round"/>
+                            <circle id="wheelHandTip" cx="0" cy="-72" r="3" fill="#ff00ff"/>
+                            <!-- Center dot -->
+                            <circle cx="0" cy="0" r="4" fill="#00ffff"/>
+                        </svg>
+                    </div>
                 </div>
 
                 <!-- Time-based Recommendations -->
