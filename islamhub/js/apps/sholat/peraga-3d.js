@@ -169,16 +169,23 @@ const POSES = [
 ];
 
 // ----- Resolve a pose entry into numerical bone targets -----
+// Convention summary:
+//   - shoulder.rotation order (XYZ Euler): R = R_z * R_y * R_x
+//   - For LEFT arm:  positive shoulderZ tilts arm INWARD when shoulderX < 0,
+//                    OUTWARD when shoulderX > 0. Use elbowZ for forearm flex
+//                    around world Z axis (lateral abduction at elbow).
+//   - For sedekap forearms to flex FORWARD (toward kiblat -Z), use POSITIVE
+//                    elbowX (not negative — that flips backward).
 function resolvePose(pose) {
     const A = ANATOMY;
+    const PI = Math.PI;
     const t = {
         hipY: A.standHipY,
         torsoX: 0,
         legHipX: 0,
         legKneeX: 0,
-        // arm targets: { shoulderX, shoulderZ, elbowX } per side
-        armL: { shoulderX: 0, shoulderY: 0, shoulderZ: 0.05, elbowX: 0 },
-        armR: { shoulderX: 0, shoulderY: 0, shoulderZ: -0.05, elbowX: 0 },
+        armL: { shoulderX: 0, shoulderY: 0, shoulderZ: 0.05, elbowX: 0, elbowZ: 0 },
+        armR: { shoulderX: 0, shoulderY: 0, shoulderZ: -0.05, elbowX: 0, elbowZ: 0 },
         headX: pose.head?.tilt || 0,
         headY: pose.head?.turn || 0
     };
@@ -197,54 +204,63 @@ function resolvePose(pose) {
             t.legKneeX = -3.1;    // calves fold back under thighs
             break;
         case 'sujud':
-            t.hipY = A.sujudHipY;
+            // Less torso bend (~75°) keeps shoulders higher so arms can reach floor
+            // in front of the head without clipping through the floor.
+            t.hipY = 0.30;
             t.legHipX = 1.55;
             t.legKneeX = -3.1;
-            t.torsoX = -1.55;     // bend forward 90° from kneel position
+            t.torsoX = -1.30;
             break;
     }
 
     switch (pose.arms) {
-        case 'takbir':
-            // Upper arms vertical (hands raised by ears), forearm bent forward
-            // so hands are at ear level, palms facing toward kiblat (-Z).
-            // shoulderX = π takes hanging arm (-Y) up to (+Y).
-            // elbowX = -1.3 bends forearm forward and slightly up.
-            t.armL = { shoulderX: Math.PI, shoulderY: 0, shoulderZ: 0.15, elbowX: -1.30 };
-            t.armR = { shoulderX: Math.PI, shoulderY: 0, shoulderZ: -0.15, elbowX: -1.30 };
+        case 'takbir': {
+            // Upper arm horizontal-outward (shoulderZ ≈ ±π/2 abduction),
+            // forearm vertical UP via elbowZ ≈ ∓π/2 (mirror of shoulderZ
+            // so both bring forearm direction in the world XY plane to (0, 1, 0)).
+            // Result: hands ar at ear level, palms forward toward Kiblat.
+            // Slight reduction below π/2 keeps arms a bit forward of the body.
+            const SZ = 1.45;
+            const EZ = 1.45;
+            t.armL = { shoulderX: 0,  shoulderY: 0, shoulderZ: -SZ, elbowX: 0, elbowZ: -EZ };
+            t.armR = { shoulderX: 0,  shoulderY: 0, shoulderZ:  SZ, elbowX: 0, elbowZ:  EZ };
             break;
+        }
         case 'crossed':
-            // Hands folded on chest/abdomen
-            t.armL = { shoulderX: -0.20, shoulderY: -0.15, shoulderZ: 0.55, elbowX: -1.55 };
-            t.armR = { shoulderX: -0.20, shoulderY: 0.15, shoulderZ: -0.55, elbowX: -1.55 };
+            // Sedekap: hands fold at center of body in front of belly/chest.
+            // Upper arms hang slightly inward (shoulderZ small), forearms flex
+            // FORWARD (elbowX positive) and slightly INWARD (elbowZ small mirror).
+            t.armL = { shoulderX: 0.10, shoulderY: 0, shoulderZ:  0.55, elbowX: 1.55, elbowZ: 0 };
+            t.armR = { shoulderX: 0.10, shoulderY: 0, shoulderZ: -0.55, elbowX: 1.55, elbowZ: 0 };
             break;
         case 'down':
-            t.armL = { shoulderX: 0, shoulderY: 0, shoulderZ: 0.10, elbowX: -0.05 };
-            t.armR = { shoulderX: 0, shoulderY: 0, shoulderZ: -0.10, elbowX: -0.05 };
+            // I'tidal — arms hang naturally at sides
+            t.armL = { shoulderX: 0, shoulderY: 0, shoulderZ:  0.10, elbowX: 0, elbowZ: 0 };
+            t.armR = { shoulderX: 0, shoulderY: 0, shoulderZ: -0.10, elbowX: 0, elbowZ: 0 };
             break;
         case 'knees':
-            // Hands gripping knees during ruku.
-            // Torso is tilted -1.45 around X. To make arms appear vertical (down)
-            // in world space, we need shoulderX to compensate ≈ +1.45.
-            t.armL = { shoulderX: 1.45, shoulderY: 0, shoulderZ: 0.10, elbowX: -0.10 };
-            t.armR = { shoulderX: 1.45, shoulderY: 0, shoulderZ: -0.10, elbowX: -0.10 };
+            // Ruku grip on knees. Torso tilted -1.45, so shoulderX = +1.45
+            // makes upper arm hang vertically in world. Slight forward elbow flex
+            // (positive elbowX) brings hand to knee in front.
+            t.armL = { shoulderX: 1.45, shoulderY: 0, shoulderZ:  0.05, elbowX: 0.10, elbowZ: 0 };
+            t.armR = { shoulderX: 1.45, shoulderY: 0, shoulderZ: -0.05, elbowX: 0.10, elbowZ: 0 };
             break;
         case 'sujud':
-            // Torso bent -1.55. We want arms to drop forward-down toward floor
-            // beside the head. Shoulder needs to over-rotate (≈ +2.75 rad) to
-            // counter the torso bend and angle the arms downward in world space.
-            t.armL = { shoulderX: 2.75, shoulderY: 0, shoulderZ: 0.10, elbowX: -0.10 };
-            t.armR = { shoulderX: 2.75, shoulderY: 0, shoulderZ: -0.10, elbowX: -0.10 };
+            // Torso tilted -1.30. Compensate with shoulderX = +1.30 so upper arm
+            // hangs vertically in world, then forward forearm flex (elbowX > 0)
+            // puts hands on floor in front of head.
+            t.armL = { shoulderX: 1.30, shoulderY: 0, shoulderZ:  0.10, elbowX: 1.40, elbowZ: 0 };
+            t.armR = { shoulderX: 1.30, shoulderY: 0, shoulderZ: -0.10, elbowX: 1.40, elbowZ: 0 };
             break;
         case 'thighs':
-            // Hands resting on thighs while sitting (palms down)
-            t.armL = { shoulderX: -0.10, shoulderY: 0, shoulderZ: 0.25, elbowX: -1.20 };
-            t.armR = { shoulderX: -0.10, shoulderY: 0, shoulderZ: -0.25, elbowX: -1.20 };
+            // Sitting hands on thighs (palms down): forearms forward over thighs.
+            t.armL = { shoulderX: 0.20, shoulderY: 0, shoulderZ:  0.20, elbowX: 1.30, elbowZ: 0 };
+            t.armR = { shoulderX: 0.20, shoulderY: 0, shoulderZ: -0.20, elbowX: 1.30, elbowZ: 0 };
             break;
         case 'tasyahud':
-            // Right hand slightly more forward (telunjuk isyarat)
-            t.armL = { shoulderX: -0.10, shoulderY: 0, shoulderZ: 0.25, elbowX: -1.20 };
-            t.armR = { shoulderX: -0.05, shoulderY: 0, shoulderZ: -0.25, elbowX: -1.35 };
+            // Right hand slightly more flexed (telunjuk isyarat)
+            t.armL = { shoulderX: 0.20, shoulderY: 0, shoulderZ:  0.20, elbowX: 1.30, elbowZ: 0 };
+            t.armR = { shoulderX: 0.25, shoulderY: 0, shoulderZ: -0.20, elbowX: 1.45, elbowZ: 0 };
             break;
     }
 
@@ -754,10 +770,11 @@ export default class Peraga3D {
         p.legLKnee.rotation.set(t.legKneeX, 0, 0);
         p.legRKnee.rotation.set(t.legKneeX, 0, 0);
 
-        p.armLShoulder.rotation.set(t.armL.shoulderX, t.armL.shoulderY, t.armL.shoulderZ);
-        p.armRShoulder.rotation.set(t.armR.shoulderX, t.armR.shoulderY, t.armR.shoulderZ);
-        p.armLElbow.rotation.set(t.armL.elbowX, 0, 0);
-        p.armRElbow.rotation.set(t.armR.elbowX, 0, 0);
+        p.armLShoulder.rotation.set(t.armL.shoulderX, t.armL.shoulderY || 0, t.armL.shoulderZ);
+        p.armRShoulder.rotation.set(t.armR.shoulderX, t.armR.shoulderY || 0, t.armR.shoulderZ);
+        // Elbow uses both X (flex) and Z (lateral abduction at elbow joint)
+        p.armLElbow.rotation.set(t.armL.elbowX, 0, t.armL.elbowZ || 0);
+        p.armRElbow.rotation.set(t.armR.elbowX, 0, t.armR.elbowZ || 0);
 
         this.currentTargets = JSON.parse(JSON.stringify(t));
     }
@@ -766,6 +783,14 @@ export default class Peraga3D {
         const lerp = (a, b, t) => a + (b - a) * t;
         const ease = t * t * (3 - 2 * t);
 
+        const lerpArm = (af, at) => ({
+            shoulderX: lerp(af.shoulderX || 0, at.shoulderX || 0, ease),
+            shoulderY: lerp(af.shoulderY || 0, at.shoulderY || 0, ease),
+            shoulderZ: lerp(af.shoulderZ || 0, at.shoulderZ || 0, ease),
+            elbowX:    lerp(af.elbowX    || 0, at.elbowX    || 0, ease),
+            elbowZ:    lerp(af.elbowZ    || 0, at.elbowZ    || 0, ease),
+        });
+
         const out = {
             hipY: lerp(from.hipY, to.hipY, ease),
             torsoX: lerp(from.torsoX, to.torsoX, ease),
@@ -773,18 +798,8 @@ export default class Peraga3D {
             legKneeX: lerp(from.legKneeX, to.legKneeX, ease),
             headX: lerp(from.headX, to.headX, ease),
             headY: lerp(from.headY, to.headY, ease),
-            armL: {
-                shoulderX: lerp(from.armL.shoulderX, to.armL.shoulderX, ease),
-                shoulderY: lerp(from.armL.shoulderY, to.armL.shoulderY, ease),
-                shoulderZ: lerp(from.armL.shoulderZ, to.armL.shoulderZ, ease),
-                elbowX: lerp(from.armL.elbowX, to.armL.elbowX, ease)
-            },
-            armR: {
-                shoulderX: lerp(from.armR.shoulderX, to.armR.shoulderX, ease),
-                shoulderY: lerp(from.armR.shoulderY, to.armR.shoulderY, ease),
-                shoulderZ: lerp(from.armR.shoulderZ, to.armR.shoulderZ, ease),
-                elbowX: lerp(from.armR.elbowX, to.armR.elbowX, ease)
-            }
+            armL: lerpArm(from.armL, to.armL),
+            armR: lerpArm(from.armR, to.armR),
         };
         this.applyTargets(out);
     }

@@ -324,27 +324,33 @@ export default class SirahApp {
     }
 
     renderTimeline(grid) {
-        // Chronological eras for grouping the 25 nabi/rasul (data file order is canonical).
+        // Chronological eras for grouping the 25 nabi/rasul. Each era has its
+        // own color theme that the cards in that era inherit.
         const eras = [
             { id: 'pra-banjir', title: 'Era Pra-Banjir Besar',
               icon: 'fas fa-mountain',
               note: 'Sejak penciptaan manusia hingga sebelum banjir besar Nabi Nuh',
+              color: '#4dd0e1', accent: '#0288d1',
               ids: ['adam', 'idris'] },
             { id: 'banjir-arab',  title: 'Era Pasca-Banjir & Arab Kuno',
               icon: 'fas fa-water',
               note: "Bangkitnya kaum 'Aad, Tsamud, dan keluarga Ibrahim",
+              color: '#26a69a', accent: '#00838f',
               ids: ['nuh', 'hud', 'shalih'] },
             { id: 'ibrahim', title: 'Era Keluarga Ibrahim',
               icon: 'fas fa-kaaba',
               note: "Bapak para Nabi (Khalilullah) dan keturunannya",
+              color: '#ffd700', accent: '#ff6f61',
               ids: ['ibrahim', 'lut', 'ismail', 'ishaq', 'yaqub', 'yusuf', 'ayyub', 'syuaib'] },
             { id: 'bani-israel', title: 'Era Bani Israel',
               icon: 'fas fa-scroll',
               note: "Para nabi dari keturunan Ya'qub (Bani Israel)",
+              color: '#66bb6a', accent: '#2e7d32',
               ids: ['musa', 'harun', 'daud', 'sulaiman', 'yunus', 'zakariya', 'ilyas', 'alyasa', 'yahya', 'isa'] },
             { id: 'akhir-zaman', title: 'Era Akhir Zaman',
               icon: 'fas fa-moon',
               note: 'Khatamun Nabiyyin — penutup para nabi',
+              color: '#ce93d8', accent: '#7b1fa2',
               ids: ['muhammad'] }
         ];
 
@@ -358,20 +364,41 @@ export default class SirahApp {
                    (p.biography && p.biography.toLowerCase().includes(q));
         };
 
+        // Compute total event/lesson counts for hero stats
+        let totalEvents = 0, totalLessons = 0;
+        this.prophets.forEach(p => {
+            if (p.category === 'nabi' || p.category === 'rasul') {
+                totalEvents += (p.majorEvents || []).length;
+                totalLessons += (p.lessons || []).length;
+            }
+        });
+
         let html = `
             <div class="sirah-timeline-intro">
+                <div class="timeline-intro-bg"></div>
                 <div class="timeline-intro-icon"><i class="fas fa-stream"></i></div>
                 <div class="timeline-intro-text">
-                    <h3>Timeline 25 Nabi & Rasul</h3>
-                    <p>Urutan kronologis para utusan Allah dari Adam hingga Muhammad ﷺ. Klik setiap kartu untuk membaca kisah lengkap.</p>
+                    <span class="timeline-intro-tag">PERJALANAN PARA UTUSAN</span>
+                    <h3>Timeline 25 Nabi &amp; Rasul</h3>
+                    <p>Dari Nabi Adam <span class="alaihissalam">عليه السلام</span> hingga Nabi Muhammad ﷺ — kisah-kisah agung yang membentuk peradaban manusia.</p>
                 </div>
                 <div class="timeline-intro-stats">
-                    <div class="timeline-stat">
-                        <span class="timeline-stat-num">25</span>
-                        <span class="timeline-stat-lbl">Nabi & Rasul</span>
-                    </div>
+                    <div class="timeline-stat"><span class="timeline-stat-num">25</span><span class="timeline-stat-lbl">Nabi &amp; Rasul</span></div>
+                    <div class="timeline-stat"><span class="timeline-stat-num">${totalEvents}</span><span class="timeline-stat-lbl">Peristiwa</span></div>
+                    <div class="timeline-stat"><span class="timeline-stat-num">${totalLessons}</span><span class="timeline-stat-lbl">Hikmah</span></div>
                 </div>
             </div>
+
+            <!-- Era nav pills (clickable to scroll) -->
+            <div class="timeline-era-nav">
+                ${eras.map((e, i) => `
+                    <button class="era-nav-pill" data-era-target="${e.id}" style="--era-color:${e.color}">
+                        <span class="era-nav-num">${i + 1}</span>
+                        <span class="era-nav-title">${e.title.replace('Era ', '')}</span>
+                    </button>
+                `).join('')}
+            </div>
+
             <div class="sirah-timeline">
         `;
 
@@ -386,15 +413,23 @@ export default class SirahApp {
             if (eraProphets.length === 0) return;
 
             html += `
-                <div class="timeline-era" data-era="${era.id}">
+                <div class="timeline-era" data-era="${era.id}" id="era-${era.id}"
+                     style="--era-color:${era.color}; --era-accent:${era.accent}">
                     <div class="timeline-era-marker">
                         <div class="era-marker-dot">
                             <i class="${era.icon}"></i>
                         </div>
                         <div class="era-marker-label">
-                            <span class="era-num">Era ${eraIdx + 1}</span>
+                            <span class="era-num">Era ${eraIdx + 1} · ${eraProphets.length} Nabi</span>
                             <h4>${era.title}</h4>
                             <p>${era.note}</p>
+                        </div>
+                        <div class="era-marker-deco">
+                            <svg viewBox="0 0 100 100" aria-hidden="true">
+                                <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="1" fill="none" opacity="0.4"/>
+                                <circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="1" fill="none" opacity="0.5"/>
+                                <circle cx="50" cy="50" r="20" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/>
+                            </svg>
                         </div>
                     </div>
                     <div class="timeline-era-items">
@@ -457,13 +492,58 @@ export default class SirahApp {
         html += '</div>';
         grid.innerHTML = html;
 
-        // Click handler
+        // Card click → open detail modal
         grid.querySelectorAll('.timeline-item').forEach(item => {
             item.addEventListener('click', () => {
                 const id = item.dataset.personId;
                 this.showProphetDetail(id);
             });
         });
+
+        // Era nav pill click → scroll to era
+        grid.querySelectorAll('.era-nav-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                const target = document.getElementById('era-' + pill.dataset.eraTarget);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    pill.classList.add('clicked');
+                    setTimeout(() => pill.classList.remove('clicked'), 600);
+                }
+            });
+        });
+
+        // IntersectionObserver: items fade & rise into view as user scrolls
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        // Stop observing once revealed
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: '0px 0px -10% 0px', threshold: 0.15 });
+
+            grid.querySelectorAll('.timeline-item, .timeline-era-marker').forEach(el => {
+                el.classList.add('reveal');
+                observer.observe(el);
+            });
+
+            // Era nav: highlight current era based on scroll position
+            const eraSections = grid.querySelectorAll('.timeline-era');
+            const eraNavObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const eraId = entry.target.dataset.era;
+                        grid.querySelectorAll('.era-nav-pill').forEach(p => {
+                            p.classList.toggle('current', p.dataset.eraTarget === eraId);
+                        });
+                    }
+                });
+            }, { rootMargin: '-30% 0px -50% 0px', threshold: 0 });
+
+            eraSections.forEach(s => eraNavObserver.observe(s));
+        }
     }
 
     showProphetDetail(prophetId) {
