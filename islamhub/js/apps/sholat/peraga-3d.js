@@ -41,8 +41,12 @@ const SEDEKAP = {
     sitting: false
 };
 
+// Ruku': back PERFECTLY HORIZONTAL parallel to floor (≈90°) per reference
+// "Sifat Shalat Nabi". Three.js positive X rotation takes +Y → +Z, so a
+// positive value here tips the top of the torso forward toward kiblat.
+// Head stays in line with the back — neither dropped nor lifted.
 const RUKU_POSE = {
-    torsoAngle: -1.4,
+    torsoAngle: 1.55,
     kneeBend: 0,
     armLeftShoulder: { x: 0, y: 0, z: 0.3 },
     armRightShoulder: { x: 0, y: 0, z: -0.3 },
@@ -65,15 +69,15 @@ const ITIDAL_POSE = {
     sitting: false
 };
 
+// Sujud: lutut + ujung kaki menempel lantai (kaki ke arah kiblat), pinggul
+// terangkat di atas lutut, paha hampir tegak lurus, punggung miring ke depan,
+// perut TIDAK menempel paha, lengan menjauhi tulang rusuk, dahi+hidung di
+// lantai sejajar/di depan posisi kedua tangan.
 const SUJUD_POSE = {
-    torsoAngle: 0,
-    kneeBend: 1.6,
-    armLeftShoulder: { x: 0.5, y: 0, z: 0.3 },
-    armRightShoulder: { x: 0.5, y: 0, z: -0.3 },
-    armLeftElbow: -0.3,
-    armRightElbow: -0.3,
     handPosition: 'sujud',
-    headTilt: 0,
+    // Strong forward chin tuck so the forehead reaches the prayer mat
+    // even with the limited articulation of the box rig.
+    headTilt: 0.55,
     sitting: false,
     sujud: true
 };
@@ -90,6 +94,8 @@ const DUDUK_IFTIRASY = {
     sitting: true
 };
 
+// Tawarru' (tasyahud akhir): kaki kiri keluar ke bawah betis kanan, pinggul
+// menempel ke lantai. Posisi ini DIFFERENT dari iftirosy (tasyahud awal).
 const DUDUK_TASYAHUD = {
     torsoAngle: 0,
     kneeBend: 0,
@@ -99,7 +105,8 @@ const DUDUK_TASYAHUD = {
     armRightElbow: -0.7,
     handPosition: 'tasyahud',
     headTilt: 0.2,
-    sitting: true
+    sitting: true,
+    tawarruk: true
 };
 
 const POSES = [
@@ -758,92 +765,253 @@ export default class Peraga3D {
         this.character = character;
     }
 
+    // ===================================================================
+    // applyPose() — drives the rig for each prayer stance.
+    //
+    // Convention reminder for this rig (Three.js right-handed):
+    //   • Character faces +Z (kiblat lies on +Z).
+    //   • Limbs in their rest pose extend in -Y (legs/arms point down).
+    //     Rotation around X axis maps +Y→+Z, so a positive .rotation.x on
+    //     a downward-pointing limb sweeps it BACKWARD (-Z); a NEGATIVE
+    //     rotation sweeps it FORWARD (+Z, toward kiblat).
+    //   • Torso instead points +Y in its rest pose, so a POSITIVE torso
+    //     rotation around X tips the head FORWARD (+Z) — that's what
+    //     ruku' and sujud need.
+    // ===================================================================
     applyPose(pose) {
         if (!this.parts.hip) return;
         const p = this.parts;
 
-        // Sitting vs standing
-        if (pose.sitting) {
-            p.hip.position.y = 0.55;
-            p.legLeftHip.rotation.x = -1.5;
-            p.legLeftKnee.rotation.x = 2.8;
-            p.legRightHip.rotation.x = -1.5;
-            p.legRightKnee.rotation.x = 2.8;
-            p.legLeftHip.rotation.z = 0;
-            p.legRightHip.rotation.z = 0;
-            p.torso.rotation.x = 0;
-        } else if (pose.sujud) {
-            // Sujud pose: hip low, knees fully bent, torso forward
-            p.hip.position.y = 0.65;
-            p.legLeftHip.rotation.x = -1.4;
-            p.legLeftKnee.rotation.x = 2.6;
-            p.legRightHip.rotation.x = -1.4;
-            p.legRightKnee.rotation.x = 2.6;
-            p.torso.rotation.x = -1.5;
+        // Reset any side-tilt on the spine from previous frames
+        p.torso.rotation.y = 0;
+        p.torso.rotation.z = 0;
+        p.legLeftHip.rotation.z = 0;
+        p.legRightHip.rotation.z = 0;
+
+        if (pose.sujud) {
+            this._poseSujud(p);
+        } else if (pose.tawarruk) {
+            this._poseTawarruk(p);
+        } else if (pose.sitting) {
+            this._poseIftirasy(p);
         } else {
-            // Standing
-            p.hip.position.y = 1.0;
-            p.legLeftHip.rotation.x = pose.kneeBend ? -pose.kneeBend * 0.3 : 0;
-            p.legRightHip.rotation.x = pose.kneeBend ? -pose.kneeBend * 0.3 : 0;
-            p.legLeftKnee.rotation.x = pose.kneeBend || 0;
-            p.legRightKnee.rotation.x = pose.kneeBend || 0;
-            p.torso.rotation.x = pose.torsoAngle || 0;
+            this._poseStanding(p, pose);
         }
 
-        // Arms
-        if (pose.armLeftShoulder) {
+        // ---- Hands / arms ----
+        // For standing poses, the arm starting points come from the pose
+        // (takbir, sedekap, …). Specific stances below override them via
+        // handPosition.
+        if (pose.armLeftShoulder && !pose.sujud) {
             p.armLeftShoulder.rotation.x = pose.armLeftShoulder.x;
             p.armLeftShoulder.rotation.y = pose.armLeftShoulder.y;
             p.armLeftShoulder.rotation.z = pose.armLeftShoulder.z;
         }
-        if (pose.armRightShoulder) {
+        if (pose.armRightShoulder && !pose.sujud) {
             p.armRightShoulder.rotation.x = pose.armRightShoulder.x;
             p.armRightShoulder.rotation.y = pose.armRightShoulder.y;
             p.armRightShoulder.rotation.z = pose.armRightShoulder.z;
         }
-        p.armLeftElbow.rotation.x = pose.armLeftElbow || 0;
-        p.armRightElbow.rotation.x = pose.armRightElbow || 0;
-
-        // Special hand positions
-        if (pose.handPosition === 'crossed') {
-            // Hands folded on chest/abdomen
-            p.armLeftShoulder.rotation.x = 0.3;
-            p.armLeftShoulder.rotation.z = 0.4;
-            p.armLeftElbow.rotation.x = -1.6;
-            p.armRightShoulder.rotation.x = 0.3;
-            p.armRightShoulder.rotation.z = -0.4;
-            p.armRightElbow.rotation.x = -1.6;
-        } else if (pose.handPosition === 'knees') {
-            // Hands gripping knees during ruku
-            p.armLeftShoulder.rotation.x = 0.6;
-            p.armLeftShoulder.rotation.z = 0.1;
-            p.armLeftElbow.rotation.x = 0;
-            p.armRightShoulder.rotation.x = 0.6;
-            p.armRightShoulder.rotation.z = -0.1;
-            p.armRightElbow.rotation.x = 0;
-        } else if (pose.handPosition === 'sujud') {
-            // Hands on floor next to head
-            p.armLeftShoulder.rotation.x = 0.8;
-            p.armLeftShoulder.rotation.z = 0.4;
-            p.armLeftElbow.rotation.x = -0.8;
-            p.armRightShoulder.rotation.x = 0.8;
-            p.armRightShoulder.rotation.z = -0.4;
-            p.armRightElbow.rotation.x = -0.8;
-        } else if (pose.handPosition === 'thighs' || pose.handPosition === 'tasyahud') {
-            // Hands resting on thighs
-            p.armLeftShoulder.rotation.x = 0.0;
-            p.armLeftShoulder.rotation.z = 0.3;
-            p.armLeftElbow.rotation.x = -1.0;
-            p.armRightShoulder.rotation.x = 0.0;
-            p.armRightShoulder.rotation.z = -0.3;
-            p.armRightElbow.rotation.x = -1.0;
+        if (!pose.sujud) {
+            p.armLeftElbow.rotation.x = pose.armLeftElbow || 0;
+            p.armRightElbow.rotation.x = pose.armRightElbow || 0;
         }
 
-        // Head
+        this._applyHandPosition(p, pose);
+
+        // ---- Head ----
         p.head.rotation.x = pose.headTilt || 0;
         p.head.rotation.y = pose.headTurn || 0;
 
         this.currentPose = JSON.parse(JSON.stringify(pose));
+    }
+
+    // ----- Stance sub-routines -----
+
+    _poseStanding(p, pose) {
+        p.hip.position.y = 1.0;
+        // Bring the legs back to neutral. kneeBend is unused for sholat poses
+        // in practice (we don't bend the knees while standing) — kept for
+        // backwards compatibility but driven gently.
+        const kb = pose.kneeBend || 0;
+        p.legLeftHip.rotation.x = -kb * 0.3;
+        p.legRightHip.rotation.x = -kb * 0.3;
+        p.legLeftKnee.rotation.x = kb;
+        p.legRightKnee.rotation.x = kb;
+        p.torso.rotation.x = pose.torsoAngle || 0;
+    }
+
+    // Iftirosy — duduk antara dua sujud & tasyahud awal.
+    // Telapak kaki kiri dijadikan alas (diduduki), telapak kaki kanan
+    // ditegakkan dengan jari menghadap kiblat.
+    _poseIftirasy(p) {
+        p.hip.position.y = 0.55;
+        // Both thighs swing forward then calves fold back — symmetric
+        // simplification of iftirosy for the boxy rig.
+        p.legLeftHip.rotation.x = -1.45;
+        p.legLeftKnee.rotation.x = 2.85;
+        p.legRightHip.rotation.x = -1.45;
+        p.legRightKnee.rotation.x = 2.85;
+        p.torso.rotation.x = 0;
+    }
+
+    // Tawarru' — tasyahud akhir.
+    // Pinggul kiri turun ke lantai, kaki kiri keluar ke bawah betis kanan,
+    // kaki kanan tetap ditegakkan. Untuk rig kotak ini kita dekati dengan:
+    //   • hip sedikit lebih rendah dari iftirosy (pantat menyentuh lantai)
+    //   • paha kiri mendatar (knee.x ~ -1.5) menghadap kanan
+    //   • paha kanan tetap iftirosy (lutut kanan masih terlipat ke belakang)
+    //   • torso miring sedikit ke kanan, beban bertumpu pinggul kiri
+    _poseTawarruk(p) {
+        p.hip.position.y = 0.40;
+        // LEFT leg sweeps forward and angles slightly to the right, calf
+        // flatter so the foot can slide out from under the right calf.
+        p.legLeftHip.rotation.x = -1.55;
+        p.legLeftHip.rotation.z = 0.35;
+        p.legLeftKnee.rotation.x = 2.5;
+        // RIGHT leg stays in iftirosy fold (knee bent up, foot vertical).
+        p.legRightHip.rotation.x = -1.30;
+        p.legRightKnee.rotation.x = 2.85;
+        // Slight lean to the right because weight is on the LEFT hip on the
+        // floor (the lean tilts the upper body away from the supported side).
+        p.torso.rotation.x = 0;
+        p.torso.rotation.z = -0.10;
+    }
+
+    // Sujud — kneeling forward with forehead toward the prayer mat.
+    // Reference: "Posisi yang benar untuk sujud" diagram.
+    //   • Knees on the floor, ujung-ujung jari kaki menempel ke lantai
+    //     menghadap kiblat (we approximate this — the boxy foot mesh
+    //     can't articulate at the ankle).
+    //   • Calves fold flat BACKWARD under the body.
+    //   • Pelvis raised ABOVE the heels.
+    //   • Back tipped forward toward the mat, perut JAUH dari paha.
+    //   • Forearms (lengan bawah) LIFT off the floor — only the palms
+    //     touch — lengan menjauhi tulang rusuk.
+    _poseSujud(p) {
+        // Hip slightly raised — torso has length 1.0 + head 0.25, so a hip
+        // around 0.55 keeps the head close to the mat after a big forward
+        // tilt while the thighs stay nearly vertical.
+        p.hip.position.y = 0.55;
+        p.legLeftHip.rotation.x  = -0.15;   // thighs hint forward toward kiblat
+        p.legRightHip.rotation.x = -0.15;
+        // POSITIVE knee rotation on a -Y limb sweeps the calf BACKWARD
+        // (see header comment). +π/2 folds the calves flat behind the
+        // body so the toes/feet end up under the pelvis facing kiblat.
+        p.legLeftKnee.rotation.x  = 1.55;
+        p.legRightKnee.rotation.x = 1.55;
+
+        // Torso tips forward ~95° so the head dips BELOW the hip line —
+        // overshooting horizontal is what brings the forehead down toward
+        // the mat in front of the hands. Stops short of fully folding
+        // the body onto the thighs so the belly stays clear.
+        p.torso.rotation.x = 1.65;
+
+        // Arms: shoulder counter-rotates the torso bend (-torsoAngle) so
+        // the upper arms drop nearly vertically in world space, with a
+        // touch less rotation so the arms angle slightly forward to land
+        // in front of the head. Outward .z fan keeps the forearms clear
+        // of the ribs (lengan menjauhi tulang rusuk).
+        p.armLeftShoulder.rotation.x  = -1.50;
+        p.armLeftShoulder.rotation.y  = 0;
+        p.armLeftShoulder.rotation.z  = 0.40;
+        p.armRightShoulder.rotation.x = -1.50;
+        p.armRightShoulder.rotation.y = 0;
+        p.armRightShoulder.rotation.z = -0.40;
+        // Slight elbow bend so the forearms are RAISED above the ground —
+        // a defining Sunnah point: "irfa'ū siwā'idakum" (HR. Bukhari–Muslim).
+        p.armLeftElbow.rotation.x  = -0.25;
+        p.armRightElbow.rotation.x = -0.25;
+    }
+
+    // ----- Hand positions (called AFTER stance sub-routines so they win) -----
+    _applyHandPosition(p, pose) {
+        switch (pose.handPosition) {
+            case 'crossed':
+                // Sedekap: tangan kanan di atas tangan kiri, di atas dada.
+                // Both arms angle forward (-X on local rest = +Z forward),
+                // folded at the elbow to bring the hands onto the chest.
+                p.armLeftShoulder.rotation.x = -0.30;
+                p.armLeftShoulder.rotation.z = 0.35;
+                p.armLeftElbow.rotation.x = -1.55;
+                p.armRightShoulder.rotation.x = -0.30;
+                p.armRightShoulder.rotation.z = -0.35;
+                p.armRightElbow.rotation.x = -1.55;
+                break;
+
+            case 'knees':
+                // Ruku': hands grip the knees. With torso already tipped
+                // forward by +1.4 rad, a SHOULDER rotation of about -1.4
+                // unwinds it back to vertical in world space so the arms
+                // hang straight down to the knees.
+                p.armLeftShoulder.rotation.x = -1.40;
+                p.armLeftShoulder.rotation.y = 0;
+                p.armLeftShoulder.rotation.z = 0.15;
+                p.armRightShoulder.rotation.x = -1.40;
+                p.armRightShoulder.rotation.y = 0;
+                p.armRightShoulder.rotation.z = -0.15;
+                p.armLeftElbow.rotation.x = -0.10;
+                p.armRightElbow.rotation.x = -0.10;
+                break;
+
+            case 'sujud':
+                // Handled inside _poseSujud — keep behaviour explicit so
+                // future overrides can't reset the cancellation rotation.
+                break;
+
+            case 'thighs':
+                // Duduk antara dua sujud: telapak tangan di atas paha/lutut.
+                // Arm swings forward in local frame (negative .x) so it
+                // points downward in world while the rig is upright.
+                p.armLeftShoulder.rotation.x = -1.30;
+                p.armLeftShoulder.rotation.z = 0.18;
+                p.armLeftElbow.rotation.x = -0.20;
+                p.armRightShoulder.rotation.x = -1.30;
+                p.armRightShoulder.rotation.z = -0.18;
+                p.armRightElbow.rotation.x = -0.20;
+                break;
+
+            case 'tasyahud':
+                // Tasyahud akhir: tangan kanan di atas paha kanan dengan
+                // telunjuk diisyaratkan ke kiblat. Tangan kiri menggenggam
+                // lutut kiri. Untuk simplifikasi: tangan kanan sedikit lebih
+                // ke depan untuk memberi kesan isyarat.
+                p.armLeftShoulder.rotation.x = -1.30;
+                p.armLeftShoulder.rotation.z = 0.18;
+                p.armLeftElbow.rotation.x = -0.20;
+                p.armRightShoulder.rotation.x = -1.35;
+                p.armRightShoulder.rotation.z = -0.18;
+                p.armRightElbow.rotation.x = -0.30;
+                break;
+
+            case 'up':
+                // Takbir: kedua tangan diangkat sejajar bahu/telinga,
+                // telapak menghadap kiblat. Shoulders rotate strongly
+                // backward in local frame (positive .x) so the upper arms
+                // swing UP from their resting -Y position.
+                p.armLeftShoulder.rotation.x = -1.55;   // swing arm forward
+                p.armLeftShoulder.rotation.z = 1.55;    // then rotate sideways UP
+                p.armLeftElbow.rotation.x = -0.40;
+                p.armRightShoulder.rotation.x = -1.55;
+                p.armRightShoulder.rotation.z = -1.55;
+                p.armRightElbow.rotation.x = -0.40;
+                break;
+
+            case 'down':
+            default:
+                // Posisi netral berdiri — kedua tangan turun di samping
+                // badan. Apply pose.armLeftShoulder if specified, else
+                // default to a near-zero shoulder rotation.
+                if (!pose.armLeftShoulder && !pose.sujud) {
+                    p.armLeftShoulder.rotation.x = 0;
+                    p.armLeftShoulder.rotation.z = 0.05;
+                    p.armRightShoulder.rotation.x = 0;
+                    p.armRightShoulder.rotation.z = -0.05;
+                    p.armLeftElbow.rotation.x = 0;
+                    p.armRightElbow.rotation.x = 0;
+                }
+                break;
+        }
     }
 
     interpolatePose(from, to, t) {
@@ -859,11 +1027,18 @@ export default class Peraga3D {
 
         // Then smooth-interpolate continuous values
         if (this.parts.hip) {
-            const fromY = from.sitting ? 0.55 : (from.sujud ? 0.65 : 1.0);
-            const toY = to.sitting ? 0.55 : (to.sujud ? 0.65 : 1.0);
-            this.parts.hip.position.y = lerp(fromY, toY, ease);
-
-            this.parts.torso.rotation.x = lerp(from.torsoAngle || 0, to.torsoAngle || 0, ease);
+            const hipY = (pose) => {
+                if (pose.sujud)    return 0.48;
+                if (pose.tawarruk) return 0.40;
+                if (pose.sitting)  return 0.55;
+                return 1.0;
+            };
+            const torsoAngle = (pose) => {
+                if (pose.sujud) return 1.45;     // forward ~83°
+                return pose.torsoAngle || 0;
+            };
+            this.parts.hip.position.y = lerp(hipY(from), hipY(to), ease);
+            this.parts.torso.rotation.x = lerp(torsoAngle(from), torsoAngle(to), ease);
             this.parts.head.rotation.x = lerp(from.headTilt || 0, to.headTilt || 0, ease);
             this.parts.head.rotation.y = lerp(from.headTurn || 0, to.headTurn || 0, ease);
         }
