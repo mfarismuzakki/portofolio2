@@ -28,6 +28,10 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Leaflet Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <!-- Styles -->
         <!-- Styles - Modular CSS Architecture -->
@@ -216,6 +220,60 @@
                         </div>
                         <h3>Streaming Kajian</h3>
                         <p>Radio dan video streaming kajian Islam live 24/7</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('zakat')">
+                        <div class="app-badge live">LIVE</div>
+                        <div class="app-icon">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <h3>Kalkulator Zakat</h3>
+                        <p>Hitung zakat maal, fitrah, dan profesi sesuai syariat Islam</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('kalender')">
+                        <div class="app-badge live">LIVE</div>
+                        <div class="app-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h3>Kalender Hijriyah</h3>
+                        <p>Kalender Islam lengkap dengan hari-hari penting dan konversi tanggal</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('asmaul')">
+                        <div class="app-badge live">LIVE</div>
+                        <div class="app-icon">
+                            <i class="fas fa-star-and-crescent"></i>
+                        </div>
+                        <h3>Asmaul Husna</h3>
+                        <p>99 Nama-Nama Allah dengan makna, dalil, dan tracker hafalan</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('hadits')">
+                        <div class="app-badge live">LIVE</div>
+                        <div class="app-icon">
+                            <i class="fas fa-scroll"></i>
+                        </div>
+                        <h3>Hadits Browser</h3>
+                        <p>Jelajahi koleksi hadits shahih dari Kutubut Tis'ah berdasarkan kategori</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('fiqh')">
+                        <div class="app-badge live">LIVE</div>
+                        <div class="app-icon">
+                            <i class="fas fa-hands-praying"></i>
+                        </div>
+                        <h3>Fiqh Praktis</h3>
+                        <p>Panduan ibadah sehari-hari berdasarkan dalil Al-Quran dan Sunnah shahih</p>
+                    </div>
+
+                    <div class="app-card" onclick="window.islamHub.switchApp('haji')">
+                        <div class="app-badge live">LIVE</div>
+                        <div class="app-icon">
+                            <i class="fas fa-kaaba"></i>
+                        </div>
+                        <h3>Haji & Umrah</h3>
+                        <p>Panduan visual manasik haji dan umrah dengan peta lokasi suci</p>
                     </div>
 
                     <div class="app-card coming-soon">
@@ -709,6 +767,54 @@
                     <p>Memuat aplikasi Streaming...</p>
                 </div>
             </div>
+
+            <!-- Zakat Component -->
+            <div id="zakat-app" class="app-component" data-app="zakat">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat Kalkulator Zakat...</p>
+                </div>
+            </div>
+
+            <!-- Kalender Component -->
+            <div id="kalender-app" class="app-component" data-app="kalender">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat Kalender Hijriyah...</p>
+                </div>
+            </div>
+
+            <!-- Asmaul Husna Component -->
+            <div id="asmaul-app" class="app-component" data-app="asmaul">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat Asmaul Husna...</p>
+                </div>
+            </div>
+
+            <!-- Hadits Browser Component -->
+            <div id="hadits-app" class="app-component" data-app="hadits">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat Hadits Browser...</p>
+                </div>
+            </div>
+
+            <!-- Fiqh Praktis Component -->
+            <div id="fiqh-app" class="app-component" data-app="fiqh">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat Fiqh Praktis...</p>
+                </div>
+            </div>
+
+            <!-- Haji & Umrah Component -->
+            <div id="haji-app" class="app-component" data-app="haji">
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
+                    <p>Memuat panduan Haji & Umrah...</p>
+                </div>
+            </div>
         </main>
 
         <!-- Floating Prayer Widget -->
@@ -816,60 +922,40 @@
         <div class="more-apps-dropdown" id="moreAppsDropdown">
             <div class="more-apps-header">
                 <h3><i class="fas fa-th"></i> Aplikasi Lainnya</h3>
-                <button class="close-dropdown" id="closeDropdown">
-                    <i class="fas fa-times"></i>
-                </button>
+                <div class="more-apps-header-actions">
+                    <button class="arrange-apps-btn" id="arrangeAppsBtn" title="Atur urutan aplikasi">
+                        <i class="fas fa-grip-lines"></i>
+                    </button>
+                    <button class="close-dropdown" id="closeDropdown">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
-            <div class="more-apps-list">
-                <button class="more-app-item" data-app="sholat">
-                    <div class="more-app-icon">
-                        <i class="fas fa-kaaba"></i>
-                    </div>
-                    <div class="more-app-info">
-                        <h4>Tata Cara Sholat</h4>
-                        <p>Panduan gerakan dan bacaan sholat</p>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                <button class="more-app-item" data-app="waris">
-                    <div class="more-app-icon">
-                        <i class="fas fa-calculator"></i>
-                    </div>
-                    <div class="more-app-info">
-                        <h4>Kalkulator Waris</h4>
-                        <p>Hitung pembagian warisan syar'i</p>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                <button class="more-app-item" data-app="qibla">
-                    <div class="more-app-icon">
-                        <i class="fas fa-compass"></i>
-                    </div>
-                    <div class="more-app-info">
-                        <h4>Arah Kiblat</h4>
-                        <p>Kompas digital arah kiblat</p>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                <button class="more-app-item" data-app="sirah">
-                    <div class="more-app-icon">
-                        <i class="fas fa-tree"></i>
-                    </div>
-                    <div class="more-app-info">
-                        <h4>Sirah Nabi</h4>
-                        <p>Kisah para nabi dan rasul</p>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                <button class="more-app-item" data-app="dzikir">
-                    <div class="more-app-icon">
-                        <i class="fas fa-hands"></i>
-                    </div>
-                    <div class="more-app-info">
-                        <h4>Dzikir & Doa</h4>
-                        <p>Kumpulan dzikir dan doa harian dari Al-Quran dan hadist</p>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
+            <div class="more-apps-list" id="moreAppsList">
+                <!-- Rendered dynamically by JS from stored order -->
+            </div>
+        </div>
+    </div>
+
+    <!-- App Settings / Reorder Sheet -->
+    <div class="app-settings-sheet" id="appSettingsSheet">
+        <div class="app-settings-backdrop" id="appSettingsBackdrop"></div>
+        <div class="app-settings-box">
+            <div class="app-settings-header">
+                <div class="app-settings-handle-bar"></div>
+                <h3><i class="fas fa-grip-vertical"></i> Atur Urutan Aplikasi</h3>
+                <button class="app-settings-close" id="appSettingsClose"><i class="fas fa-times"></i></button>
+            </div>
+            <p class="app-settings-hint">
+                <i class="fas fa-info-circle"></i>
+                Seret atau gunakan tombol ↑↓ untuk mengatur urutan menu "Lainnya". Perubahan disimpan otomatis.
+            </p>
+            <div class="app-settings-list" id="appSettingsList">
+                <!-- Rendered dynamically by JS -->
+            </div>
+            <div class="app-settings-footer">
+                <button class="app-settings-reset" id="resetAppOrder">
+                    <i class="fas fa-undo"></i> Reset ke Default
                 </button>
             </div>
         </div>

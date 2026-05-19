@@ -27,6 +27,13 @@
 @import url('components/sirah-konstelasi.css?v=1.0.0');
 @import url('components/streaming.css');
 @import url('components/clear-data-modal.css');
+@import url('components/zakat.css');
+@import url('components/kalender.css');
+@import url('components/asmaul.css');
+@import url('components/hadits.css');
+@import url('components/fiqh.css');
+@import url('components/haji.css');
+@import url('components/settings.css');
 
 /* Layout */
 @import url('components/footer.css');

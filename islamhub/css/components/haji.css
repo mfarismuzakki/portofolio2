@@ -1,0 +1,335 @@
+/* ===== Peta Haji & Umrah ===== */
+
+.haji-container {
+    padding: 0 16px 120px;
+    max-width: 800px; margin: 0 auto;
+}
+
+.haji-header {
+    text-align: center; padding: 32px 20px 20px;
+    margin-bottom: 0.5rem;
+}
+.haji-header h2 {
+    font-family: var(--font-orbitron, 'Orbitron', sans-serif);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 600;
+    color: #ff8c00;
+    text-shadow: 0 0 20px rgba(255,140,0,0.5);
+    display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+    margin: 0 0 8px;
+}
+.haji-header h2 i { font-size: 1.5rem; }
+.haji-subtitle { color: var(--text-secondary); font-size: 0.95rem; margin: 0; }
+
+/* Tabs */
+.haji-tabs {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px;
+}
+.haji-tab {
+    flex: 1; min-width: 120px; padding: 10px 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px; color: var(--text-secondary);
+    cursor: pointer; font-size: 0.8rem; font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; transition: all 0.2s;
+}
+.haji-tab i { font-size: 0.85rem; }
+.haji-tab.active {
+    background: rgba(255,140,0,0.15);
+    border-color: rgba(255,140,0,0.4); color: #ff8c00;
+}
+
+/* Intro box */
+.haji-intro {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: rgba(0,191,255,0.07);
+    border: 1px solid rgba(0,191,255,0.25);
+    border-radius: 12px; padding: 14px; margin-bottom: 20px;
+}
+.haji-intro.warning {
+    background: rgba(255,193,7,0.07);
+    border-color: rgba(255,193,7,0.3);
+}
+.haji-intro.warning i { color: #ffc107; }
+.haji-intro i { color: #00bfff; font-size: 1rem; margin-top: 2px; flex-shrink: 0; }
+.haji-intro p { margin: 0; color: var(--text-secondary); font-size: 0.85rem; line-height: 1.7; }
+
+.haji-section-title {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--text-primary); font-size: 0.95rem; margin: 24px 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.haji-section-title i { color: #ff8c00; }
+
+/* Timeline */
+.haji-timeline { display: flex; flex-direction: column; gap: 0; }
+.haji-timeline-item {
+    display: flex; gap: 16px; position: relative;
+}
+.haji-timeline-item:not(:last-child)::before {
+    content: ''; position: absolute;
+    left: 19px; top: 44px; bottom: 0;
+    width: 2px; background: rgba(255,140,0,0.3);
+}
+.haji-timeline-dot {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255,140,0,0.15);
+    border: 2px solid rgba(255,140,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    color: #ff8c00; font-size: 0.9rem; flex-shrink: 0;
+    margin-top: 4px;
+}
+.haji-timeline-content {
+    flex: 1; padding: 0 0 20px;
+}
+.haji-timeline-header {
+    display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px;
+}
+.haji-timeline-hari {
+    font-size: 0.75rem; color: #ff8c00;
+    font-weight: 600; font-family: var(--font-orbitron, 'Orbitron', sans-serif);
+}
+.haji-timeline-header strong { color: var(--text-primary); font-size: 0.92rem; }
+.haji-timeline-amalan {
+    margin: 0; padding-left: 0; list-style: none;
+    display: flex; flex-direction: column; gap: 4px;
+}
+.haji-timeline-amalan li {
+    color: var(--text-secondary); font-size: 0.82rem; line-height: 1.5;
+    padding: 4px 0;
+    display: flex; align-items: flex-start; gap: 8px;
+}
+.haji-timeline-amalan li::before {
+    content: '•'; color: #ff8c00; flex-shrink: 0;
+}
+
+/* Miqat */
+.haji-miqat-list { display: flex; flex-direction: column; gap: 8px; }
+.haji-miqat-item {
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px; padding: 14px 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-left: 3px solid #ff8c00;
+}
+.haji-miqat-name {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--text-primary); font-weight: 600; font-size: 0.9rem;
+    margin-bottom: 6px;
+}
+.haji-miqat-name i { color: #ff8c00; }
+.haji-miqat-detail {
+    display: flex; gap: 16px; margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+.haji-miqat-detail span {
+    display: flex; align-items: center; gap: 5px;
+    color: var(--text-secondary); font-size: 0.78rem;
+}
+.haji-miqat-detail i { color: #ffd700; }
+.haji-miqat-note { color: var(--text-secondary); font-size: 0.78rem; font-style: italic; }
+
+/* Umrah Steps */
+.haji-steps { display: flex; flex-direction: column; gap: 12px; }
+.haji-step {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px; padding: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.haji-step-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,140,0,0.2); border: 2px solid rgba(255,140,0,0.5);
+    color: #ff8c00; font-weight: 700; font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.haji-step-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+}
+.haji-step-header i { color: #ff8c00; }
+.haji-step-header strong { color: var(--text-primary); font-size: 0.9rem; }
+.haji-step-content p { margin: 0; color: var(--text-secondary); font-size: 0.82rem; line-height: 1.6; }
+
+/* Talbiyah */
+.haji-talbiyah-box {
+    background: linear-gradient(135deg, rgba(255,140,0,0.1), rgba(255,215,0,0.05));
+    border: 1px solid rgba(255,140,0,0.3);
+    border-radius: 16px; padding: 20px; margin-top: 20px; text-align: center;
+}
+.haji-talbiyah-box h4 {
+    color: #ff8c00; margin: 0 0 14px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.haji-talbiyah-arabic {
+    font-family: var(--font-amiri, 'Amiri', serif);
+    direction: rtl; font-size: 1.3rem; color: #ffd700;
+    line-height: 2; margin-bottom: 10px;
+}
+.haji-talbiyah-latin {
+    font-size: 0.85rem; font-style: italic;
+    color: var(--text-secondary); margin-bottom: 10px; line-height: 1.7;
+}
+.haji-talbiyah-terjemah {
+    font-size: 0.85rem; color: var(--text-primary);
+    line-height: 1.7; font-style: italic;
+    background: rgba(255,255,255,0.04); border-radius: 10px; padding: 12px;
+}
+
+/* Leaflet Map */
+.haji-leaflet-map {
+    height: 320px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,140,0,0.3);
+}
+
+/* Peta SVG (legacy) */
+.haji-map-wrapper {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 20px;
+}
+.haji-map {
+    width: 100%; border-radius: 16px;
+    border: 1px solid rgba(255,140,0,0.3);
+    background: #0a0e27;
+}
+.haji-map-location circle { transition: r 0.2s, opacity 0.2s; }
+.haji-map-location:hover circle:first-child { opacity: 1; r: 4; }
+
+.haji-location-panel {
+    background: rgba(255,255,255,0.04);
+    border-radius: 16px; padding: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    min-height: 80px; display: flex; align-items: center; justify-content: center;
+}
+.haji-location-placeholder {
+    text-align: center; color: var(--text-secondary);
+}
+.haji-location-placeholder i { font-size: 1.5rem; margin-bottom: 8px; display: block; color: #ff8c00; }
+.haji-location-placeholder p { margin: 0; font-size: 0.85rem; }
+
+/* Location list */
+.haji-location-list { display: flex; flex-direction: column; gap: 8px; }
+.haji-location-card {
+    display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px; padding: 14px 16px;
+    cursor: pointer; border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.2s; border-left: 3px solid var(--loc-color, #ff8c00);
+}
+.haji-location-card:hover { background: rgba(255,255,255,0.07); transform: translateX(3px); }
+.haji-location-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: rgba(255,140,0,0.1);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--loc-color, #ff8c00); font-size: 1rem; flex-shrink: 0;
+}
+.haji-location-info { flex: 1; }
+.haji-location-info strong { display: block; color: var(--text-primary); font-size: 0.9rem; }
+.haji-location-info span { color: var(--text-secondary); font-size: 0.78rem; }
+
+/* Larangan */
+.haji-larangan-list { display: flex; flex-direction: column; gap: 8px; }
+.haji-larangan-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: rgba(255,68,68,0.05);
+    border-radius: 12px; padding: 12px 16px;
+    border: 1px solid rgba(255,68,68,0.2);
+}
+.haji-larangan-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,68,68,0.2); color: #ff4444;
+    font-size: 0.78rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.haji-larangan-content strong { display: block; color: var(--text-primary); font-size: 0.87rem; margin-bottom: 3px; }
+.haji-larangan-content span {
+    color: var(--text-secondary); font-size: 0.75rem;
+    display: flex; align-items: center; gap: 5px;
+}
+.haji-larangan-content span i { color: #ffd700; }
+
+/* Dam info */
+.haji-dam-info {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 16px; padding: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.haji-dam-info h4 {
+    color: var(--text-primary); margin: 0 0 14px;
+    display: flex; align-items: center; gap: 8px; font-size: 0.95rem;
+}
+.haji-dam-info h4 i { color: #ff8c00; }
+.haji-dam-grid { display: flex; flex-direction: column; gap: 10px; }
+.haji-dam-item {
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px; padding: 12px 14px;
+    border: 1px solid rgba(255,140,0,0.2);
+}
+.haji-dam-item strong { display: block; color: #ff8c00; font-size: 0.85rem; margin-bottom: 4px; }
+.haji-dam-item p { margin: 0; color: var(--text-secondary); font-size: 0.82rem; line-height: 1.6; }
+
+/* Modal */
+.haji-modal {
+    position: fixed; inset: 0; z-index: 2000;
+    display: none; align-items: flex-end;
+}
+.haji-modal.active { display: flex; }
+.haji-modal-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+}
+.haji-modal-box {
+    position: relative; z-index: 1;
+    width: 100%; max-height: 88vh; overflow-y: auto;
+    background: #0f1428;
+    border-radius: 24px 24px 0 0;
+    border: 1px solid rgba(255,140,0,0.3); border-bottom: none;
+    padding: 24px 20px 40px; box-sizing: border-box;
+}
+.haji-modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(255,255,255,0.1); border: none;
+    border-radius: 50%; width: 36px; height: 36px;
+    color: var(--text-secondary); cursor: pointer; font-size: 0.9rem;
+}
+
+/* Location Detail */
+.haji-location-detail { text-align: center; padding-top: 8px; }
+.haji-detail-icon { font-size: 2.5rem; margin-bottom: 10px; }
+.haji-location-detail h3 { font-size: 1.2rem; margin: 0 0 14px; }
+.haji-detail-desc {
+    color: var(--text-secondary); font-size: 0.88rem;
+    line-height: 1.7; text-align: left; margin-bottom: 16px;
+}
+.haji-detail-dalil {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: rgba(255,215,0,0.07); border-radius: 12px;
+    padding: 12px 14px; margin-bottom: 16px; text-align: left;
+}
+.haji-detail-dalil i { color: #ffd700; flex-shrink: 0; margin-top: 2px; }
+.haji-detail-dalil strong { display: block; color: #ffd700; font-size: 0.78rem; margin-bottom: 4px; }
+.haji-detail-dalil p { margin: 0; color: var(--text-secondary); font-size: 0.82rem; line-height: 1.6; }
+.haji-detail-amalan { text-align: left; }
+.haji-detail-amalan h4 {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--text-primary); font-size: 0.88rem; margin: 0 0 10px;
+}
+.haji-detail-amalan h4 i { color: #00ff88; }
+.haji-detail-amalan ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.haji-detail-amalan li {
+    display: flex; gap: 8px; align-items: flex-start;
+    background: rgba(0,255,136,0.06); border-radius: 8px;
+    padding: 8px 12px; color: var(--text-secondary); font-size: 0.83rem;
+}
+.haji-detail-amalan li i { color: #00ff88; flex-shrink: 0; margin-top: 2px; }
+
+@media (max-width: 480px) {
+    .haji-tabs { gap: 4px; }
+    .haji-tab { min-width: 80px; font-size: 0.72rem; padding: 8px 6px; }
+}

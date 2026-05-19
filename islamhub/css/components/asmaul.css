@@ -1,0 +1,170 @@
+/* ===== Asmaul Husna ===== */
+
+.asmaul-container {
+    padding: 0 16px 120px;
+    max-width: 800px; margin: 0 auto;
+}
+
+.asmaul-header {
+    text-align: center; padding: 32px 20px 20px;
+    margin-bottom: 0.5rem;
+}
+.asmaul-header h2 {
+    font-family: var(--font-orbitron, 'Orbitron', sans-serif);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 600;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255,215,0,0.4);
+    display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+    margin: 0 0 8px;
+}
+.asmaul-header h2 i { font-size: 1.5rem; }
+.asmaul-subtitle { color: var(--text-secondary); font-size: 0.95rem; margin: 0; }
+
+/* Hadits Box */
+.asmaul-hadits-box {
+    background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,165,0,0.04));
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 16px; padding: 20px; margin-bottom: 24px;
+}
+.asmaul-hadits-arabic {
+    font-family: var(--font-amiri, 'Amiri', serif);
+    font-size: 1.3rem; direction: rtl; text-align: center;
+    color: #ffd700; line-height: 2; margin-bottom: 12px;
+}
+.asmaul-hadits-latin {
+    font-size: 0.85rem; font-style: italic;
+    color: var(--text-secondary); text-align: center;
+    margin-bottom: 12px; line-height: 1.7;
+}
+.asmaul-hadits-terjemah {
+    font-size: 0.9rem; color: var(--text-primary);
+    text-align: center; margin-bottom: 12px;
+    line-height: 1.7; font-style: italic;
+}
+.asmaul-hadits-source {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 0.78rem; color: #ffd700; font-weight: 600;
+    margin-bottom: 10px;
+}
+.asmaul-hadits-note {
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px; padding: 10px 12px;
+    font-size: 0.8rem; color: var(--text-secondary);
+    line-height: 1.6; display: flex; gap: 8px; align-items: flex-start;
+}
+.asmaul-hadits-note i { color: #ffd700; flex-shrink: 0; margin-top: 2px; }
+
+/* Controls */
+.asmaul-controls { margin-bottom: 20px; }
+.asmaul-search-wrap {
+    position: relative; display: flex; align-items: center;
+}
+.asmaul-search-wrap i {
+    position: absolute; left: 14px; color: var(--text-secondary); font-size: 0.9rem;
+}
+.asmaul-search {
+    width: 100%; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px; padding: 12px 14px 12px 40px;
+    color: var(--text-primary); font-size: 0.9rem; outline: none;
+    box-sizing: border-box;
+}
+.asmaul-search:focus { border-color: rgba(255,215,0,0.5); background: rgba(255,215,0,0.05); }
+
+/* Grid */
+.asmaul-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+}
+.asmaul-card {
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px; padding: 14px 12px;
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    gap: 6px; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative; transition: all 0.2s;
+}
+.asmaul-card:hover {
+    background: rgba(255,215,0,0.08);
+    border-color: rgba(255,215,0,0.3);
+    transform: translateY(-2px);
+}
+.asmaul-card.memorized {
+    background: rgba(0,255,136,0.06);
+    border-color: rgba(0,255,136,0.3);
+}
+.asmaul-card-no {
+    position: absolute; top: 8px; left: 10px;
+    font-size: 0.7rem; color: var(--text-secondary);
+    font-weight: 600;
+}
+.asmaul-card-arabic {
+    font-family: var(--font-amiri, 'Amiri', serif);
+    font-size: 1.2rem; color: #ffd700;
+    line-height: 1.4; margin-top: 4px;
+}
+.asmaul-card-latin { font-size: 0.72rem; color: #00bfff; font-weight: 600; }
+.asmaul-card-meaning { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.4; }
+.asmaul-empty {
+    grid-column: 1 / -1; text-align: center;
+    padding: 40px 20px; color: var(--text-secondary);
+}
+.asmaul-empty i { font-size: 2rem; margin-bottom: 10px; display: block; }
+
+/* Modal */
+.asmaul-modal {
+    position: fixed; inset: 0; z-index: 2000;
+    display: none; align-items: flex-end;
+}
+.asmaul-modal.active { display: flex; }
+.asmaul-modal-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+}
+.asmaul-modal-content {
+    position: relative; z-index: 1;
+    width: 100%; max-height: 90vh; overflow-y: auto;
+    background: #0f1428;
+    border-radius: 24px 24px 0 0;
+    border: 1px solid rgba(255,215,0,0.3);
+    border-bottom: none;
+}
+.asmaul-modal-inner { padding: 24px 24px 40px; text-align: center; position: relative; }
+.asmaul-modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(255,255,255,0.1); border: none;
+    border-radius: 50%; width: 36px; height: 36px;
+    color: var(--text-secondary); cursor: pointer; font-size: 0.9rem;
+}
+.asmaul-modal-no {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255,215,0,0.15); border: 1px solid rgba(255,215,0,0.4);
+    color: #ffd700; font-weight: 700; font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+}
+.asmaul-modal-arabic {
+    font-family: var(--font-amiri, 'Amiri', serif);
+    font-size: 2rem; color: #ffd700; margin-bottom: 8px;
+}
+.asmaul-modal-latin { font-size: 1rem; color: #00bfff; font-weight: 600; margin-bottom: 6px; }
+.asmaul-modal-meaning { font-size: 1.1rem; color: var(--text-primary); margin-bottom: 16px; font-weight: 600; }
+.asmaul-modal-dalil {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(0,191,255,0.1); border-radius: 8px;
+    padding: 6px 12px; font-size: 0.8rem; color: #00bfff;
+    margin-bottom: 14px;
+}
+.asmaul-modal-desc {
+    color: var(--text-secondary); font-size: 0.88rem;
+    line-height: 1.7; text-align: left; margin-bottom: 16px;
+    background: rgba(255,255,255,0.04); border-radius: 10px; padding: 14px;
+}
+
+@media (max-width: 480px) {
+    .asmaul-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+}

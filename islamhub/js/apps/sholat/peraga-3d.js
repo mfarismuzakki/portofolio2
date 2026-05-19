@@ -940,16 +940,20 @@ export default class Peraga3D {
                 break;
 
             case 'knees':
-                // Ruku': hands grip the knees. With torso already tipped
-                // forward by +1.4 rad, a SHOULDER rotation of about -1.4
-                // unwinds it back to vertical in world space so the arms
-                // hang straight down to the knees.
-                p.armLeftShoulder.rotation.x = -1.40;
+                // Ruku': hands grip the knees. The torso is tilted +1.55 rad
+                // forward, so the shoulder joint (top of torso) is at approx
+                // world (0, 1.02, 1.0). The knees are at approx (±0.25, 0.40, 0).
+                // To reach the knee, the arm must angle backward in world space
+                // (toward -Z, away from kiblat). Math: shoulder.x ≈ -0.55 gives
+                // a world arm direction of (0, -0.53, -0.85) — pointing down AND
+                // backward — so the hand lands near knee level rather than on the
+                // floor in front of the body.
+                p.armLeftShoulder.rotation.x = -0.55;
                 p.armLeftShoulder.rotation.y = 0;
-                p.armLeftShoulder.rotation.z = 0.15;
-                p.armRightShoulder.rotation.x = -1.40;
+                p.armLeftShoulder.rotation.z = 0.22;
+                p.armRightShoulder.rotation.x = -0.55;
                 p.armRightShoulder.rotation.y = 0;
-                p.armRightShoulder.rotation.z = -0.15;
+                p.armRightShoulder.rotation.z = -0.22;
                 p.armLeftElbow.rotation.x = -0.10;
                 p.armRightElbow.rotation.x = -0.10;
                 break;
@@ -1028,13 +1032,13 @@ export default class Peraga3D {
         // Then smooth-interpolate continuous values
         if (this.parts.hip) {
             const hipY = (pose) => {
-                if (pose.sujud)    return 0.48;
+                if (pose.sujud)    return 0.55;  // matches _poseSujud
                 if (pose.tawarruk) return 0.40;
                 if (pose.sitting)  return 0.55;
                 return 1.0;
             };
             const torsoAngle = (pose) => {
-                if (pose.sujud) return 1.45;     // forward ~83°
+                if (pose.sujud) return 1.65;     // matches _poseSujud (forward ~95°)
                 return pose.torsoAngle || 0;
             };
             this.parts.hip.position.y = lerp(hipY(from), hipY(to), ease);

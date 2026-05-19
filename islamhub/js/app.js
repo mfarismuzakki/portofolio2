@@ -1,5 +1,20 @@
 /* ===== IslamHub - Main Application Controller ===== */
 
+// App registry for the reorderable "More Apps" dropdown (all non-fixed-nav apps)
+const DROPDOWN_APP_CONFIG = [
+    { id: 'sholat',   name: 'Tata Cara Sholat',   shortDesc: 'Panduan gerakan dan bacaan sholat',          icon: 'fa-mosque',            iconBg: 'linear-gradient(135deg,rgba(212,168,83,0.8),rgba(240,215,140,0.6))' },
+    { id: 'waris',    name: 'Kalkulator Waris',    shortDesc: 'Hitung pembagian warisan syar\'i',           icon: 'fa-calculator',        iconBg: 'linear-gradient(135deg,rgba(255,51,102,0.7),rgba(255,128,0,0.5))' },
+    { id: 'qibla',   name: 'Arah Kiblat',          shortDesc: 'Kompas digital arah kiblat',                icon: 'fa-compass',           iconBg: 'linear-gradient(135deg,rgba(0,200,167,0.7),rgba(0,255,255,0.5))' },
+    { id: 'sirah',   name: 'Sirah Nabi',            shortDesc: 'Kisah para nabi dan rasul',                 icon: 'fa-tree',              iconBg: 'linear-gradient(135deg,rgba(0,128,255,0.7),rgba(139,0,255,0.5))' },
+    { id: 'dzikir',  name: 'Dzikir & Doa',          shortDesc: 'Kumpulan dzikir dan doa harian',            icon: 'fa-hands',             iconBg: 'linear-gradient(135deg,rgba(255,128,0,0.7),rgba(255,51,102,0.5))' },
+    { id: 'zakat',   name: 'Kalkulator Zakat',      shortDesc: 'Hitung zakat maal, fitrah, dan profesi',    icon: 'fa-hand-holding-heart',iconBg: 'linear-gradient(135deg,rgba(0,255,136,0.7),rgba(0,200,100,0.5))' },
+    { id: 'kalender',name: 'Kalender Hijriyah',     shortDesc: 'Kalender Islam dan konversi tanggal',       icon: 'fa-calendar-alt',      iconBg: 'linear-gradient(135deg,rgba(0,191,255,0.7),rgba(0,128,255,0.5))' },
+    { id: 'asmaul',  name: 'Asmaul Husna',          shortDesc: '99 Nama-Nama Allah dengan makna dan dalil', icon: 'fa-star-and-crescent', iconBg: 'linear-gradient(135deg,rgba(255,215,0,0.75),rgba(212,168,83,0.55))' },
+    { id: 'hadits',  name: 'Hadits Browser',         shortDesc: 'Koleksi hadits shahih berdasarkan kategori',icon: 'fa-scroll',            iconBg: 'linear-gradient(135deg,rgba(147,112,219,0.75),rgba(100,50,200,0.5))' },
+    { id: 'fiqh',    name: 'Fiqh Praktis',           shortDesc: 'Panduan ibadah sesuai dalil shahih',        icon: 'fa-hands-praying',     iconBg: 'linear-gradient(135deg,rgba(0,191,255,0.7),rgba(0,128,255,0.5))' },
+    { id: 'haji',    name: 'Haji & Umrah',           shortDesc: 'Panduan visual manasik dan peta lokasi suci',icon: 'fa-kaaba',            iconBg: 'linear-gradient(135deg,rgba(255,140,0,0.75),rgba(255,80,0,0.5))' },
+];
+
 class IslamHubApp {
     constructor() {
         this.currentApp = 'home';
@@ -40,6 +55,8 @@ class IslamHubApp {
         this.setupNavigation();
         this.setupMobileMenu();
         this.loadStateFromLocalStorage();
+        this.renderMoreAppsDropdown();
+        this.setupSettingsSheet();
         
         // Load Adzan app in background — prayer time fetch must not block the main loader
         this.loadApp('adzan').catch(err => console.warn('[adzan] background load failed:', err));
@@ -539,21 +556,31 @@ class IslamHubApp {
                 moreAppsDropdown.classList.remove('show');
             });
             
-            // Handle app selection from dropdown
-            const moreAppItems = document.querySelectorAll('.more-app-item');
-            console.log(`Found ${moreAppItems.length} more app items`);
-            
-            moreAppItems.forEach(item => {
-                item.addEventListener('click', (e) => {
+            // Handle app selection from dropdown (event delegation — list is rendered dynamically)
+            const moreAppsList = document.getElementById('moreAppsList');
+            if (moreAppsList) {
+                moreAppsList.addEventListener('click', (e) => {
+                    const item = e.target.closest('.more-app-item');
+                    if (!item) return;
                     e.preventDefault();
                     e.stopPropagation();
                     const appName = item.dataset.app;
                     console.log(`Opening app from dropdown: ${appName}`);
-                    // Haptic disabled for navigation
                     moreAppsDropdown.classList.remove('show');
                     this.switchApp(appName);
                 });
-            });
+            }
+
+            // Arrange apps button
+            const arrangeBtn = document.getElementById('arrangeAppsBtn');
+            if (arrangeBtn) {
+                arrangeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    moreAppsDropdown.classList.remove('show');
+                    this.openSettingsSheet();
+                });
+            }
             
             // Close on outside click
             document.addEventListener('click', (e) => {
@@ -627,9 +654,8 @@ class IslamHubApp {
             nav.classList.add('active');
         });
         
-        // If app is in dropdown (waris, qibla, sirah, sholat), activate 'More Apps' button
-        // Note: 'streaming' is now in the main nav bar, NOT the dropdown
-        const dropdownApps = ['waris', 'qibla', 'sirah', 'sholat', 'dzikir'];
+        // If app is in dropdown, activate 'More Apps' button
+        const dropdownApps = DROPDOWN_APP_CONFIG.map(a => a.id);
         if (dropdownApps.includes(appName)) {
             const moreAppsBtn = document.getElementById('moreAppsBtn');
             if (moreAppsBtn) {
@@ -709,7 +735,13 @@ class IslamHubApp {
                 'qibla': 'qibla-app.js',
                 'sholat': 'sholat-app.js',
                 'sirah': 'sirah-app.js',
-                'streaming': 'streaming-app.js'
+                'streaming': 'streaming-app.js',
+                'zakat': 'zakat-app.js',
+                'kalender': 'kalender-app.js',
+                'asmaul': 'asmaul-app.js',
+                'hadits': 'hadits-app.js',
+                'fiqh': 'fiqh-app.js',
+                'haji': 'haji-app.js',
             };
             
             const fileName = appFiles[appName];
@@ -726,7 +758,13 @@ class IslamHubApp {
                 'qibla': 'qibla',
                 'sholat': 'sholat',
                 'sirah': 'sirah',
-                'streaming': 'streaming'
+                'streaming': 'streaming',
+                'zakat': 'zakat',
+                'kalender': 'kalender',
+                'asmaul': 'asmaul',
+                'hadits': 'hadits',
+                'fiqh': 'fiqh',
+                'haji': 'haji',
             };
             
             const folder = folderMap[appName];
@@ -760,6 +798,192 @@ class IslamHubApp {
             console.error(`Failed to load ${appName}:`, error);
             this.showError(`Gagal memuat aplikasi ${appName}. ${error.message}`);
         }
+    }
+
+    // ===== APP ORDER / REORDER FEATURE =====
+
+    loadDropdownOrder() {
+        try {
+            const saved = localStorage.getItem('islamhub_app_order');
+            if (saved) {
+                const order = JSON.parse(saved);
+                const defaults = DROPDOWN_APP_CONFIG.map(a => a.id);
+                const filtered = order.filter(id => defaults.includes(id));
+                const missing = defaults.filter(id => !filtered.includes(id));
+                return [...filtered, ...missing];
+            }
+        } catch (e) {}
+        return DROPDOWN_APP_CONFIG.map(a => a.id);
+    }
+
+    saveDropdownOrder(order) {
+        localStorage.setItem('islamhub_app_order', JSON.stringify(order));
+    }
+
+    renderMoreAppsDropdown() {
+        const list = document.getElementById('moreAppsList');
+        if (!list) return;
+        const order = this.loadDropdownOrder();
+        list.innerHTML = order.map(id => {
+            const app = DROPDOWN_APP_CONFIG.find(a => a.id === id);
+            if (!app) return '';
+            return `
+            <button class="more-app-item" data-app="${app.id}">
+                <div class="more-app-icon" style="background:${app.iconBg}">
+                    <i class="fas ${app.icon}"></i>
+                </div>
+                <div class="more-app-info">
+                    <h4>${app.name}</h4>
+                    <p>${app.shortDesc}</p>
+                </div>
+                <i class="fas fa-chevron-right"></i>
+            </button>`;
+        }).join('');
+    }
+
+    openSettingsSheet() {
+        const sheet = document.getElementById('appSettingsSheet');
+        if (!sheet) return;
+        this.renderSettingsList();
+        sheet.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    closeSettingsSheet() {
+        const sheet = document.getElementById('appSettingsSheet');
+        if (!sheet) return;
+        sheet.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    renderSettingsList() {
+        const list = document.getElementById('appSettingsList');
+        if (!list) return;
+        const order = this.loadDropdownOrder();
+        const last = order.length - 1;
+        list.innerHTML = order.map((id, idx) => {
+            const app = DROPDOWN_APP_CONFIG.find(a => a.id === id);
+            if (!app) return '';
+            return `
+            <div class="settings-app-item" data-app="${app.id}" draggable="true">
+                <div class="settings-drag-handle"><i class="fas fa-grip-vertical"></i></div>
+                <div class="settings-app-icon" style="background:${app.iconBg}">
+                    <i class="fas ${app.icon}"></i>
+                </div>
+                <span class="settings-app-name">${app.name}</span>
+                <div class="settings-app-btns">
+                    <button class="settings-move-btn" data-action="up" data-app="${app.id}" ${idx === 0 ? 'disabled' : ''}>
+                        <i class="fas fa-chevron-up"></i>
+                    </button>
+                    <button class="settings-move-btn" data-action="down" data-app="${app.id}" ${idx === last ? 'disabled' : ''}>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+        this.setupSettingsDragDrop(list);
+    }
+
+    setupSettingsDragDrop(list) {
+        let dragSrc = null;
+
+        list.querySelectorAll('.settings-app-item').forEach(item => {
+            // Desktop HTML5 drag
+            item.addEventListener('dragstart', (e) => {
+                dragSrc = item;
+                item.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+            });
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+                list.querySelectorAll('.settings-app-item').forEach(i => i.classList.remove('drag-over'));
+            });
+            item.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                if (item !== dragSrc) {
+                    list.querySelectorAll('.settings-app-item').forEach(i => i.classList.remove('drag-over'));
+                    item.classList.add('drag-over');
+                }
+            });
+            item.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (dragSrc && dragSrc !== item) {
+                    const order = this.loadDropdownOrder();
+                    const srcIdx = order.indexOf(dragSrc.dataset.app);
+                    const dstIdx = order.indexOf(item.dataset.app);
+                    order.splice(srcIdx, 1);
+                    order.splice(dstIdx, 0, dragSrc.dataset.app);
+                    this.saveDropdownOrder(order);
+                    this.renderSettingsList();
+                    this.renderMoreAppsDropdown();
+                }
+            });
+
+            // Touch drag (starts only from the drag handle)
+            const handle = item.querySelector('.settings-drag-handle');
+            if (!handle) return;
+
+            handle.addEventListener('touchstart', () => {
+                dragSrc = item;
+                item.classList.add('dragging');
+            }, { passive: true });
+
+            handle.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const el = document.elementFromPoint(touch.clientX, touch.clientY);
+                const target = el?.closest('.settings-app-item');
+                list.querySelectorAll('.settings-app-item').forEach(i => i.classList.remove('drag-over'));
+                if (target && target !== dragSrc) target.classList.add('drag-over');
+            }, { passive: false });
+
+            handle.addEventListener('touchend', (e) => {
+                const touch = e.changedTouches[0];
+                const el = document.elementFromPoint(touch.clientX, touch.clientY);
+                const target = el?.closest('.settings-app-item');
+                item.classList.remove('dragging');
+                list.querySelectorAll('.settings-app-item').forEach(i => i.classList.remove('drag-over'));
+                if (target && target !== dragSrc) {
+                    const order = this.loadDropdownOrder();
+                    const srcIdx = order.indexOf(dragSrc.dataset.app);
+                    const dstIdx = order.indexOf(target.dataset.app);
+                    order.splice(srcIdx, 1);
+                    order.splice(dstIdx, 0, dragSrc.dataset.app);
+                    this.saveDropdownOrder(order);
+                    this.renderSettingsList();
+                    this.renderMoreAppsDropdown();
+                }
+                dragSrc = null;
+            });
+        });
+    }
+
+    setupSettingsSheet() {
+        document.getElementById('appSettingsClose')?.addEventListener('click', () => this.closeSettingsSheet());
+        document.getElementById('appSettingsBackdrop')?.addEventListener('click', () => this.closeSettingsSheet());
+        document.getElementById('resetAppOrder')?.addEventListener('click', () => {
+            localStorage.removeItem('islamhub_app_order');
+            this.renderSettingsList();
+            this.renderMoreAppsDropdown();
+        });
+
+        // Up/Down buttons — event delegation on .app-settings-box (survives re-renders of the list)
+        document.querySelector('.app-settings-box')?.addEventListener('click', (e) => {
+            const btn = e.target.closest('.settings-move-btn');
+            if (!btn || btn.disabled) return;
+            const action = btn.dataset.action;
+            const appId = btn.dataset.app;
+            const order = this.loadDropdownOrder();
+            const idx = order.indexOf(appId);
+            if (action === 'up' && idx > 0) {
+                [order[idx - 1], order[idx]] = [order[idx], order[idx - 1]];
+            } else if (action === 'down' && idx < order.length - 1) {
+                [order[idx], order[idx + 1]] = [order[idx + 1], order[idx]];
+            }
+            this.saveDropdownOrder(order);
+            this.renderSettingsList();
+            this.renderMoreAppsDropdown();
+        });
     }
 
     hideLoading() {

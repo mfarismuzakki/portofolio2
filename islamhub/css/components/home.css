@@ -958,6 +958,12 @@
 .app-card:nth-child(7) { animation-delay: 0.35s; }
 .app-card:nth-child(8) { animation-delay: 0.4s; }
 .app-card:nth-child(9) { animation-delay: 0.45s; }
+.app-card:nth-child(10) { animation-delay: 0.5s; }
+.app-card:nth-child(11) { animation-delay: 0.55s; }
+.app-card:nth-child(12) { animation-delay: 0.6s; }
+.app-card:nth-child(13) { animation-delay: 0.65s; }
+.app-card:nth-child(14) { animation-delay: 0.7s; }
+.app-card:nth-child(15) { animation-delay: 0.75s; }
 
 @keyframes cardFadeIn {
   from {
@@ -1011,6 +1017,12 @@
 .app-card:nth-child(6)::after { background: linear-gradient(135deg, rgba(0, 200, 167, 0.4), rgba(0, 255, 255, 0.15), transparent 60%); }
 .app-card:nth-child(7)::after { background: linear-gradient(135deg, rgba(0, 128, 255, 0.4), rgba(139, 0, 255, 0.15), transparent 60%); }
 .app-card:nth-child(8)::after { background: linear-gradient(135deg, rgba(255, 128, 0, 0.4), rgba(255, 51, 102, 0.15), transparent 60%); }
+.app-card:nth-child(9)::after { background: linear-gradient(135deg, rgba(0, 255, 136, 0.4), rgba(0, 200, 100, 0.15), transparent 60%); }
+.app-card:nth-child(10)::after { background: linear-gradient(135deg, rgba(0, 191, 255, 0.4), rgba(0, 128, 255, 0.15), transparent 60%); }
+.app-card:nth-child(11)::after { background: linear-gradient(135deg, rgba(255, 215, 0, 0.5), rgba(212, 168, 83, 0.15), transparent 60%); }
+.app-card:nth-child(12)::after { background: linear-gradient(135deg, rgba(147, 112, 219, 0.4), rgba(100, 50, 200, 0.15), transparent 60%); }
+.app-card:nth-child(13)::after { background: linear-gradient(135deg, rgba(0, 191, 255, 0.4), rgba(0, 128, 255, 0.15), transparent 60%); }
+.app-card:nth-child(14)::after { background: linear-gradient(135deg, rgba(255, 140, 0, 0.45), rgba(255, 80, 0, 0.15), transparent 60%); }
 
 /* App Badge */
 .app-badge {
@@ -1140,7 +1152,13 @@
 .app-card:nth-child(6) .app-icon { color: #00c9a7; background: rgba(0, 200, 167, 0.1); border-color: rgba(0, 200, 167, 0.2); }
 .app-card:nth-child(7) .app-icon { color: #60a5fa; background: rgba(0, 128, 255, 0.1); border-color: rgba(0, 128, 255, 0.2); }
 .app-card:nth-child(8) .app-icon { color: #ffa500; background: rgba(255, 128, 0, 0.1); border-color: rgba(255, 128, 0, 0.2); }
-.app-card:nth-child(9) .app-icon { color: #888; background: rgba(128, 128, 128, 0.08); border-color: rgba(128, 128, 128, 0.15); }
+.app-card:nth-child(9) .app-icon { color: #00ff88; background: rgba(0, 255, 136, 0.1); border-color: rgba(0, 255, 136, 0.2); }
+.app-card:nth-child(10) .app-icon { color: #00bfff; background: rgba(0, 191, 255, 0.1); border-color: rgba(0, 191, 255, 0.2); }
+.app-card:nth-child(11) .app-icon { color: #ffd700; background: rgba(255, 215, 0, 0.1); border-color: rgba(255, 215, 0, 0.2); }
+.app-card:nth-child(12) .app-icon { color: #9370db; background: rgba(147, 112, 219, 0.1); border-color: rgba(147, 112, 219, 0.2); }
+.app-card:nth-child(13) .app-icon { color: #00bfff; background: rgba(0, 191, 255, 0.1); border-color: rgba(0, 191, 255, 0.2); }
+.app-card:nth-child(14) .app-icon { color: #ff8c00; background: rgba(255, 140, 0, 0.1); border-color: rgba(255, 140, 0, 0.2); }
+.app-card:nth-child(15) .app-icon { color: #888; background: rgba(128, 128, 128, 0.08); border-color: rgba(128, 128, 128, 0.15); }
 
 .app-card:hover .app-icon {
   transform: scale(1.14) rotate(-3deg);
