@@ -126,32 +126,32 @@ export default class DzikirApp {
                             <!-- Doa content here -->
                         </div>
                         
-                        <!-- Audio Player -->
-                        <div class="audio-player" id="audioPlayer" style="display: none;">
-                            <div class="audio-info" id="audioInfo">
-                                <span class="audio-doa-name" id="audioDoaName">Memuat audio...</span>
-                                <span class="audio-playlist-counter" id="audioPlaylistCounter" style="display: none;"></span>
+                        <!-- Audio Player (dzikir-scoped IDs to avoid collision with global player) -->
+                        <div class="audio-player" id="dzikirAudioPlayer" style="display: none;">
+                            <div class="audio-info" id="dzikirAudioInfo">
+                                <span class="audio-doa-name" id="dzikirAudioDoaName">Memuat audio...</span>
+                                <span class="audio-playlist-counter" id="dzikirAudioPlaylistCounter" style="display: none;"></span>
                             </div>
                             <div class="audio-controls">
-                                <button class="audio-btn audio-nav-btn" id="audioPrev" style="display: none;" title="Audio Sebelumnya">
+                                <button class="audio-btn audio-nav-btn" id="dzikirAudioPrev" style="display: none;" title="Audio Sebelumnya">
                                     <i class="fas fa-step-backward"></i>
                                 </button>
-                                <button class="audio-btn" id="audioPlayPause">
+                                <button class="audio-btn" id="dzikirAudioPlayPause">
                                     <i class="fas fa-play"></i>
                                 </button>
-                                <button class="audio-btn audio-nav-btn" id="audioNext" style="display: none;" title="Audio Selanjutnya">
+                                <button class="audio-btn audio-nav-btn" id="dzikirAudioNext" style="display: none;" title="Audio Selanjutnya">
                                     <i class="fas fa-step-forward"></i>
                                 </button>
                                 <div class="audio-progress">
                                     <div class="audio-progress-bar">
-                                        <div class="audio-progress-fill" id="audioProgressFill"></div>
+                                        <div class="audio-progress-fill" id="dzikirAudioProgressFill"></div>
                                     </div>
                                     <div class="audio-time">
-                                        <span id="audioCurrentTime">0:00</span>
-                                        <span id="audioDuration">0:00</span>
+                                        <span id="dzikirAudioCurrentTime">0:00</span>
+                                        <span id="dzikirAudioDuration">0:00</span>
                                     </div>
                                 </div>
-                                <button class="audio-btn" id="audioClose">
+                                <button class="audio-btn audio-close-btn" id="dzikirAudioClose" title="Tutup">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
@@ -1159,17 +1159,17 @@ export default class DzikirApp {
     
     setupAudioPlayer() {
         const audioBtn = document.getElementById('doaAudio');
-        const audioPlayer = document.getElementById('audioPlayer');
+        const audioPlayer = document.getElementById('dzikirAudioPlayer');
         const audioElement = document.getElementById('doaAudioElement');
-        const playPauseBtn = document.getElementById('audioPlayPause');
-        const closeBtn = document.getElementById('audioClose');
-        const prevBtn = document.getElementById('audioPrev');
-        const nextBtn = document.getElementById('audioNext');
-        const progressFill = document.getElementById('audioProgressFill');
-        const currentTimeEl = document.getElementById('audioCurrentTime');
-        const durationEl = document.getElementById('audioDuration');
-        const audioDoaName = document.getElementById('audioDoaName');
-        const playlistCounter = document.getElementById('audioPlaylistCounter');
+        const playPauseBtn = document.getElementById('dzikirAudioPlayPause');
+        const closeBtn = document.getElementById('dzikirAudioClose');
+        const prevBtn = document.getElementById('dzikirAudioPrev');
+        const nextBtn = document.getElementById('dzikirAudioNext');
+        const progressFill = document.getElementById('dzikirAudioProgressFill');
+        const currentTimeEl = document.getElementById('dzikirAudioCurrentTime');
+        const durationEl = document.getElementById('dzikirAudioDuration');
+        const audioDoaName = document.getElementById('dzikirAudioDoaName');
+        const playlistCounter = document.getElementById('dzikirAudioPlaylistCounter');
         
         if (audioBtn) {
             audioBtn.addEventListener('click', () => {
@@ -1300,14 +1300,14 @@ export default class DzikirApp {
     
     async playNextInPlaylist() {
         if (!this.currentCategory || !this.currentCategory.doa) return;
-        
+
         const audioElement = document.getElementById('doaAudioElement');
-        const audioPlayer = document.getElementById('audioPlayer');
-        const playPauseBtn = document.getElementById('audioPlayPause');
-        const audioDoaName = document.getElementById('audioDoaName');
-        const playlistCounter = document.getElementById('audioPlaylistCounter');
-        const prevBtn = document.getElementById('audioPrev');
-        const nextBtn = document.getElementById('audioNext');
+        const audioPlayer = document.getElementById('dzikirAudioPlayer');
+        const playPauseBtn = document.getElementById('dzikirAudioPlayPause');
+        const audioDoaName = document.getElementById('dzikirAudioDoaName');
+        const playlistCounter = document.getElementById('dzikirAudioPlaylistCounter');
+        const prevBtn = document.getElementById('dzikirAudioPrev');
+        const nextBtn = document.getElementById('dzikirAudioNext');
         
         if (this.playlistIndex >= this.currentCategory.doa.length) {
             // Playlist finished

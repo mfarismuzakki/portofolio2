@@ -1,239 +1,312 @@
 // ===== Peraga 3D Sholat =====
-// Visualisasi 3D urutan gerakan sholat menggunakan Three.js
+// Visualisasi 3D urutan gerakan sholat 2 raka'at (misal: Subuh / sunnah)
+// mengikuti tata cara yang dipraktikkan ulama Salafy seperti
+// Syaikh Ibnu Bāz, Syaikh Al-Albani, dan Syaikh Al-‘Utsaimin.
+// Referensi: "Sifat Shalat Nabi" (Al-Albani), "Risalah Tata Cara Shalat" (Ibnu Bāz).
+
+// Pose-pose yang dipakai berulang — definisikan sekali agar konsisten antar raka'at.
+const STAND_NEUTRAL = {
+    torsoAngle: 0,
+    kneeBend: 0,
+    armLeftShoulder: { x: 0, y: 0, z: 0.05 },
+    armRightShoulder: { x: 0, y: 0, z: -0.05 },
+    armLeftElbow: 0,
+    armRightElbow: 0,
+    handPosition: 'down',
+    headTilt: 0.2,
+    sitting: false
+};
+
+const TAKBIR_HANDS_UP = {
+    torsoAngle: 0,
+    kneeBend: 0,
+    armLeftShoulder: { x: -1.4, y: 0, z: 0.3 },
+    armRightShoulder: { x: -1.4, y: 0, z: -0.3 },
+    armLeftElbow: -0.3,
+    armRightElbow: -0.3,
+    handPosition: 'up',
+    headTilt: 0,
+    sitting: false
+};
+
+const SEDEKAP = {
+    torsoAngle: 0,
+    kneeBend: 0,
+    armLeftShoulder: { x: 0.3, y: -0.2, z: 0.4 },
+    armRightShoulder: { x: 0.3, y: 0.2, z: -0.4 },
+    armLeftElbow: -1.6,
+    armRightElbow: -1.6,
+    handPosition: 'crossed',
+    headTilt: 0.3,
+    sitting: false
+};
+
+const RUKU_POSE = {
+    torsoAngle: -1.4,
+    kneeBend: 0,
+    armLeftShoulder: { x: 0, y: 0, z: 0.3 },
+    armRightShoulder: { x: 0, y: 0, z: -0.3 },
+    armLeftElbow: 0,
+    armRightElbow: 0,
+    handPosition: 'knees',
+    headTilt: 0,
+    sitting: false
+};
+
+const ITIDAL_POSE = {
+    torsoAngle: 0,
+    kneeBend: 0,
+    armLeftShoulder: { x: 0, y: 0, z: 0.1 },
+    armRightShoulder: { x: 0, y: 0, z: -0.1 },
+    armLeftElbow: 0,
+    armRightElbow: 0,
+    handPosition: 'down',
+    headTilt: 0.1,
+    sitting: false
+};
+
+const SUJUD_POSE = {
+    torsoAngle: 0,
+    kneeBend: 1.6,
+    armLeftShoulder: { x: 0.5, y: 0, z: 0.3 },
+    armRightShoulder: { x: 0.5, y: 0, z: -0.3 },
+    armLeftElbow: -0.3,
+    armRightElbow: -0.3,
+    handPosition: 'sujud',
+    headTilt: 0,
+    sitting: false,
+    sujud: true
+};
+
+const DUDUK_IFTIRASY = {
+    torsoAngle: 0,
+    kneeBend: 0,
+    armLeftShoulder: { x: 0.2, y: 0, z: 0.3 },
+    armRightShoulder: { x: 0.2, y: 0, z: -0.3 },
+    armLeftElbow: -0.5,
+    armRightElbow: -0.5,
+    handPosition: 'thighs',
+    headTilt: 0.2,
+    sitting: true
+};
+
+const DUDUK_TASYAHUD = {
+    torsoAngle: 0,
+    kneeBend: 0,
+    armLeftShoulder: { x: 0.2, y: 0, z: 0.3 },
+    armRightShoulder: { x: 0.3, y: 0, z: -0.3 },
+    armLeftElbow: -0.5,
+    armRightElbow: -0.7,
+    handPosition: 'tasyahud',
+    headTilt: 0.2,
+    sitting: true
+};
 
 const POSES = [
+    // === PRA-TAKBIR ===
+    {
+        id: 'qiyam_niat',
+        name: 'Berdiri Menghadap Kiblat & Niat',
+        ruling: 'Syarat Sah',
+        arabic: '',
+        latin: '(Niat di dalam hati — tanpa dilafadzkan)',
+        translation: 'Berdiri tegak menghadap kiblat dengan niat sholat di dalam hati.',
+        tip: 'Niat tempatnya di hati. Melafadzkan "Ushalli…" tidak ada tuntunannya dari Nabi ﷺ menurut Ibnu Taimiyah, Ibnul Qayyim, Al-Albani, dan Ibnu Bāz. Pandangan diarahkan ke tempat sujud.',
+        duration: 3500,
+        pose: STAND_NEUTRAL
+    },
+
+    // === RAKA'AT 1 ===
     {
         id: 'takbiratul_ihram',
-        name: 'Takbiratul Ihram',
-        ruling: 'Rukun ke-1',
+        name: 'Takbīratul Ihrām',
+        ruling: 'Rukun • Raka\'at 1',
         arabic: 'اللَّهُ أَكْبَرُ',
-        latin: 'Allahu Akbar',
+        latin: 'Allāhu Akbar',
         translation: 'Allah Maha Besar',
-        tip: 'Angkat kedua tangan setinggi telinga sambil mengucapkan takbir.',
+        tip: 'Angkat kedua tangan sejajar bahu atau ujung telinga (keduanya shahih), jari-jari terbuka menghadap kiblat, lalu ucapkan takbir. Inilah pembuka sholat dan rukun pertama.',
         duration: 3000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: -1.4, y: 0, z: 0.3 },
-            armRightShoulder: { x: -1.4, y: 0, z: -0.3 },
-            armLeftElbow: -0.3,
-            armRightElbow: -0.3,
-            handPosition: 'up',
-            headTilt: 0,
-            sitting: false
-        }
+        pose: TAKBIR_HANDS_UP
     },
     {
-        id: 'qiyam',
-        name: 'Berdiri (Qiyam) - Membaca Al-Fatihah',
-        ruling: 'Rukun ke-2 & ke-3',
-        arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
-        latin: 'Bismillahirrahmanirrahim',
-        translation: 'Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang',
-        tip: 'Berdiri tegak, tangan kanan di atas tangan kiri pada dada/perut, pandangan ke tempat sujud.',
-        duration: 4000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0.3, y: -0.2, z: 0.4 },
-            armRightShoulder: { x: 0.3, y: 0.2, z: -0.4 },
-            armLeftElbow: -1.6,
-            armRightElbow: -1.6,
-            handPosition: 'crossed',
-            headTilt: 0.3,
-            sitting: false
-        }
+        id: 'qiyam_fatihah_1',
+        name: 'Bersedekap & Membaca Al-Fātihah (Raka\'at 1)',
+        ruling: 'Rukun • Raka\'at 1',
+        arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
+        latin: 'Bismillāhir-rahmānir-rahīm. Al-hamdu lillāhi rabbil-‘ālamīn…',
+        translation: 'Dengan menyebut nama Allah… Segala puji bagi Allah, Rabb semesta alam…',
+        tip: 'Letakkan tangan kanan di atas tangan kiri di atas dada (HR. Ibnu Khuzaimah dari Wā\'il bin Hujr — shahih menurut Al-Albani). Bacaan: Doa Iftitāh → Ta\'awwudz → Al-Fātihah → surat pendek.',
+        duration: 5000,
+        pose: SEDEKAP
     },
     {
-        id: 'ruku',
-        name: "Ruku' dengan Tuma'ninah",
-        ruling: 'Rukun ke-4',
+        id: 'ruku_1',
+        name: 'Rukū\' dengan Tuma\'nīnah (Raka\'at 1)',
+        ruling: 'Rukun • Raka\'at 1',
         arabic: 'سُبْحَانَ رَبِّيَ الْعَظِيمِ',
-        latin: 'Subhana Rabbiyal \'Adzim',
-        translation: 'Maha Suci Tuhanku Yang Maha Agung',
-        tip: 'Membungkuk hingga punggung lurus sejajar, kedua tangan memegang lutut.',
+        latin: 'Subhāna Rabbiyal-‘Azhīm (3×)',
+        translation: 'Maha Suci Rabbku Yang Maha Agung',
+        tip: 'Sebelum membungkuk, angkat kedua tangan (raf\'ul yadain) sambil bertakbir — sunnah yang sangat ditekankan dan diamalkan oleh para ulama Salafy. Punggung lurus rata, kepala sejajar punggung, kedua tangan menggenggam lutut dengan jari renggang.',
+        duration: 3800,
+        pose: RUKU_POSE
+    },
+    {
+        id: 'itidal_1',
+        name: 'I\'tidāl dengan Tuma\'nīnah (Raka\'at 1)',
+        ruling: 'Rukun • Raka\'at 1',
+        arabic: 'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ۝ رَبَّنَا وَلَكَ الْحَمْدُ',
+        latin: 'Sami‘allāhu liman hamidah. Rabbanā wa lakal-hamd',
+        translation: 'Allah mendengar siapa yang memuji-Nya. Wahai Rabb kami, segala puji bagi-Mu',
+        tip: 'Bangkit dari rukū\' sambil angkat tangan (raf\'ul yadain) seraya mengucap "Sami‘allāhu liman hamidah". Setelah berdiri tegak baru ucapkan "Rabbanā wa lakal-hamd". Tegak sempurna sebelum turun sujud.',
         duration: 3500,
-        pose: {
-            torsoAngle: -1.4,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0, y: 0, z: -0.3 },
-            armLeftElbow: 0,
-            armRightElbow: 0,
-            handPosition: 'knees',
-            headTilt: 0,
-            sitting: false
-        }
+        pose: ITIDAL_POSE
     },
     {
-        id: 'iktidal',
-        name: "I'tidal dengan Tuma'ninah",
-        ruling: 'Rukun ke-5',
-        arabic: 'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ، رَبَّنَا وَلَكَ الْحَمْدُ',
-        latin: 'Sami\'allahu liman hamidah, Rabbana wa lakal hamd',
-        translation: 'Allah mendengar siapa yang memuji-Nya. Wahai Tuhan kami, segala puji bagi-Mu',
-        tip: 'Bangkit dari ruku dan berdiri tegak kembali dengan tenang.',
-        duration: 3000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0, y: 0, z: 0.2 },
-            armRightShoulder: { x: 0, y: 0, z: -0.2 },
-            armLeftElbow: 0,
-            armRightElbow: 0,
-            handPosition: 'down',
-            headTilt: 0,
-            sitting: false
-        }
-    },
-    {
-        id: 'sujud_1',
-        name: "Sujud Pertama dengan Tuma'ninah",
-        ruling: 'Rukun ke-6',
+        id: 'sujud_1a',
+        name: 'Sujūd Pertama (Raka\'at 1)',
+        ruling: 'Rukun • Raka\'at 1',
         arabic: 'سُبْحَانَ رَبِّيَ الْأَعْلَى',
-        latin: 'Subhana Rabbiyal A\'la',
-        translation: 'Maha Suci Tuhanku Yang Maha Tinggi',
-        tip: 'Tujuh anggota sujud menyentuh lantai: dahi & hidung, kedua tangan, kedua lutut, kedua jari kaki.',
+        latin: 'Subhāna Rabbiyal-A‘lā (3×)',
+        translation: 'Maha Suci Rabbku Yang Maha Tinggi',
+        tip: 'Turun dengan takbir (tanpa raf\'ul yadain). Sujud di atas tujuh anggota: dahi + hidung, dua telapak tangan, dua lutut, ujung jari kedua kaki. Tangan sejajar bahu, jari rapat menghadap kiblat. Renggangkan kedua lengan dari lambung, perut tidak menempel paha.',
+        duration: 3800,
+        pose: SUJUD_POSE
+    },
+    {
+        id: 'duduk_iftirasy_1',
+        name: 'Duduk Antara Dua Sujud (Iftirāsy)',
+        ruling: 'Rukun • Raka\'at 1',
+        arabic: 'رَبِّ اغْفِرْ لِي وَارْحَمْنِي وَاجْبُرْنِي وَارْفَعْنِي وَارْزُقْنِي وَاهْدِنِي وَعَافِنِي وَاعْفُ عَنِّي',
+        latin: 'Rabbighfirlī warhamnī wajburnī warfa‘nī warzuqnī wahdinī wa ‘āfinī wa‘fu ‘annī',
+        translation: 'Wahai Rabbku, ampunilah aku, kasihanilah aku, cukupkanlah aku, angkatlah derajatku, berilah aku rizki, berilah aku petunjuk, sehatkanlah aku, dan maafkanlah aku.',
+        tip: 'Duduk iftirāsy: telapak kaki kiri dijadikan alas (diduduki), kaki kanan ditegakkan dengan jari-jari menghadap kiblat. Kedua tangan diletakkan di atas paha/lutut.',
         duration: 3500,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 1.6,
-            armLeftShoulder: { x: 0.5, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.5, y: 0, z: -0.3 },
-            armLeftElbow: -0.3,
-            armRightElbow: -0.3,
-            handPosition: 'sujud',
-            headTilt: 0,
-            sitting: false,
-            sujud: true
-        }
+        pose: DUDUK_IFTIRASY
     },
     {
-        id: 'duduk_diantara',
-        name: 'Duduk Antara Dua Sujud',
-        ruling: 'Rukun ke-7',
-        arabic: 'رَبِّ اغْفِرْ لِي ، رَبِّ اغْفِرْ لِي',
-        latin: 'Rabbighfirli, Rabbighfirli',
-        translation: 'Wahai Tuhanku, ampunilah aku. Wahai Tuhanku, ampunilah aku',
-        tip: 'Duduk iftirasy: telapak kaki kiri dijadikan alas, telapak kaki kanan ditegakkan.',
-        duration: 3000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0.2, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.2, y: 0, z: -0.3 },
-            armLeftElbow: -0.5,
-            armRightElbow: -0.5,
-            handPosition: 'thighs',
-            headTilt: 0.2,
-            sitting: true
-        }
-    },
-    {
-        id: 'sujud_2',
-        name: "Sujud Kedua dengan Tuma'ninah",
-        ruling: 'Rukun ke-8',
+        id: 'sujud_1b',
+        name: 'Sujūd Kedua (Raka\'at 1)',
+        ruling: 'Rukun • Raka\'at 1',
         arabic: 'سُبْحَانَ رَبِّيَ الْأَعْلَى',
-        latin: 'Subhana Rabbiyal A\'la',
-        translation: 'Maha Suci Tuhanku Yang Maha Tinggi',
-        tip: 'Sujud kedua sebagaimana sujud pertama dengan tuma\'ninah.',
+        latin: 'Subhāna Rabbiyal-A‘lā (3×)',
+        translation: 'Maha Suci Rabbku Yang Maha Tinggi',
+        tip: 'Sujud kedua sebagaimana sujud pertama dengan tuma\'nīnah penuh. Boleh menambahkan doa setelah dzikir wajib — sujud adalah waktu mustajab untuk berdoa (HR. Muslim).',
+        duration: 3800,
+        pose: SUJUD_POSE
+    },
+
+    // === RAKA'AT 2 ===
+    {
+        id: 'qiyam_fatihah_2',
+        name: 'Berdiri & Membaca Al-Fātihah (Raka\'at 2)',
+        ruling: 'Rukun • Raka\'at 2',
+        arabic: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
+        latin: 'Al-hamdu lillāhi rabbil-‘ālamīn… (Al-Fātihah + surat)',
+        translation: 'Membaca Al-Fātihah dan surat pendek pada raka\'at kedua.',
+        tip: 'Bangkit dari sujud kedua dengan takbir (sebagian ulama menyunnahkan duduk istirahat sebentar — "jalsatul istirāhah"). Pada raka\'at 2 langsung Al-Fātihah, tanpa mengulang doa iftitāh.',
+        duration: 5000,
+        pose: SEDEKAP
+    },
+    {
+        id: 'ruku_2',
+        name: 'Rukū\' (Raka\'at 2)',
+        ruling: 'Rukun • Raka\'at 2',
+        arabic: 'سُبْحَانَ رَبِّيَ الْعَظِيمِ',
+        latin: 'Subhāna Rabbiyal-‘Azhīm (3×)',
+        translation: 'Maha Suci Rabbku Yang Maha Agung',
+        tip: 'Bertakbir disertai raf\'ul yadain, lalu rukū\' dengan tuma\'nīnah sebagaimana raka\'at pertama.',
+        duration: 3800,
+        pose: RUKU_POSE
+    },
+    {
+        id: 'itidal_2',
+        name: 'I\'tidāl (Raka\'at 2)',
+        ruling: 'Rukun • Raka\'at 2',
+        arabic: 'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ۝ رَبَّنَا وَلَكَ الْحَمْدُ',
+        latin: 'Sami‘allāhu liman hamidah. Rabbanā wa lakal-hamd',
+        translation: 'Allah mendengar siapa yang memuji-Nya. Wahai Rabb kami, segala puji bagi-Mu',
+        tip: 'Bangkit dari rukū\' dengan raf\'ul yadain, berdiri tegak sempurna sebelum turun sujud. Jangan tergesa-gesa.',
         duration: 3500,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 1.6,
-            armLeftShoulder: { x: 0.5, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.5, y: 0, z: -0.3 },
-            armLeftElbow: -0.3,
-            armRightElbow: -0.3,
-            handPosition: 'sujud',
-            headTilt: 0,
-            sitting: false,
-            sujud: true
-        }
+        pose: ITIDAL_POSE
     },
     {
-        id: 'duduk_tasyahud',
-        name: 'Duduk Akhir untuk Tasyahud',
-        ruling: 'Rukun ke-9',
-        arabic: 'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ',
-        latin: 'At-tahiyyatu lillahi wash-shalawatu wath-thayyibat',
-        translation: 'Segala penghormatan, ibadah, dan kebaikan hanya milik Allah',
-        tip: 'Duduk tawarruk: kaki kiri dimasukkan ke bawah betis kanan, telunjuk kanan diisyaratkan.',
-        duration: 4500,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0.2, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.3, y: 0, z: -0.3 },
-            armLeftElbow: -0.5,
-            armRightElbow: -0.7,
-            handPosition: 'tasyahud',
-            headTilt: 0.2,
-            sitting: true
-        }
+        id: 'sujud_2a',
+        name: 'Sujūd Pertama (Raka\'at 2)',
+        ruling: 'Rukun • Raka\'at 2',
+        arabic: 'سُبْحَانَ رَبِّيَ الْأَعْلَى',
+        latin: 'Subhāna Rabbiyal-A‘lā (3×)',
+        translation: 'Maha Suci Rabbku Yang Maha Tinggi',
+        tip: 'Sujud sebagaimana raka\'at pertama. Pastikan tujuh anggota sujud menempel sempurna ke lantai.',
+        duration: 3800,
+        pose: SUJUD_POSE
     },
     {
-        id: 'sholawat',
-        name: 'Membaca Sholawat atas Nabi',
-        ruling: 'Rukun ke-11',
-        arabic: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ',
-        latin: 'Allahumma shalli \'ala Muhammad wa \'ala ali Muhammad',
-        translation: 'Ya Allah berikanlah rahmat kepada Muhammad dan keluarga Muhammad',
-        tip: 'Diucapkan saat duduk tasyahud akhir setelah membaca tasyahud.',
-        duration: 4000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0.2, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.3, y: 0, z: -0.3 },
-            armLeftElbow: -0.5,
-            armRightElbow: -0.7,
-            handPosition: 'tasyahud',
-            headTilt: 0.2,
-            sitting: true
-        }
+        id: 'duduk_iftirasy_2',
+        name: 'Duduk Antara Dua Sujud (Raka\'at 2)',
+        ruling: 'Rukun • Raka\'at 2',
+        arabic: 'رَبِّ اغْفِرْ لِي وَارْحَمْنِي وَاهْدِنِي وَارْزُقْنِي',
+        latin: 'Rabbighfirlī warhamnī wahdinī warzuqnī',
+        translation: 'Wahai Rabbku, ampunilah aku, kasihanilah aku, berilah aku petunjuk, dan berilah aku rizki.',
+        tip: 'Duduk iftirāsy seperti raka\'at pertama, dengan tuma\'nīnah penuh.',
+        duration: 3500,
+        pose: DUDUK_IFTIRASY
+    },
+    {
+        id: 'sujud_2b',
+        name: 'Sujūd Kedua (Raka\'at 2)',
+        ruling: 'Rukun • Raka\'at 2',
+        arabic: 'سُبْحَانَ رَبِّيَ الْأَعْلَى',
+        latin: 'Subhāna Rabbiyal-A‘lā (3×)',
+        translation: 'Maha Suci Rabbku Yang Maha Tinggi',
+        tip: 'Sujud terakhir sebelum duduk tasyahud akhir.',
+        duration: 3800,
+        pose: SUJUD_POSE
+    },
+
+    // === TASYAHUD AKHIR & SALAM ===
+    {
+        id: 'tasyahud_akhir',
+        name: 'Duduk Tasyahud Akhir (Tawarruk)',
+        ruling: 'Rukun • Bacaan Tasyahud',
+        arabic: 'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ',
+        latin: 'At-tahiyyātu lillāhi wash-shalawātu wath-thayyibāt. As-salāmu ‘alayka ayyuhan-nabiyyu wa rahmatullāhi wa barakātuh…',
+        translation: 'Segala penghormatan, ibadah, dan kebaikan hanya milik Allah. Semoga keselamatan, rahmat Allah, dan keberkahan-Nya tercurah atasmu wahai Nabi…',
+        tip: 'Tawarruk: kaki kiri keluar ke bawah betis kanan, pinggul menempel ke lantai, kaki kanan ditegakkan. Telunjuk kanan diisyaratkan sepanjang tasyahud sambil pandangan ke arah jari (HR. Abu Dawud — shahih).',
+        duration: 5000,
+        pose: { ...DUDUK_TASYAHUD, isyarat: true }
+    },
+    {
+        id: 'sholawat_ibrahimiyah',
+        name: 'Sholawat Ibrāhīmiyyah atas Nabi ﷺ',
+        ruling: 'Rukun • Setelah Tasyahud',
+        arabic: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ',
+        latin: 'Allāhumma shalli ‘alā Muhammad wa ‘alā āli Muhammad, kamā shallayta ‘alā Ibrāhīm wa ‘alā āli Ibrāhīm…',
+        translation: 'Ya Allah, limpahkanlah shalawat kepada Muhammad dan keluarga Muhammad sebagaimana Engkau limpahkan kepada Ibrāhīm dan keluarga Ibrāhīm…',
+        tip: 'Setelah sholawat, sangat dianjurkan berdoa memohon perlindungan dari empat perkara: adzab Jahannam, adzab kubur, fitnah hidup dan mati, dan fitnah Al-Masīh Ad-Dajjāl (HR. Muslim).',
+        duration: 5000,
+        pose: { ...DUDUK_TASYAHUD, isyarat: true }
     },
     {
         id: 'salam_kanan',
-        name: 'Salam ke Kanan',
-        ruling: 'Rukun ke-12',
+        name: 'Salām ke Kanan',
+        ruling: 'Rukun • Penutup Sholat',
         arabic: 'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ',
-        latin: 'Assalamu\'alaikum warahmatullah',
-        translation: 'Semoga keselamatan dan rahmat Allah tercurah atasmu',
-        tip: 'Menoleh ke arah kanan hingga pipi terlihat dari belakang.',
+        latin: 'As-salāmu ‘alaykum wa rahmatullāh',
+        translation: 'Semoga keselamatan dan rahmat Allah tercurah atas kalian',
+        tip: 'Menoleh ke kanan hingga pipi terlihat dari belakang sambil mengucapkan salam.',
         duration: 3000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0.2, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.3, y: 0, z: -0.3 },
-            armLeftElbow: -0.5,
-            armRightElbow: -0.7,
-            handPosition: 'tasyahud',
-            headTurn: -1.0,
-            sitting: true
-        }
+        pose: { ...DUDUK_TASYAHUD, headTurn: -1.0 }
     },
     {
         id: 'salam_kiri',
-        name: 'Salam ke Kiri',
-        ruling: 'Penyempurna',
+        name: 'Salām ke Kiri',
+        ruling: 'Penyempurna • Sholat Selesai',
         arabic: 'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ',
-        latin: 'Assalamu\'alaikum warahmatullah',
-        translation: 'Semoga keselamatan dan rahmat Allah tercurah atasmu',
-        tip: 'Menoleh ke arah kiri hingga pipi terlihat dari belakang. Sholat selesai.',
+        latin: 'As-salāmu ‘alaykum wa rahmatullāh',
+        translation: 'Semoga keselamatan dan rahmat Allah tercurah atas kalian',
+        tip: 'Menoleh ke kiri hingga pipi terlihat dari belakang. Dengan ini sholat telah selesai. Lanjutkan dengan dzikir-dzikir ba\'da sholat sebagaimana dicontohkan Nabi ﷺ.',
         duration: 3000,
-        pose: {
-            torsoAngle: 0,
-            kneeBend: 0,
-            armLeftShoulder: { x: 0.2, y: 0, z: 0.3 },
-            armRightShoulder: { x: 0.3, y: 0, z: -0.3 },
-            armLeftElbow: -0.5,
-            armRightElbow: -0.7,
-            handPosition: 'tasyahud',
-            headTurn: 1.0,
-            sitting: true
-        }
+        pose: { ...DUDUK_TASYAHUD, headTurn: 1.0 }
     }
 ];
 
@@ -253,7 +326,9 @@ export default class Peraga3D {
         this.fromPose = null;
         this.toPose = null;
         this.currentPose = JSON.parse(JSON.stringify(POSES[0].pose));
-        this.cameraAngle = Math.PI / 4;
+        // Start the camera behind-right of the character so the viewer sees
+        // the character's back facing the kiblat (a natural learning POV).
+        this.cameraAngle = Math.PI * 3 / 4;
         this.dragging = false;
         this.lastX = 0;
         this.lastY = 0;
@@ -431,7 +506,9 @@ export default class Peraga3D {
     }
 
     createKiblatMarker() {
-        // Arrow indicating kiblat (forward direction)
+        // Kiblat marker placed IN FRONT of the character (+Z).
+        // Character faces +Z (eyes/beard on +Z side), so the kiblat — toward
+        // which prayer is performed — must lie ahead of the character.
         const group = new THREE.Group();
 
         const coneGeo = new THREE.ConeGeometry(0.15, 0.4, 4);
@@ -441,8 +518,9 @@ export default class Peraga3D {
             emissiveIntensity: 0.5
         });
         const cone = new THREE.Mesh(coneGeo, coneMat);
+        // Tip points AWAY from character toward kiblat (deeper into +Z).
         cone.rotation.x = Math.PI / 2;
-        cone.position.z = -2.4;
+        cone.position.z = 2.4;
         group.add(cone);
 
         // Kiblat label canvas
@@ -458,7 +536,7 @@ export default class Peraga3D {
         const labelTex = new THREE.CanvasTexture(labelCanvas);
         const labelMat = new THREE.SpriteMaterial({ map: labelTex, transparent: true });
         const label = new THREE.Sprite(labelMat);
-        label.position.set(0, 0.5, -2.4);
+        label.position.set(0, 0.5, 2.4);
         label.scale.set(1.5, 0.4, 1);
         group.add(label);
 
@@ -852,7 +930,7 @@ export default class Peraga3D {
     reset() {
         this.pause();
         this.setStep(0);
-        this.cameraAngle = Math.PI / 4;
+        this.cameraAngle = Math.PI * 3 / 4;
         this.cameraPitch = 0.2;
         this.cameraRadius = 6;
     }

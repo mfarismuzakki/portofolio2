@@ -24,11 +24,15 @@
 @import url('components/qibla.css');
 @import url('components/sholat.css');
 @import url('components/sirah.css');
+@import url('components/sirah-konstelasi.css?v=1.0.0');
 @import url('components/streaming.css');
 @import url('components/clear-data-modal.css');
 
 /* Layout */
 @import url('components/footer.css');
+
+/* Cross-cutting polish layer (must come AFTER component styles) */
+@import url('components/polish.css?v=1.0.0');
 
 /* Responsive */
 @import url('components/responsive.css');
