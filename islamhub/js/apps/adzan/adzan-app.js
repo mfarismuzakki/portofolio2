@@ -127,8 +127,28 @@ export default class AdzanApp {
                         <span>Sholat Berikutnya</span>
                     </div>
                     <div class="card-body">
-                        <h2 class="prayer-name" id="nextPrayerName">Memuat...</h2>
-                        <div class="countdown-timer" id="countdownTimer">--:--:--</div>
+                        <div class="next-prayer-ring-wrapper" id="nextPrayerRingWrapper">
+                            <svg class="next-prayer-ring" viewBox="0 0 240 240" aria-hidden="true">
+                                <defs>
+                                    <linearGradient id="adzanRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#00ffff"/>
+                                        <stop offset="100%" stop-color="#ff00ff"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle class="next-prayer-ring-bg" cx="120" cy="120" r="110"/>
+                                <circle class="next-prayer-ring-progress" id="nextPrayerRingProgress"
+                                    cx="120" cy="120" r="110"
+                                    stroke="url(#adzanRingGrad)"
+                                    stroke-dasharray="691.15"
+                                    stroke-dashoffset="691.15"
+                                    transform="rotate(-90 120 120)"/>
+                            </svg>
+                            <div class="next-prayer-ring-content">
+                                <h2 class="prayer-name" id="nextPrayerName">Memuat...</h2>
+                                <div class="countdown-timer" id="countdownTimer">--:--:--</div>
+                                <div class="prayer-time-target" id="nextPrayerTime">--:--</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -470,6 +490,41 @@ export default class AdzanApp {
         }, 1000);
     }
 
+    updateCountdownRing(nowHours, nextPrayerHours, totalSeconds) {
+        const ring = document.getElementById('nextPrayerRingProgress');
+        const wrapper = document.getElementById('nextPrayerRingWrapper');
+        if (!ring || !this.prayerTimes) return;
+
+        // Find the previous prayer time to compute window length
+        const ordered = ['Subuh', 'Syuruq', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya']
+            .filter(n => this.prayerTimes[n])
+            .map(n => {
+                const [h, m] = this.prayerTimes[n].split(':').map(Number);
+                return { name: n, hours: h + m / 60 };
+            });
+
+        // Find previous prayer (largest prayerHours <= nowHours, else last of yesterday)
+        let prev = null;
+        for (let i = ordered.length - 1; i >= 0; i--) {
+            if (ordered[i].hours <= nowHours) { prev = ordered[i]; break; }
+        }
+        if (!prev && ordered.length) prev = { ...ordered[ordered.length - 1], hours: ordered[ordered.length - 1].hours - 24 };
+
+        const next = nextPrayerHours < nowHours ? nextPrayerHours + 24 : nextPrayerHours;
+        const prevH = prev ? prev.hours : nowHours - 1;
+        const window = Math.max(0.01, next - prevH);
+        const elapsed = Math.max(0, Math.min(window, nowHours - prevH));
+        const ratio = elapsed / window;
+
+        const circ = 691.15; // 2π × 110
+        ring.style.strokeDashoffset = String(circ * (1 - ratio));
+
+        if (wrapper) {
+            // Imminent: less than 5 minutes
+            wrapper.classList.toggle('imminent', totalSeconds < 300);
+        }
+    }
+
     updateCountdown() {
         if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) return;
 
@@ -538,6 +593,9 @@ export default class AdzanApp {
         if (countdownEl) {
             countdownEl.textContent = countdown;
         }
+
+        // Update progress ring (filled portion = time elapsed since previous prayer)
+        this.updateCountdownRing(nowHours, prayerHours, totalSeconds);
 
         // Update widgets
         if (this.mainApp) {

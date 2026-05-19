@@ -783,6 +783,105 @@ body.sirah-modal-active {
     margin-bottom: 1.5rem;
 }
 
+/* ===== ENHANCED HERO HEADER (Detail Modal) ===== */
+.prophet-detail-hero {
+    position: relative;
+    margin-bottom: 1.75rem;
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+    background:
+        radial-gradient(ellipse at top right, rgba(0, 255, 255, 0.18), transparent 60%),
+        radial-gradient(ellipse at bottom left, rgba(255, 0, 255, 0.12), transparent 65%),
+        linear-gradient(135deg, rgba(0, 50, 90, 0.4), rgba(40, 0, 80, 0.4));
+    border: 1px solid rgba(0, 255, 255, 0.25);
+    overflow: hidden;
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+}
+
+.prophet-detail-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.prophet-hero-arabic {
+    position: absolute;
+    top: 50%;
+    right: -1rem;
+    transform: translateY(-50%);
+    font-family: 'Amiri Quran', 'Scheherazade New', serif;
+    font-size: clamp(4rem, 12vw, 7rem);
+    color: rgba(0, 255, 255, 0.15);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    text-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+    direction: rtl;
+}
+
+.prophet-hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.prophet-hero-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #00ffff, #ff00ff);
+    color: #0a0e27;
+    padding: 0.3rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+}
+
+.prophet-detail-hero h2 {
+    font-size: clamp(1.7rem, 5vw, 2.4rem);
+    margin: 0 0 0.5rem;
+    color: #fff;
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.prophet-hero-title {
+    color: rgba(255, 215, 0, 0.95);
+    font-style: italic;
+    font-size: 0.95rem;
+    margin: 0 0 0.75rem;
+}
+
+.prophet-hero-period {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 255, 255, 0.25);
+    border-radius: 10px;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.prophet-hero-period i {
+    color: var(--primary-cyan, var(--cyan));
+}
+
+@media (max-width: 480px) {
+    .prophet-hero-arabic {
+        font-size: 5rem;
+        opacity: 0.6;
+    }
+}
+
 .person-header-detail h2,
 .prophet-detail-header h2 {
     font-size: 1.6rem;
@@ -1255,6 +1354,9 @@ body.sirah-modal-active {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     }
 }
+
+/* ============================================== */
+/*           TIMELINE VIEW (Sirah Nabi)            */
 /* ============================================== */
 
 .prophets-grid.sirah-timeline-mode {
