@@ -29,7 +29,6 @@ export default class ZakatApp {
             <div class="zakat-tabs">
                 <button class="zakat-tab active" data-tab="maal"><i class="fas fa-coins"></i> Zakat Maal</button>
                 <button class="zakat-tab" data-tab="fitrah"><i class="fas fa-wheat-awn"></i> Zakat Fitrah</button>
-                <button class="zakat-tab" data-tab="profesi"><i class="fas fa-briefcase"></i> Zakat Profesi</button>
             </div>
 
             <!-- ZAKAT MAAL -->
@@ -183,67 +182,33 @@ export default class ZakatApp {
                 </div>
             </div>
 
-            <!-- ZAKAT PROFESI -->
-            <div class="zakat-panel" id="panel-profesi" style="display:none">
-                <div class="zakat-info-box">
+            <!-- Catatan: Zakat Profesi tidak diakui dalam pemahaman salaf -->
+            <div class="zakat-panel-note" id="panel-profesi-info">
+                <div class="zakat-info-box salafi-note">
                     <i class="fas fa-info-circle"></i>
                     <div>
-                        <strong>Zakat Profesi (Penghasilan)</strong>
-                        <p>Berdasarkan ijtihad ulama kontemporer (Yusuf Al-Qaradhawi, MUI). Besarnya <strong>2,5%</strong> dari penghasilan bersih yang melebihi nisab.</p>
+                        <strong>Mengenai "Zakat Profesi/Penghasilan"</strong>
+                        <p>
+                            Mayoritas ulama Ahlus Sunnah berpaham salaf — di antaranya
+                            <strong>Syaikh 'Abdul 'Aziz bin Baz</strong>,
+                            <strong>Syaikh Muhammad bin Shalih al-'Utsaimin</strong>,
+                            <strong>Syaikh al-Albani</strong>,
+                            <strong>Syaikh Shalih al-Fauzan</strong>, dan
+                            <strong>Al-Lajnah ad-Da'imah</strong> (Komite Tetap Riset Ilmiah
+                            &amp; Fatwa Kerajaan Arab Saudi) — tidak mengenal istilah
+                            "zakat profesi". Penghasilan/gaji termasuk dalam zakat <em>maal</em>
+                            (zakat harta), yang dizakati setelah <strong>tersimpan sampai
+                            haul (1 tahun Hijriyah)</strong> dan mencapai <strong>nisab</strong>
+                            (85 gram emas). Cukup masukkan saldo tabungan / gaji yang
+                            tersisa di akhir tahun ke kalkulator <em>Zakat Maal</em> di atas.
+                        </p>
+                        <p style="margin-top:8px; font-size:0.85rem; opacity:0.85;">
+                            <i class="fas fa-book-open"></i> Rujukan:
+                            <em>Fatawa Lajnah Da'imah</em> Jilid 9 hal. 281,
+                            <em>Majmu' Fatawa Ibn Baz</em> 14/134,
+                            <em>Asy-Syarhul Mumti'</em> karya Syaikh al-'Utsaimin Jilid 6.
+                        </p>
                     </div>
-                </div>
-
-                <div class="zakat-form">
-                    <div class="zakat-input-group">
-                        <label><i class="fas fa-money-bill-wave"></i> Gaji / Penghasilan per Bulan (Rp)</label>
-                        <input type="number" id="inputGaji" placeholder="0" min="0">
-                    </div>
-                    <div class="zakat-input-group">
-                        <label><i class="fas fa-receipt"></i> Kebutuhan Pokok per Bulan (Rp)</label>
-                        <input type="number" id="inputKebutuhan" placeholder="0" min="0">
-                        <span class="zakat-hint">Biaya makan, tempat tinggal, transportasi, dll. Sisanya yang dizakati.</span>
-                    </div>
-                    <div class="zakat-input-group">
-                        <label><i class="fas fa-tag"></i> Harga Emas (Rp/gram)</label>
-                        <input type="number" id="inputHargaEmasProfesi" value="${this.hargaEmas}" min="0">
-                    </div>
-                    <div class="zakat-input-group">
-                        <label><i class="fas fa-calendar"></i> Metode Hitung</label>
-                        <select id="inputMetodeProfesi" class="zakat-select">
-                            <option value="bulanan">Per Bulan (nisab = 85g ÷ 12)</option>
-                            <option value="tahunan">Per Tahun (akumulasi × 12)</option>
-                        </select>
-                    </div>
-
-                    <button class="zakat-calc-btn" id="btnHitungProfesi">
-                        <i class="fas fa-calculator"></i> Hitung Zakat Profesi
-                    </button>
-                </div>
-
-                <div class="zakat-result" id="resultProfesi" style="display:none">
-                    <div class="zakat-result-header">
-                        <i class="fas fa-check-circle"></i>
-                        <h3>Hasil Perhitungan</h3>
-                    </div>
-                    <div class="zakat-result-grid">
-                        <div class="zakat-result-item">
-                            <span class="label">Penghasilan Bersih</span>
-                            <span class="value" id="penghasilanBersih">Rp 0</span>
-                        </div>
-                        <div class="zakat-result-item">
-                            <span class="label">Nisab</span>
-                            <span class="value" id="nisabProfesi">Rp 0</span>
-                        </div>
-                        <div class="zakat-result-item highlight">
-                            <span class="label">Status</span>
-                            <span class="value" id="statusProfesi">-</span>
-                        </div>
-                        <div class="zakat-result-item highlight-gold">
-                            <span class="label">Zakat per Bulan (2,5%)</span>
-                            <span class="value" id="zakatProfesiAmount">Rp 0</span>
-                        </div>
-                    </div>
-                    <p class="zakat-note" id="noteProfesi"></p>
                 </div>
             </div>
 
@@ -288,9 +253,6 @@ export default class ZakatApp {
         const btnFitrah = document.getElementById('btnHitungFitrah');
         if (btnFitrah) btnFitrah.addEventListener('click', () => this.hitungFitrah());
 
-        const btnProfesi = document.getElementById('btnHitungProfesi');
-        if (btnProfesi) btnProfesi.addEventListener('click', () => this.hitungProfesi());
-
         // Update nisab display when harga emas changes
         const inputHargaEmas = document.getElementById('inputHargaEmas');
         if (inputHargaEmas) {
@@ -304,7 +266,7 @@ export default class ZakatApp {
         this.container.querySelectorAll('.zakat-tab').forEach(b => {
             b.classList.toggle('active', b.dataset.tab === tab);
         });
-        ['maal', 'fitrah', 'profesi'].forEach(t => {
+        ['maal', 'fitrah'].forEach(t => {
             const el = document.getElementById(`panel-${t}`);
             if (el) el.style.display = t === tab ? 'block' : 'none';
         });
@@ -432,33 +394,6 @@ export default class ZakatApp {
         document.getElementById('totalUangFitrah').textContent = 'Rp ' + this.formatRupiah(totalUang);
         document.getElementById('resultFitrah').style.display = 'block';
         document.getElementById('resultFitrah').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-    hitungProfesi() {
-        const hargaEmas = parseFloat(document.getElementById('inputHargaEmasProfesi')?.value) || this.hargaEmas;
-        const gaji      = parseFloat(document.getElementById('inputGaji')?.value) || 0;
-        const kebutuhan = parseFloat(document.getElementById('inputKebutuhan')?.value) || 0;
-        const metode    = document.getElementById('inputMetodeProfesi')?.value || 'bulanan';
-
-        const bersih = Math.max(0, gaji - kebutuhan);
-        const nisabBulanan = (hargaEmas * this.nisabEmasGram) / 12;
-        const nisabTahunan = hargaEmas * this.nisabEmasGram;
-        const nisab  = metode === 'bulanan' ? nisabBulanan : nisabTahunan;
-        const refBersih = metode === 'bulanan' ? bersih : bersih * 12;
-        const wajib  = refBersih >= nisab;
-        const zakatPerBulan = wajib ? bersih * 0.025 : 0;
-
-        document.getElementById('penghasilanBersih').textContent = 'Rp ' + this.formatRupiah(bersih) + '/bln';
-        document.getElementById('nisabProfesi').textContent = 'Rp ' + this.formatRupiah(nisab) + (metode === 'bulanan' ? '/bln' : '/thn');
-        document.getElementById('statusProfesi').textContent = wajib ? '✅ WAJIB ZAKAT' : '❌ Belum Wajib';
-        document.getElementById('statusProfesi').style.color = wajib ? '#00ff88' : '#ff6b6b';
-        document.getElementById('zakatProfesiAmount').textContent = 'Rp ' + this.formatRupiah(zakatPerBulan);
-        document.getElementById('noteProfesi').textContent = wajib
-            ? `Zakat profesi Anda adalah Rp ${this.formatRupiah(zakatPerBulan)} per bulan. Dapat dibayarkan setiap bulan saat menerima gaji.`
-            : `Penghasilan bersih Anda belum mencapai nisab. Namun tetap dianjurkan untuk bersedekah semampunya.`;
-
-        document.getElementById('resultProfesi').style.display = 'block';
-        document.getElementById('resultProfesi').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     formatRupiah(angka) {

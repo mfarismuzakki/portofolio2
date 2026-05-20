@@ -6,7 +6,7 @@ export const HADITS_ASMAUL_HUSNA = {
     latin: 'Inna lillāhi tis\'atan wa tis\'īna ismā, mi\'atan illā wāhidā, man ahshāhā dakhalal jannah.',
     translation: 'Sesungguhnya Allah memiliki 99 nama — seratus kurang satu. Barangsiapa yang menjaganya (menghafalkan, memahami, dan mengamalkannya) maka ia akan masuk surga.',
     source: 'HR. Bukhari no. 2736 & Muslim no. 2677 — dari Abu Hurairah رضي الله عنه',
-    note: 'Para ulama menjelaskan "ihsha\'" (menghitung/menjaga) mencakup: menghafal lafadznya, memahami maknanya, dan beribadah kepada Allah sesuai kandungan nama tersebut.'
+    note: 'Para ulama menjelaskan "ihsha\'" (menghitung/menjaga) mencakup: menghafal lafadznya, memahami maknanya, dan beribadah kepada Allah sesuai kandungan nama tersebut. Daftar 99 nama yang sering beredar dari riwayat Tirmidzi no. 3507 dinilai lemah (mudraj — sisipan perawi Walid bin Muslim) oleh Imam al-Bukhari, al-Hafidz Ibn Hajar, Ibn Taimiyyah, dan Syaikh al-Albani. Yang shahih dari Bukhari–Muslim hanyalah jumlah 99 — sedangkan rinciannya tersebar di Al-Qur\'an dan As-Sunnah; ulama berbeda dalam menyusunnya. Daftar berikut adalah kompilasi dari Al-Qur\'an dan hadits shahih.'
 };
 
 export const ASMAUL_HUSNA = [

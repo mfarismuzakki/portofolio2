@@ -168,6 +168,37 @@
     .zakat-tab { font-size: 0.75rem; padding: 9px 6px; }
 }
 
+/* ===== Catatan salafi (panel-profesi-info, salafi-note) ===== */
+.zakat-panel-note {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 215, 0, 0.18);
+}
+
+.zakat-info-box.salafi-note {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(0, 255, 255, 0.04));
+    border: 1px solid rgba(255, 215, 0, 0.35);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.1);
+}
+
+.zakat-info-box.salafi-note i.fa-info-circle {
+    color: #ffd700;
+}
+
+.zakat-info-box.salafi-note strong {
+    color: #ffd700;
+}
+
+.zakat-info-box.salafi-note p {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.65;
+}
+
+.zakat-info-box.salafi-note em {
+    color: rgba(0, 255, 255, 0.9);
+    font-style: italic;
+}
+
 /* ===== ZAKAT NISAB PROGRESS BAR ===== */
 .zakat-nisab-progress {
     margin: 1rem 0 1.5rem;
