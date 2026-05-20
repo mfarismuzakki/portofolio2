@@ -10,3 +10,7 @@ node_modules/
 # IDE
 .vscode/
 .idea/
+
+# Claude Code (local agent state — never commit; was causing phantom
+# gitlink at .claude/worktrees/... which broke CI submodule lookup)
+.claude/
