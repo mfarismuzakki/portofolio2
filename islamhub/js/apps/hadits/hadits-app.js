@@ -27,12 +27,39 @@ export default class HaditsApp {
         localStorage.setItem('islamhub_hadits_favorites', JSON.stringify([...this.favorites]));
     }
 
+    pickDailyHadits() {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), 0, 0);
+        const diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
+        const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+        return HADITS_COLLECTION[dayOfYear % HADITS_COLLECTION.length];
+    }
+
     render() {
+        const daily = this.pickDailyHadits();
+        const dailyCat = HADITS_CATEGORIES.find(c => c.id === daily.category);
+        const dailyColor = dailyCat?.color || '#00ffff';
+
         this.container.innerHTML = `
         <div class="hadits-container">
             <div class="hadits-header">
                 <h2><i class="fas fa-scroll"></i> Hadits Browser</h2>
                 <p class="hadits-subtitle">Koleksi hadits pilihan dari Kutubut Tis\'ah</p>
+            </div>
+
+            <!-- Hadits Hari Ini -->
+            <div class="hadits-daily" style="--cat-color:${dailyColor}" data-id="${daily.id}">
+                <div class="hadits-daily-tag">
+                    <i class="fas fa-sun"></i> HADITS HARI INI
+                </div>
+                <div class="hadits-daily-cat">
+                    <i class="fas ${dailyCat?.icon || 'fa-scroll'}"></i> ${dailyCat?.label || daily.category}
+                </div>
+                <h3 class="hadits-daily-title">${daily.title || ''}</h3>
+                ${daily.arabic ? `<p class="hadits-daily-arabic">${daily.arabic}</p>` : ''}
+                ${daily.translation ? `<p class="hadits-daily-trans">"${this.truncate(daily.translation, 220)}"</p>` : ''}
+                ${daily.source ? `<p class="hadits-daily-source"><i class="fas fa-book"></i> ${daily.source}</p>` : ''}
+                <button class="hadits-daily-cta">Baca Lengkap <i class="fas fa-arrow-right"></i></button>
             </div>
 
             <!-- Search bar -->
@@ -143,10 +170,23 @@ export default class HaditsApp {
         </div>`;
     }
 
+    truncate(text, max) {
+        if (!text) return '';
+        return text.length > max ? text.substring(0, max) + '…' : text;
+    }
+
     setupEvents() {
         const content = document.getElementById('haditsContent');
         const search  = document.getElementById('haditsSearch');
         const clearBtn = document.getElementById('haditsSearchClear');
+
+        // Daily hadits hero click → open detail
+        const dailyCard = this.container.querySelector('.hadits-daily');
+        if (dailyCard) {
+            dailyCard.addEventListener('click', () => {
+                this.openModal(dailyCard.dataset.id);
+            });
+        }
 
         // Search
         if (search) {

@@ -9,6 +9,46 @@ export default class HajiApp {
         this.activeTab = 'haji';
         this.selectedLocation = null;
         this.leafletMap = null;
+        this.completedSteps = this.loadCompleted();
+    }
+
+    loadCompleted() {
+        try {
+            return new Set(JSON.parse(localStorage.getItem('islamhub_haji_done') || '[]'));
+        } catch { return new Set(); }
+    }
+
+    saveCompleted() {
+        localStorage.setItem('islamhub_haji_done', JSON.stringify([...this.completedSteps]));
+    }
+
+    toggleStep(idx) {
+        const key = 'haji-' + idx;
+        if (this.completedSteps.has(key)) {
+            this.completedSteps.delete(key);
+        } else {
+            this.completedSteps.add(key);
+        }
+        this.saveCompleted();
+        this.updateProgressUI();
+    }
+
+    updateProgressUI() {
+        const total = MANASIK_HAJI.length;
+        let done = 0;
+        for (let i = 0; i < total; i++) {
+            const item = this.container.querySelector(`.haji-timeline-item[data-step="${i}"]`);
+            if (!item) continue;
+            const completed = this.completedSteps.has('haji-' + i);
+            item.classList.toggle('completed', completed);
+            if (completed) done++;
+        }
+
+        const pct = total > 0 ? (done / total) * 100 : 0;
+        const fill = document.getElementById('hajiProgressFill');
+        const txt  = document.getElementById('hajiProgressText');
+        if (fill) fill.style.width = pct + '%';
+        if (txt)  txt.textContent = `${done} / ${total} amalan selesai`;
     }
 
     async init() {
@@ -40,9 +80,23 @@ export default class HajiApp {
                 </div>
 
                 <h3 class="haji-section-title"><i class="fas fa-calendar-alt"></i> Urutan Manasik Haji (Hari per Hari)</h3>
+
+                <!-- Checklist progress -->
+                <div class="haji-progress-tracker">
+                    <div class="haji-progress-head">
+                        <span><i class="fas fa-check-double"></i> Progress Anda</span>
+                        <span id="hajiProgressText">0 / ${MANASIK_HAJI.length} amalan selesai</span>
+                    </div>
+                    <div class="haji-progress-bar">
+                        <div class="haji-progress-fill" id="hajiProgressFill"></div>
+                    </div>
+                </div>
+
                 <div class="haji-timeline">
-                    ${MANASIK_HAJI.map((m, i) => `
-                    <div class="haji-timeline-item">
+                    ${MANASIK_HAJI.map((m, i) => {
+                        const done = this.completedSteps.has('haji-' + i);
+                        return `
+                    <div class="haji-timeline-item${done ? ' completed' : ''}" data-step="${i}">
                         <div class="haji-timeline-dot">
                             <i class="fas ${m.icon}"></i>
                         </div>
@@ -50,12 +104,16 @@ export default class HajiApp {
                             <div class="haji-timeline-header">
                                 <span class="haji-timeline-hari">${m.hari}</span>
                                 <strong>${m.nama}</strong>
+                                <button class="haji-timeline-check" data-step-toggle="${i}" aria-label="Tandai selesai">
+                                    <i class="fas fa-check"></i>
+                                </button>
                             </div>
                             <ul class="haji-timeline-amalan">
                                 ${m.amalan.map(a => `<li>${a}</li>`).join('')}
                             </ul>
                         </div>
-                    </div>`).join('')}
+                    </div>`;
+                    }).join('')}
                 </div>
 
                 <h3 class="haji-section-title"><i class="fas fa-sign-in-alt"></i> Miqat — Batas Mulai Ihram</h3>
@@ -223,6 +281,19 @@ export default class HajiApp {
     }
 
     setupEvents() {
+        // Initialize progress UI on mount
+        this.updateProgressUI();
+
+        // Step checklist (delegated)
+        this.container.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-step-toggle]');
+            if (btn) {
+                e.stopPropagation();
+                const idx = parseInt(btn.dataset.stepToggle);
+                this.toggleStep(idx);
+            }
+        });
+
         // Tabs
         this.container.querySelectorAll('.haji-tab').forEach(tab => {
             tab.addEventListener('click', () => {

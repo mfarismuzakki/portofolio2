@@ -196,6 +196,26 @@ export default class AlQuranApp {
             <button class="nav-btn" data-action="settings"><i class="fas fa-cog"></i><span>Pengaturan</span></button>
         `;
 
+        // Reading Streak widget
+        const streak = this._getReadingStreak();
+        const streakHTML = `
+            <div class="alquran-streak-card">
+                <div class="alquran-streak-info">
+                    <span class="alquran-streak-label">Streak Membaca</span>
+                    <div class="alquran-streak-count">
+                        <span class="streak-num">${streak.count}</span>
+                        <span class="streak-unit">hari</span>
+                    </div>
+                    ${streak.longest > 0 ? `<span class="alquran-streak-longest"><i class="fas fa-trophy"></i> Terpanjang: ${streak.longest} hari</span>` : ''}
+                </div>
+                <div class="alquran-streak-flame">
+                    <i class="fas fa-fire"></i>
+                </div>
+            </div>
+        `;
+        const streakDiv = document.createElement('div');
+        streakDiv.innerHTML = streakHTML;
+
         // Last Read Section
         const lastRead = this._loadJSON('alquran_last_read', null);
         let lastReadSection = '';
@@ -258,6 +278,7 @@ export default class AlQuranApp {
 
         // Assemble
         wrapper.appendChild(header);
+        wrapper.appendChild(streakDiv.firstElementChild);
         if (lastReadSection && !this.settings.hideLastRead) {
             const lastReadDiv = document.createElement('div');
             lastReadDiv.innerHTML = lastReadSection;
@@ -3082,6 +3103,7 @@ export default class AlQuranApp {
                                 verse: verseNumber,
                                 timestamp: new Date().toISOString()
                             });
+                            this._updateReadingStreak();
                         }, 1000);
                     }
                 }
@@ -3250,6 +3272,38 @@ export default class AlQuranApp {
 
     _saveJSON(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
     _loadJSON(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+
+    // Track daily reading streak. Called whenever a verse is read.
+    // Stores { count, lastDate (YYYY-MM-DD), longest }
+    _updateReadingStreak() {
+        const today = new Date().toISOString().split('T')[0];
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        const data = this._loadJSON('alquran_streak', { count: 0, lastDate: null, longest: 0 });
+
+        if (data.lastDate === today) {
+            // Already counted today
+            return data;
+        } else if (data.lastDate === yesterday) {
+            data.count += 1;
+        } else {
+            data.count = 1;
+        }
+        data.lastDate = today;
+        data.longest = Math.max(data.longest || 0, data.count);
+        this._saveJSON('alquran_streak', data);
+        return data;
+    }
+
+    _getReadingStreak() {
+        const today = new Date().toISOString().split('T')[0];
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        const data = this._loadJSON('alquran_streak', { count: 0, lastDate: null, longest: 0 });
+        // If user broke the streak (not today and not yesterday), display 0
+        if (data.lastDate !== today && data.lastDate !== yesterday) {
+            return { ...data, count: 0 };
+        }
+        return data;
+    }
 
     // ===== MURATAL SURAH =====
 

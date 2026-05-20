@@ -1,5 +1,25 @@
 /* ===== IslamHub - Main Application Controller ===== */
 
+// Apps that are eligible to occupy the 3 customizable footer slots. The first
+// slot (Home) and last slot (Lainnya) are always fixed.
+const FOOTER_PINNABLE = [
+    { id: 'adzan',    name: 'Adzan',           icon: 'fa-mosque' },
+    { id: 'alquran',  name: 'Al-Qur\'an',      icon: 'fa-book-quran' },
+    { id: 'streaming',name: 'Kajian',          icon: 'fa-broadcast-tower' },
+    { id: 'sholat',   name: 'Tata Cara Sholat',icon: 'fa-mosque' },
+    { id: 'waris',    name: 'Kalkulator Waris',icon: 'fa-calculator' },
+    { id: 'qibla',    name: 'Arah Kiblat',     icon: 'fa-compass' },
+    { id: 'sirah',    name: 'Sirah Nabi',      icon: 'fa-tree' },
+    { id: 'dzikir',   name: 'Dzikir & Doa',    icon: 'fa-hands' },
+    { id: 'zakat',    name: 'Kalkulator Zakat',icon: 'fa-hand-holding-heart' },
+    { id: 'kalender', name: 'Kalender Hijri',  icon: 'fa-calendar-alt' },
+    { id: 'asmaul',   name: 'Asmaul Husna',    icon: 'fa-star-and-crescent' },
+    { id: 'hadits',   name: 'Hadits',          icon: 'fa-scroll' },
+    { id: 'fiqh',     name: 'Fiqh Praktis',    icon: 'fa-scale-balanced' },
+    { id: 'haji',     name: 'Haji & Umrah',    icon: 'fa-kaaba' },
+];
+const DEFAULT_FOOTER_PINS = ['adzan', 'alquran', 'streaming'];
+
 // App registry for the reorderable "More Apps" dropdown (all non-fixed-nav apps)
 const DROPDOWN_APP_CONFIG = [
     { id: 'sholat',   name: 'Tata Cara Sholat',   shortDesc: 'Panduan gerakan dan bacaan sholat',          icon: 'fa-mosque',            iconBg: 'linear-gradient(135deg,rgba(212,168,83,0.8),rgba(240,215,140,0.6))' },
@@ -55,6 +75,7 @@ class IslamHubApp {
         this.setupNavigation();
         this.setupMobileMenu();
         this.loadStateFromLocalStorage();
+        this.renderFooterNav();
         this.renderMoreAppsDropdown();
         this.setupSettingsSheet();
         
@@ -820,6 +841,66 @@ class IslamHubApp {
         localStorage.setItem('islamhub_app_order', JSON.stringify(order));
     }
 
+    // ===== FOOTER PINS (3 customizable footer slots) =====
+    loadFooterPins() {
+        try {
+            const saved = localStorage.getItem('islamhub_footer_pins');
+            if (saved) {
+                const arr = JSON.parse(saved);
+                const valid = FOOTER_PINNABLE.map(a => a.id);
+                const filtered = arr.filter(id => valid.includes(id));
+                if (filtered.length === 3) return filtered;
+            }
+        } catch (e) {}
+        return [...DEFAULT_FOOTER_PINS];
+    }
+
+    saveFooterPins(pins) {
+        if (!Array.isArray(pins) || pins.length !== 3) return;
+        localStorage.setItem('islamhub_footer_pins', JSON.stringify(pins));
+    }
+
+    renderFooterNav() {
+        const nav = document.getElementById('bottomNavigation');
+        if (!nav) return;
+        const pins = this.loadFooterPins();
+        const homeBtn = '<button class="bottom-nav-item" data-app="home"><i class="fas fa-home"></i><span>Beranda</span></button>';
+        const slots = pins.map(id => {
+            const app = FOOTER_PINNABLE.find(a => a.id === id);
+            if (!app) return '';
+            return `<button class="bottom-nav-item" data-app="${app.id}">
+                <i class="fas ${app.icon}"></i>
+                <span>${app.name}</span>
+            </button>`;
+        }).join('');
+        const moreBtn = '<button class="bottom-nav-item" id="moreAppsBtn"><i class="fas fa-th"></i><span>Lainnya</span></button>';
+        nav.innerHTML = homeBtn + slots + moreBtn;
+
+        // Re-mark currently active app
+        const activeBtn = nav.querySelector(`.bottom-nav-item[data-app="${this.currentApp}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
+
+        // Re-wire click handlers (since we replaced innerHTML)
+        nav.querySelectorAll('.bottom-nav-item:not(#moreAppsBtn)').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const appName = e.currentTarget.dataset.app;
+                if (appName) this.switchApp(appName);
+            });
+        });
+        this._wireMoreAppsButton();
+    }
+
+    _wireMoreAppsButton() {
+        const moreAppsBtn = document.getElementById('moreAppsBtn');
+        const moreAppsDropdown = document.getElementById('moreAppsDropdown');
+        if (!moreAppsBtn || !moreAppsDropdown) return;
+        moreAppsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            moreAppsDropdown.classList.toggle('show');
+        });
+    }
+
     renderMoreAppsDropdown() {
         const list = document.getElementById('moreAppsList');
         if (!list) return;
@@ -859,28 +940,100 @@ class IslamHubApp {
     renderSettingsList() {
         const list = document.getElementById('appSettingsList');
         if (!list) return;
+
+        // ----- 1) Footer pin selectors (3 customizable footer slots) -----
+        const pins = this.loadFooterPins();
+        const slotLabels = ['Slot 2', 'Slot 3', 'Slot 4'];
+        const footerHTML = `
+            <div class="settings-section">
+                <div class="settings-section-head">
+                    <i class="fas fa-thumbtack"></i>
+                    <h4>Menu Footer (3 slot dapat diatur)</h4>
+                </div>
+                <p class="settings-section-hint">Pilih aplikasi yang muncul di bottom nav. Slot Beranda &amp; Lainnya tetap.</p>
+                <div class="footer-pin-grid">
+                    <div class="footer-pin-slot fixed">
+                        <span class="footer-pin-label">Slot 1</span>
+                        <div class="footer-pin-value">
+                            <i class="fas fa-home"></i> Beranda
+                        </div>
+                    </div>
+                    ${pins.map((pinId, slotIdx) => `
+                        <div class="footer-pin-slot">
+                            <span class="footer-pin-label">${slotLabels[slotIdx]}</span>
+                            <select class="footer-pin-select" data-slot="${slotIdx}">
+                                ${FOOTER_PINNABLE.map(a => `
+                                    <option value="${a.id}" ${a.id === pinId ? 'selected' : ''}>${a.name}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                    `).join('')}
+                    <div class="footer-pin-slot fixed">
+                        <span class="footer-pin-label">Slot 5</span>
+                        <div class="footer-pin-value">
+                            <i class="fas fa-th"></i> Lainnya
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // ----- 2) Existing dropdown reorder -----
         const order = this.loadDropdownOrder();
         const last = order.length - 1;
-        list.innerHTML = order.map((id, idx) => {
-            const app = DROPDOWN_APP_CONFIG.find(a => a.id === id);
-            if (!app) return '';
-            return `
-            <div class="settings-app-item" data-app="${app.id}" draggable="true">
-                <div class="settings-drag-handle"><i class="fas fa-grip-vertical"></i></div>
-                <div class="settings-app-icon" style="background:${app.iconBg}">
-                    <i class="fas ${app.icon}"></i>
+        const reorderHTML = `
+            <div class="settings-section">
+                <div class="settings-section-head">
+                    <i class="fas fa-grip-vertical"></i>
+                    <h4>Urutan Menu "Lainnya"</h4>
                 </div>
-                <span class="settings-app-name">${app.name}</span>
-                <div class="settings-app-btns">
-                    <button class="settings-move-btn" data-action="up" data-app="${app.id}" ${idx === 0 ? 'disabled' : ''}>
-                        <i class="fas fa-chevron-up"></i>
-                    </button>
-                    <button class="settings-move-btn" data-action="down" data-app="${app.id}" ${idx === last ? 'disabled' : ''}>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                </div>
-            </div>`;
-        }).join('');
+                <p class="settings-section-hint">Seret atau gunakan tombol ↑↓ untuk mengatur urutan tampilan.</p>
+                ${order.map((id, idx) => {
+                    const app = DROPDOWN_APP_CONFIG.find(a => a.id === id);
+                    if (!app) return '';
+                    return `
+                    <div class="settings-app-item" data-app="${app.id}" draggable="true">
+                        <div class="settings-drag-handle"><i class="fas fa-grip-vertical"></i></div>
+                        <div class="settings-app-icon" style="background:${app.iconBg}">
+                            <i class="fas ${app.icon}"></i>
+                        </div>
+                        <span class="settings-app-name">${app.name}</span>
+                        <div class="settings-app-btns">
+                            <button class="settings-move-btn" data-action="up" data-app="${app.id}" ${idx === 0 ? 'disabled' : ''}>
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                            <button class="settings-move-btn" data-action="down" data-app="${app.id}" ${idx === last ? 'disabled' : ''}>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
+        `;
+
+        list.innerHTML = footerHTML + reorderHTML;
+
+        // Wire footer pin selects
+        list.querySelectorAll('.footer-pin-select').forEach(sel => {
+            sel.addEventListener('change', () => {
+                const slotIdx = parseInt(sel.dataset.slot);
+                const newPins = this.loadFooterPins();
+                const newAppId = sel.value;
+
+                // If selected app already pinned in another slot, swap with this one
+                const existingIdx = newPins.indexOf(newAppId);
+                if (existingIdx !== -1 && existingIdx !== slotIdx) {
+                    // Swap
+                    newPins[existingIdx] = newPins[slotIdx];
+                }
+                newPins[slotIdx] = newAppId;
+
+                this.saveFooterPins(newPins);
+                this.renderFooterNav();
+                this.renderSettingsList();
+            });
+        });
+
         this.setupSettingsDragDrop(list);
     }
 
@@ -963,8 +1116,10 @@ class IslamHubApp {
         document.getElementById('appSettingsBackdrop')?.addEventListener('click', () => this.closeSettingsSheet());
         document.getElementById('resetAppOrder')?.addEventListener('click', () => {
             localStorage.removeItem('islamhub_app_order');
+            localStorage.removeItem('islamhub_footer_pins');
             this.renderSettingsList();
             this.renderMoreAppsDropdown();
+            this.renderFooterNav();
         });
 
         // Up/Down buttons — event delegation on .app-settings-box (survives re-renders of the list)

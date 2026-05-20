@@ -333,3 +333,88 @@
     .haji-tabs { gap: 4px; }
     .haji-tab { min-width: 80px; font-size: 0.72rem; padding: 8px 6px; }
 }
+
+/* ===== HAJI Progress Tracker (manasik checklist) ===== */
+.haji-progress-tracker {
+    margin: 1rem 0 1.5rem;
+    padding: 1rem 1.2rem;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.06), rgba(0, 255, 255, 0.04));
+    border: 1px solid rgba(255, 215, 0, 0.25);
+    border-radius: 12px;
+}
+
+.haji-progress-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffd700;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.55rem;
+}
+
+.haji-progress-bar {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.haji-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ffd700 0%, #00ff88 100%);
+    border-radius: 6px;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+}
+
+.haji-timeline-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.haji-timeline-check {
+    margin-left: auto;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(0, 255, 255, 0.05);
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    color: transparent;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.haji-timeline-check:hover {
+    border-color: var(--primary-cyan, #00ffff);
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.haji-timeline-item.completed .haji-timeline-check {
+    background: linear-gradient(135deg, #00ff88, #00d4ff);
+    border-color: transparent;
+    color: #0a0e27;
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.5);
+}
+
+.haji-timeline-item.completed .haji-timeline-content {
+    opacity: 0.7;
+}
+
+.haji-timeline-item.completed .haji-timeline-dot {
+    background: linear-gradient(135deg, #00ff88, #00d4ff);
+    color: #0a0e27;
+    box-shadow: 0 0 14px rgba(0, 255, 136, 0.5);
+}
+
+.haji-timeline-item.completed strong {
+    text-decoration: line-through;
+    text-decoration-color: rgba(255, 255, 255, 0.3);
+}

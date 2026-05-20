@@ -216,3 +216,121 @@
     background: rgba(255,215,0,0.15);
     border-color: rgba(255,215,0,0.4); color: #ffd700;
 }
+
+/* ===== HADITS HARI INI (Daily Hero) ===== */
+.hadits-daily {
+    position: relative;
+    padding: 1.5rem 1.5rem 1.25rem;
+    margin-bottom: 1.5rem;
+    border-radius: 18px;
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--cat-color) 20%, transparent), transparent 60%),
+        linear-gradient(135deg, rgba(10, 14, 39, 0.6), rgba(40, 0, 80, 0.4));
+    border: 1px solid color-mix(in srgb, var(--cat-color) 55%, transparent);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 24px color-mix(in srgb, var(--cat-color) 18%, transparent);
+}
+
+@supports not (background: color-mix(in srgb, red, blue)) {
+    .hadits-daily {
+        background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.06));
+        border: 1px solid rgba(0, 255, 255, 0.3);
+    }
+}
+
+.hadits-daily:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 35px color-mix(in srgb, var(--cat-color) 30%, transparent);
+}
+
+.hadits-daily-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: color-mix(in srgb, var(--cat-color) 22%, transparent);
+    color: var(--cat-color);
+    padding: 0.3rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.85rem;
+}
+
+.hadits-daily-cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--cat-color);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.hadits-daily-title {
+    margin: 0 0 0.85rem;
+    color: #fff;
+    font-size: 1.25rem;
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    text-shadow: 0 0 16px color-mix(in srgb, var(--cat-color) 40%, transparent);
+}
+
+.hadits-daily-arabic {
+    direction: rtl;
+    font-family: 'Amiri Quran', 'Scheherazade New', serif;
+    font-size: 1.5rem;
+    line-height: 1.8;
+    color: #fff;
+    margin: 0 0 0.85rem;
+    text-shadow: 0 0 12px color-mix(in srgb, var(--cat-color) 25%, transparent);
+}
+
+.hadits-daily-trans {
+    color: rgba(255, 255, 255, 0.85);
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0 0 0.85rem;
+}
+
+.hadits-daily-source {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    margin: 0 0 1rem;
+}
+
+.hadits-daily-source i {
+    color: var(--cat-color);
+    margin-right: 0.3rem;
+}
+
+.hadits-daily-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    border: 1px solid var(--cat-color);
+    color: var(--cat-color);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.25s ease;
+}
+
+.hadits-daily-cta:hover {
+    background: var(--cat-color);
+    color: #0a0e27;
+}
+
+.hadits-daily:hover .hadits-daily-cta i {
+    transform: translateX(4px);
+}
+
+.hadits-daily-cta i {
+    transition: transform 0.2s ease;
+}

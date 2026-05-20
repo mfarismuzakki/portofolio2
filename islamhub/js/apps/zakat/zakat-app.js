@@ -86,6 +86,22 @@ export default class ZakatApp {
                         <i class="fas fa-check-circle"></i>
                         <h3>Hasil Perhitungan</h3>
                     </div>
+
+                    <!-- Nisab progress bar -->
+                    <div class="zakat-nisab-progress">
+                        <div class="zakat-nisab-progress-header">
+                            <span><i class="fas fa-bullseye"></i> Progress menuju Nisab</span>
+                            <span class="zakat-nisab-pct" id="nisabPercent">0%</span>
+                        </div>
+                        <div class="zakat-nisab-bar">
+                            <div class="zakat-nisab-fill" id="nisabFill"></div>
+                            <div class="zakat-nisab-marker"><span>Nisab</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown donut chart of harta composition -->
+                    <div class="zakat-breakdown" id="maalBreakdown"></div>
+
                     <div class="zakat-result-grid">
                         <div class="zakat-result-item">
                             <span class="label">Total Harta</span>
@@ -324,8 +340,83 @@ export default class ZakatApp {
             ? `Alhamdulillah, harta Anda mencapai nisab. Segera tunaikan zakat sebesar Rp ${this.formatRupiah(zakat)} kepada 8 golongan yang berhak menerimanya.`
             : `Total harta Anda belum mencapai nisab (Rp ${this.formatRupiah(nisab)}). Belum wajib zakat, namun sangat dianjurkan bersedekah.`;
 
+        // Update nisab progress bar
+        const pct = nisab > 0 ? Math.min(100, (total / nisab) * 100) : 0;
+        const nisabFill = document.getElementById('nisabFill');
+        const nisabPct = document.getElementById('nisabPercent');
+        if (nisabFill) {
+            nisabFill.style.width = pct + '%';
+            nisabFill.classList.toggle('reached', pct >= 100);
+        }
+        if (nisabPct) nisabPct.textContent = pct.toFixed(1) + '%';
+
+        // Render breakdown donut chart
+        this.renderMaalBreakdown({ emas, perak, tabungan, investasi, dagang, piutang, total });
+
         document.getElementById('resultMaal').style.display = 'block';
         document.getElementById('resultMaal').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    renderMaalBreakdown(parts) {
+        const el = document.getElementById('maalBreakdown');
+        if (!el) return;
+        const total = parts.total || 1;
+        const segments = [
+            { id: 'emas',      label: 'Emas',       value: parts.emas,      color: '#ffd700', icon: 'fas fa-coins' },
+            { id: 'perak',     label: 'Perak',      value: parts.perak,     color: '#c0c0c0', icon: 'fas fa-ring' },
+            { id: 'tabungan',  label: 'Tabungan',   value: parts.tabungan,  color: '#00d4ff', icon: 'fas fa-piggy-bank' },
+            { id: 'investasi', label: 'Investasi',  value: parts.investasi, color: '#a78bfa', icon: 'fas fa-chart-line' },
+            { id: 'dagang',    label: 'Dagang',     value: parts.dagang,    color: '#ff8c42', icon: 'fas fa-store' },
+            { id: 'piutang',   label: 'Piutang',    value: parts.piutang,   color: '#34d399', icon: 'fas fa-money-bill' },
+        ].filter(s => s.value > 0);
+
+        if (segments.length === 0) {
+            el.innerHTML = '';
+            return;
+        }
+
+        const radius = 70;
+        const circ = 2 * Math.PI * radius;
+        let offset = 0;
+        let svgSegments = '';
+        let legend = '';
+
+        segments.forEach(seg => {
+            const ratio = seg.value / total;
+            const dash = circ * ratio;
+            svgSegments += `
+                <circle class="zakat-donut-seg" cx="100" cy="100" r="${radius}"
+                    fill="none" stroke="${seg.color}" stroke-width="22"
+                    stroke-dasharray="${dash} ${circ}"
+                    stroke-dashoffset="${-offset}"
+                    transform="rotate(-90 100 100)">
+                    <title>${seg.label} — ${this.formatRupiah(seg.value)} (${(ratio*100).toFixed(1)}%)</title>
+                </circle>
+            `;
+            legend += `
+                <div class="zakat-donut-leg">
+                    <span class="zakat-donut-dot" style="background:${seg.color}"></span>
+                    <i class="${seg.icon}" style="color:${seg.color}"></i>
+                    <span class="zakat-donut-label">${seg.label}</span>
+                    <span class="zakat-donut-pct">${(ratio*100).toFixed(1)}%</span>
+                </div>
+            `;
+            offset += dash;
+        });
+
+        el.innerHTML = `
+            <h4><i class="fas fa-chart-pie"></i> Komposisi Harta</h4>
+            <div class="zakat-donut-wrap">
+                <svg class="zakat-donut-svg" viewBox="0 0 200 200">
+                    ${svgSegments}
+                    <text x="100" y="92" text-anchor="middle" class="zakat-donut-center-num">
+                        ${segments.length}
+                    </text>
+                    <text x="100" y="112" text-anchor="middle" class="zakat-donut-center-lbl">JENIS HARTA</text>
+                </svg>
+                <div class="zakat-donut-legend">${legend}</div>
+            </div>
+        `;
     }
 
     hitungFitrah() {

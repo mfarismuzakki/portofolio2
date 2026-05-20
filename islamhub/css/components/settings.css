@@ -144,3 +144,119 @@
     color: var(--text-primary, #fff);
     border-color: rgba(255,255,255,0.25);
 }
+
+/* ===== Settings sections (Footer pins + Reorder) ===== */
+.settings-section {
+    margin-bottom: 1.25rem;
+}
+
+.settings-section + .settings-section {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.settings-section-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+    color: var(--primary-cyan, #00ffff);
+}
+
+.settings-section-head h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+}
+
+.settings-section-hint {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0 0 0.75rem;
+}
+
+/* Footer pin grid */
+.footer-pin-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(0, 255, 255, 0.04);
+    border: 1px solid rgba(0, 255, 255, 0.12);
+    border-radius: 12px;
+}
+
+.footer-pin-slot {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    align-items: center;
+    text-align: center;
+}
+
+.footer-pin-label {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.footer-pin-slot.fixed .footer-pin-value {
+    padding: 0.55rem 0.4rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.7rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.footer-pin-slot.fixed .footer-pin-value i {
+    display: block;
+    margin-bottom: 0.2rem;
+    font-size: 0.95rem;
+}
+
+.footer-pin-select {
+    width: 100%;
+    padding: 0.5rem 0.3rem;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.05));
+    border: 1px solid rgba(0, 255, 255, 0.35);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.72rem;
+    font-family: inherit;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    text-align: center;
+    text-align-last: center;
+}
+
+.footer-pin-select:focus {
+    outline: none;
+    border-color: var(--primary-cyan, #00ffff);
+    box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.25);
+}
+
+.footer-pin-select option {
+    background: #0a0e27;
+    color: #fff;
+}
+
+@media (max-width: 600px) {
+    .footer-pin-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.3rem;
+    }
+    .footer-pin-select {
+        font-size: 0.62rem;
+        padding: 0.4rem 0.2rem;
+    }
+    .footer-pin-slot.fixed .footer-pin-value {
+        font-size: 0.62rem;
+        padding: 0.4rem 0.2rem;
+    }
+}

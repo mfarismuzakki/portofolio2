@@ -77,6 +77,37 @@ export default class KalenderApp {
         return this.islamicEvents[`${hm}-${hd}`] || null;
     }
 
+    // Walk forward up to ~2 Hijri years looking for upcoming events.
+    // Returns array of { event, gregorianDate, daysAway } sorted by date.
+    getUpcomingEvents(limit = 3) {
+        const today = new Date(this.today);
+        today.setHours(0, 0, 0, 0);
+        const results = [];
+        const seen = new Set();
+
+        // Scan ~750 days forward (roughly 2 Hijri years)
+        for (let offset = 0; offset < 750 && results.length < limit; offset++) {
+            const d = new Date(today.getTime() + offset * 86400000);
+            const h = this.toHijri(d.getFullYear(), d.getMonth() + 1, d.getDate());
+            const key = `${h.month}-${h.day}`;
+            const event = this.islamicEvents[key];
+            if (event && !seen.has(key + '-' + h.year)) {
+                seen.add(key + '-' + h.year);
+                results.push({
+                    event,
+                    gregorianDate: d,
+                    hijri: h,
+                    daysAway: offset
+                });
+            }
+        }
+        return results;
+    }
+
+    formatDate(d) {
+        return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
     daysInMonth(year, month) {
         return new Date(year, month + 1, 0).getDate();
     }
@@ -92,6 +123,9 @@ export default class KalenderApp {
             this.today.getDate()
         );
 
+        // Compute next 3 upcoming Islamic events
+        const upcomingEvents = this.getUpcomingEvents(3);
+
         this.container.innerHTML = `
         <div class="kalender-container">
             <div class="kalender-header">
@@ -99,6 +133,25 @@ export default class KalenderApp {
                 <div class="kalender-today-hijri">
                     <span class="kalender-hijri-date">${todayHijri.day} ${this.hijriMonths[todayHijri.month - 1]} ${todayHijri.year} H</span>
                     <span class="kalender-masehi-date">${this.today.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                </div>
+            </div>
+
+            <!-- Countdown widget to upcoming Islamic events -->
+            <div class="kalender-countdown-section">
+                <div class="kalender-countdown-header">
+                    <i class="fas fa-hourglass-half"></i>
+                    <h3>Hitung Mundur Acara Islam</h3>
+                </div>
+                <div class="kalender-countdown-grid">
+                    ${upcomingEvents.map((e, i) => `
+                        <div class="kalender-countdown-card${i === 0 ? ' featured' : ''}" style="--event-color:${e.event.color}">
+                            <div class="kalender-cd-icon">${e.event.icon}</div>
+                            <div class="kalender-cd-days">${e.daysAway}</div>
+                            <div class="kalender-cd-label">hari lagi</div>
+                            <div class="kalender-cd-name">${e.event.label}</div>
+                            <div class="kalender-cd-date">${this.formatDate(e.gregorianDate)}</div>
+                        </div>
+                    `).join('')}
                 </div>
             </div>
 
@@ -138,12 +191,20 @@ export default class KalenderApp {
             <!-- Keterangan Bulan Hijriyah -->
             <div class="kalender-months-info">
                 <h3><i class="fas fa-info-circle"></i> Bulan-Bulan Hijriyah</h3>
+                <p class="kalender-months-note">
+                    <span class="haram-badge">★ Bulan Haram</span> — bulan yang dimuliakan dalam Islam (Muharram, Rajab, Dzulqa'dah, Dzulhijjah).
+                </p>
                 <div class="kalender-months-grid">
-                    ${this.hijriMonths.map((m, i) => `
-                        <div class="kalender-month-item">
-                            <span class="kalender-month-num">${i + 1}</span>
+                    ${this.hijriMonths.map((m, i) => {
+                        const num = i + 1;
+                        const isHaram = [1, 7, 11, 12].includes(num);
+                        return `
+                        <div class="kalender-month-item${isHaram ? ' haram' : ''}">
+                            <span class="kalender-month-num">${num}</span>
                             <span class="kalender-month-name">${m}</span>
-                        </div>`).join('')}
+                            ${isHaram ? '<span class="kalender-month-haram-star">★</span>' : ''}
+                        </div>`;
+                    }).join('')}
                 </div>
             </div>
         </div>`;

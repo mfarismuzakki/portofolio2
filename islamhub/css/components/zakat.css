@@ -167,3 +167,188 @@
     .zakat-result-grid { grid-template-columns: 1fr; }
     .zakat-tab { font-size: 0.75rem; padding: 9px 6px; }
 }
+
+/* ===== ZAKAT NISAB PROGRESS BAR ===== */
+.zakat-nisab-progress {
+    margin: 1rem 0 1.5rem;
+}
+
+.zakat-nisab-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.88rem;
+}
+
+.zakat-nisab-pct {
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 1rem;
+    color: var(--primary-cyan, #00ffff);
+    font-weight: 700;
+}
+
+.zakat-nisab-bar {
+    position: relative;
+    height: 22px;
+    background: rgba(0, 255, 255, 0.08);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.zakat-nisab-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00d4ff 0%, #00ffff 100%);
+    border-radius: 12px;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+}
+
+.zakat-nisab-fill.reached {
+    background: linear-gradient(90deg, #ffd700 0%, #00ff88 100%);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.6);
+    animation: nisabReachedPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes nisabReachedPulse {
+    0%, 100% { box-shadow: 0 0 18px rgba(255, 215, 0, 0.6); }
+    50%      { box-shadow: 0 0 30px rgba(0, 255, 136, 0.9); }
+}
+
+.zakat-nisab-marker {
+    position: absolute;
+    right: 0;
+    top: -1px;
+    bottom: -1px;
+    width: 3px;
+    background: #ff00ff;
+    box-shadow: 0 0 8px rgba(255, 0, 255, 0.7);
+}
+
+.zakat-nisab-marker span {
+    position: absolute;
+    top: -22px;
+    right: -10px;
+    background: #ff00ff;
+    color: #0a0e27;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 6px;
+    letter-spacing: 1px;
+}
+
+/* ===== ZAKAT DONUT BREAKDOWN ===== */
+.zakat-breakdown {
+    margin: 1.25rem 0;
+    padding: 1.25rem;
+    background: rgba(0, 255, 255, 0.03);
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    border-radius: 14px;
+}
+
+.zakat-breakdown h4 {
+    margin: 0 0 1rem;
+    color: var(--primary-cyan, #00ffff);
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.zakat-donut-wrap {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1.25rem;
+    align-items: center;
+}
+
+.zakat-donut-svg {
+    width: 200px;
+    height: 200px;
+    filter: drop-shadow(0 4px 18px rgba(0, 255, 255, 0.2));
+}
+
+.zakat-donut-seg {
+    transition: stroke-width 0.3s ease;
+    animation: zakatDonutGrow 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@keyframes zakatDonutGrow {
+    from { stroke-dasharray: 0 1000; }
+}
+
+.zakat-donut-seg:hover {
+    stroke-width: 28;
+    cursor: pointer;
+}
+
+.zakat-donut-center-num {
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    fill: var(--primary-cyan, #00ffff);
+}
+
+.zakat-donut-center-lbl {
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    fill: rgba(255, 255, 255, 0.6);
+}
+
+.zakat-donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.zakat-donut-leg {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.7rem;
+    background: rgba(0, 255, 255, 0.04);
+    border: 1px solid rgba(0, 255, 255, 0.12);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.zakat-donut-leg:hover {
+    background: rgba(0, 255, 255, 0.1);
+    transform: translateX(3px);
+}
+
+.zakat-donut-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    box-shadow: 0 0 6px currentColor;
+}
+
+.zakat-donut-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+}
+
+.zakat-donut-pct {
+    color: var(--primary-cyan, #00ffff);
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+@media (max-width: 600px) {
+    .zakat-donut-wrap {
+        grid-template-columns: 1fr;
+    }
+    .zakat-donut-svg {
+        margin: 0 auto;
+    }
+}

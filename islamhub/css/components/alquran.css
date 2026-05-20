@@ -7525,3 +7525,92 @@ body[data-audio-player-visible="true"] .alquran-container {
 .alq-muratal-btn:hover { background: rgba(245,147,10,0.2); border-color: #f5930a; color: #f5930a; }
 .alq-muratal-btn.playing { background: #f5930a; border-color: #f5930a; color: #fff; box-shadow: 0 0 12px rgba(245,147,10,0.45); }
 .alq-muratal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ===== Al-Qur'an Reading Streak Card ===== */
+.alquran-streak-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0 1.25rem;
+    background:
+        radial-gradient(circle at right, rgba(255, 100, 0, 0.18), transparent 60%),
+        linear-gradient(135deg, rgba(10, 14, 39, 0.6), rgba(80, 30, 0, 0.35));
+    border: 1px solid rgba(255, 140, 0, 0.4);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(255, 140, 0, 0.18);
+    position: relative;
+    overflow: hidden;
+}
+
+.alquran-streak-info {
+    flex: 1;
+    z-index: 1;
+}
+
+.alquran-streak-label {
+    display: block;
+    color: #ffcc88;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.alquran-streak-count {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+}
+
+.streak-num {
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ff8c42;
+    line-height: 1;
+    text-shadow: 0 0 24px rgba(255, 140, 0, 0.55);
+}
+
+.streak-unit {
+    color: rgba(255, 200, 150, 0.85);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.alquran-streak-longest {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #ffd700;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.alquran-streak-flame {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 140, 0, 0.4), rgba(255, 60, 0, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff8c42;
+    font-size: 1.9rem;
+    flex-shrink: 0;
+    text-shadow: 0 0 20px rgba(255, 140, 0, 0.8);
+    animation: streakFlameFlicker 1.6s ease-in-out infinite;
+}
+
+@keyframes streakFlameFlicker {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: 0 0 20px rgba(255, 140, 0, 0.8);
+    }
+    50% {
+        transform: scale(1.08);
+        text-shadow: 0 0 28px rgba(255, 60, 0, 1), 0 0 14px rgba(255, 200, 0, 0.6);
+    }
+}

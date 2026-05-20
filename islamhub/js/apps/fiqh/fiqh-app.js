@@ -39,15 +39,34 @@ export default class FiqhApp {
                 <input type="text" id="fiqhSearch" class="fiqh-search" placeholder="Cari topik, pertanyaan, atau keyword...">
             </div>
 
+            <!-- Stats Hero -->
+            <div class="fiqh-stats">
+                <div class="fiqh-stat">
+                    <span class="fiqh-stat-num">${FIQH_DATA.length}</span>
+                    <span class="fiqh-stat-lbl">Topik</span>
+                </div>
+                <div class="fiqh-stat">
+                    <span class="fiqh-stat-num">${FIQH_CATEGORIES.length}</span>
+                    <span class="fiqh-stat-lbl">Kategori</span>
+                </div>
+                <div class="fiqh-stat">
+                    <span class="fiqh-stat-num">${FIQH_DATA.reduce((s, d) => s + ((d.answer || '').split(/\s+/).length), 0)}+</span>
+                    <span class="fiqh-stat-lbl">Kata Penjelasan</span>
+                </div>
+            </div>
+
             <!-- Kategori -->
             <div class="fiqh-categories" id="fiqhCategories">
                 <button class="fiqh-cat-btn active" data-cat="">
-                    <i class="fas fa-th"></i> Semua
+                    <i class="fas fa-th"></i> Semua <span class="fiqh-cat-count">${FIQH_DATA.length}</span>
                 </button>
-                ${FIQH_CATEGORIES.map(cat => `
+                ${FIQH_CATEGORIES.map(cat => {
+                    const count = FIQH_DATA.filter(d => d.category === cat.id).length;
+                    return `
                 <button class="fiqh-cat-btn" data-cat="${cat.id}" style="--cat-color:${cat.color}">
-                    <i class="fas ${cat.icon}"></i> ${cat.label}
-                </button>`).join('')}
+                    <i class="fas ${cat.icon}"></i> ${cat.label} <span class="fiqh-cat-count">${count}</span>
+                </button>`;
+                }).join('')}
             </div>
 
             <!-- Disclaimer -->
