@@ -11,7 +11,7 @@ const DROPDOWN_APP_CONFIG = [
     { id: 'kalender',name: 'Kalender Hijriyah',     shortDesc: 'Kalender Islam dan konversi tanggal',       icon: 'fa-calendar-alt',      iconBg: 'linear-gradient(135deg,rgba(0,191,255,0.7),rgba(0,128,255,0.5))' },
     { id: 'asmaul',  name: 'Asmaul Husna',          shortDesc: '99 Nama-Nama Allah dengan makna dan dalil', icon: 'fa-star-and-crescent', iconBg: 'linear-gradient(135deg,rgba(255,215,0,0.75),rgba(212,168,83,0.55))' },
     { id: 'hadits',  name: 'Hadits Browser',         shortDesc: 'Koleksi hadits shahih berdasarkan kategori',icon: 'fa-scroll',            iconBg: 'linear-gradient(135deg,rgba(147,112,219,0.75),rgba(100,50,200,0.5))' },
-    { id: 'fiqh',    name: 'Fiqh Praktis',           shortDesc: 'Panduan ibadah sesuai dalil shahih',        icon: 'fa-hands-praying',     iconBg: 'linear-gradient(135deg,rgba(0,191,255,0.7),rgba(0,128,255,0.5))' },
+    { id: 'fiqh',    name: 'Fiqh Praktis',           shortDesc: 'Panduan ibadah sesuai dalil shahih',        icon: 'fa-scale-balanced',    iconBg: 'linear-gradient(135deg,rgba(0,191,255,0.7),rgba(0,128,255,0.5))' },
     { id: 'haji',    name: 'Haji & Umrah',           shortDesc: 'Panduan visual manasik dan peta lokasi suci',icon: 'fa-kaaba',            iconBg: 'linear-gradient(135deg,rgba(255,140,0,0.75),rgba(255,80,0,0.5))' },
 ];
 

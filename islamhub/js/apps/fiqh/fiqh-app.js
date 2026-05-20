@@ -29,7 +29,7 @@ export default class FiqhApp {
         this.container.innerHTML = `
         <div class="fiqh-container">
             <div class="fiqh-header">
-                <h2><i class="fas fa-hands-praying"></i> Fiqh Praktis</h2>
+                <h2><i class="fas fa-scale-balanced"></i> Fiqh Praktis</h2>
                 <p class="fiqh-subtitle">Panduan ibadah sesuai Al-Qur\'an dan Sunnah shahih</p>
             </div>
 

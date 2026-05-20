@@ -3,7 +3,7 @@
 
 export const FIQH_CATEGORIES = [
     { id: 'thaharah', icon: 'fa-droplet',       label: 'Thaharah',     color: '#00bfff', desc: 'Bersuci, wudhu, mandi, tayamum' },
-    { id: 'sholat',   icon: 'fa-hands-praying',  label: 'Sholat',       color: '#ffd700', desc: 'Syarat, rukun, dan tata cara sholat' },
+    { id: 'sholat',   icon: 'fa-mosque',          label: 'Sholat',       color: '#ffd700', desc: 'Syarat, rukun, dan tata cara sholat' },
     { id: 'puasa',    icon: 'fa-moon',            label: 'Puasa',        color: '#9370db', desc: 'Puasa wajib dan sunnah' },
     { id: 'zakat',    icon: 'fa-hand-holding-heart', label: 'Zakat',    color: '#00ff88', desc: 'Zakat maal, fitrah, dan profesi' },
     { id: 'haji',     icon: 'fa-kaaba',           label: 'Haji & Umrah', color: '#ff8c00', desc: 'Rukun dan wajib haji' },
