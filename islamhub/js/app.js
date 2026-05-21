@@ -20,8 +20,13 @@ const FOOTER_PINNABLE = [
 ];
 const DEFAULT_FOOTER_PINS = ['adzan', 'alquran', 'streaming'];
 
-// App registry for the reorderable "More Apps" dropdown (all non-fixed-nav apps)
+// App registry for the reorderable "More Apps" dropdown.
+// Includes ALL pinnable apps — pinned ones are filtered out at render time
+// so they appear in "Lainnya" only when NOT currently in the footer.
 const DROPDOWN_APP_CONFIG = [
+    { id: 'adzan',    name: 'Adzan & Jadwal Sholat', shortDesc: 'Waktu sholat & adzan harian',              icon: 'fa-mosque',            iconBg: 'linear-gradient(135deg,rgba(0,200,167,0.7),rgba(0,255,255,0.5))' },
+    { id: 'alquran',  name: 'Al-Qur\'an',            shortDesc: 'Mushaf digital lengkap dengan audio',      icon: 'fa-book-quran',        iconBg: 'linear-gradient(135deg,rgba(212,168,83,0.8),rgba(240,215,140,0.6))' },
+    { id: 'streaming',name: 'Kajian Live',           shortDesc: 'Streaming kajian sunnah pilihan',          icon: 'fa-broadcast-tower',   iconBg: 'linear-gradient(135deg,rgba(255,51,102,0.7),rgba(255,128,0,0.5))' },
     { id: 'sholat',   name: 'Tata Cara Sholat',   shortDesc: 'Panduan gerakan dan bacaan sholat',          icon: 'fa-mosque',            iconBg: 'linear-gradient(135deg,rgba(212,168,83,0.8),rgba(240,215,140,0.6))' },
     { id: 'waris',    name: 'Kalkulator Waris',    shortDesc: 'Hitung pembagian warisan syar\'i',           icon: 'fa-calculator',        iconBg: 'linear-gradient(135deg,rgba(255,51,102,0.7),rgba(255,128,0,0.5))' },
     { id: 'qibla',   name: 'Arah Kiblat',          shortDesc: 'Kompas digital arah kiblat',                icon: 'fa-compass',           iconBg: 'linear-gradient(135deg,rgba(0,200,167,0.7),rgba(0,255,255,0.5))' },
@@ -675,9 +680,12 @@ class IslamHubApp {
             nav.classList.add('active');
         });
         
-        // If app is in dropdown, activate 'More Apps' button
+        // If app is in dropdown AND not currently pinned to footer, activate 'More Apps' button.
+        // (Pinned apps already have their own footer slot lit up.)
         const dropdownApps = DROPDOWN_APP_CONFIG.map(a => a.id);
-        if (dropdownApps.includes(appName)) {
+        const footerPins = this.loadFooterPins();
+        const isPinned = footerPins.includes(appName);
+        if (dropdownApps.includes(appName) && !isPinned) {
             const moreAppsBtn = document.getElementById('moreAppsBtn');
             if (moreAppsBtn) {
                 moreAppsBtn.classList.add('active');
@@ -904,7 +912,10 @@ class IslamHubApp {
     renderMoreAppsDropdown() {
         const list = document.getElementById('moreAppsList');
         if (!list) return;
-        const order = this.loadDropdownOrder();
+        // Hide apps that are currently pinned to the footer — they already
+        // have a dedicated slot, so showing them here would just be duplicate clutter.
+        const pins = this.loadFooterPins();
+        const order = this.loadDropdownOrder().filter(id => !pins.includes(id));
         list.innerHTML = order.map(id => {
             const app = DROPDOWN_APP_CONFIG.find(a => a.id === id);
             if (!app) return '';
@@ -979,7 +990,8 @@ class IslamHubApp {
         `;
 
         // ----- 2) Existing dropdown reorder -----
-        const order = this.loadDropdownOrder();
+        // Only show apps that aren't currently pinned to the footer.
+        const order = this.loadDropdownOrder().filter(id => !pins.includes(id));
         const last = order.length - 1;
         const reorderHTML = `
             <div class="settings-section">
@@ -987,7 +999,7 @@ class IslamHubApp {
                     <i class="fas fa-grip-vertical"></i>
                     <h4>Urutan Menu "Lainnya"</h4>
                 </div>
-                <p class="settings-section-hint">Seret atau gunakan tombol ↑↓ untuk mengatur urutan tampilan.</p>
+                <p class="settings-section-hint">Seret atau gunakan tombol ↑↓ untuk mengatur urutan tampilan. Aplikasi yang dipin ke footer disembunyikan di sini.</p>
                 ${order.map((id, idx) => {
                     const app = DROPDOWN_APP_CONFIG.find(a => a.id === id);
                     if (!app) return '';
@@ -1030,6 +1042,7 @@ class IslamHubApp {
 
                 this.saveFooterPins(newPins);
                 this.renderFooterNav();
+                this.renderMoreAppsDropdown();
                 this.renderSettingsList();
             });
         });

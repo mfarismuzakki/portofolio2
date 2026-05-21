@@ -194,6 +194,14 @@
     line-height: 1.65;
 }
 
+/* Inline strongs inside paragraphs (override .zakat-info-box strong display:block) */
+.zakat-info-box.salafi-note p strong {
+    display: inline;
+    margin: 0;
+    font-size: inherit;
+    color: #ffd700;
+}
+
 .zakat-info-box.salafi-note em {
     color: rgba(0, 255, 255, 0.9);
     font-style: italic;
