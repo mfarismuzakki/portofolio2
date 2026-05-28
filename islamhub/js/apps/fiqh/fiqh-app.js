@@ -17,6 +17,7 @@ export default class FiqhApp {
     }
 
     parseMarkdown(text) {
+        if (!text) return '';
         return text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\n\n/g, '</p><p>')
@@ -87,8 +88,8 @@ export default class FiqhApp {
         const filtered = FIQH_DATA.filter(item => {
             const matchCat = !this.currentCategory || item.category === this.currentCategory;
             const matchSearch = !query ||
-                item.question.toLowerCase().includes(query) ||
-                item.answer.toLowerCase().includes(query) ||
+                (item.question && item.question.toLowerCase().includes(query)) ||
+                (item.answer && item.answer.toLowerCase().includes(query)) ||
                 (item.tags && item.tags.some(t => t.includes(query)));
             return matchCat && matchSearch;
         });
@@ -134,7 +135,7 @@ export default class FiqhApp {
                 </div>
                 <div class="fiqh-dalil">
                     <i class="fas fa-book-open"></i>
-                    <strong>Dalil:</strong> ${item.dalil}
+                    <strong>Dalil:</strong> ${item.dalil || '-'}
                 </div>
                 ${item.catatan ? `
                 <div class="fiqh-catatan">

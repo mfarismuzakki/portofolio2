@@ -14,12 +14,6 @@ export default class AlQuranApp {
         this.QURAN_JUZ = window.QURAN_JUZ || [];
         this.QURAN_VERSES = window.QURAN_VERSES || {};
 
-        // Debug log
-        console.log('AlQuranApp constructor - Data loaded:', {
-            surahs: this.QURAN_SURAHS.length,
-            juz: this.QURAN_JUZ.length,
-            verses: Object.keys(this.QURAN_VERSES).length
-        });
 
         this.currentPage = 1;
         this.totalPages = 604;
@@ -654,7 +648,6 @@ export default class AlQuranApp {
 
     async openPage(pageNum) {
         try {
-            console.log('[openPage] Opening page:', pageNum);
 
             // Find which surah contains this page
             // Prefer the surah that STARTS on this page (handles shared boundary pages like 582)
@@ -686,7 +679,6 @@ export default class AlQuranApp {
                 }
             }, 500);
 
-            console.log('[openPage] Opened surah and scrolling to page', pageNum);
         } catch (error) {
             console.error('[openPage] Error:', error);
             this._notify('Gagal membuka halaman: ' + error.message, 'error');
@@ -695,7 +687,6 @@ export default class AlQuranApp {
 
     async renderPageReader() {
         try {
-            console.log('[renderPageReader] Starting render for page:', this.currentPage);
 
             if (!this.container) {
                 console.error('[renderPageReader] Container not found!');
@@ -1141,15 +1132,12 @@ export default class AlQuranApp {
     _refreshQuranData() {
         if (this.QURAN_SURAHS.length === 0) {
             this.QURAN_SURAHS = window.QURAN_SURAHS || [];
-            console.log('Refreshed QURAN_SURAHS:', this.QURAN_SURAHS.length);
         }
         if (this.QURAN_JUZ.length === 0) {
             this.QURAN_JUZ = window.QURAN_JUZ || [];
-            console.log('Refreshed QURAN_JUZ:', this.QURAN_JUZ.length);
         }
         if (Object.keys(this.QURAN_VERSES).length === 0) {
             this.QURAN_VERSES = window.QURAN_VERSES || {};
-            console.log('Refreshed QURAN_VERSES:', Object.keys(this.QURAN_VERSES).length);
         }
     }
 
@@ -1204,6 +1192,8 @@ export default class AlQuranApp {
                 `);
             }
             html.push('</div>');
+            // Container for verse search results
+            html.push('<div id="verseSearchResults" style="display:none; padding: 10px 0;"></div>');
         } else {
             html.push('<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Data surat tidak tersedia.</p></div>');
         }
@@ -1231,23 +1221,37 @@ export default class AlQuranApp {
 
         // Search functionality
         const searchInput = document.getElementById('surahSearchInput');
+        let searchTimeout = null;
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
+                const query = e.target.value.toLowerCase().trim();
                 const rows = modal.querySelectorAll('.surah-row');
+                const verseSearchResults = document.getElementById('verseSearchResults');
+                
                 rows.forEach(row => {
                     const name = row.dataset.name;
                     const arabic = row.dataset.arabic;
                     const number = row.dataset.number;
-                    if (name.includes(query) || arabic.includes(query) || number.includes(query)) {
+                    if (query === '' || name.includes(query) || arabic.includes(query) || number.includes(query)) {
                         row.style.display = '';
                     } else {
                         row.style.display = 'none';
                     }
                 });
+
+                // Clear previous verse search timeout
+                if (searchTimeout) clearTimeout(searchTimeout);
+                
+                if (query.length >= 3) {
+                    if (verseSearchResults) verseSearchResults.style.display = 'block';
+                    searchTimeout = setTimeout(() => {
+                        this._searchVerses(query, verseSearchResults);
+                    }, 500);
+                } else if (verseSearchResults) {
+                    verseSearchResults.style.display = 'none';
+                    verseSearchResults.innerHTML = '';
+                }
             });
-            // Don't auto-focus on mobile to prevent keyboard popup
-            // setTimeout(() => searchInput.focus(), 100);
         }
 
         // Event listener untuk klik row (baca surat)
@@ -1270,6 +1274,83 @@ export default class AlQuranApp {
             const totalVerses = parseInt(btn.dataset.totalVerses);
             this._showVerseJumpModal(surahNum, totalVerses);
         }));
+    }
+
+    _searchVerses(query, container) {
+        if (!container) return;
+        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-secondary);"><i class="fas fa-circle-notch fa-spin"></i> Mencari dalam ayat dan terjemahan...</div>';
+
+        const performSearch = () => {
+            const index = window.QURAN_SEARCH_INDEX;
+            if (!index || !Array.isArray(index)) {
+                container.innerHTML = '<div style="text-align:center; color: var(--error);">Gagal memuat index pencarian.</div>';
+                return;
+            }
+
+            const results = [];
+            // index item format: [surah_num, verse_num, translation, arabic, page_number]
+            for (let i = 0; i < index.length; i++) {
+                const item = index[i];
+                if (item[2].toLowerCase().includes(query) || item[3].includes(query)) {
+                    results.push(item);
+                    if (results.length >= 20) break; // limit to 20 results for performance
+                }
+            }
+
+            if (results.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-secondary);">Tidak ada ayat/terjemahan yang cocok.</div>';
+                return;
+            }
+
+            let html = '<h4 style="margin: 15px 15px 10px; color: var(--primary-cyan); font-size: 0.9rem;">HASIL PENCARIAN AYAT</h4>';
+            results.forEach(item => {
+                const [surahNum, verseNum, translation, arabic, pageNum] = item;
+                const surahInfo = this.QURAN_SURAHS.find(s => s.number === surahNum);
+                const surahName = surahInfo ? surahInfo.name : `Surat ${surahNum}`;
+                
+                // Highlight query in translation
+                const regex = new RegExp(`(${query})`, 'gi');
+                const highlightedTrans = translation.replace(regex, '<span style="background:var(--primary-cyan);color:#000;">$1</span>');
+
+                html += `
+                    <div class="verse-search-result-item" data-surah="${surahNum}" data-verse="${verseNum}" data-page="${pageNum}" style="padding: 15px; margin: 0 10px 10px; background: var(--bg-surface-2); border-radius: 8px; cursor: pointer; transition: transform 0.2s;">
+                        <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">
+                            <i class="fas fa-book-open"></i> ${surahName} : Ayat ${verseNum} (Halaman ${pageNum})
+                        </div>
+                        <div style="font-family: 'Amiri Quran', serif; font-size: 1.2rem; text-align: right; margin-bottom: 8px; color: var(--text-primary);" dir="rtl">${arabic}</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.4;">${highlightedTrans}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            // Add click listeners to results
+            container.querySelectorAll('.verse-search-result-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    const page = parseInt(el.dataset.page);
+                    const modal = document.getElementById('surahListModal');
+                    if (modal) {
+                        modal.style.display = 'none';
+                        modal.remove();
+                    }
+                    this.openPage(page);
+                });
+            });
+        };
+
+        // Load index if not present
+        if (typeof window.QURAN_SEARCH_INDEX !== 'undefined') {
+            performSearch();
+        } else {
+            const script = document.createElement('script');
+            script.src = 'js/data/alquran/quran-search-index.js';
+            script.onload = performSearch;
+            script.onerror = () => {
+                container.innerHTML = '<div style="text-align:center; color: var(--error);">Gagal memuat sistem pencarian ayat.</div>';
+            };
+            document.head.appendChild(script);
+        }
     }
 
     _showBookmarksModal() {
@@ -3023,9 +3104,6 @@ export default class AlQuranApp {
         this.container.querySelectorAll('[data-play-page]').forEach(btn => {
             btn.addEventListener('click', () => {
                 const pageNum = parseInt(btn.dataset.playPage);
-                console.log('[PLAY BUTTON CLICKED] Page number from button:', pageNum);
-                console.log('[PLAY BUTTON CLICKED] Current page:', this.currentPage);
-                console.log('[PLAY BUTTON CLICKED] Current visible page:', this.currentVisiblePage);
 
                 // Show audio player and play from this specific page
                 const audioPlayer = document.getElementById('quranAudioPlayer');
@@ -3039,7 +3117,6 @@ export default class AlQuranApp {
                     }
 
                     // Play from specific page
-                    console.log('[PLAY BUTTON CLICKED] Calling _playPage with pageNum:', pageNum);
                     this._playPage(surah, pageNum);
                     // Removed notification to avoid popup spam
                 }
@@ -3091,7 +3168,6 @@ export default class AlQuranApp {
                             const pagePlayBtn = document.querySelector('.page-play-btn');
                             if (pagePlayBtn) {
                                 pagePlayBtn.dataset.playPage = pageNumber;
-                                console.log('[IntersectionObserver] Updated play button to page:', pageNumber);
                             }
                         }
 
@@ -3917,19 +3993,17 @@ export default class AlQuranApp {
         // Show player
         audioPlayer.style.display = 'block';
 
-        console.log('[_playPageAudio] ========== Starting playback for page:', pageNum, '==========');
+
 
         // Get all verses on this page from QURAN_VERSES
         const pageKey = `page_${pageNum}`;
         const pageVerses = this.QURAN_VERSES[pageKey];
 
         if (!pageVerses || pageVerses.length === 0) {
-            console.log('[_playPageAudio] No data in QURAN_VERSES, extracting from DOM...');
 
             // IMPORTANT: Filter verses by page number, not just all verses in container!
             // When reading full surah, container has ALL verses of surah, not just current page
             const allRenderedVerses = this.container.querySelectorAll('.verse-item-reading, .verse-item-clean');
-            console.log('[_playPageAudio] Total verses in container:', allRenderedVerses.length);
 
             const extractedVerses = [];
             allRenderedVerses.forEach(verseEl => {
@@ -3943,10 +4017,9 @@ export default class AlQuranApp {
                 }
             });
 
-            console.log('[_playPageAudio] Filtered verses for page', pageNum, ':', extractedVerses.length);
 
             if (extractedVerses.length > 0) {
-                console.log('[_playPageAudio] First verse:', extractedVerses[0], 'Last verse:', extractedVerses[extractedVerses.length - 1]);
+
 
                 this.currentPageVerses = extractedVerses;
                 this.currentVerseIndex = 0;
@@ -3963,7 +4036,6 @@ export default class AlQuranApp {
                     this.currentAudioPage = pageNum;
 
                     // Play first verse immediately
-                    console.log('[_playPageAudio] Playing first verse of page:', firstVerse);
                     this._playVerseAudio(firstVerse.surah, firstVerse.verse);
                     return;
                 }
@@ -3974,8 +4046,6 @@ export default class AlQuranApp {
         }
 
         // If verses found in QURAN_VERSES
-        console.log('[_playPageAudio] Found', pageVerses.length, 'verses in QURAN_VERSES');
-        console.log('[_playPageAudio] First verse:', pageVerses[0], 'Last verse:', pageVerses[pageVerses.length - 1]);
 
         const firstVerse = pageVerses[0];
         const surahInfo = this.QURAN_SURAHS.find(s => s.number === firstVerse.surah);
@@ -3996,7 +4066,6 @@ export default class AlQuranApp {
         this.currentAudioPage = pageNum;
 
         // Play first verse immediately
-        console.log('[_playPageAudio] Playing first verse of page:', firstVerse);
         this._playVerseAudio(firstVerse.surah, firstVerse.verse);
     }
 
@@ -4130,12 +4199,10 @@ export default class AlQuranApp {
                 const seekTime = audioElement.duration * percent;
 
                 audioElement.currentTime = seekTime;
-                console.log('Seek to:', seekTime, 'seconds');
             });
 
             // Audio ended - handle page mode auto-play next verse
             audioElement?.addEventListener('ended', () => {
-                console.log('[ended] Playing verse index:', this.currentVerseIndex);
 
                 // Check if we're in page mode
                 if (this.currentPageVerses && this.currentPageVerses.length > 0) {
@@ -4144,13 +4211,11 @@ export default class AlQuranApp {
                     // Play next verse in page
                     if (this.currentVerseIndex < this.currentPageVerses.length) {
                         const nextVerse = this.currentPageVerses[this.currentVerseIndex];
-                        console.log('[ended] Next verse:', nextVerse);
 
                         // Play immediately without delay
                         this._playVerseAudio(nextVerse.surah, nextVerse.verse);
                     } else {
                         // Finished all verses on page
-                        console.log('[ended] Page completed');
                         const completedPage = this.currentAudioPage;
                         this.currentAudioPage = null;
                         this.currentPageVerses = null;
@@ -4159,7 +4224,6 @@ export default class AlQuranApp {
                         // Auto-play next page if setting enabled
                         if (this.settings.autoPlayNext && completedPage && completedPage < this.totalPages) {
                             const nextPage = completedPage + 1;
-                            console.log('[ended] Auto-playing next page:', nextPage);
                             setTimeout(() => this._playPageAudio(nextPage), 800);
                         } else {
                             this._notify('Selesai memutar halaman ' + completedPage, 'success');
@@ -4224,7 +4288,6 @@ export default class AlQuranApp {
                 }
             } else {
                 // Page mode
-                console.log('Prev clicked, current page:', this.currentAudioPage);
                 if (this.currentAudioPage > 1) {
                     this.currentAudioPage--;
                     this._playPage(this.currentAudioSurah, this.currentAudioPage);
@@ -4250,7 +4313,6 @@ export default class AlQuranApp {
                 }
             } else {
                 // Page mode
-                console.log('Next clicked, current page:', this.currentAudioPage);
                 if (this.currentAudioPage < 604) {
                     this.currentAudioPage++;
                     this._playPage(this.currentAudioSurah, this.currentAudioPage);
@@ -4266,7 +4328,6 @@ export default class AlQuranApp {
     }
 
     async _playPage(surah, pageNumber) {
-        console.log('[_playPage] Redirecting to _playPageAudio for per-verse playback');
         // Redirect to _playPageAudio which plays verse by verse
         return this._playPageAudio(pageNumber);
     }
@@ -4289,39 +4350,14 @@ export default class AlQuranApp {
     }
 
     _getJuzByPage(pageNumber) {
-        // Simple calculation: Juz 1 = pages 1-21, Juz 2 = 22-42, etc.
-        // More accurate mapping can be added later
-        if (pageNumber <= 21) return 1;
-        if (pageNumber <= 41) return 2;
-        if (pageNumber <= 61) return 3;
-        if (pageNumber <= 81) return 4;
-        if (pageNumber <= 101) return 5;
-        if (pageNumber <= 121) return 6;
-        if (pageNumber <= 141) return 7;
-        if (pageNumber <= 161) return 8;
-        if (pageNumber <= 181) return 9;
-        if (pageNumber <= 201) return 10;
-        if (pageNumber <= 221) return 11;
-        if (pageNumber <= 241) return 12;
-        if (pageNumber <= 261) return 13;
-        if (pageNumber <= 281) return 14;
-        if (pageNumber <= 301) return 15;
-        if (pageNumber <= 321) return 16;
-        if (pageNumber <= 341) return 17;
-        if (pageNumber <= 361) return 18;
-        if (pageNumber <= 381) return 19;
-        if (pageNumber <= 401) return 20;
-        if (pageNumber <= 421) return 21;
-        if (pageNumber <= 441) return 22;
-        if (pageNumber <= 461) return 23;
-        if (pageNumber <= 481) return 24;
-        if (pageNumber <= 501) return 25;
-        if (pageNumber <= 521) return 26;
-        if (pageNumber <= 541) return 27;
-        if (pageNumber <= 561) return 28;
-        if (pageNumber <= 581) return 29;
-        return 30;
+        if (this.QURAN_JUZ && this.QURAN_JUZ.length > 0) {
+            const juz = this.QURAN_JUZ.find(j => pageNumber >= j.startPage && pageNumber <= j.endPage);
+            return juz ? juz.number : 30;
+        }
+        // Fallback if QURAN_JUZ not loaded
+        return Math.min(30, Math.ceil(pageNumber / 20.14));
     }
+
 
     _toArabicNumber(num) {
         // Convert Western numerals to Arabic-Indic numerals
@@ -4381,9 +4417,6 @@ export default class AlQuranApp {
             // Use online fallback from mfarismuzakki.id/islamhub
             const onlinePath = `https://mfarismuzakki.id/islamhub/assets/audio/alquran/verses/${surahStr}/${surahStr}_${verseStr}.mp3`;
 
-            console.log(`[playVerseAudio] Playing Surah ${surahNumber} Verse ${verseNumber}`);
-            console.log('[playVerseAudio] Local path:', localPath);
-            console.log('[playVerseAudio] Online path:', onlinePath);
 
             // Try local first (prioritize offline/downloaded audio)
             const tryLocal = await new Promise((resolve) => {
@@ -4408,18 +4441,15 @@ export default class AlQuranApp {
                 };
 
                 const timeout = setTimeout(() => {
-                    console.log('Local audio timeout, trying online...');
                     resolve_({ ok: false, timeout: true });
                 }, 1500); // 1.5s for local check
 
                 testAudio.addEventListener('canplay', () => {
-                    console.log('Local audio available (offline)');
                     clearTimeout(timeout);
                     resolve_({ ok: true });
                 }, { once: true });
 
                 testAudio.addEventListener('error', (e) => {
-                    console.log('Local audio not found, trying online...');
                     clearTimeout(timeout);
                     resolve_({ ok: false });
                 }, { once: true });
@@ -4430,7 +4460,6 @@ export default class AlQuranApp {
 
             // Use local if available (user already downloaded), otherwise stream online
             const audioSrc = tryLocal.ok ? localPath : onlinePath;
-            console.log('Using audio source:', tryLocal.ok ? 'LOCAL (offline/downloaded)' : 'ONLINE (streaming)', audioSrc);
 
             const surahInfo = this.QURAN_SURAHS?.find(s => s.number === surahNumber);
             const surahName = surahInfo ? surahInfo.name : `QS ${surahNumber}`;
@@ -4567,8 +4596,9 @@ export default class AlQuranApp {
         }, 100);
     }
 
-    // placeholder for future online content
-    async loadOnlineContent() { this._notify('Fitur muat konten online akan segera tersedia', 'info'); }
+    async loadOnlineContent() {
+        this._notify('Semua konten Al-Qur\'an sudah tersedia secara offline di aplikasi ini.', 'info');
+    }
 
     // Offline Mode Modal
     _showOfflineModal() {

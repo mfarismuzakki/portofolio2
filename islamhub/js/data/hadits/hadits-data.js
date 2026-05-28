@@ -1,15 +1,16 @@
 // Hadits Browser — Koleksi Hadits Pilihan
-// Terorganisir berdasarkan kategori untuk kemudahan pencarian dan belajar
+// Terorganisir berdasarkan kategori untuk kemudahan pencarian dan belajar dengan manhaj Salaf
+import { EXTRA_HADITS } from './hadits-extra.js';
 
 export const HADITS_CATEGORIES = [
     { id: 'aqidah',    icon: 'fa-star-and-crescent', label: 'Aqidah & Tauhid',     color: '#00ffff' },
-    { id: 'ibadah',    icon: 'fa-praying-hands',      label: 'Ibadah',               color: '#ffd700' },
+    { id: 'ibadah',    icon: 'fa-mosque',             label: 'Ibadah',               color: '#ffd700' },
     { id: 'akhlak',    icon: 'fa-heart',              label: 'Akhlak & Adab',        color: '#ff69b4' },
     { id: 'ilmu',      icon: 'fa-book-open',          label: 'Ilmu & Hikmah',        color: '#00ff88' },
     { id: 'keluarga',  icon: 'fa-home',               label: 'Keluarga',             color: '#ff8c00' },
     { id: 'muamalah',  icon: 'fa-handshake',          label: 'Muamalah & Sosial',    color: '#9370db' },
     { id: 'akhirat',   icon: 'fa-moon',               label: 'Akhirat & Kematian',   color: '#4682b4' },
-    { id: 'doa',       icon: 'fa-hands-praying',      label: 'Doa & Dzikir',         color: '#32cd32' },
+    { id: 'doa',       icon: 'fa-hands',              label: 'Doa & Dzikir',         color: '#32cd32' },
 ];
 
 export const HADITS_COLLECTION = [
@@ -21,7 +22,7 @@ export const HADITS_COLLECTION = [
         arabic: 'بُنِيَ الإِسْلاَمُ عَلَى خَمْسٍ: شَهَادَةِ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَإِقَامِ الصَّلاَةِ، وَإِيتَاءِ الزَّكَاةِ، وَالحَجِّ، وَصَوْمِ رَمَضَانَ',
         latin: 'Buniyal-islāmu \'alā khams: syahādati an lā ilāha illallāhu wa anna Muhammadan rasūlullāhi, wa iqāmish-shalāh, wa ītā\'iz-zakāh, wal-hajj, wa shaumi Ramadhān.',
         translation: 'Islam dibangun di atas lima perkara: persaksian bahwa tidak ada ilah yang berhak disembah selain Allah dan Muhammad adalah utusan Allah, mendirikan sholat, menunaikan zakat, haji, dan puasa Ramadan.',
-        source: 'HR. Bukhari no. 8 & Muslim no. 16',
+        source: 'HR. Bukhari no. 8 & Muslim no. 16 — Muttafaqun \'Alaih',
         narrator: 'Abdullah bin Umar رضي الله عنهما',
         faidah: 'Hadits ini menjelaskan rukun Islam yang lima sebagai fondasi kehidupan seorang Muslim.'
     },
@@ -46,6 +47,28 @@ export const HADITS_COLLECTION = [
         source: 'HR. Muslim no. 23',
         narrator: 'Thariq bin Asyam رضي الله عنه',
         faidah: 'Tauhid adalah syarat perlindungan jiwa dan harta dalam Islam.'
+    },
+    {
+        id: 'aq_004',
+        category: 'aqidah',
+        title: 'Larangan Mendatangi Dukun/Peramal',
+        arabic: 'مَنْ أَتَى عَرَّافًا فَسَأَلَهُ عَنْ شَىْءٍ لَمْ تُقْبَلْ لَهُ صَلاَةٌ أَرْبَعِينَ لَيْلَةً',
+        latin: 'Man atā \'arrāfan fasa\'alahu \'an syai\'in lam tuqbal lahu shalātun arba\'īna laylah.',
+        translation: 'Barangsiapa mendatangi peramal lalu bertanya kepadanya tentang sesuatu, maka shalatnya tidak diterima selama empat puluh malam.',
+        source: 'HR. Muslim no. 2230',
+        narrator: 'Hafshah binti Umar رضي الله عنها',
+        faidah: 'Sekedar bertanya tanpa membenarkan (percaya) menyebabkan shalat tidak diterima 40 hari. Jika membenarkannya, maka ia telah kufur terhadap ajaran yang diturunkan kepada Muhammad ﷺ (HR. Abu Dawud).'
+    },
+    {
+        id: 'aq_005',
+        category: 'aqidah',
+        title: 'Pentingnya Ittiba\' (Mengikuti Sunnah) dan Larangan Bid\'ah',
+        arabic: 'مَنْ أَحْدَثَ فِى أَمْرِنَا هَذَا مَا لَيْسَ فِيهِ فَهُوَ رَدٌّ',
+        latin: 'Man ahdatsa fī amrinā hādzā mā laysa fīhi fahuwa radd.',
+        translation: 'Barangsiapa membuat suatu perkara baru dalam urusan kami ini (agama) yang tidak ada asalnya, maka perkara tersebut tertolak.',
+        source: 'HR. Bukhari no. 2697 & Muslim no. 1718',
+        narrator: 'Aisyah رضي الله عنها',
+        faidah: 'Syarat diterimanya amal ada dua: Ikhlas karena Allah, dan Ittiba\' (sesuai tuntunan Rasulullah ﷺ). Segala bentuk ibadah mahdhah yang tidak ada dalilnya adalah tertolak.'
     },
 
     // ===== IBADAH =====
@@ -104,6 +127,28 @@ export const HADITS_COLLECTION = [
         narrator: 'Abu Hurairah رضي الله عنه',
         faidah: 'Haji mabrur adalah haji yang diterima Allah, yang ditandai dengan membaiknya akhlak setelah haji.'
     },
+    {
+        id: 'ib_006',
+        category: 'ibadah',
+        title: 'Keutamaan Shalat Sunnah Rawatib (12 Rakaat)',
+        arabic: 'مَا مِنْ عَبْدٍ مُسْلِمٍ يُصَلِّي لِلَّهِ كُلَّ يَوْمٍ ثِنْتَيْ عَشْرَةَ رَكْعَةً تَطَوُّعًا غَيْرَ فَرِيضَةٍ إِلاَّ بَنَى اللَّهُ لَهُ بَيْتًا فِي الْجَنَّةِ',
+        latin: 'Mā min \'abdin muslimin yushallī lillāhi kulla yawmin tsintay \'asyrata rak\'atan tathawwu\'an ghayra farīdhatin illā banallāhu lahu baytan fil-jannah.',
+        translation: 'Tidaklah seorang hamba Muslim shalat sunnah karena Allah setiap hari dua belas rakaat di luar shalat fardhu, melainkan Allah akan membangunkan untuknya sebuah rumah di surga.',
+        source: 'HR. Muslim no. 728',
+        narrator: 'Ummu Habibah رضي الله عنها',
+        faidah: 'Rincian 12 rakaat: 4 sebelum Dzuhur, 2 setelah Dzuhur, 2 setelah Maghrib, 2 setelah Isya, 2 sebelum Subuh (HR. Tirmidzi).'
+    },
+    {
+        id: 'ib_007',
+        category: 'ibadah',
+        title: 'Ancaman Meninggalkan Shalat Ashar',
+        arabic: 'مَنْ تَرَكَ صَلاَةَ الْعَصْرِ فَقَدْ حَبِطَ عَمَلُهُ',
+        latin: 'Man taraka shalātal-\'ashri faqad habitha \'amaluhu.',
+        translation: 'Barangsiapa meninggalkan shalat Ashar, maka terhapuslah amalannya.',
+        source: 'HR. Bukhari no. 553',
+        narrator: 'Buraidah رضي الله عنه',
+        faidah: 'Shalat Ashar adalah Shalat Wustha yang sangat ditekankan pemeliharaannya. Meninggalkannya dengan sengaja adalah dosa besar yang dapat menghapus pahala amal kebaikan di hari itu.'
+    },
 
     // ===== AKHLAK & ADAB =====
     {
@@ -153,13 +198,24 @@ export const HADITS_COLLECTION = [
     {
         id: 'ak_005',
         category: 'akhlak',
-        title: 'Larangan Menyakiti Tetangga',
-        arabic: 'وَاللَّهِ لاَ يُؤْمِنُ، وَاللَّهِ لاَ يُؤْمِنُ، وَاللَّهِ لاَ يُؤْمِنُ. قِيلَ: وَمَنْ يَا رَسُولَ اللَّهِ؟ قَالَ: الَّذِي لاَ يَأْمَنُ جَارُهُ بَوَائِقَهُ',
-        latin: 'Wallāhi lā yu\'min, wallāhi lā yu\'min, wallāhi lā yu\'min. Qīla: wa man yā Rasūlallāh? Qāla: alladhī lā ya\'manu jāruhu bawā\'iqah.',
-        translation: 'Demi Allah tidak beriman, demi Allah tidak beriman, demi Allah tidak beriman. Ditanyakan: Siapa wahai Rasulullah? Beliau bersabda: Orang yang tetangganya tidak aman dari gangguannya.',
-        source: 'HR. Bukhari no. 6016',
+        title: 'Berkata Baik Atau Diam',
+        arabic: 'مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ',
+        latin: 'Man kāna yu\'minu billāhi wal-yawmil-ākhiri fal-yaqul khairan aw liyashmut.',
+        translation: 'Barangsiapa beriman kepada Allah dan hari akhir, hendaklah ia berkata yang baik atau diam.',
+        source: 'HR. Bukhari no. 6018 & Muslim no. 47',
         narrator: 'Abu Hurairah رضي الله عنه',
-        faidah: 'Menyakiti tetangga adalah tanda lemahnya iman seseorang.'
+        faidah: 'Menjaga lisan adalah tanda kesempurnaan iman. Diam lebih baik daripada berbicara keburukan.'
+    },
+    {
+        id: 'ak_006',
+        category: 'akhlak',
+        title: 'Larangan Ghibah (Menggunjing)',
+        arabic: 'أَتَدْرُونَ مَا الْغِيبَةُ؟ قَالُوا اللَّهُ وَرَسُولُهُ أَعْلَمُ. قَالَ ذِكْرُكَ أَخَاكَ بِمَا يَكْرَهُ. قِيلَ أَفَرَأَيْتَ إِنْ كَانَ فِى أَخِى مَا أَقُولُ؟ قَالَ إِنْ كَانَ فِيهِ مَا تَقُولُ فَقَدِ اغْتَبْتَهُ وَإِنْ لَمْ يَكُنْ فِيهِ فَقَدْ بَهَتَّهُ',
+        latin: 'Atadrūna mal-ghībah? ... dzikruka akhāka bimā yakrah. ... in kāna fīhi mā taqūl faqadightabtahu wa in lam yakun fīhi faqad bahattahu.',
+        translation: 'Tahukah kalian apa itu ghibah? Mereka menjawab: Allah dan Rasul-Nya lebih tahu. Beliau bersabda: Engkau menyebutkan tentang saudaramu sesuatu yang ia benci. Ditanyakan: Bagaimana jika yang aku katakan itu benar ada padanya? Beliau bersabda: Jika benar, engkau telah mengghibahnya. Jika tidak benar, engkau telah memfitnahnya.',
+        source: 'HR. Muslim no. 2589',
+        narrator: 'Abu Hurairah رضي الله عنه',
+        faidah: 'Ghibah membicarakan aib yang benar ada, memfitnah membicarakan kebohongan. Keduanya dosa besar.'
     },
 
     // ===== ILMU & HIKMAH =====
@@ -172,18 +228,18 @@ export const HADITS_COLLECTION = [
         translation: 'Mencari ilmu adalah kewajiban atas setiap Muslim.',
         source: 'HR. Ibnu Majah no. 224 — Shahih',
         narrator: 'Anas bin Malik رضي الله عنه',
-        faidah: 'Ilmu yang dimaksud adalah ilmu yang wajib dipelajari setiap Muslim, terutama ilmu agama untuk beribadah dengan benar.'
+        faidah: 'Ilmu yang dimaksud adalah ilmu yang wajib dipelajari setiap Muslim (Fardhu \'Ain), terutama ilmu tauhid dan tata cara ibadah yang benar.'
     },
     {
         id: 'il_002',
         category: 'ilmu',
-        title: 'Amal yang Terus Mengalir Setelah Mati',
-        arabic: 'إِذَا مَاتَ الإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلاَّ مِنْ ثَلاَثَةٍ: إِلاَّ مِنْ صَدَقَةٍ جَارِيَةٍ، أَوْ عِلْمٍ يُنْتَفَعُ بِهِ، أَوْ وَلَدٍ صَالِحٍ يَدْعُو لَهُ',
-        latin: 'Idzā mātal-insānu inqatha\'a \'anhu \'amaluhu illā min tsalāts: illā min shadaqatin jāriyah, aw \'ilmin yuntafa\'u bih, aw waladin shālihin yad\'ū lah.',
-        translation: 'Apabila manusia meninggal, terputuslah amalnya kecuali tiga perkara: sedekah jariyah, ilmu yang bermanfaat, atau anak sholeh yang mendoakannya.',
-        source: 'HR. Muslim no. 1631',
-        narrator: 'Abu Hurairah رضي الله عنه',
-        faidah: 'Tiga amalan ini terus memberikan pahala meskipun pelakunya sudah meninggal dunia.'
+        title: 'Ulama Pewaris Para Nabi',
+        arabic: 'وَإِنَّ الْعُلَمَاءَ وَرَثَةُ الأَنْبِيَاءِ وَإِنَّ الأَنْبِيَاءَ لَمْ يُوَرِّثُوا دِينَارًا وَلاَ دِرْهَمًا وَرَّثُوا الْعِلْمَ فَمَنْ أَخَذَهُ أَخَذَ بِحَظٍّ وَافِرٍ',
+        latin: 'Wa innal-\'ulamā\'a waratsatul-anbiyā\', wa innal-anbiyā\'a lam yuwarritshū dīnāran wa lā dirhaman, warratshul-\'ilma faman akhadzahu akhadza bihazhzhin wāfir.',
+        translation: 'Sesungguhnya ulama adalah pewaris para nabi. Para nabi tidak mewariskan dinar maupun dirham, mereka hanya mewariskan ilmu. Barangsiapa yang mengambilnya, maka ia telah mengambil bagian yang sangat banyak.',
+        source: 'HR. Abu Dawud no. 3641 — Shahih',
+        narrator: 'Abu Darda رضي الله عنه',
+        faidah: 'Kemuliaan seorang berilmu melampaui orang yang hanya rajin ibadah, sebagaimana perbandingan bulan purnama atas bintang-bintang.'
     },
     {
         id: 'il_003',
@@ -194,18 +250,7 @@ export const HADITS_COLLECTION = [
         translation: 'Barangsiapa menempuh suatu jalan untuk mencari ilmu, Allah akan memudahkan baginya jalan menuju surga.',
         source: 'HR. Muslim no. 2699',
         narrator: 'Abu Hurairah رضي الله عنه',
-        faidah: 'Menuntut ilmu adalah salah satu jalan tercepat menuju surga.'
-    },
-    {
-        id: 'il_004',
-        category: 'ilmu',
-        title: 'Amalan Paling Dicintai Allah',
-        arabic: 'أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ',
-        latin: 'Ahabbul-a\'māli ilallāhi adwamuhā wa in qall.',
-        translation: 'Amalan yang paling dicintai Allah adalah yang paling rutin dikerjakan walaupun sedikit.',
-        source: 'HR. Bukhari no. 6465 & Muslim no. 783',
-        narrator: 'Aisyah رضي الله عنها',
-        faidah: 'Istiqomah dalam amal yang sedikit lebih baik daripada banyak amal tapi tidak berkelanjutan.'
+        faidah: 'Menuntut ilmu agama adalah salah satu jalan tercepat dan termudah menuju surga Allah.'
     },
 
     // ===== KELUARGA =====
@@ -215,56 +260,56 @@ export const HADITS_COLLECTION = [
         title: 'Hak Istri atas Suami',
         arabic: 'خَيْرُكُمْ خَيْرُكُمْ لِأَهْلِهِ، وَأَنَا خَيْرُكُمْ لِأَهْلِي',
         latin: 'Khairukum khairukum li\'ahlihī, wa ana khairukum li\'ahlī.',
-        translation: 'Sebaik-baik kalian adalah yang paling baik kepada keluarganya, dan aku adalah yang paling baik di antara kalian kepada keluargaku.',
+        translation: 'Sebaik-baik kalian adalah yang paling baik kepada keluarganya (istrinya), dan aku adalah yang paling baik di antara kalian kepada keluargaku.',
         source: 'HR. Tirmidzi no. 3895 — Shahih',
         narrator: 'Aisyah رضي الله عنها',
-        faidah: 'Kebaikan kepada keluarga adalah ukuran kemuliaan seorang Muslim.'
+        faidah: 'Kebaikan kepada keluarga di dalam rumah adalah ujian karakter dan akhlak yang paling hakiki.'
     },
     {
         id: 'kl_002',
         category: 'keluarga',
-        title: 'Kewajiban Berbakti kepada Orang Tua',
-        arabic: 'رِضَا اللَّهِ فِي رِضَا الْوَالِدَيْنِ، وَسَخَطُ اللَّهِ فِي سَخَطِ الْوَالِدَيْنِ',
-        latin: 'Ridhallāhi fī ridhal-wālidayn, wa sakhathullāhi fī sakhathil-wālidayn.',
-        translation: 'Ridha Allah ada pada ridha kedua orang tua, dan murka Allah ada pada murka kedua orang tua.',
-        source: 'HR. Tirmidzi no. 1899 — Shahih',
-        narrator: 'Abdullah bin Amr رضي الله عنهما',
-        faidah: 'Ridha orang tua adalah kunci ridha Allah.'
-    },
-    {
-        id: 'kl_003',
-        category: 'keluarga',
-        title: 'Surga di Bawah Telapak Kaki Ibu',
-        arabic: 'الْجَنَّةُ تَحْتَ أَقْدَامِ الأُمَّهَاتِ',
-        latin: 'Al-jannatu tahta aqdāmil-ummahāt.',
-        translation: 'Surga berada di bawah telapak kaki ibu.',
-        source: 'HR. Ibnu Majah no. 2781, Ahmad — Hasan',
+        title: 'Surga di Bawah Telapak Kaki Ibu (Bakti pada Ibu)',
+        arabic: 'إِلْزَمْهَا فَإِنَّ الْجَنَّةَ تَحْتَ أَقْدَامِهَا',
+        latin: 'Ilzamhā fa innal-jannata tahta aqdāmihā.',
+        translation: 'Berbaktilah selalu kepadanya (ibumu), karena sesungguhnya surga itu di bawah kedua kakinya.',
+        source: 'HR. An-Nasa\'i no. 3104 — Shahih',
         narrator: 'Mu\'awiyah bin Jahimah رضي الله عنه',
-        faidah: 'Bakti kepada ibu adalah jalan utama menuju surga.'
+        faidah: 'Keridhaan ibu adalah jalan utama yang menghantarkan seorang hamba masuk surga.'
     },
 
     // ===== MUAMALAH =====
     {
         id: 'mu_001',
         category: 'muamalah',
-        title: 'Larangan Riba',
-        arabic: 'لَعَنَ رَسُولُ اللَّهِ ﷺ آكِلَ الرِّبَا وَمُوكِلَهُ وَكَاتِبَهُ وَشَاهِدَيْهِ، وَقَالَ: هُمْ سَوَاءٌ',
-        latin: 'La\'ana rasūlullāhi ﷺ ākila-ribā wa mūkilahu wa kātibahu wa syāhidayhi, wa qāla: hum sawā\'.',
-        translation: 'Rasulullah ﷺ melaknat pemakan riba, yang memberi makan dengannya, penulisnya, dan kedua saksinya, dan beliau bersabda: Mereka semua sama (berdosanya).',
-        source: 'HR. Muslim no. 1598',
-        narrator: 'Jabir رضي الله عنه',
-        faidah: 'Semua pihak yang terlibat transaksi riba menanggung dosa.'
+        title: 'Larangan Menipu dalam Jual Beli',
+        arabic: 'مَنْ غَشَّنَا فَلَيْسَ مِنَّا',
+        latin: 'Man ghasysyanā falaysa minnā.',
+        translation: 'Barangsiapa yang menipu kami, maka ia bukan termasuk golongan kami.',
+        source: 'HR. Muslim no. 101',
+        narrator: 'Abu Hurairah رضي الله عنه',
+        faidah: 'Menyembunyikan cacat barang dagangan adalah bentuk penipuan yang diharamkan secara mutlak dan menghilangkan keberkahan.'
     },
     {
         id: 'mu_002',
         category: 'muamalah',
-        title: 'Penjual dan Pembeli yang Jujur',
-        arabic: 'الْبَيِّعَانِ بِالْخِيَارِ مَا لَمْ يَتَفَرَّقَا، فَإِنْ صَدَقَا وَبَيَّنَا بُورِكَ لَهُمَا فِي بَيْعِهِمَا، وَإِنْ كَذَبَا وَكَتَمَا مُحِقَتْ بَرَكَةُ بَيْعِهِمَا',
-        latin: 'Al-bayyi\'āni bil-khiyāri mā lam yatafarraqā, fa in shadaqā wa bayyannā būrika lahumā fī bay\'ihimā, wa in kadzabā wa katamā muhiqat barakatu bay\'ihimā.',
-        translation: 'Penjual dan pembeli mempunyai hak khiyar (pilih) selama belum berpisah. Jika keduanya jujur dan terus terang, maka jual-beli mereka diberkahi. Jika keduanya berbohong dan menyembunyikan (cacat), maka berkahnya dihapus.',
-        source: 'HR. Bukhari no. 2079 & Muslim no. 1532',
-        narrator: 'Hakim bin Hizam رضي الله عنه',
-        faidah: 'Kejujuran dalam jual beli mendatangkan keberkahan.'
+        title: 'Dosa Riba Lebih Buruk dari Zina',
+        arabic: 'دِرْهَمُ رِبًا يَأْكُلُهُ الرَّجُلُ وَهُوَ يَعْلَمُ أَشَدُّ مِنْ سِتَّةٍ وَثَلَاثِينَ زَنْيَةً',
+        latin: 'Dirhamu riban ya\'kuluhur-rajulu wa huwa ya\'lamu asyaddu min sittatin wa tsalātsīna zanyah.',
+        translation: 'Satu dirham riba yang dimakan seseorang dalam keadaan ia mengetahuinya, lebih besar dosanya daripada berzina tiga puluh enam kali.',
+        source: 'HR. Ahmad no. 21957 — Shahih',
+        narrator: 'Abdullah bin Hanzhalah رضي الله عنه',
+        faidah: 'Riba adalah dosa yang sangat besar di sisi Allah, bahkan diancam akan diperangi oleh Allah dan Rasul-Nya (QS. Al-Baqarah: 279).'
+    },
+    {
+        id: 'mu_003',
+        category: 'muamalah',
+        title: 'Kelonggaran dalam Berutang',
+        arabic: 'مَنْ أَنْظَرَ مُعْسِرًا أَوْ وَضَعَ عَنْهُ أَظَلَّهُ اللَّهُ فِى ظِلِّهِ',
+        latin: 'Man andzhara mu\'siran aw wadha\'a \'anhu adzhallahullāhu fī dzhillih.',
+        translation: 'Barangsiapa memberi tenggang waktu bagi orang yang kesulitan (membayar utang), atau membebaskan utangnya, niscaya Allah akan menaunginya di bawah naungan-Nya.',
+        source: 'HR. Muslim no. 3006',
+        narrator: 'Abu Al-Yasar رضي الله عنه',
+        faidah: 'Islam sangat memuliakan orang yang berlapang dada memaafkan/menangguhkan utang saudaranya yang kesulitan finansial.'
     },
 
     // ===== AKHIRAT =====
@@ -277,45 +322,23 @@ export const HADITS_COLLECTION = [
         translation: 'Dunia adalah penjara bagi orang mukmin dan surga bagi orang kafir.',
         source: 'HR. Muslim no. 2956',
         narrator: 'Abu Hurairah رضي الله عنه',
-        faidah: 'Orang mukmin merasakan banyak pembatasan di dunia (halal-haram), sementara di akhirat ia akan menikmati kenikmatan sejati.'
+        faidah: 'Orang mukmin merasakan banyak pembatasan syariat di dunia, sementara di akhirat ia akan menikmati kebebasan dan kenikmatan abadi.'
     },
     {
         id: 'ax_002',
         category: 'akhirat',
-        title: 'Mengingat Penghancur Kenikmatan',
-        arabic: 'أَكْثِرُوا ذِكْرَ هَادِمِ اللَّذَّاتِ: الْمَوْتِ',
-        latin: 'Aktsirū dzikra hādimil-ladzdzāt: al-mawt.',
-        translation: 'Perbanyaklah mengingat penghancur kenikmatan, yaitu kematian.',
-        source: 'HR. Tirmidzi no. 2307 — Hasan Shahih',
-        narrator: 'Abu Hurairah رضي الله عنه',
-        faidah: 'Mengingat kematian adalah obat terbaik dari cinta berlebihan terhadap dunia.'
-    },
-    {
-        id: 'ax_003',
-        category: 'akhirat',
         title: 'Perbandingan Dunia dan Akhirat',
         arabic: 'مَا الدُّنْيَا فِي الآخِرَةِ إِلاَّ مِثْلُ مَا يَجْعَلُ أَحَدُكُمْ إِصْبَعَهُ فِي الْيَمِّ، فَلْيَنْظُرْ بِمَ يَرْجِعُ',
         latin: 'Mad-dunyā fil-ākhirati illā mitslu mā yaj\'alu ahadukum ishba\'ahu fil-yamm, falyanzur bima yarji\'.',
-        translation: 'Tidaklah dunia dibandingkan akhirat kecuali seperti salah seorang dari kalian mencelupkan jarinya ke laut, lalu lihatlah apa yang dibawa jarinya.',
+        translation: 'Tidaklah dunia dibandingkan akhirat kecuali seperti salah seorang dari kalian mencelupkan jarinya ke laut, lalu lihatlah apa yang dibawa (menetes dari) jarinya.',
         source: 'HR. Muslim no. 2858',
         narrator: 'Al-Mustaurid رضي الله عنه',
-        faidah: 'Kenikmatan dunia sangat kecil dibandingkan kenikmatan akhirat.'
+        faidah: 'Kenikmatan dunia sangat fana dan kecil. Mengorbankan akhirat demi dunia adalah kerugian nyata.'
     },
 
     // ===== DOA & DZIKIR =====
     {
         id: 'dz_001',
-        category: 'doa',
-        title: 'Keutamaan Dzikir',
-        arabic: 'أَلاَ أُنَبِّئُكُمْ بِخَيْرِ أَعْمَالِكُمْ، وَأَزْكَاهَا عِنْدَ مَلِيكِكُمْ، وَأَرْفَعِهَا فِي دَرَجَاتِكُمْ، وَخَيْرٌ لَكُمْ مِنْ إِنْفَاقِ الذَّهَبِ وَالْوَرِقِ؟ ذِكْرُ اللَّهِ تَعَالَى',
-        latin: 'Alā unabbiukum bikhairi a\'mālikum... dzikrullāhi ta\'ālā.',
-        translation: 'Maukah aku kabarkan kepada kalian amalan terbaik kalian, yang paling suci di sisi Rabb kalian, yang paling tinggi derajatnya, dan lebih baik dari menginfakkan emas dan perak? Yaitu dzikrullah (mengingat Allah).',
-        source: 'HR. Tirmidzi no. 3377, Ibnu Majah — Shahih',
-        narrator: 'Abu Darda رضي الله عنه',
-        faidah: 'Dzikrullah adalah amalan terbaik yang melebihi sedekah harta.'
-    },
-    {
-        id: 'dz_002',
         category: 'doa',
         title: 'Kalimat Paling Dicintai Allah',
         arabic: 'أَحَبُّ الْكَلاَمِ إِلَى اللَّهِ أَرْبَعٌ: سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلاَ إِلَهَ إِلاَّ اللَّهُ، وَاللَّهُ أَكْبَرُ',
@@ -323,28 +346,18 @@ export const HADITS_COLLECTION = [
         translation: 'Kalimat yang paling dicintai Allah ada empat: Subhanallah, Alhamdulillah, Lā ilāha illallāh, dan Allahu Akbar.',
         source: 'HR. Muslim no. 2137',
         narrator: 'Samurah bin Jundub رضي الله عنه',
-        faidah: 'Empat kalimat ini adalah dzikir paling utama yang bisa diucapkan kapan saja.'
+        faidah: 'Empat kalimat ini adalah dzikir mutlak yang bisa diucapkan kapan saja untuk memperberat timbangan amal.'
     },
     {
-        id: 'dz_003',
+        id: 'dz_002',
         category: 'doa',
-        title: 'Doa Paling Agung',
+        title: 'Doa Penghulu Istighfar',
         arabic: 'سَيِّدُ الاسْتِغْفَارِ أَنْ يَقُولَ الْعَبْدُ: اللَّهُمَّ أَنْتَ رَبِّي لاَ إِلَهَ إِلاَّ أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ',
         latin: 'Sayyidul-istighfāri an yaqūlal-\'abdu: Allāhumma anta rabbī lā ilāha illā anta, khalaqtanī wa ana \'abduk...',
-        translation: 'Penghulu istighfar adalah seorang hamba mengucapkan: Ya Allah, Engkau adalah Rabbku, tiada ilah selain Engkau. Engkau menciptakanku dan aku adalah hamba-Mu...',
+        translation: 'Penghulu istighfar adalah seorang hamba mengucapkan: Ya Allah, Engkau adalah Rabbku, tiada ilah yang berhak disembah selain Engkau. Engkau menciptakanku dan aku adalah hamba-Mu...',
         source: 'HR. Bukhari no. 6306',
         narrator: 'Syaddad bin Aus رضي الله عنه',
-        faidah: 'Ini adalah sayyidul istighfar (penghulu istighfar) yang dianjurkan dibaca pagi dan petang.'
+        faidah: 'Barangsiapa membacanya di pagi hari dengan yakin lalu meninggal, ia masuk surga. Begitu pula saat sore hari.'
     },
-    {
-        id: 'dz_004',
-        category: 'doa',
-        title: 'Asmaul Husna Kunci Surga',
-        arabic: 'إِنَّ لِلَّهِ تِسْعَةً وَتِسْعِينَ اسْمًا مِائَةً إِلاَّ وَاحِدًا مَنْ أَحْصَاهَا دَخَلَ الْجَنَّةَ',
-        latin: 'Inna lillāhi tis\'atan wa tis\'īna ismā, mi\'atan illā wāhidā, man ahshāhā dakhalal-jannah.',
-        translation: 'Sesungguhnya Allah memiliki 99 nama — seratus kurang satu. Barangsiapa yang menjaganya maka ia akan masuk surga.',
-        source: 'HR. Bukhari no. 2736 & Muslim no. 2677',
-        narrator: 'Abu Hurairah رضي الله عنه',
-        faidah: '"Ihsha\'" berarti menghafal, memahami maknanya, dan beribadah kepada Allah sesuai nama tersebut.'
-    },
+    ...EXTRA_HADITS
 ];

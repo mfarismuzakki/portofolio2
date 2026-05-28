@@ -98,7 +98,9 @@ class IslamHubApp {
         
         // Check if we should restore last active app
         const lastActiveApp = localStorage.getItem('islamhub_last_active_app');
-        if (lastActiveApp && lastActiveApp !== 'home') {
+        // Check if the app is still valid (in DROPDOWN_APP_CONFIG or FOOTER_PINNABLE)
+        const isValidApp = [...DROPDOWN_APP_CONFIG, ...FOOTER_PINNABLE].find(a => a.id === lastActiveApp);
+        if (lastActiveApp && lastActiveApp !== 'home' && isValidApp) {
             console.log('Restoring last active app:', lastActiveApp);
             await this.switchApp(lastActiveApp);
         } else {

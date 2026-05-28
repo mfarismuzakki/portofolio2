@@ -203,33 +203,4 @@ if (typeof window !== 'undefined') {
     window.getSurahsByPage = getSurahsByPage;
     window.getAudioPathForPage = getAudioPathForPage;
     window.getPageInfo = getPageInfo;
-}
-
-// Export ke window untuk browser
-if (typeof window !== 'undefined') {
-    window.QURAN_SURAHS = QURAN_SURAHS;
-    window.QURAN_JUZ = QURAN_JUZ;
-    window.getJuzByPage = getJuzByPage;
-    window.getSurahsByPage = getSurahsByPage;
-    window.getAudioPathForPage = getAudioPathForPage;
-    window.getPageInfo = getPageInfo;
-    
-    console.log('Quran data exported to window:', {
-        surahs: QURAN_SURAHS.length,
-        juz: QURAN_JUZ.length
-    });
-}
-
-// Export to window for browser usage
-if (typeof window !== 'undefined') {
-    window.QURAN_SURAHS = QURAN_SURAHS;
-    window.QURAN_JUZ = QURAN_JUZ;
-    window.getJuzByPage = getJuzByPage;
-    window.getSurahsByPage = getSurahsByPage;
-    window.getAudioPathForPage = getAudioPathForPage;
-    window.getPageInfo = getPageInfo;
-    console.log('Quran data loaded to window:', {
-        surahs: QURAN_SURAHS.length,
-        juz: QURAN_JUZ.length
-    });
-}
+}

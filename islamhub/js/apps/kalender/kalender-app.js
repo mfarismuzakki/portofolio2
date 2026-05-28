@@ -134,6 +134,9 @@ export default class KalenderApp {
                     <span class="kalender-hijri-date">${todayHijri.day} ${this.hijriMonths[todayHijri.month - 1]} ${todayHijri.year} H</span>
                     <span class="kalender-masehi-date">${this.today.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
                 </div>
+                <div class="kalender-disclaimer" style="font-size:0.7rem;opacity:0.6;margin-top:6px;text-align:center;">
+                    <i class="fas fa-info-circle"></i> Perhitungan menggunakan algoritma tabulasi. Tanggal Hijriyah dapat berbeda ±1-2 hari dari hasil rukyatul hilal.
+                </div>
             </div>
 
             <!-- Countdown widget to upcoming Islamic events -->
@@ -172,6 +175,19 @@ export default class KalenderApp {
 
             <!-- Event bulan ini -->
             <div class="kalender-events" id="kalenderEvents"></div>
+
+            <!-- Cross-App Integration: Fiqh Praktis -->
+            <div class="kalender-events" style="margin-top: 20px; background: linear-gradient(135deg, var(--bg-surface-2), rgba(0,255,136,0.05)); border: 1px solid rgba(0,255,136,0.2);">
+                <div style="color: var(--primary-green); font-weight: 600; font-size: 1.1rem; margin-bottom: 8px;">
+                    <i class="fas fa-book-open"></i> Pelajari Fiqh Ibadah
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px;">
+                    Perdalam ilmu Anda mengenai hukum-hukum ibadah harian dan puasa sebelum datangnya waktu pelaksanaannya.
+                </p>
+                <button class="btn-primary" style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; font-weight: 600;" onclick="if(window.islamHub) window.islamHub.openApp('fiqh')">
+                    Buka Fiqh Praktis <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
 
             <!-- Konversi Tanggal -->
             <div class="kalender-convert">
@@ -312,6 +328,9 @@ export default class KalenderApp {
                     <div class="convert-hijri">
                         <i class="fas fa-moon"></i>
                         <span>${h.day} ${this.hijriMonths[h.month - 1]} ${h.year} H</span>
+                    </div>
+                    <div class="convert-note" style="font-size:0.7rem;opacity:0.55;margin-top:8px;text-align:center;">
+                        <i class="fas fa-info-circle"></i> Hasil konversi berdasarkan algoritma tabulasi (dapat berbeda ±1-2 hari dari rukyatul hilal)
                     </div>
                 </div>`;
         }

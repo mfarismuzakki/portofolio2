@@ -201,6 +201,18 @@ export default class AdzanApp {
                     </div>
                 </div>
 
+                <!-- Cross-App Integration: Dzikir & Doa -->
+                <div class="sunnah-section" style="margin-top: 20px; background: linear-gradient(135deg, var(--bg-surface-2), rgba(0,255,255,0.05));">
+                    <div class="section-header" style="color: var(--primary-cyan);">
+                        <i class="fas fa-hands"></i>
+                        <h3>Dzikir Setelah Sholat</h3>
+                    </div>
+                    <p class="section-description" style="margin-bottom: 15px;">Sempurnakan ibadah sholat fardhu Anda dengan rangkaian dzikir sesuai sunnah.</p>
+                    <button class="btn-primary" style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; font-weight: 600;" onclick="if(window.islamHub) window.islamHub.openApp('dzikir')">
+                        Buka Panduan Dzikir <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
                 <!-- Location Modal -->
                 <div class="modal" id="locationModal" style="display: none;">
                     <div class="modal-content">
