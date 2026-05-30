@@ -195,21 +195,37 @@ function resolvePose(pose) {
             t.hipY = A.standHipY;
             break;
         case 'ruku':
+            // Back bowed toward horizontal. Because the hips don't translate
+            // backward in this rig, a fully-straight leg would push the
+            // shoulders well in front of the knees and the hands could never
+            // reach them. A small forward knee bend (legHipX) with vertical
+            // shins (legKneeX = -legHipX, feet stay under the body) brings the
+            // knees within reach so the hands rest on them — the iconic ruku.
             t.hipY = A.standHipY;
-            t.torsoX = -1.45; // bend forward ~83°
+            t.torsoX = -1.35;
+            t.legHipX = 0.50;
+            t.legKneeX = -0.50;
             break;
         case 'sit':
-            t.hipY = A.kneelHipY;
-            t.legHipX = 1.55;     // thighs flat forward
-            t.legKneeX = -3.1;    // calves fold back under thighs
+            // Iftirasy: knees + shins resting flat on the floor, seated back on
+            // the heels. Thighs slope down-forward to the knees (legHipX) and
+            // the calves fold back flat (legKneeX). Tuned so knee & foot sit at
+            // y≈0 instead of floating above an invisible chair.
+            t.hipY = 0.48;
+            t.legHipX = 0.95;
+            t.legKneeX = -2.5;
             break;
         case 'sujud':
-            // Less torso bend (~75°) keeps shoulders higher so arms can reach floor
-            // in front of the head without clipping through the floor.
-            t.hipY = 0.30;
-            t.legHipX = 1.55;
-            t.legKneeX = -3.1;
-            t.torsoX = -1.30;
+            // Kneeling with the forehead on the mat. Hips raised above the
+            // heels (hipY higher than sitting) so the shoulders stay high
+            // enough for the hands to reach the floor beside the head without
+            // clipping through it. Torso folds forward and the chin tucks
+            // (headX) so the forehead actually touches the mat.
+            t.hipY = 0.60;
+            t.legHipX = 0.65;
+            t.legKneeX = -2.4;
+            t.torsoX = -1.70;
+            t.headX = -0.30;
             break;
     }
 
@@ -239,28 +255,27 @@ function resolvePose(pose) {
             t.armR = { shoulderX: 0, shoulderY: 0, shoulderZ: -0.10, elbowX: 0, elbowZ: 0 };
             break;
         case 'knees':
-            // Ruku grip on knees. Torso tilted -1.45, so shoulderX = +1.45
-            // makes upper arm hang vertically in world. Slight forward elbow flex
-            // (positive elbowX) brings hand to knee in front.
-            t.armL = { shoulderX: 1.45, shoulderY: 0, shoulderZ:  0.05, elbowX: 0.10, elbowZ: 0 };
-            t.armR = { shoulderX: 1.45, shoulderY: 0, shoulderZ: -0.05, elbowX: 0.10, elbowZ: 0 };
+            // Ruku grip on knees. With the back bowed ~78° and a small forward
+            // knee bend, the hands reach down-and-slightly-back onto the knees.
+            t.armL = { shoulderX: 0.95, shoulderY: 0, shoulderZ:  0.10, elbowX: -0.10, elbowZ: 0 };
+            t.armR = { shoulderX: 0.95, shoulderY: 0, shoulderZ: -0.10, elbowX: -0.10, elbowZ: 0 };
             break;
         case 'sujud':
-            // Torso tilted -1.30. Compensate with shoulderX = +1.30 so upper arm
-            // hangs vertically in world, then forward forearm flex (elbowX > 0)
-            // puts hands on floor in front of head.
-            t.armL = { shoulderX: 1.30, shoulderY: 0, shoulderZ:  0.10, elbowX: 1.40, elbowZ: 0 };
-            t.armR = { shoulderX: 1.30, shoulderY: 0, shoulderZ: -0.10, elbowX: 1.40, elbowZ: 0 };
+            // Upper arm hangs straight down in world (shoulderX cancels the
+            // torso tilt), then a strong forearm flex (elbowX) lays the hands
+            // flat on the mat beside the head, fingers toward kiblat.
+            t.armL = { shoulderX: 1.55, shoulderY: 0, shoulderZ:  0.12, elbowX: 1.80, elbowZ: 0 };
+            t.armR = { shoulderX: 1.55, shoulderY: 0, shoulderZ: -0.12, elbowX: 1.80, elbowZ: 0 };
             break;
         case 'thighs':
-            // Sitting hands on thighs (palms down): forearms forward over thighs.
-            t.armL = { shoulderX: 0.20, shoulderY: 0, shoulderZ:  0.20, elbowX: 1.30, elbowZ: 0 };
-            t.armR = { shoulderX: 0.20, shoulderY: 0, shoulderZ: -0.20, elbowX: 1.30, elbowZ: 0 };
+            // Sitting hands resting on the thighs/knees.
+            t.armL = { shoulderX: 0.45, shoulderY: 0, shoulderZ:  0.15, elbowX: 0.35, elbowZ: 0 };
+            t.armR = { shoulderX: 0.45, shoulderY: 0, shoulderZ: -0.15, elbowX: 0.35, elbowZ: 0 };
             break;
         case 'tasyahud':
-            // Right hand slightly more flexed (telunjuk isyarat)
-            t.armL = { shoulderX: 0.20, shoulderY: 0, shoulderZ:  0.20, elbowX: 1.30, elbowZ: 0 };
-            t.armR = { shoulderX: 0.25, shoulderY: 0, shoulderZ: -0.20, elbowX: 1.45, elbowZ: 0 };
+            // Hands on the thighs; right hand slightly more flexed (telunjuk isyarat).
+            t.armL = { shoulderX: 0.45, shoulderY: 0, shoulderZ:  0.15, elbowX: 0.35, elbowZ: 0 };
+            t.armR = { shoulderX: 0.50, shoulderY: 0, shoulderZ: -0.15, elbowX: 0.30, elbowZ: 0 };
             break;
     }
 
@@ -405,7 +420,7 @@ export default class Peraga3D {
         }
 
         const matTexture = new THREE.CanvasTexture(matCanvas);
-        const matGeo = new THREE.PlaneGeometry(2.4, 4);
+        const matGeo = new THREE.PlaneGeometry(1.5, 3.4);
         const matMat = new THREE.MeshStandardMaterial({
             map: matTexture,
             roughness: 0.7,
@@ -415,9 +430,13 @@ export default class Peraga3D {
         });
         // After rotation.x = -π/2, plane's "+Y" (top of canvas) maps to -Z.
         // We want canvas-top (mihrab arch) at -Z (front/kiblat). ✓
+        // The figure's footprint runs from z≈+0.25 (seated/standing, back of mat)
+        // to z≈-1.35 (ruku/sujud forehead reaching forward). Centre the mat on
+        // that span (≈ -0.55) and size it (1.5 × 3.4) so the body sits ON the mat
+        // with a margin in front toward the kiblat — not floating beside it.
         this.sajadah = new THREE.Mesh(matGeo, matMat);
         this.sajadah.rotation.x = -Math.PI / 2;
-        this.sajadah.position.set(0, 0.01, -0.5); // shift mat slightly forward so character stands at the back end
+        this.sajadah.position.set(0, 0.01, -0.55);
         this.sajadah.receiveShadow = true;
         this.scene.add(this.sajadah);
     }
