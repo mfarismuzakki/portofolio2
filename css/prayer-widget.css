@@ -1,0 +1,220 @@
+/* =====================================================================
+   FLOATING PRAYER-TIMES WIDGET — neon glass, matches the portfolio theme
+   (reuses the cyan/dark variables from main-2.css)
+   ===================================================================== */
+
+.pw-widget {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 268px;
+    max-width: calc(100vw - 32px);
+    z-index: 2000;
+    background: rgba(8, 12, 24, 0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 255, 255, 0.25);
+    border-radius: 18px;
+    padding: 16px 16px 14px;
+    color: var(--text-primary, #fff);
+    font-family: var(--font-secondary, 'Rajdhani', sans-serif);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        0 0 22px rgba(0, 255, 255, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    animation: pw-float 3.4s ease-in-out infinite;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+@keyframes pw-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+
+.pw-widget.pw-hidden {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+    pointer-events: none;
+}
+
+/* header: mosque icon + city select + minimize */
+.pw-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.pw-mosque {
+    color: var(--primary-cyan, #00ffff);
+    font-size: 1rem;
+    filter: drop-shadow(0 0 6px rgba(0,255,255,0.5));
+}
+.pw-city {
+    flex: 1;
+    min-width: 0;
+    background: rgba(0, 255, 255, 0.06);
+    color: #fff;
+    border: 1px solid rgba(0, 255, 255, 0.22);
+    border-radius: 8px;
+    padding: 5px 8px;
+    font-family: var(--font-secondary, 'Rajdhani', sans-serif);
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+}
+.pw-city:focus { border-color: var(--primary-cyan, #00ffff); }
+.pw-city option { background: #0a0f1c; color: #fff; }
+
+.pw-min {
+    width: 26px; height: 26px;
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1.5px solid rgba(0, 255, 255, 0.3);
+    border-radius: 50%;
+    color: var(--primary-cyan, #00ffff);
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    transition: all 0.25s ease;
+}
+.pw-min:hover {
+    background: rgba(0, 255, 255, 0.15);
+    transform: scale(1.1);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+}
+
+/* next prayer + countdown */
+.pw-next {
+    text-align: center;
+    padding: 8px 0 12px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.14);
+    margin-bottom: 10px;
+}
+.pw-next-label {
+    font-size: 0.66rem;
+    letter-spacing: 2px;
+    color: var(--text-secondary, #b0b0b0);
+    font-weight: 600;
+}
+.pw-next-name { color: var(--primary-cyan, #00ffff); }
+.pw-countdown {
+    font-family: var(--font-primary, 'Orbitron', monospace);
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--primary-cyan, #00ffff);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 1px;
+    text-shadow: 0 0 14px rgba(0, 255, 255, 0.35);
+    margin: 2px 0;
+}
+.pw-date {
+    font-size: 0.72rem;
+    color: var(--text-muted, #707070);
+}
+
+/* expand / collapse toggle */
+.pw-toggle {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 7px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 255, 255, 0.18);
+    background: rgba(0, 255, 255, 0.05);
+    color: var(--text-secondary, #b0b0b0);
+    font-family: var(--font-secondary, 'Rajdhani', sans-serif);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.pw-toggle:hover { color: var(--primary-cyan, #00ffff); border-color: rgba(0,255,255,0.4); }
+.pw-toggle i { transition: transform 0.3s ease; font-size: 0.7rem; }
+.pw-widget.pw-expanded .pw-toggle i { transform: rotate(180deg); }
+
+/* prayer rows (hidden until expanded) */
+.pw-list { display: none; flex-direction: column; gap: 2px; margin-bottom: 12px; }
+.pw-widget.pw-expanded .pw-list { display: flex; }
+.pw-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    transition: background 0.25s ease, color 0.25s ease;
+}
+.pw-row-name { color: var(--text-secondary, #b0b0b0); font-weight: 600; }
+.pw-row-time {
+    font-family: var(--font-primary, 'Orbitron', monospace);
+    font-size: 0.86rem;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+.pw-row-soft { opacity: 0.6; }
+.pw-row-soft .pw-row-name { font-weight: 500; }
+
+.pw-row.pw-active {
+    background: linear-gradient(90deg, rgba(0,255,255,0.16), rgba(0,128,255,0.06));
+    box-shadow: inset 0 0 0 1px rgba(0,255,255,0.3);
+}
+.pw-row.pw-active .pw-row-name { color: var(--primary-cyan, #00ffff); }
+.pw-row.pw-active .pw-row-time { color: var(--primary-cyan, #00ffff); text-shadow: 0 0 10px rgba(0,255,255,0.4); }
+
+/* IslamHub button */
+.pw-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary-cyan, #00ffff), var(--electric-blue, #0080ff));
+    color: #04121e;
+    font-family: var(--font-primary, 'Orbitron', monospace);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.pw-link:hover {
+    color: #04121e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 255, 255, 0.45);
+}
+
+/* restore (FAB) when minimized */
+.pw-restore {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 52px; height: 52px;
+    z-index: 2000;
+    display: none;
+    place-items: center;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #04121e;
+    font-size: 1.25rem;
+    background: linear-gradient(135deg, var(--primary-cyan, #00ffff), var(--electric-blue, #0080ff));
+    box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4), 0 0 0 3px rgba(0, 255, 255, 0.1);
+    animation: pw-float 3.4s ease-in-out infinite;
+}
+.pw-restore.pw-show { display: grid; }
+.pw-restore:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 28px rgba(0, 255, 255, 0.55), 0 0 0 5px rgba(0, 255, 255, 0.15);
+}
+
+@media (max-width: 768px) {
+    .pw-widget { right: 12px; bottom: 12px; width: 240px; }
+    .pw-restore { right: 12px; bottom: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pw-widget, .pw-restore { animation: none; }
+}

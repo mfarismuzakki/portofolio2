@@ -1,0 +1,359 @@
+/* =====================================================================
+   WORLD3D — opt-in 3D explorable mode overlay
+   Sits above the normal scrollable site; only shown when activated.
+   ===================================================================== */
+
+/* entry button (lives in the hero CTA next to the primary button) */
+.btn-3d {
+    display: inline-block;
+    margin-left: 14px;
+    padding: 15px 34px;
+    border-radius: 50px;
+    font-family: var(--font-primary, 'Orbitron', monospace);
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #8b00ff, #00ffff);
+    box-shadow: 0 0 22px rgba(139, 0, 255, 0.45);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-3d:hover {
+    color: #fff;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 0 34px rgba(0, 255, 255, 0.6);
+}
+
+.btn-3d::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    left: -100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s;
+}
+
+.btn-3d:hover::before { left: 100%; }
+
+@media (max-width: 768px) {
+    .btn-3d { margin-left: 0; margin-top: 16px; }
+}
+
+/* ---------------------------------------------------------------------
+   overlay
+   --------------------------------------------------------------------- */
+.world3d-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 12000;
+    background: radial-gradient(circle at 50% 40%, #0a1020, #04060c 70%);
+    display: none;
+    overflow: hidden;
+    cursor: grab;
+    font-family: var(--font-secondary, 'Rajdhani', sans-serif);
+}
+
+.world3d-overlay.w3d-active { display: block; }
+.world3d-overlay.w3d-dragging { cursor: grabbing; }
+
+.world3d-overlay canvas { display: block; }
+
+/* cinematic vignette (above canvas, below UI) */
+.w3d-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background:
+        radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(2, 4, 10, 0.55) 100%),
+        linear-gradient(180deg, rgba(2,4,10,0.35) 0%, transparent 18%, transparent 80%, rgba(2,4,10,0.45) 100%);
+}
+
+/* loader */
+.w3d-loader {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    z-index: 5;
+    color: #fff;
+}
+
+.w3d-loader .w3d-spin {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 18px;
+    border: 3px solid rgba(0, 255, 255, 0.15);
+    border-top-color: #00ffff;
+    border-radius: 50%;
+    animation: w3d-spin 1s linear infinite;
+}
+
+.w3d-loader .w3d-load-text {
+    font-family: var(--font-primary, 'Orbitron', monospace);
+    letter-spacing: 3px;
+    color: #00ffff;
+}
+
+.w3d-loader .w3d-load-sub {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #8aa;
+}
+
+@keyframes w3d-spin { to { transform: rotate(360deg); } }
+
+/* top bar (slim, left-aligned so it never covers 3D labels) */
+.w3d-topbar {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 14px;
+    background: rgba(8, 12, 22, 0.62);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(120, 230, 255, 0.22);
+    border-radius: 40px;
+    color: #cfe;
+    font-size: 0.72rem;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+    max-width: min(60vw, 520px);
+}
+
+.w3d-topbar b { color: #ffd34d; }
+
+.w3d-exit {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 12;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 30px;
+    cursor: pointer;
+    color: #fff;
+    background: rgba(8, 12, 22, 0.75);
+    border: 1px solid rgba(255, 90, 120, 0.5);
+    font-family: var(--font-primary, 'Orbitron', monospace);
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    transition: all 0.25s ease;
+}
+
+.w3d-exit:hover {
+    background: rgba(255, 80, 110, 0.2);
+    box-shadow: 0 0 18px rgba(255, 80, 110, 0.4);
+    transform: translateY(-2px);
+}
+
+/* interaction prompt */
+.w3d-prompt {
+    position: absolute;
+    bottom: 16%;
+    left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    z-index: 10;
+    padding: 12px 22px;
+    border-radius: 14px;
+    background: rgba(8, 12, 22, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 211, 77, 0.5);
+    box-shadow: 0 0 26px rgba(255, 211, 77, 0.25);
+    color: #fff;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.w3d-prompt.w3d-show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.w3d-prompt .w3d-prompt-name {
+    font-family: var(--font-primary, 'Orbitron', monospace);
+    font-size: 1.1rem;
+    color: #ffd34d;
+    margin-bottom: 4px;
+}
+
+.w3d-prompt .w3d-key {
+    display: inline-grid;
+    place-items: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 8px;
+    margin: 0 4px;
+    border-radius: 6px;
+    background: #00ffff;
+    color: #04060c;
+    font-weight: 700;
+    font-family: var(--font-primary, 'Orbitron', monospace);
+}
+
+/* content panel */
+.w3d-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(560px, 94vw);
+    height: 100%;
+    z-index: 20;
+    background: rgba(8, 12, 22, 0.92);
+    backdrop-filter: blur(18px);
+    border-left: 1px solid rgba(120, 230, 255, 0.3);
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.6);
+    transform: translateX(105%);
+    transition: transform 0.5s cubic-bezier(.16,.84,.44,1);
+    display: flex;
+    flex-direction: column;
+}
+
+.w3d-panel.w3d-open { transform: translateX(0); }
+
+.w3d-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 24px 16px;
+    border-bottom: 1px solid rgba(120, 230, 255, 0.18);
+}
+
+.w3d-panel-head h2 {
+    font-family: var(--font-primary, 'Orbitron', monospace);
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #00ffff, #8b00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.w3d-panel-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: #cfe;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+}
+
+.w3d-panel-close:hover {
+    color: #fff;
+    border-color: #00ffff;
+    box-shadow: 0 0 14px rgba(0,255,255,0.4);
+    transform: rotate(90deg);
+}
+
+.w3d-panel-body {
+    padding: 22px 24px 40px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* reset cloned content margins/positioning so it reads as a flat panel */
+.w3d-panel-body .timeline::before { display: none; }
+.w3d-panel-body .timeline-item,
+.w3d-panel-body .timeline-item:nth-child(odd),
+.w3d-panel-body .timeline-item:nth-child(even) {
+    width: 100%;
+    left: 0 !important;
+    padding: 0 0 18px 0 !important;
+}
+.w3d-panel-body .timeline-card::before { display: none; }
+.w3d-panel-body .about-content,
+.w3d-panel-body .about-info { grid-template-columns: 1fr; gap: 18px; }
+.w3d-panel-body .skills-grid,
+.w3d-panel-body .services-grid,
+.w3d-panel-body .tools-grid { grid-template-columns: 1fr; }
+
+/* mobile controls */
+.w3d-joystick {
+    position: absolute;
+    left: 26px;
+    bottom: 30px;
+    width: 120px;
+    height: 120px;
+    z-index: 11;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(120, 230, 255, 0.3);
+    touch-action: none;
+    display: none;
+}
+
+.w3d-joystick .w3d-stick {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 52px;
+    height: 52px;
+    margin: -26px 0 0 -26px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #7cf7ff, #0080ff);
+    box-shadow: 0 0 16px rgba(0,255,255,0.5);
+}
+
+.w3d-action {
+    position: absolute;
+    right: 30px;
+    bottom: 46px;
+    width: 78px;
+    height: 78px;
+    z-index: 11;
+    border-radius: 50%;
+    display: none;
+    place-items: center;
+    cursor: pointer;
+    color: #04060c;
+    font-family: var(--font-primary, 'Orbitron', monospace);
+    font-weight: 900;
+    font-size: 1.4rem;
+    background: radial-gradient(circle at 35% 30%, #fff3b0, #ffd34d 60%, #f5a623);
+    border: 2px solid #fff;
+    box-shadow: 0 0 22px rgba(255,211,77,0.6);
+    opacity: 0.4;
+    transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.w3d-action.w3d-ready { opacity: 1; }
+.w3d-action:active { transform: scale(0.92); }
+
+body.w3d-touch .w3d-joystick,
+body.w3d-touch .w3d-action { display: grid; }
+body.w3d-touch .w3d-joystick { display: block; }
+
+/* minimap-ish compass */
+.w3d-hint {
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9;
+    font-size: 0.74rem;
+    letter-spacing: 1px;
+    color: #6a8;
+    pointer-events: none;
+}
+
+body.w3d-touch .w3d-hint { display: none; }
+
+@media (max-width: 768px) {
+    .w3d-topbar { font-size: 0.72rem; gap: 8px; padding: 6px 12px; }
+    .w3d-panel-head h2 { font-size: 1.2rem; }
+}
