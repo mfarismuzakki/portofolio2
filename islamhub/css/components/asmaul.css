@@ -1,0 +1,404 @@
+/* ===== Asmaul Husna ===== */
+
+.asmaul-container {
+    padding: 0 16px 120px;
+    max-width: 800px; margin: 0 auto;
+}
+
+.asmaul-header {
+    text-align: center; padding: 32px 20px 20px;
+    margin-bottom: 0.5rem;
+}
+.asmaul-header h2 {
+    font-family: var(--font-orbitron, 'Orbitron', sans-serif);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 600;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255,215,0,0.4);
+    display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+    margin: 0 0 8px;
+}
+.asmaul-header h2 i { font-size: 1.5rem; }
+.asmaul-subtitle { color: var(--text-secondary); font-size: 0.95rem; margin: 0; }
+
+/* Hadits Box */
+.asmaul-hadits-box {
+    background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,165,0,0.04));
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 16px; padding: 20px; margin-bottom: 24px;
+}
+.asmaul-hadits-arabic {
+    font-family: var(--font-amiri, 'Amiri', serif);
+    font-size: 1.3rem; direction: rtl; text-align: center;
+    color: #ffd700; line-height: 2; margin-bottom: 12px;
+}
+.asmaul-hadits-latin {
+    font-size: 0.85rem; font-style: italic;
+    color: var(--text-secondary); text-align: center;
+    margin-bottom: 12px; line-height: 1.7;
+}
+.asmaul-hadits-terjemah {
+    font-size: 0.9rem; color: var(--text-primary);
+    text-align: center; margin-bottom: 12px;
+    line-height: 1.7; font-style: italic;
+}
+.asmaul-hadits-source {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 0.78rem; color: #ffd700; font-weight: 600;
+    margin-bottom: 10px;
+}
+.asmaul-hadits-note {
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px; padding: 10px 12px;
+    font-size: 0.8rem; color: var(--text-secondary);
+    line-height: 1.6; display: flex; gap: 8px; align-items: flex-start;
+}
+.asmaul-hadits-note i { color: #ffd700; flex-shrink: 0; margin-top: 2px; }
+
+/* Controls */
+.asmaul-controls { margin-bottom: 20px; }
+.asmaul-search-wrap {
+    position: relative; display: flex; align-items: center;
+}
+.asmaul-search-wrap i {
+    position: absolute; left: 14px; color: var(--text-secondary); font-size: 0.9rem;
+}
+.asmaul-search {
+    width: 100%; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px; padding: 12px 14px 12px 40px;
+    color: var(--text-primary); font-size: 0.9rem; outline: none;
+    box-sizing: border-box;
+}
+.asmaul-search:focus { border-color: rgba(255,215,0,0.5); background: rgba(255,215,0,0.05); }
+
+/* Grid */
+.asmaul-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+}
+.asmaul-card {
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px; padding: 14px 12px;
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    gap: 6px; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative; transition: all 0.2s;
+}
+.asmaul-card:hover {
+    background: rgba(255,215,0,0.08);
+    border-color: rgba(255,215,0,0.3);
+    transform: translateY(-2px);
+}
+.asmaul-card.memorized {
+    background: rgba(0,255,136,0.06);
+    border-color: rgba(0,255,136,0.3);
+}
+.asmaul-card-no {
+    position: absolute; top: 8px; left: 10px;
+    font-size: 0.7rem; color: var(--text-secondary);
+    font-weight: 600;
+}
+.asmaul-card-arabic {
+    font-family: var(--font-amiri, 'Amiri', serif);
+    font-size: 1.2rem; color: #ffd700;
+    line-height: 1.4; margin-top: 4px;
+}
+.asmaul-card-latin { font-size: 0.72rem; color: #00bfff; font-weight: 600; }
+.asmaul-card-meaning { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.4; }
+.asmaul-empty {
+    grid-column: 1 / -1; text-align: center;
+    padding: 40px 20px; color: var(--text-secondary);
+}
+.asmaul-empty i { font-size: 2rem; margin-bottom: 10px; display: block; }
+
+/* Modal */
+.asmaul-modal {
+    position: fixed; inset: 0; z-index: 2000;
+    display: none; align-items: flex-end;
+}
+.asmaul-modal.active { display: flex; }
+.asmaul-modal-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+}
+.asmaul-modal-content {
+    position: relative; z-index: 1;
+    width: 100%; max-height: 90vh; overflow-y: auto;
+    background: #0f1428;
+    border-radius: 24px 24px 0 0;
+    border: 1px solid rgba(255,215,0,0.3);
+    border-bottom: none;
+}
+.asmaul-modal-inner { padding: 24px 24px 40px; text-align: center; position: relative; }
+.asmaul-modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(255,255,255,0.1); border: none;
+    border-radius: 50%; width: 36px; height: 36px;
+    color: var(--text-secondary); cursor: pointer; font-size: 0.9rem;
+}
+.asmaul-modal-no {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255,215,0,0.15); border: 1px solid rgba(255,215,0,0.4);
+    color: #ffd700; font-weight: 700; font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+}
+.asmaul-modal-arabic {
+    font-family: var(--font-amiri, 'Amiri', serif);
+    font-size: 2rem; color: #ffd700; margin-bottom: 8px;
+}
+.asmaul-modal-latin { font-size: 1rem; color: #00bfff; font-weight: 600; margin-bottom: 6px; }
+.asmaul-modal-meaning { font-size: 1.1rem; color: var(--text-primary); margin-bottom: 16px; font-weight: 600; }
+.asmaul-modal-dalil {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(0,191,255,0.1); border-radius: 8px;
+    padding: 6px 12px; font-size: 0.8rem; color: #00bfff;
+    margin-bottom: 14px;
+}
+.asmaul-modal-desc {
+    color: var(--text-secondary); font-size: 0.88rem;
+    line-height: 1.7; text-align: left; margin-bottom: 16px;
+    background: rgba(255,255,255,0.04); border-radius: 10px; padding: 14px;
+}
+
+@media (max-width: 480px) {
+    .asmaul-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+}
+
+/* ===== ASMA HARI INI (Daily Hero) ===== */
+.asmaul-daily {
+    position: relative;
+    padding: 2rem 1.75rem;
+    margin-bottom: 1.5rem;
+    border-radius: 20px;
+    background:
+        radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--theme-color) 22%, transparent), transparent 60%),
+        linear-gradient(135deg, rgba(10, 14, 39, 0.7) 0%, rgba(40, 0, 80, 0.5) 100%);
+    border: 1px solid color-mix(in srgb, var(--theme-color) 50%, transparent);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 30px color-mix(in srgb, var(--theme-color) 20%, transparent);
+}
+
+@supports not (background: color-mix(in srgb, red, blue)) {
+    .asmaul-daily {
+        background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.08));
+        border: 1px solid rgba(255, 215, 0, 0.5);
+    }
+}
+
+.asmaul-daily:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 45px color-mix(in srgb, var(--theme-color) 35%, transparent);
+}
+
+.asmaul-daily-deco {
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 240px;
+    height: 240px;
+    color: var(--theme-color);
+    pointer-events: none;
+    animation: asmaDailySpin 40s linear infinite;
+}
+
+.asmaul-daily-deco svg {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes asmaDailySpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+.asmaul-daily-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: color-mix(in srgb, var(--theme-color) 22%, transparent);
+    color: var(--theme-color);
+    padding: 0.3rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+}
+
+.asmaul-daily-arabic {
+    font-family: 'Amiri Quran', 'Scheherazade New', serif;
+    font-size: clamp(2.6rem, 7vw, 4.2rem);
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 30px color-mix(in srgb, var(--theme-color) 60%, transparent);
+    direction: rtl;
+    position: relative;
+    z-index: 2;
+}
+
+.asmaul-daily-latin {
+    font-size: 1.3rem;
+    color: var(--theme-color);
+    font-style: italic;
+    margin-bottom: 0.4rem;
+    position: relative;
+    z-index: 2;
+}
+
+.asmaul-daily-meaning {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+    z-index: 2;
+}
+
+.asmaul-daily-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--theme-color);
+    color: var(--theme-color);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    z-index: 2;
+    font-family: inherit;
+}
+
+.asmaul-daily-cta:hover {
+    background: var(--theme-color);
+    color: #0a0e27;
+}
+
+.asmaul-daily-cta i {
+    transition: transform 0.2s ease;
+}
+
+.asmaul-daily:hover .asmaul-daily-cta i {
+    transform: translateX(4px);
+}
+
+/* ===== Theme Filter Chips ===== */
+.asmaul-themes {
+    display: flex;
+    gap: 0.4rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    margin-top: 1rem;
+    scrollbar-width: thin;
+}
+
+.asmaul-themes::-webkit-scrollbar {
+    height: 4px;
+}
+
+.asmaul-themes::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+.asmaul-theme-chip {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--theme-color, rgba(0, 255, 255, 0.3));
+    border-radius: 50px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: inherit;
+}
+
+.asmaul-theme-chip:hover {
+    background: color-mix(in srgb, var(--theme-color, #00ffff) 18%, transparent);
+}
+
+.asmaul-theme-chip.active {
+    background: var(--theme-color, linear-gradient(135deg, #00ffff, #ff00ff));
+    color: #0a0e27;
+    font-weight: 700;
+    border-color: transparent;
+}
+
+.asmaul-theme-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px currentColor;
+}
+
+.asmaul-theme-count {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 1px 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.asmaul-theme-chip.active .asmaul-theme-count {
+    background: rgba(10, 14, 39, 0.3);
+    color: #fff;
+}
+
+/* ===== Theme-colored card stripe ===== */
+.asmaul-card {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.asmaul-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--theme-color, #00ffff);
+    opacity: 0.7;
+    transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+.asmaul-card:hover::before {
+    width: 6px;
+    opacity: 1;
+    box-shadow: 0 0 12px var(--theme-color);
+}
+
+.asmaul-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--theme-color, var(--cyan));
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--theme-color, #00ffff) 25%, transparent);
+}
+
+@media (max-width: 600px) {
+    .asmaul-daily {
+        padding: 1.5rem 1.25rem;
+    }
+    .asmaul-daily-deco {
+        width: 180px;
+        height: 180px;
+        opacity: 0.4;
+    }
+}

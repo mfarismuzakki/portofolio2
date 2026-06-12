@@ -22,6 +22,8 @@
     
     <!-- External CSS -->
     <link rel="stylesheet" href="css/main-2.css">
+    <link rel="stylesheet" href="css/world3d.css">
+    <link rel="stylesheet" href="css/prayer-widget.css">
 </head>
 
 <body>
@@ -96,6 +98,9 @@
             </div>
             <div class="hero-cta">
                 <a href="#about" class="btn-primary">EXPLORE MY WORK</a>
+                <!-- 3D world temporarily hidden (files kept in js/world3d.js + css/world3d.css)
+                <a href="#" class="btn-3d" id="enter3d">⚔ JELAJAHI DUNIA 3D</a>
+                -->
             </div>
         </div>
     </section>
@@ -157,6 +162,26 @@
                 <p>My journey through the tech industry, building innovative solutions</p>
             </div>
             <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-card">
+                        <div class="timeline-date">Feb 2026 - Present</div>
+                        <h3 class="timeline-title">Data Scientist (Professional Service)</h3>
+                        <div class="timeline-company">
+                            <a href="https://www.greatgiantfoods.com/" target="_blank">
+                                <img src="images/companies/ggf.png" alt="Great Giant Foods" class="timeline-company-image">
+                                Great Giant Foods
+                            </a>
+                        </div>
+                        <p class="timeline-description">
+                            Jakarta, Indonesia · On-site<br>
+                            The parent company of Rejuve, Sunpride, Belfoods, and more — currently the world's largest producer of canned pineapple. In this role, I am responsible for:<br>
+                            • Building machine learning models for company operations<br>
+                            • Implementing MLOps practices<br>
+                            • Building gold-layer data sources<br>
+                            • Designing AI solutions for company operations
+                        </p>
+                    </div>
+                </div>
                 <div class="timeline-item">
                     <div class="timeline-card">
                         <div class="timeline-date">Jan 2026 - Present</div>
@@ -235,6 +260,10 @@
                             • R&D related to the technology to be used<br>
                             • Designing & create dashboard application to monitor all data services
                         </p>
+                        <div class="timeline-achievement">
+                            <!-- <i class="fas fa-trophy"></i> -->
+                            <span><strong>Achievement:</strong> Awarded the highest KPI score in the Data department for 2 consecutive semesters.</span>
+                        </div>
                     </div>
                 </div>
                 <div class="timeline-item">
@@ -798,9 +827,11 @@
                     <ul class="tool-features">
                         <li>Adzan Realtime - Prayer times application</li>
                         <li>Dzikir & Doa Harian - Daily supplications</li>
-                        <li>Qibla Finder - Direction to Mecca (Coming Soon)</li>
-                        <li>Digital Quran - Interactive reader (Coming Soon)</li>
-                        <li>Kalkulator Waris - Inheritance calculator (Coming Soon)</li>
+                        <li>Digital Quran - Interactive reader with memorization tracking</li>
+                        <li>Kalkulator Waris - Islamic inheritance calculator</li>
+                        <li>Qibla Finder - Direction to Mecca</li>
+                        <li>Sirah Nabi - Prophet's biography & companions</li>
+                        <li>Streaming Kajian - Islamic radio & video streaming</li>
                         <li>Islamic Q&A with AI - Smart assistant (Coming Soon)</li>
                     </ul>
                     <div class="tool-actions">
@@ -905,5 +936,7 @@
 
     <!-- External JavaScript -->
     <script src="js/main-2.js"></script>
+    <script src="js/world3d.js"></script>
+    <script src="js/prayer-widget.js"></script>
 </body>
 </html>

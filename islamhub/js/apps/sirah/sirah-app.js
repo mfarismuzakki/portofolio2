@@ -39,7 +39,10 @@ export default class SirahApp {
                 </div>                <!-- Filter Tabs -->
                 <div class="filter-tabs" id="sirahFilterTabs">
                     <button class="filter-tab active" data-filter="timeline">
-                        <i class="fas fa-stream"></i> Timeline
+                        <i class="fas fa-stream"></i> Timeline Nabi
+                    </button>
+                    <button class="filter-tab" data-filter="konstelasi">
+                        <i class="fas fa-star-of-life"></i> Konstelasi Sahabat
                     </button>
                     <button class="filter-tab" data-filter="all">
                         <i class="fas fa-list"></i> Semua
@@ -213,13 +216,21 @@ export default class SirahApp {
         const grid = document.getElementById('prophetsGrid');
         if (!grid) return;
 
-        // Timeline mode = chronological prophets/rasul rendering
+        // Reset mode-specific classes
+        grid.classList.remove('sirah-timeline-mode', 'sirah-constellation-mode');
+
+        // Special chronological view for 25 Nabi & Rasul
         if (this.currentFilter === 'timeline') {
             grid.classList.add('sirah-timeline-mode');
             this.renderTimeline(grid);
             return;
-        } else {
-            grid.classList.remove('sirah-timeline-mode');
+        }
+
+        // Innovative constellation view for Sahabat
+        if (this.currentFilter === 'konstelasi') {
+            grid.classList.add('sirah-constellation-mode');
+            this.renderSahabatConstellation(grid);
+            return;
         }
 
         let filtered = this.prophets;
@@ -236,7 +247,7 @@ export default class SirahApp {
         // Filter by search query
         if (this.searchQuery.trim()) {
             const query = this.searchQuery.toLowerCase();
-            filtered = filtered.filter(p =>
+            filtered = filtered.filter(p => 
                 p.name.toLowerCase().includes(query) ||
                 (p.arabicName && p.arabicName.includes(query)) ||
                 (p.title && p.title.toLowerCase().includes(query)) ||
@@ -323,23 +334,24 @@ export default class SirahApp {
         });
     }
 
+    // =====================================================================
+    // TIMELINE 25 NABI & RASUL — vertical chronological journey grouped by era
+    // =====================================================================
     renderTimeline(grid) {
-        // Chronological eras for grouping the 25 nabi/rasul. Each era has its
-        // own color theme that the cards in that era inherit.
         const eras = [
             { id: 'pra-banjir', title: 'Era Pra-Banjir Besar',
               icon: 'fas fa-mountain',
               note: 'Sejak penciptaan manusia hingga sebelum banjir besar Nabi Nuh',
               color: '#4dd0e1', accent: '#0288d1',
               ids: ['adam', 'idris'] },
-            { id: 'banjir-arab',  title: 'Era Pasca-Banjir & Arab Kuno',
+            { id: 'banjir-arab', title: 'Era Pasca-Banjir & Arab Kuno',
               icon: 'fas fa-water',
               note: "Bangkitnya kaum 'Aad, Tsamud, dan keluarga Ibrahim",
               color: '#26a69a', accent: '#00838f',
               ids: ['nuh', 'hud', 'shalih'] },
             { id: 'ibrahim', title: 'Era Keluarga Ibrahim',
               icon: 'fas fa-kaaba',
-              note: "Bapak para Nabi (Khalilullah) dan keturunannya",
+              note: 'Bapak para Nabi (Khalilullah) dan keturunannya',
               color: '#ffd700', accent: '#ff6f61',
               ids: ['ibrahim', 'lut', 'ismail', 'ishaq', 'yaqub', 'yusuf', 'ayyub', 'syuaib'] },
             { id: 'bani-israel', title: 'Era Bani Israel',
@@ -354,7 +366,6 @@ export default class SirahApp {
               ids: ['muhammad'] }
         ];
 
-        // Filter timeline by search if query exists
         const matchesQuery = (p) => {
             if (!this.searchQuery.trim()) return true;
             const q = this.searchQuery.toLowerCase();
@@ -364,7 +375,6 @@ export default class SirahApp {
                    (p.biography && p.biography.toLowerCase().includes(q));
         };
 
-        // Compute total event/lesson counts for hero stats
         let totalEvents = 0, totalLessons = 0;
         this.prophets.forEach(p => {
             if (p.category === 'nabi' || p.category === 'rasul') {
@@ -389,7 +399,6 @@ export default class SirahApp {
                 </div>
             </div>
 
-            <!-- Era nav pills (clickable to scroll) -->
             <div class="timeline-era-nav">
                 ${eras.map((e, i) => `
                     <button class="era-nav-pill" data-era-target="${e.id}" style="--era-color:${e.color}">
@@ -416,9 +425,7 @@ export default class SirahApp {
                 <div class="timeline-era" data-era="${era.id}" id="era-${era.id}"
                      style="--era-color:${era.color}; --era-accent:${era.accent}">
                     <div class="timeline-era-marker">
-                        <div class="era-marker-dot">
-                            <i class="${era.icon}"></i>
-                        </div>
+                        <div class="era-marker-dot"><i class="${era.icon}"></i></div>
                         <div class="era-marker-label">
                             <span class="era-num">Era ${eraIdx + 1} · ${eraProphets.length} Nabi</span>
                             <h4>${era.title}</h4>
@@ -462,45 +469,27 @@ export default class SirahApp {
                                     ${eventCount ? `<span class="timeline-stat-chip"><i class="fas fa-bookmark"></i> ${eventCount} peristiwa</span>` : ''}
                                     ${lessonCount ? `<span class="timeline-stat-chip"><i class="fas fa-lightbulb"></i> ${lessonCount} hikmah</span>` : ''}
                                 </div>
-                                <button class="timeline-card-cta">
-                                    Baca kisah lengkap <i class="fas fa-arrow-right"></i>
-                                </button>
+                                <button class="timeline-card-cta">Baca kisah lengkap <i class="fas fa-arrow-right"></i></button>
                             </div>
                         </div>
                     </div>
                 `;
-
                 globalIndex++;
                 totalRendered++;
             });
 
-            html += `
-                    </div>
-                </div>
-            `;
+            html += `</div></div>`;
         });
 
         if (totalRendered === 0) {
-            html += `
-                <div class="empty-state">
-                    <i class="fas fa-search"></i>
-                    <p>Tidak ada hasil ditemukan untuk "${this.searchQuery}"</p>
-                </div>
-            `;
+            html += `<div class="empty-state"><i class="fas fa-search"></i><p>Tidak ada hasil untuk "${this.searchQuery}"</p></div>`;
         }
-
         html += '</div>';
         grid.innerHTML = html;
 
-        // Card click → open detail modal
         grid.querySelectorAll('.timeline-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const id = item.dataset.personId;
-                this.showProphetDetail(id);
-            });
+            item.addEventListener('click', () => this.showProphetDetail(item.dataset.personId));
         });
-
-        // Era nav pill click → scroll to era
         grid.querySelectorAll('.era-nav-pill').forEach(pill => {
             pill.addEventListener('click', () => {
                 const target = document.getElementById('era-' + pill.dataset.eraTarget);
@@ -512,13 +501,11 @@ export default class SirahApp {
             });
         });
 
-        // IntersectionObserver: items fade & rise into view as user scrolls
         if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('in-view');
-                        // Stop observing once revealed
                         observer.unobserve(entry.target);
                     }
                 });
@@ -529,8 +516,6 @@ export default class SirahApp {
                 observer.observe(el);
             });
 
-            // Era nav: highlight current era based on scroll position
-            const eraSections = grid.querySelectorAll('.timeline-era');
             const eraNavObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -541,8 +526,199 @@ export default class SirahApp {
                     }
                 });
             }, { rootMargin: '-30% 0px -50% 0px', threshold: 0 });
+            grid.querySelectorAll('.timeline-era').forEach(s => eraNavObserver.observe(s));
+        }
+    }
 
-            eraSections.forEach(s => eraNavObserver.observe(s));
+    // =====================================================================
+    // KONSTELASI SAHABAT — innovative orbital "constellation" of companions
+    // grouped by rank-of-closeness to Rasulullah ﷺ. Each orbit has its own
+    // color theme and arabic ornament. Click sahabat to open detail.
+    // =====================================================================
+    renderSahabatConstellation(grid) {
+        // Orbits = layers of closeness. Mirrors the way salafy ulama
+        // describe the levels: Khulafa → Asyarah → Muhajirin/Anshar → Sahabiyat.
+        const orbits = [
+            {
+                id: 'khulafa',
+                title: 'Khulafāur Rāsyidīn',
+                subtitle: 'Empat khalifah yang lurus — pengganti langsung Rasulullah ﷺ',
+                subcats: ['khulafa_rasyidin'],
+                icon: 'fas fa-crown',
+                color: '#ffd54f', accent: '#f57f17',
+                rank: 'Orbit Terdalam'
+            },
+            {
+                id: 'asharah',
+                title: '‘Asyarah Mubasysyarah',
+                subtitle: 'Sepuluh sahabat yang dijamin masuk surga semasa hidup',
+                subcats: ['asharah_mubasysyarah'],
+                icon: 'fas fa-star',
+                color: '#80cbc4', accent: '#00695c',
+                rank: 'Orbit ke-2'
+            },
+            {
+                id: 'muhajirin',
+                title: 'Muhājirīn, Anshār & Pejuang',
+                subtitle: 'Para perintis hijrah, penolong di Madinah, dan panglima perang',
+                subcats: ['muhajirin', 'anshar_aus', 'anshar_khazraj', 'sahabat_awal', 'panglima', 'ahlu_bait'],
+                icon: 'fas fa-route',
+                color: '#90caf9', accent: '#1565c0',
+                rank: 'Orbit ke-3'
+            },
+            {
+                id: 'sahabiyat',
+                title: 'Sahabiyāt — Wanita Pilihan',
+                subtitle: 'Ibu kaum mukminin dan wanita-wanita mulia di sekitar Nabi ﷺ',
+                subcats: ['ummahatul_mukminin', 'ummul_mukminin', 'sahabiyat_muhajirat'],
+                icon: 'fas fa-dove',
+                color: '#f48fb1', accent: '#ad1457',
+                rank: 'Orbit ke-4'
+            }
+        ];
+
+        const matchesQuery = (p) => {
+            if (!this.searchQuery.trim()) return true;
+            const q = this.searchQuery.toLowerCase();
+            return p.name.toLowerCase().includes(q) ||
+                   (p.arabicName && p.arabicName.includes(q)) ||
+                   (p.title && p.title.toLowerCase().includes(q)) ||
+                   (p.biography && p.biography.toLowerCase().includes(q));
+        };
+
+        // Find sahabat by subcategory list
+        const findInOrbit = (subcatList) => {
+            return this.prophets
+                .filter(p => p.subcategory && subcatList.includes(p.subcategory))
+                .filter(matchesQuery);
+        };
+
+        // Total sahabat count
+        const totalSahabat = this.prophets.filter(p =>
+            p.category && p.category.toLowerCase() === 'sahabat'
+        ).length;
+
+        let html = `
+            <div class="konstelasi-hero">
+                <div class="konstelasi-stars" aria-hidden="true">
+                    ${Array.from({ length: 40 }, (_, i) => {
+                        const x = (i * 53) % 100;
+                        const y = (i * 31) % 100;
+                        const d = 2 + (i % 4);
+                        const dly = (i * 0.13) % 4;
+                        return `<span class="kons-star" style="left:${x}%;top:${y}%;--sz:${d}px;--dly:${dly}s"></span>`;
+                    }).join('')}
+                </div>
+                <div class="konstelasi-hero-body">
+                    <span class="konstelasi-tag">⌖ MAP OF COMPANIONS ⌖</span>
+                    <h3>Konstelasi Para Sahabat ﷺ</h3>
+                    <p class="konstelasi-arabic">رَضِيَ اللَّهُ عَنْهُمْ أَجْمَعِينَ</p>
+                    <p class="konstelasi-sub">Sahabat — bintang-bintang yang mengelilingi matahari risalah. Setiap orbit menggambarkan tingkat kedekatan mereka dengan Rasulullah ﷺ.</p>
+                </div>
+                <div class="konstelasi-hero-stats">
+                    <div class="kons-stat"><span class="kons-stat-num">${totalSahabat}</span><span class="kons-stat-lbl">Total Sahabat</span></div>
+                    <div class="kons-stat"><span class="kons-stat-num">${orbits.length}</span><span class="kons-stat-lbl">Orbit</span></div>
+                </div>
+            </div>
+        `;
+
+        // Central "core" — Rasulullah ﷺ
+        html += `
+            <div class="konstelasi-core">
+                <div class="kons-core-ring"></div>
+                <div class="kons-core-ring kons-core-ring-2"></div>
+                <div class="kons-core-ring kons-core-ring-3"></div>
+                <div class="kons-core-center">
+                    <div class="kons-core-arabic">ﷺ</div>
+                    <div class="kons-core-label">Rasulullah Muhammad</div>
+                    <div class="kons-core-sub">Pusat Konstelasi Sahabat</div>
+                </div>
+            </div>
+        `;
+
+        let totalRendered = 0;
+
+        orbits.forEach((orbit, oIdx) => {
+            const members = findInOrbit(orbit.subcats);
+            if (members.length === 0) return;
+
+            html += `
+                <section class="konstelasi-orbit" id="orbit-${orbit.id}"
+                         style="--orbit-color:${orbit.color}; --orbit-accent:${orbit.accent}; --orbit-delay:${oIdx * 60}ms">
+                    <header class="orbit-header">
+                        <div class="orbit-header-icon"><i class="${orbit.icon}"></i></div>
+                        <div class="orbit-header-text">
+                            <span class="orbit-rank">${orbit.rank}</span>
+                            <h4>${orbit.title}</h4>
+                            <p>${orbit.subtitle}</p>
+                        </div>
+                        <div class="orbit-header-count">${members.length} sahabat</div>
+                    </header>
+
+                    <div class="orbit-trail" aria-hidden="true">
+                        <svg viewBox="0 0 800 60" preserveAspectRatio="none">
+                            <path d="M0,30 Q200,5 400,30 T800,30"
+                                  fill="none" stroke="currentColor" stroke-width="1.2"
+                                  stroke-dasharray="2 6" opacity="0.55"/>
+                        </svg>
+                    </div>
+
+                    <div class="orbit-members">
+                        ${members.map((s, i) => {
+                            const isFav = this.favorites.some(f => f.id === s.id);
+                            const arabicGlyph = s.arabicName ? s.arabicName.split(' ')[0] : '';
+                            const role = s.title || s.kunya || '';
+                            const period = s.period || '';
+                            const preview = (s.biography || '').substring(0, 100) +
+                                            ((s.biography || '').length > 100 ? '…' : '');
+                            return `
+                                <article class="orbit-card" data-person-id="${s.id}" style="--card-delay:${i * 60}ms">
+                                    <div class="orbit-card-glow"></div>
+                                    <div class="orbit-card-glyph">${arabicGlyph}</div>
+                                    <div class="orbit-card-rank">${i + 1}</div>
+                                    ${isFav ? '<i class="fas fa-heart orbit-card-fav"></i>' : ''}
+                                    <div class="orbit-card-body">
+                                        <h5>${s.name}</h5>
+                                        ${role ? `<p class="orbit-card-role">${role}</p>` : ''}
+                                        ${preview ? `<p class="orbit-card-preview">${preview}</p>` : ''}
+                                        ${period ? `<div class="orbit-card-period"><i class="fas fa-history"></i> ${period}</div>` : ''}
+                                    </div>
+                                    <div class="orbit-card-cta">
+                                        <span>Selami kisahnya</span> <i class="fas fa-arrow-right"></i>
+                                    </div>
+                                </article>
+                            `;
+                        }).join('')}
+                    </div>
+                </section>
+            `;
+            totalRendered += members.length;
+        });
+
+        if (totalRendered === 0) {
+            html += `<div class="empty-state"><i class="fas fa-search"></i>
+                <p>${this.searchQuery ? `Tidak ada sahabat yang cocok dengan "${this.searchQuery}"` : 'Data sahabat belum tersedia'}</p></div>`;
+        }
+
+        grid.innerHTML = html;
+
+        grid.querySelectorAll('.orbit-card').forEach(card => {
+            card.addEventListener('click', () => this.showProphetDetail(card.dataset.personId));
+        });
+
+        if ('IntersectionObserver' in window) {
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('in-view');
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+            grid.querySelectorAll('.orbit-card, .konstelasi-orbit').forEach(el => {
+                el.classList.add('reveal');
+                io.observe(el);
+            });
         }
     }
 
@@ -613,20 +789,12 @@ export default class SirahApp {
     }
 
     renderBiodata(prophet) {
-        const categoryLabel = prophet.category === 'nabi' ? 'Nabi' :
-                              prophet.category === 'rasul' ? 'Rasul' :
-                              prophet.category === 'sahabat' ? 'Sahabat' :
-                              prophet.category;
         return `
             <div class="tab-content">
-                <div class="prophet-detail-hero">
-                    <div class="prophet-hero-arabic">${prophet.arabicName || ''}</div>
-                    <div class="prophet-hero-content">
-                        <span class="prophet-hero-badge">${categoryLabel}${prophet.subcategory ? ' · ' + prophet.subcategory.replace(/_/g, ' ') : ''}</span>
-                        <h2>${prophet.name}</h2>
-                        ${prophet.title ? `<p class="prophet-hero-title">${prophet.title}</p>` : ''}
-                        ${prophet.period ? `<div class="prophet-hero-period"><i class="fas fa-clock"></i> ${prophet.period}</div>` : ''}
-                    </div>
+                <div class="prophet-detail-header">
+                    <h2>${prophet.name}</h2>
+                    <p class="arabic-name">${prophet.arabicName || ''}</p>
+                    <p class="prophet-title-detail">${prophet.title || ''}</p>
                 </div>
 
                 <div class="info-section">

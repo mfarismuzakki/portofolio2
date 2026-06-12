@@ -1,0 +1,393 @@
+/* ===== Kalkulator Zakat ===== */
+
+.zakat-container {
+    padding: 0 16px 120px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.zakat-header {
+    text-align: center;
+    padding: 32px 20px 24px;
+    margin-bottom: 0.5rem;
+}
+.zakat-header h2 {
+    font-family: var(--font-orbitron, 'Orbitron', sans-serif);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 600;
+    color: #00ff88;
+    text-shadow: 0 0 20px rgba(0,255,136,0.5);
+    display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+    margin: 0 0 8px;
+}
+.zakat-header h2 i { font-size: 1.5rem; }
+.zakat-subtitle { color: var(--text-secondary); font-size: 0.95rem; margin: 0; }
+
+/* Tabs */
+.zakat-tabs {
+    display: flex; gap: 8px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px; padding: 6px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.zakat-tab {
+    flex: 1; padding: 10px 8px;
+    background: transparent; border: none;
+    color: var(--text-secondary); border-radius: 8px;
+    cursor: pointer; font-size: 0.82rem; font-weight: 500;
+    transition: all 0.2s; display: flex; align-items: center;
+    justify-content: center; gap: 6px;
+}
+.zakat-tab i { font-size: 0.85rem; }
+.zakat-tab.active {
+    background: rgba(0,255,136,0.15);
+    color: #00ff88;
+    border: 1px solid rgba(0,255,136,0.35);
+}
+
+/* Info Box */
+.zakat-info-box {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: rgba(0,191,255,0.07);
+    border: 1px solid rgba(0,191,255,0.25);
+    border-radius: 12px; padding: 16px; margin-bottom: 24px;
+}
+.zakat-info-box i { color: #00bfff; font-size: 1.1rem; margin-top: 2px; flex-shrink: 0; }
+.zakat-info-box strong { display: block; color: #00bfff; margin-bottom: 4px; font-size: 0.9rem; }
+.zakat-info-box p { color: var(--text-secondary); margin: 0; font-size: 0.85rem; line-height: 1.6; }
+
+/* Form */
+.zakat-form { display: flex; flex-direction: column; gap: 16px; }
+
+.zakat-input-group { display: flex; flex-direction: column; gap: 6px; }
+.zakat-input-group label {
+    color: var(--text-primary); font-size: 0.85rem; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+}
+.zakat-input-group label i { color: #00ff88; font-size: 0.85rem; }
+.zakat-input-group input, .zakat-select {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px; padding: 12px 14px;
+    color: var(--text-primary); font-size: 0.95rem;
+    outline: none; transition: border 0.2s;
+    width: 100%; box-sizing: border-box;
+    -webkit-appearance: none;
+}
+.zakat-input-group input:focus, .zakat-select:focus {
+    border-color: rgba(0,255,136,0.5);
+    background: rgba(0,255,136,0.05);
+}
+.zakat-hint { color: var(--text-secondary); font-size: 0.78rem; }
+.zakat-select { cursor: pointer; }
+
+.zakat-calc-btn {
+    background: linear-gradient(135deg, #00ff88, #00bfff);
+    color: #000; border: none; border-radius: 12px;
+    padding: 14px 24px; font-weight: 700; font-size: 0.95rem;
+    cursor: pointer; display: flex; align-items: center;
+    justify-content: center; gap: 8px; margin-top: 8px;
+    transition: opacity 0.2s, transform 0.1s;
+}
+.zakat-calc-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+/* Result */
+.zakat-result {
+    margin-top: 24px; border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,215,0,0.3);
+    overflow: hidden;
+}
+.zakat-result-header {
+    background: rgba(255,215,0,0.1);
+    padding: 14px 20px; display: flex;
+    align-items: center; gap: 10px;
+    border-bottom: 1px solid rgba(255,215,0,0.2);
+}
+.zakat-result-header i { color: #ffd700; font-size: 1.1rem; }
+.zakat-result-header h3 { margin: 0; color: #ffd700; font-size: 1rem; }
+.zakat-result-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+    background: rgba(255,255,255,0.06);
+}
+.zakat-result-item {
+    background: rgba(10,10,15,0.9);
+    padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;
+}
+.zakat-result-item .label { color: var(--text-secondary); font-size: 0.78rem; }
+.zakat-result-item .value { color: var(--text-primary); font-weight: 600; font-size: 0.95rem; }
+.zakat-result-item.highlight { background: rgba(0,255,136,0.08); }
+.zakat-result-item.highlight .value { color: #00ff88; }
+.zakat-result-item.highlight-gold { background: rgba(255,215,0,0.08); }
+.zakat-result-item.highlight-gold .value { color: #ffd700; font-size: 1.05rem; }
+.zakat-note {
+    padding: 12px 16px; margin: 0;
+    color: var(--text-secondary); font-size: 0.83rem; line-height: 1.6;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Dalil Box */
+.zakat-dalil-box {
+    background: rgba(0,191,255,0.07);
+    border-top: 1px solid rgba(0,191,255,0.2);
+    padding: 12px 16px; margin: 0;
+}
+.zakat-dalil-box p { color: var(--text-secondary); font-size: 0.82rem; margin: 0; line-height: 1.6; font-style: italic; }
+
+/* Mustahiq */
+.zakat-mustahiq {
+    margin-top: 32px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 16px; padding: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.zakat-mustahiq h3 {
+    color: var(--text-primary); margin: 0 0 16px;
+    font-size: 1rem; display: flex; align-items: center; gap: 8px;
+}
+.zakat-mustahiq h3 i { color: #00ff88; }
+.zakat-mustahiq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+}
+.zakat-mustahiq-item {
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px; padding: 12px;
+    display: flex; flex-direction: column; gap: 4px; align-items: center;
+    text-align: center; border: 1px solid rgba(255,255,255,0.08);
+}
+.zakat-mustahiq-item i { font-size: 1.2rem; color: #00ff88; margin-bottom: 4px; }
+.zakat-mustahiq-item strong { color: var(--text-primary); font-size: 0.85rem; }
+.zakat-mustahiq-item span { color: var(--text-secondary); font-size: 0.75rem; }
+.zakat-dalil { color: var(--text-secondary); font-size: 0.8rem; margin: 12px 0 0; text-align: center; font-style: italic; }
+
+@media (max-width: 480px) {
+    .zakat-result-grid { grid-template-columns: 1fr; }
+    .zakat-tab { font-size: 0.75rem; padding: 9px 6px; }
+}
+
+/* ===== Catatan salafi (panel-profesi-info, salafi-note) ===== */
+.zakat-panel-note {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 215, 0, 0.18);
+}
+
+.zakat-info-box.salafi-note {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(0, 255, 255, 0.04));
+    border: 1px solid rgba(255, 215, 0, 0.35);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.1);
+}
+
+.zakat-info-box.salafi-note i.fa-info-circle {
+    color: #ffd700;
+}
+
+.zakat-info-box.salafi-note strong {
+    color: #ffd700;
+}
+
+.zakat-info-box.salafi-note p {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.65;
+}
+
+/* Inline strongs inside paragraphs (override .zakat-info-box strong display:block) */
+.zakat-info-box.salafi-note p strong {
+    display: inline;
+    margin: 0;
+    font-size: inherit;
+    color: #ffd700;
+}
+
+.zakat-info-box.salafi-note em {
+    color: rgba(0, 255, 255, 0.9);
+    font-style: italic;
+}
+
+/* ===== ZAKAT NISAB PROGRESS BAR ===== */
+.zakat-nisab-progress {
+    margin: 1rem 0 1.5rem;
+}
+
+.zakat-nisab-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.88rem;
+}
+
+.zakat-nisab-pct {
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 1rem;
+    color: var(--primary-cyan, #00ffff);
+    font-weight: 700;
+}
+
+.zakat-nisab-bar {
+    position: relative;
+    height: 22px;
+    background: rgba(0, 255, 255, 0.08);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.zakat-nisab-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00d4ff 0%, #00ffff 100%);
+    border-radius: 12px;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+}
+
+.zakat-nisab-fill.reached {
+    background: linear-gradient(90deg, #ffd700 0%, #00ff88 100%);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.6);
+    animation: nisabReachedPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes nisabReachedPulse {
+    0%, 100% { box-shadow: 0 0 18px rgba(255, 215, 0, 0.6); }
+    50%      { box-shadow: 0 0 30px rgba(0, 255, 136, 0.9); }
+}
+
+.zakat-nisab-marker {
+    position: absolute;
+    right: 0;
+    top: -1px;
+    bottom: -1px;
+    width: 3px;
+    background: #ff00ff;
+    box-shadow: 0 0 8px rgba(255, 0, 255, 0.7);
+}
+
+.zakat-nisab-marker span {
+    position: absolute;
+    top: -22px;
+    right: -10px;
+    background: #ff00ff;
+    color: #0a0e27;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 6px;
+    letter-spacing: 1px;
+}
+
+/* ===== ZAKAT DONUT BREAKDOWN ===== */
+.zakat-breakdown {
+    margin: 1.25rem 0;
+    padding: 1.25rem;
+    background: rgba(0, 255, 255, 0.03);
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    border-radius: 14px;
+}
+
+.zakat-breakdown h4 {
+    margin: 0 0 1rem;
+    color: var(--primary-cyan, #00ffff);
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.zakat-donut-wrap {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1.25rem;
+    align-items: center;
+}
+
+.zakat-donut-svg {
+    width: 200px;
+    height: 200px;
+    filter: drop-shadow(0 4px 18px rgba(0, 255, 255, 0.2));
+}
+
+.zakat-donut-seg {
+    transition: stroke-width 0.3s ease;
+    animation: zakatDonutGrow 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@keyframes zakatDonutGrow {
+    from { stroke-dasharray: 0 1000; }
+}
+
+.zakat-donut-seg:hover {
+    stroke-width: 28;
+    cursor: pointer;
+}
+
+.zakat-donut-center-num {
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    fill: var(--primary-cyan, #00ffff);
+}
+
+.zakat-donut-center-lbl {
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    fill: rgba(255, 255, 255, 0.6);
+}
+
+.zakat-donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.zakat-donut-leg {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.7rem;
+    background: rgba(0, 255, 255, 0.04);
+    border: 1px solid rgba(0, 255, 255, 0.12);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.zakat-donut-leg:hover {
+    background: rgba(0, 255, 255, 0.1);
+    transform: translateX(3px);
+}
+
+.zakat-donut-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    box-shadow: 0 0 6px currentColor;
+}
+
+.zakat-donut-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+}
+
+.zakat-donut-pct {
+    color: var(--primary-cyan, #00ffff);
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+@media (max-width: 600px) {
+    .zakat-donut-wrap {
+        grid-template-columns: 1fr;
+    }
+    .zakat-donut-svg {
+        margin: 0 auto;
+    }
+}
