@@ -1,18 +1,25 @@
 #!/usr/bin/env python3
 """
-download-jadwal.py — Unduh jadwal sholat dari Aladhan API
+download-jadwal.py — Unduh jadwal sholat dari Aladhan API + Kemenag resmi
 Mengunduh seluruh kota besar Indonesia, semua metode, tahun ini + tahun depan.
 Setelah selesai, app islamhub tidak perlu koneksi internet sama sekali.
 
+Untuk metode KEMENAG, jadwal diambil dari api.myquran.com (mirror data resmi
+Bimas Islam Kemenag RI) dan disimpan sebagai method "20". Jadwal Kemenag resmi
+memuat ihtiyat (+2 menit) dan koreksi ketinggian per kota yang TIDAK ada di
+perhitungan Aladhan — tanpa ini waktu sholat tampil 2-8 menit lebih cepat
+dari jadwal resmi.
+
 Output:
-  js/data/jadwal-index.json         — daftar kota (lat/lon)
+  js/data/jadwal-index.json         — daftar kota (lat/lon + kemenagId)
   js/data/jadwal/{city-id}.json     — jadwal per kota (semua metode & bulan)
   www/ salinan otomatis
 
 Jalankan sekali per tahun (atau saat ganti lokasi):
-    python download-jadwal.py
+    python download-jadwal.py            # unduh semua (Aladhan + Kemenag)
+    python download-jadwal.py kemenag    # hanya patch data Kemenag resmi
 
-Script mendukung resume: kota yang sudah selesai diunduh akan dilewati.
+Script mendukung resume: kota/bulan yang sudah selesai diunduh akan dilewati.
 """
 
 import json
@@ -101,15 +108,43 @@ CITIES = [
     {"id": "merauke",          "name": "Merauke",          "province": "Papua Selatan",      "lat": -8.4667,  "lon": 140.3333},
 ]
 
-# Semua metode yang didukung aplikasi
+# Semua metode Aladhan yang didukung aplikasi.
+# Catatan: method 11 (Singapura) dipertahankan untuk kompatibilitas data lama,
+# tetapi KEMENAG kini memakai data resmi Bimas Islam (method "20" di bawah).
 METHODS = {
-    11: "KEMENAG",
+    11: "Singapura (legacy)",
     3:  "MWL",
     2:  "ISNA",
     5:  "Egypt",
     4:  "Makkah",
     1:  "Karachi",
 }
+
+# ID kota pada api.myquran.com (data resmi Kemenag/Bimas Islam),
+# dipetakan dari id kota internal di CITIES.
+KEMENAG_IDS = {
+    "jakarta": "1301", "bekasi": "1221", "tangerang": "1107", "depok": "1225",
+    "bogor": "1222", "bandung": "1219", "cirebon": "1224", "tasikmalaya": "1227",
+    "sukabumi": "1226", "serang": "1106", "semarang": "1433", "yogyakarta": "1505",
+    "surakarta": "1434", "purwokerto": "1402", "tegal": "1435", "pekalongan": "1431",
+    "magelang": "1430", "surabaya": "1638", "malang": "1634", "kediri": "1632",
+    "jember": "1607", "madiun": "1633", "banyuwangi": "1602", "banda_aceh": "0119",
+    "lhokseumawe": "0121", "medan": "0228", "pematang_siantar": "0230",
+    "padang": "0314", "bukittinggi": "0313", "pekanbaru": "0412", "dumai": "0411",
+    "batam": "0506", "tanjung_pinang": "0507", "jambi": "0610", "palembang": "0816",
+    "bengkulu": "0710", "bandar_lampung": "1014", "metro": "1015",
+    "pangkal_pinang": "0907", "pontianak": "2013", "singkawang": "2014",
+    "palangka_raya": "2214", "banjarmasin": "2113", "banjarbaru": "2112",
+    "samarinda": "2310", "balikpapan": "2308", "tarakan": "2405",
+    "makassar": "2622", "parepare": "2624", "palopo": "2623", "mamuju": "3003",
+    "palu": "2813", "gorontalo": "2506", "manado": "2914", "bitung": "2912",
+    "kendari": "2717", "denpasar": "1709", "mataram": "1810", "bima": "1809",
+    "kupang": "1922", "ambon": "3110", "ternate": "3209", "sorong": "3413",
+    "manokwari": "3403", "jayapura": "3329", "merauke": "3315",
+}
+
+# Key method untuk data Kemenag resmi di file jadwal
+KEMENAG_METHOD_KEY = "20"
 
 # Jeda antar request — hindari rate-limit API
 DELAY_SECONDS = 0.4
@@ -182,6 +217,121 @@ def city_file_path(city_id):
     return os.path.join(JADWAL_DIR, f"{city_id}.json")
 
 
+def fetch_kemenag_month(kemenag_id, year, month, retry=2):
+    """Unduh satu bulan jadwal resmi Kemenag dari api.myquran.com."""
+    url = f"https://api.myquran.com/v2/sholat/jadwal/{kemenag_id}/{year}/{month}"
+    for attempt in range(1, retry + 2):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 IslamHub/1.0"})
+            with urllib.request.urlopen(req, timeout=30) as r:
+                data = json.loads(r.read().decode())
+            jadwal = (data.get("data") or {}).get("jadwal")
+            if not isinstance(jadwal, list) or not jadwal:
+                raise ValueError("jadwal kosong")
+            return jadwal
+        except Exception as e:
+            if attempt <= retry:
+                print("retry..", end="", flush=True)
+                time.sleep(2)
+            else:
+                print(f"GAGAL ({e})")
+                return None
+
+
+def kemenag_entry(day, hijri=None):
+    """Bentuk entri format app dari satu hari data myQuran."""
+    return {
+        "Im": day["imsak"],
+        "Fa": day["subuh"],
+        "Sr": day["terbit"],
+        "Dh": day["dzuhur"],
+        "As": day["ashar"],
+        "Mg": day["maghrib"],
+        "Is": day["isya"],
+        "hijri": hijri,  # disalin dari data Aladhan (myQuran tak menyediakan hijriyah)
+    }
+
+
+def patch_kemenag():
+    """Tambahkan data Kemenag resmi (method "20") ke file jadwal yang sudah ada.
+
+    Hijriyah per hari disalin dari method 11 (tanggal Masehi sama, jadi data
+    hijriyah Aladhan tetap valid).
+    """
+    years = years_to_download()
+    print("\n=== Patch data KEMENAG resmi (Bimas Islam via api.myquran.com) ===")
+    for ci, city in enumerate(CITIES, 1):
+        out_path = city_file_path(city["id"])
+        if not os.path.exists(out_path):
+            print(f"  ! {city['name']}: file jadwal belum ada — jalankan download penuh dulu")
+            continue
+        kemenag_id = KEMENAG_IDS.get(city["id"])
+        if not kemenag_id:
+            print(f"  ! {city['name']}: tidak ada id Kemenag")
+            continue
+
+        city_data = json.loads(open(out_path, encoding="utf-8").read())
+        methods = city_data.setdefault("methods", {})
+        target = methods.setdefault(KEMENAG_METHOD_KEY, {})
+        hijri_src = methods.get("11", {})
+
+        missing = [
+            (y, m) for y in years for m in range(1, 13)
+            if not target.get(f"{y}-{m}")
+        ]
+        if not missing:
+            print(f"  ✓ [{ci}/{len(CITIES)}] {city['name']} — sudah lengkap")
+            continue
+
+        print(f"  → [{ci}/{len(CITIES)}] {city['name']}: {len(missing)} bulan", end=" ", flush=True)
+        for (y, m) in missing:
+            month_key = f"{y}-{m}"
+            days = fetch_kemenag_month(kemenag_id, y, m)
+            if days:
+                hijri_month = hijri_src.get(month_key, [])
+                target[month_key] = [
+                    kemenag_entry(
+                        d,
+                        hijri_month[i]["hijri"] if i < len(hijri_month) else None
+                    )
+                    for i, d in enumerate(days)
+                ]
+                print(".", end="", flush=True)
+            else:
+                target[month_key] = []
+                print("x", end="", flush=True)
+            time.sleep(DELAY_SECONDS)
+        print(" OK")
+
+        with open(out_path, "w", encoding="utf-8") as f:
+            json.dump(city_data, f, ensure_ascii=False)
+
+    # Index dengan kemenagId + salin ke www
+    write_index_and_copy()
+    print("✓ Patch Kemenag selesai.")
+
+
+def write_index_and_copy():
+    index = [
+        {"id": c["id"], "name": c["name"], "province": c["province"],
+         "lat": c["lat"], "lon": c["lon"],
+         "kemenagId": KEMENAG_IDS.get(c["id"])}
+        for c in CITIES
+    ]
+    with open(INDEX_PATH, "w", encoding="utf-8") as f:
+        json.dump(index, f, ensure_ascii=False)
+    print(f"✓ Index    : {INDEX_PATH}")
+
+    if os.path.isdir(os.path.join(BASE_DIR, "www")):
+        os.makedirs(WWW_JADWAL, exist_ok=True)
+        for city in CITIES:
+            src = city_file_path(city["id"])
+            if os.path.exists(src):
+                shutil.copy2(src, os.path.join(WWW_JADWAL, f"{city['id']}.json"))
+        shutil.copy2(INDEX_PATH, WWW_INDEX)
+        print(f"✓ Disalin  : {WWW_JADWAL}/")
+
+
 def haversine_km(lat1, lon1, lat2, lon2):
     R = 6371
     dlat = math.radians(lat2 - lat1)
@@ -249,30 +399,17 @@ def main():
         cities_done += 1
         print(f"   → Tersimpan: {out_path}")
 
-    # Tulis index
-    index = [
-        {"id": c["id"], "name": c["name"], "province": c["province"],
-         "lat": c["lat"], "lon": c["lon"]}
-        for c in CITIES
-    ]
-    with open(INDEX_PATH, "w", encoding="utf-8") as f:
-        json.dump(index, f, ensure_ascii=False)
-    print(f"\n✓ Index    : {INDEX_PATH}")
-
-    # Salin ke www/
-    if os.path.isdir(os.path.join(BASE_DIR, "www")):
-        os.makedirs(WWW_JADWAL, exist_ok=True)
-        for city in CITIES:
-            src = city_file_path(city["id"])
-            if os.path.exists(src):
-                shutil.copy2(src, os.path.join(WWW_JADWAL, f"{city['id']}.json"))
-        shutil.copy2(INDEX_PATH, WWW_INDEX)
-        print(f"✓ Disalin  : {WWW_JADWAL}/")
+    # Patch data Kemenag resmi + tulis index + salin ke www/
+    patch_kemenag()
 
     print(f"\nSelesai! {cities_done}/{len(CITIES)} kota berhasil diunduh.")
     print("Ulangi script ini tiap tahun, atau saat mengganti lokasi masjid.")
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "kemenag":
+        patch_kemenag()
+    else:
+        main()
 
