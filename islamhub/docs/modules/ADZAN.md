@@ -44,7 +44,21 @@ constructor(globalState, mainApp) {
 
 ## 3. Pengambilan Waktu Sholat
 
-### 3.1 API Endpoint
+### 3.1 Sumber Data
+
+Urutan prioritas:
+
+1. **Jadwal offline** `js/data/jadwal/{kota}.json` (kota terdekat ≤ 200 km).
+   Untuk metode KEMENAG dibaca method key `"20"` — data resmi Bimas Islam
+   Kemenag RI (via api.myquran.com), SUDAH termasuk ihtiyat +2 menit dan
+   koreksi ketinggian per kota. Fallback ke key `"11"` bila file belum
+   di-patch (`python download-jadwal.py kemenag`).
+2. **API online** — untuk KEMENAG: `api.myquran.com/v2/sholat/jadwal/{kemenagId}/{tanggal}`
+   (jadwal resmi). Untuk metode lain / bila myQuran gagal: Aladhan.
+
+> ⚠ Jangan pakai Aladhan murni untuk KEMENAG — hasilnya 2–8 menit lebih
+> cepat dari jadwal resmi karena tidak memuat ihtiyat & koreksi ketinggian
+> (paling parah di kota dataran tinggi seperti Bandung/Malang).
 
 ```
 GET https://api.aladhan.com/v1/timings/{unix_timestamp}
@@ -54,10 +68,10 @@ GET https://api.aladhan.com/v1/timings/{unix_timestamp}
   &timezonestring={timezone}
 ```
 
-**Parameter method:**
+**Parameter method (Aladhan, untuk metode non-KEMENAG / fallback):**
 | ID | Nama | Digunakan |
 |---|---|---|
-| 11 | KEMENAG (Indonesia) | Default |
+| 20 | KEMENAG (Indonesia) | Fallback KEMENAG |
 | 3 | MWL (Muslim World League) | Tersedia |
 | 2 | ISNA (North America) | Tersedia |
 | 5 | Egyptian General Authority | Tersedia |

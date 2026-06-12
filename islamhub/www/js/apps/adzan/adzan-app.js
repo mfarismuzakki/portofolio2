@@ -23,7 +23,8 @@ export default class AdzanApp {
         this.timezone = 'Asia/Jakarta';
         this.gmtOffset = '+7';
         this.locationDisplay = 'Jakarta, Indonesia';
-        this.method = 'KEMENAG';
+        // Metode hisab — persisten antar sesi (default jadwal resmi Kemenag)
+        this.method = localStorage.getItem('islamhub_adzan_method') || 'KEMENAG';
 
         this.prayerTimes = {};
         this.nextPrayer = null;
@@ -127,8 +128,28 @@ export default class AdzanApp {
                         <span>Sholat Berikutnya</span>
                     </div>
                     <div class="card-body">
-                        <h2 class="prayer-name" id="nextPrayerName">Memuat...</h2>
-                        <div class="countdown-timer" id="countdownTimer">--:--:--</div>
+                        <div class="next-prayer-ring-wrapper" id="nextPrayerRingWrapper">
+                            <svg class="next-prayer-ring" viewBox="0 0 240 240" aria-hidden="true">
+                                <defs>
+                                    <linearGradient id="adzanRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#00ffff"/>
+                                        <stop offset="100%" stop-color="#ff00ff"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle class="next-prayer-ring-bg" cx="120" cy="120" r="110"/>
+                                <circle class="next-prayer-ring-progress" id="nextPrayerRingProgress"
+                                    cx="120" cy="120" r="110"
+                                    stroke="url(#adzanRingGrad)"
+                                    stroke-dasharray="691.15"
+                                    stroke-dashoffset="691.15"
+                                    transform="rotate(-90 120 120)"/>
+                            </svg>
+                            <div class="next-prayer-ring-content">
+                                <h2 class="prayer-name" id="nextPrayerName">Memuat...</h2>
+                                <div class="countdown-timer" id="countdownTimer">--:--:--</div>
+                                <div class="prayer-time-target" id="nextPrayerTime">--:--</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -289,14 +310,21 @@ export default class AdzanApp {
                 console.log(`[Adzan] Jadwal lokal: ${nearest.name} (${nearest.distKm.toFixed(1)} km)`);
             }
 
-            // 4. Ambil data hari ini sesuai metode
-            const methodMap = { 'KEMENAG': 11, 'MWL': 3, 'ISNA': 2, 'Egypt': 5, 'Makkah': 4, 'Karachi': 1 };
-            const methodId = String(methodMap[this.method] || 11);
+            // 4. Ambil data hari ini sesuai metode.
+            // KEMENAG = method "20" (jadwal resmi Bimas Islam, sudah termasuk
+            // ihtiyat +2 menit & koreksi ketinggian — Aladhan tidak punya ini).
+            // Fallback ke "11" (data lama) bila file belum di-patch.
+            const methodMap = { 'KEMENAG': 20, 'MWL': 3, 'ISNA': 2, 'Egypt': 5, 'Makkah': 4, 'Karachi': 1 };
+            const methodId = String(methodMap[this.method] || 20);
             const now = new Date();
             const monthKey = `${now.getFullYear()}-${now.getMonth() + 1}`;
             const day = now.getDate();
 
-            const monthData = ((this._citySchedule.methods || {})[methodId] || {})[monthKey];
+            const methods = this._citySchedule.methods || {};
+            let monthData = (methods[methodId] || {})[monthKey];
+            if ((!monthData || !monthData[day - 1]) && methodId === '20') {
+                monthData = (methods['11'] || {})[monthKey];
+            }
             if (!monthData || !monthData[day - 1]) return null;
 
             const entry = monthData[day - 1];
@@ -341,14 +369,22 @@ export default class AdzanApp {
     }
 
     async _fetchFromAPI() {
+        // Untuk metode KEMENAG, prioritaskan jadwal resmi Bimas Islam
+        // (api.myquran.com) — Aladhan tidak memuat ihtiyat & koreksi
+        // ketinggian sehingga 2-8 menit lebih cepat dari jadwal resmi.
+        if (this.method === 'KEMENAG') {
+            const ok = await this._fetchFromKemenagAPI();
+            if (ok) return;
+            console.warn('[Adzan] myQuran gagal — fallback Aladhan method 20');
+        }
         try {
             const now = new Date();
             const timestamp = Math.floor(now.getTime() / 1000);
             const methodMap = {
-                'KEMENAG': 11, 'MWL': 3, 'ISNA': 2,
+                'KEMENAG': 20, 'MWL': 3, 'ISNA': 2,
                 'Egypt': 5, 'Makkah': 4, 'Karachi': 1
             };
-            const methodId = methodMap[this.method] || 11;
+            const methodId = methodMap[this.method] || 20;
             const url = `${this.API_URL}/${timestamp}?latitude=${this.lat}&longitude=${this.lon}&method=${methodId}`;
 
             const controller = new AbortController();
@@ -381,6 +417,53 @@ export default class AdzanApp {
             if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) {
                 this.showError('Gagal memuat jadwal sholat. Coba jalankan ulang download-jadwal.py.');
             }
+        }
+    }
+
+    // Jadwal resmi Kemenag (Bimas Islam) via api.myquran.com.
+    // Kota dipilih dari index lokal berdasarkan jarak ke posisi user.
+    // Return true bila berhasil diterapkan.
+    async _fetchFromKemenagAPI() {
+        try {
+            if (!this._cityIndex) {
+                const res = await fetch('js/data/jadwal-index.json');
+                if (res.ok) this._cityIndex = await res.json();
+            }
+            if (!this._cityIndex) return false;
+
+            const nearest = this._findNearestCity(this._cityIndex);
+            if (!nearest || !nearest.kemenagId || nearest.distKm > 200) return false;
+
+            const now = new Date();
+            const ymd = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 10000);
+            const res = await fetch(
+                `https://api.myquran.com/v2/sholat/jadwal/${nearest.kemenagId}/${ymd}`,
+                { signal: controller.signal }
+            );
+            clearTimeout(timeout);
+            if (!res.ok) return false;
+            const data = await res.json();
+            const j = data && data.data && data.data.jadwal;
+            if (!j || !j.subuh) return false;
+
+            console.log(`[Adzan] Jadwal Kemenag resmi: ${nearest.name} (${nearest.distKm.toFixed(1)} km)`);
+            this._applyPrayerData({
+                Imsak: j.imsak,
+                Subuh: j.subuh,
+                Syuruq: j.terbit,
+                Dzuhur: j.dzuhur,
+                Ashar: j.ashar,
+                Maghrib: j.maghrib,
+                Isya: j.isya
+            }, null);
+            await this.updateSunnahPrayers();
+            if (this.notificationEnabled) this.scheduleNotifications();
+            return true;
+        } catch (e) {
+            console.warn('[Adzan] myQuran API gagal:', e);
+            return false;
         }
     }
 
@@ -470,6 +553,41 @@ export default class AdzanApp {
         }, 1000);
     }
 
+    updateCountdownRing(nowHours, nextPrayerHours, totalSeconds) {
+        const ring = document.getElementById('nextPrayerRingProgress');
+        const wrapper = document.getElementById('nextPrayerRingWrapper');
+        if (!ring || !this.prayerTimes) return;
+
+        // Find the previous prayer time to compute window length
+        const ordered = ['Subuh', 'Syuruq', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya']
+            .filter(n => this.prayerTimes[n])
+            .map(n => {
+                const [h, m] = this.prayerTimes[n].split(':').map(Number);
+                return { name: n, hours: h + m / 60 };
+            });
+
+        // Find previous prayer (largest prayerHours <= nowHours, else last of yesterday)
+        let prev = null;
+        for (let i = ordered.length - 1; i >= 0; i--) {
+            if (ordered[i].hours <= nowHours) { prev = ordered[i]; break; }
+        }
+        if (!prev && ordered.length) prev = { ...ordered[ordered.length - 1], hours: ordered[ordered.length - 1].hours - 24 };
+
+        const next = nextPrayerHours < nowHours ? nextPrayerHours + 24 : nextPrayerHours;
+        const prevH = prev ? prev.hours : nowHours - 1;
+        const window = Math.max(0.01, next - prevH);
+        const elapsed = Math.max(0, Math.min(window, nowHours - prevH));
+        const ratio = elapsed / window;
+
+        const circ = 691.15; // 2π × 110
+        ring.style.strokeDashoffset = String(circ * (1 - ratio));
+
+        if (wrapper) {
+            // Imminent: less than 5 minutes
+            wrapper.classList.toggle('imminent', totalSeconds < 300);
+        }
+    }
+
     updateCountdown() {
         if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) return;
 
@@ -538,6 +656,9 @@ export default class AdzanApp {
         if (countdownEl) {
             countdownEl.textContent = countdown;
         }
+
+        // Update progress ring (filled portion = time elapsed since previous prayer)
+        this.updateCountdownRing(nowHours, prayerHours, totalSeconds);
 
         // Update widgets
         if (this.mainApp) {
@@ -862,6 +983,7 @@ export default class AdzanApp {
             methodSelect.value = this.method;
             methodSelect.addEventListener('change', (e) => {
                 this.method = e.target.value;
+                localStorage.setItem('islamhub_adzan_method', this.method);
                 this.fetchPrayerTimes();
             });
         }
@@ -910,12 +1032,25 @@ export default class AdzanApp {
             });
         }
 
-        // Handle visibility change to reschedule notifications when app becomes visible
+        // Handle visibility change when app returns from background
         document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && this.notificationEnabled) {
-                console.log('App became visible, checking notification schedule...');
-                // Reschedule if needed
-                this.scheduleNotifications();
+            if (!document.hidden) {
+                if (this.notificationEnabled) {
+                    this.scheduleNotifications();
+                }
+                // Silently refresh prayer times so countdown stays accurate
+                this.fetchPrayerTimes().catch(() => {});
+
+                // If display mode (monitor masjid) is open, rebuild prayer grid with
+                // current time so _dmNextPrayer is recalculated after being backgrounded
+                if (this.displayModeActive) {
+                    this._buildDisplayModePrayerGrid();
+                    if (this.displayModeClockTimer) {
+                        clearTimeout(this.displayModeClockTimer);
+                        this.displayModeClockTimer = null;
+                    }
+                    this._startDisplayModeClock();
+                }
             }
         });
     }
@@ -1914,7 +2049,8 @@ export default class AdzanApp {
             adzanFullAudio: false, adzanFile: 'Mishary-Rashid-Alafasy',
             masjidName: '', showImsak: false, showSyuruq: true,
             showArabic: false, fontSize: 'md', bgStyle: 'haram',
-            centerStyle: 'box', centerSize: 'md'
+            centerStyle: 'box', centerSize: 'md',
+            countdownColor: '#f5930a'
         };
         try {
             const saved = localStorage.getItem('adm-settings');
@@ -1972,6 +2108,13 @@ export default class AdzanApp {
         });
         const centerSizeRow = document.getElementById('admCenterSizeRow');
         if (centerSizeRow) centerSizeRow.style.display = (this._dmSettings.centerStyle === 'footer') ? 'none' : '';
+        // Apply countdown color (inline override beats per-theme CSS rules)
+        const cdColor = this._dmSettings.countdownColor || '#f5930a';
+        this._applyDMCountdownColor(overlay, cdColor);
+        const colorInput = document.getElementById('admCountdownColor');
+        if (colorInput) colorInput.value = cdColor;
+        const colorPreview = document.getElementById('admCountdownColorPreview');
+        if (colorPreview) colorPreview.style.background = cdColor;
         // Rebuild grid to reflect display toggles
         this._buildDisplayModePrayerGrid();
         // Sound settings
@@ -2176,6 +2319,26 @@ export default class AdzanApp {
                             <button class="adm-fontsize-btn ${s.fontSize === 'sm' ? 'active' : ''}" data-size="sm">Kecil</button>
                             <button class="adm-fontsize-btn ${!s.fontSize || s.fontSize === 'md' ? 'active' : ''}" data-size="md">Sedang</button>
                             <button class="adm-fontsize-btn ${s.fontSize === 'lg' ? 'active' : ''}" data-size="lg">Besar</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="adm-settings-section-title">Warna Countdown</div>
+                        <div class="adm-settings-row">
+                            <div class="adm-settings-row-label"><i class="fas fa-palette"></i> Warna Timer</div>
+                            <div class="adm-color-picker-wrap">
+                                <div class="adm-color-preview" id="admCountdownColorPreview" style="background:${s.countdownColor || '#f5930a'}"></div>
+                                <input type="color" id="admCountdownColor" value="${s.countdownColor || '#f5930a'}" class="adm-color-input">
+                            </div>
+                        </div>
+                        <div class="adm-color-presets">
+                            <button class="adm-color-preset" data-color="#f5930a" style="background:#f5930a" title="Oranye (Default)"></button>
+                            <button class="adm-color-preset" data-color="#00e676" style="background:#00e676" title="Hijau"></button>
+                            <button class="adm-color-preset" data-color="#00bcd4" style="background:#00bcd4" title="Cyan"></button>
+                            <button class="adm-color-preset" data-color="#ffd600" style="background:#ffd600" title="Kuning"></button>
+                            <button class="adm-color-preset" data-color="#ff5252" style="background:#ff5252" title="Merah"></button>
+                            <button class="adm-color-preset" data-color="#ffffff" style="background:#ffffff" title="Putih"></button>
+                            <button class="adm-color-preset" data-color="#e040fb" style="background:#e040fb" title="Ungu"></button>
+                            <button class="adm-color-preset" data-color="#448aff" style="background:#448aff" title="Biru"></button>
                         </div>
                     </div>
                     <div>
@@ -2429,6 +2592,32 @@ export default class AdzanApp {
             });
         });
 
+        // Countdown color picker
+        const colorInput = document.getElementById('admCountdownColor');
+        if (colorInput) {
+            colorInput.addEventListener('input', (e) => {
+                this._dmSettings.countdownColor = e.target.value;
+                this._saveDMSettings();
+                this._applyDMCountdownColor(overlay, e.target.value);
+                const preview = document.getElementById('admCountdownColorPreview');
+                if (preview) preview.style.background = e.target.value;
+            });
+        }
+
+        // Countdown color presets
+        overlay.querySelectorAll('.adm-color-preset').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const color = btn.dataset.color;
+                this._dmSettings.countdownColor = color;
+                this._saveDMSettings();
+                this._applyDMCountdownColor(overlay, color);
+                const input = document.getElementById('admCountdownColor');
+                if (input) input.value = color;
+                const preview = document.getElementById('admCountdownColorPreview');
+                if (preview) preview.style.background = color;
+            });
+        });
+
         // Populate and bind radio station buttons
         this._buildDMRadioList();
 
@@ -2574,6 +2763,12 @@ export default class AdzanApp {
         const [dh, dm] = this._dmNextPrayer.time.split(':').map(Number);
         let freshDiff = (dh + dm / 60) - nowH;
         if (freshDiff <= 0) freshDiff += 24;
+        // Safety guard: if diff > 23h the stored next prayer is stale (e.g. phone was
+        // backgrounded past a prayer time and the exact-minute rebuild never fired)
+        if (freshDiff > 23) {
+            this._buildDisplayModePrayerGrid();
+            return;
+        }
         const totalSecs = Math.max(0, Math.round(freshDiff * 3600));
         const hrs = Math.floor(totalSecs / 3600);
         const mins = Math.floor((totalSecs % 3600) / 60);
@@ -2583,6 +2778,21 @@ export default class AdzanApp {
         if (centerCdEl) centerCdEl.textContent = cdStr;
         const footerCdEl = document.getElementById('admFooterCdCountdown');
         if (footerCdEl) footerCdEl.textContent = cdStr;
+
+        // Apply custom countdown color inline so it beats the per-theme CSS rules
+        // (which set `color` directly and would otherwise override the CSS variable)
+        const cdColor = this._dmSettings?.countdownColor;
+        if (cdColor) {
+            const shadow = `0 0 30px ${this._hexWithAlpha(cdColor, 0.4)}`;
+            if (centerCdEl) {
+                centerCdEl.style.color = cdColor;
+                centerCdEl.style.textShadow = shadow;
+            }
+            if (footerCdEl) {
+                footerCdEl.style.color = cdColor;
+                footerCdEl.style.textShadow = shadow;
+            }
+        }
 
         // Rebuild grid when next prayer changes (e.g. crossed into next prayer)
         const nowMins = n.getHours() * 60 + n.getMinutes();
@@ -2595,6 +2805,28 @@ export default class AdzanApp {
     _updateDisplayModePrayers(now) {
         // Legacy wrapper - just rebuild grid
         this._buildDisplayModePrayerGrid();
+    }
+
+    _hexWithAlpha(hex, alpha) {
+        const m = String(hex || '').replace('#', '').match(/^([0-9a-f]{3}|[0-9a-f]{6})$/i);
+        if (!m) return `rgba(245,147,10,${alpha})`;
+        let h = m[1];
+        if (h.length === 3) h = h.split('').map(c => c + c).join('');
+        const r = parseInt(h.slice(0, 2), 16);
+        const g = parseInt(h.slice(2, 4), 16);
+        const b = parseInt(h.slice(4, 6), 16);
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    _applyDMCountdownColor(overlay, color) {
+        if (!overlay || !color) return;
+        overlay.style.setProperty('--adm-countdown-color', color);
+        const shadow = `0 0 30px ${this._hexWithAlpha(color, 0.4)}`;
+        // Inline styles win over per-theme CSS rules that set color directly
+        overlay.querySelectorAll('#admCenterCountdown, #admFooterCdCountdown').forEach(el => {
+            el.style.color = color;
+            el.style.textShadow = shadow;
+        });
     }
 
     _startDisplayModeTicker() {
