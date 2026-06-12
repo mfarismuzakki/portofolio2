@@ -1,13 +1,15 @@
 // ===== Peraga 3D Sholat =====
-// Visualisasi 3D urutan gerakan sholat menggunakan Three.js
+// Visualisasi 3D urutan gerakan sholat 2 raka'at mengikuti "Sifat Shalat
+// Nabi ﷺ" (Syaikh Al-Albani) dan risalah tata cara shalat Syaikh Ibnu Baz —
+// sesuai pemahaman salaf.
 //
 // Konvensi orientasi:
 // - Karakter menghadap arah -Z (= arah Kiblat)
 // - Sumbu +Y ke atas, lantai pada y = 0
 // - "Membungkuk ke depan" = torso.rotation.x NEGATIF
-// - "Menoleh ke kanan" = head.rotation.y NEGATIF (kanan = +X)
+// - "Menunduk" = head.rotation.x NEGATIF; "menoleh kanan" = head.rotation.y NEGATIF
 
-// ----- Anatomi (semua nilai dipakai oleh applyPose) -----
+// ----- Anatomi (semua nilai dipakai oleh resolvePose) -----
 // Tinggi hip = legHipOffset(0.05) + upperLeg(0.55) + lowerLeg(0.45) + footHeight(0.08) = 1.13
 const ANATOMY = {
     upperLegLen: 0.55,
@@ -15,215 +17,306 @@ const ANATOMY = {
     footHeight: 0.08,
     legHipOffset: 0.05,
     standHipY: 1.13,    // hip saat berdiri (telapak kaki tepat di y=0)
-    kneelHipY: 0.45,    // hip saat duduk iftirasy / di atas tumit
-    sujudHipY: 0.45,    // sama dengan kneel; torso yang membungkuk ke depan
 };
 
 // ----- Pose state machine -----
-// Setiap entri menentukan keadaan tubuh secara eksplisit (state-based)
-// daripada angka rotasi mentah, supaya konsisten & mudah dirawat.
+// Urutan lengkap sholat 2 raka'at. Setiap entri menentukan keadaan tubuh
+// (body) + posisi tangan (arms) secara state-based, diterjemahkan ke sudut
+// sendi oleh resolvePose().
 const POSES = [
+    // ===== RAKA'AT 1 =====
     {
         id: 'takbiratul_ihram',
         name: 'Takbiratul Ihram',
-        ruling: 'Rukun ke-1',
+        ruling: 'Rukun • Raka\'at 1',
         arabic: 'اللَّهُ أَكْبَرُ',
         latin: 'Allahu Akbar',
         translation: 'Allah Maha Besar',
-        tip: 'Angkat kedua tangan setinggi telinga sambil mengucapkan takbir.',
-        duration: 3000,
+        tip: 'Angkat kedua tangan sejajar bahu atau ujung telinga (keduanya shahih), jari-jari terbuka menghadap kiblat. Niat cukup di dalam hati — melafadzkan "Ushalli…" tidak ada tuntunannya dari Nabi ﷺ (Ibnu Taimiyah, Ibnul Qayyim, Al-Albani, Ibnu Baz).',
+        duration: 3200,
         body: 'stand',
         arms: 'takbir',
         head: { tilt: 0, turn: 0 }
     },
     {
-        id: 'qiyam',
-        name: 'Berdiri (Qiyam) — Membaca Al-Fatihah',
-        ruling: 'Rukun ke-2 & ke-3',
-        arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
-        latin: 'Bismillahirrahmanirrahim',
-        translation: 'Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang',
-        tip: 'Berdiri tegak, tangan kanan di atas tangan kiri pada dada/perut, pandangan ke tempat sujud.',
-        duration: 4000,
+        id: 'qiyam_1',
+        name: 'Bersedekap — Membaca Al-Fatihah (Raka\'at 1)',
+        ruling: 'Rukun • Raka\'at 1',
+        arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
+        latin: 'Bismillahir-rahmanir-rahim. Alhamdu lillahi rabbil-\'alamin…',
+        translation: 'Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang. Segala puji bagi Allah, Rabb semesta alam…',
+        tip: 'Tangan KANAN di atas tangan kiri, diletakkan DI ATAS DADA (HR. Ibnu Khuzaimah dari Wa\'il bin Hujr — dishahihkan Al-Albani). Pandangan ke tempat sujud. Urutan: Doa Iftitah → Ta\'awwudz → Al-Fatihah → surat pendek.',
+        duration: 5000,
         body: 'stand',
-        arms: 'crossed',
-        head: { tilt: 0.25, turn: 0 }
+        arms: 'sedekap',
+        head: { tilt: -0.35, turn: 0 }
     },
     {
-        id: 'ruku',
-        name: "Ruku' dengan Tuma'ninah",
-        ruling: 'Rukun ke-4',
+        id: 'ruku_1',
+        name: 'Ruku\' dengan Tuma\'ninah (Raka\'at 1)',
+        ruling: 'Rukun • Raka\'at 1',
         arabic: 'سُبْحَانَ رَبِّيَ الْعَظِيمِ',
-        latin: "Subhana Rabbiyal 'Adzim",
-        translation: 'Maha Suci Tuhanku Yang Maha Agung',
-        tip: 'Membungkuk hingga punggung lurus sejajar, kedua tangan memegang lutut.',
-        duration: 3500,
+        latin: 'Subhana Rabbiyal-\'Adzim (3×)',
+        translation: 'Maha Suci Rabbku Yang Maha Agung',
+        tip: 'Sebelum membungkuk, angkat kedua tangan (raf\'ul yadain) sambil bertakbir. Punggung lurus RATA sejajar lantai, kepala segaris punggung (tidak mendongak, tidak terkulai), kedua tangan menggenggam lutut dengan jari direnggangkan.',
+        duration: 3800,
         body: 'ruku',
         arms: 'knees',
-        head: { tilt: 0.0, turn: 0 }
+        head: { tilt: 0, turn: 0 }
     },
     {
-        id: 'iktidal',
-        name: "I'tidal dengan Tuma'ninah",
-        ruling: 'Rukun ke-5',
-        arabic: 'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ، رَبَّنَا وَلَكَ الْحَمْدُ',
-        latin: "Sami'allahu liman hamidah, Rabbana wa lakal hamd",
-        translation: 'Allah mendengar siapa yang memuji-Nya. Wahai Tuhan kami, segala puji bagi-Mu',
-        tip: 'Bangkit dari ruku dan berdiri tegak kembali dengan tenang.',
-        duration: 3000,
+        id: 'itidal_1',
+        name: 'I\'tidal dengan Tuma\'ninah (Raka\'at 1)',
+        ruling: 'Rukun • Raka\'at 1',
+        arabic: 'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ۝ رَبَّنَا وَلَكَ الْحَمْدُ',
+        latin: 'Sami\'allahu liman hamidah. Rabbana wa lakal-hamd',
+        translation: 'Allah mendengar siapa yang memuji-Nya. Wahai Rabb kami, segala puji bagi-Mu',
+        tip: 'Bangkit dari ruku\' sambil raf\'ul yadain seraya mengucap "Sami\'allahu liman hamidah". Berdiri tegak sempurna dengan tenang sebelum turun sujud — jangan tergesa-gesa.',
+        duration: 3200,
         body: 'stand',
         arms: 'down',
-        head: { tilt: 0.1, turn: 0 }
+        head: { tilt: -0.25, turn: 0 }
     },
     {
-        id: 'sujud_1',
-        name: "Sujud Pertama dengan Tuma'ninah",
-        ruling: 'Rukun ke-6',
+        id: 'sujud_1a',
+        name: 'Sujud Pertama (Raka\'at 1)',
+        ruling: 'Rukun • Raka\'at 1',
         arabic: 'سُبْحَانَ رَبِّيَ الْأَعْلَى',
-        latin: "Subhana Rabbiyal A'la",
-        translation: 'Maha Suci Tuhanku Yang Maha Tinggi',
-        tip: 'Tujuh anggota sujud menyentuh lantai: dahi & hidung, kedua tangan, kedua lutut, kedua jari kaki.',
-        duration: 3500,
+        latin: 'Subhana Rabbiyal-A\'la (3×)',
+        translation: 'Maha Suci Rabbku Yang Maha Tinggi',
+        tip: 'Sujud di atas TUJUH anggota: dahi + hidung, dua telapak tangan, dua lutut, ujung jari kedua kaki (ditegakkan menghadap kiblat). Kedua lengan DIANGKAT dari lantai dan dijauhkan dari lambung — "janganlah menghamparkan lengan seperti anjing" (HR. Bukhari–Muslim).',
+        duration: 3800,
         body: 'sujud',
         arms: 'sujud',
         head: { tilt: 0, turn: 0 }
     },
     {
-        id: 'duduk_diantara',
-        name: 'Duduk Antara Dua Sujud',
-        ruling: 'Rukun ke-7',
-        arabic: 'رَبِّ اغْفِرْ لِي ، رَبِّ اغْفِرْ لِي',
-        latin: 'Rabbighfirli, Rabbighfirli',
-        translation: 'Wahai Tuhanku, ampunilah aku',
-        tip: 'Duduk iftirasy: telapak kaki kiri dijadikan alas, telapak kaki kanan ditegakkan.',
-        duration: 3000,
-        body: 'sit',
+        id: 'duduk_1',
+        name: 'Duduk Antara Dua Sujud (Iftirasy)',
+        ruling: 'Rukun • Raka\'at 1',
+        arabic: 'رَبِّ اغْفِرْ لِي وَارْحَمْنِي وَاجْبُرْنِي وَارْفَعْنِي وَارْزُقْنِي وَاهْدِنِي وَعَافِنِي وَاعْفُ عَنِّي',
+        latin: 'Rabbighfirli warhamni wajburni warfa\'ni warzuqni wahdini wa \'afini wa\'fu \'anni',
+        translation: 'Wahai Rabbku, ampunilah aku, kasihanilah aku, cukupkanlah aku, angkatlah derajatku, berilah aku rizki, petunjuk, kesehatan, dan maafkanlah aku',
+        tip: 'Duduk IFTIRASY: telapak kaki kiri dijadikan alas (diduduki), telapak kaki KANAN DITEGAKKAN dengan jari-jari menghadap kiblat. Kedua tangan di atas paha dekat lutut.',
+        duration: 3500,
+        body: 'iftirasy',
         arms: 'thighs',
-        head: { tilt: 0.15, turn: 0 }
+        head: { tilt: -0.2, turn: 0 }
     },
     {
-        id: 'sujud_2',
-        name: "Sujud Kedua dengan Tuma'ninah",
-        ruling: 'Rukun ke-8',
+        id: 'sujud_1b',
+        name: 'Sujud Kedua (Raka\'at 1)',
+        ruling: 'Rukun • Raka\'at 1',
         arabic: 'سُبْحَانَ رَبِّيَ الْأَعْلَى',
-        latin: "Subhana Rabbiyal A'la",
-        translation: 'Maha Suci Tuhanku Yang Maha Tinggi',
-        tip: "Sujud kedua sebagaimana sujud pertama dengan tuma'ninah.",
-        duration: 3500,
+        latin: 'Subhana Rabbiyal-A\'la (3×)',
+        translation: 'Maha Suci Rabbku Yang Maha Tinggi',
+        tip: 'Sujud kedua sebagaimana sujud pertama dengan tuma\'ninah penuh. Sujud adalah waktu paling mustajab untuk berdoa (HR. Muslim) — perbanyaklah doa setelah dzikir wajib.',
+        duration: 3800,
+        body: 'sujud',
+        arms: 'sujud',
+        head: { tilt: 0, turn: 0 }
+    },
+
+    // ===== RAKA'AT 2 =====
+    {
+        id: 'qiyam_2',
+        name: 'Berdiri — Membaca Al-Fatihah (Raka\'at 2)',
+        ruling: 'Rukun • Raka\'at 2',
+        arabic: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
+        latin: 'Alhamdu lillahi rabbil-\'alamin… (Al-Fatihah + surat)',
+        translation: 'Segala puji bagi Allah, Rabb semesta alam…',
+        tip: 'Bangkit dengan takbir (disunnahkan duduk istirahat sejenak — jalsatul istirahah — menurut sebagian ulama). Pada raka\'at kedua langsung membaca Al-Fatihah tanpa doa iftitah.',
+        duration: 5000,
+        body: 'stand',
+        arms: 'sedekap',
+        head: { tilt: -0.35, turn: 0 }
+    },
+    {
+        id: 'ruku_2',
+        name: 'Ruku\' (Raka\'at 2)',
+        ruling: 'Rukun • Raka\'at 2',
+        arabic: 'سُبْحَانَ رَبِّيَ الْعَظِيمِ',
+        latin: 'Subhana Rabbiyal-\'Adzim (3×)',
+        translation: 'Maha Suci Rabbku Yang Maha Agung',
+        tip: 'Bertakbir disertai raf\'ul yadain, lalu ruku\' dengan tuma\'ninah sebagaimana raka\'at pertama.',
+        duration: 3800,
+        body: 'ruku',
+        arms: 'knees',
+        head: { tilt: 0, turn: 0 }
+    },
+    {
+        id: 'itidal_2',
+        name: 'I\'tidal (Raka\'at 2)',
+        ruling: 'Rukun • Raka\'at 2',
+        arabic: 'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ۝ رَبَّنَا وَلَكَ الْحَمْدُ',
+        latin: 'Sami\'allahu liman hamidah. Rabbana wa lakal-hamd',
+        translation: 'Allah mendengar siapa yang memuji-Nya. Wahai Rabb kami, segala puji bagi-Mu',
+        tip: 'Bangkit dari ruku\' dengan raf\'ul yadain, berdiri tegak sempurna dengan tuma\'ninah.',
+        duration: 3200,
+        body: 'stand',
+        arms: 'down',
+        head: { tilt: -0.25, turn: 0 }
+    },
+    {
+        id: 'sujud_2a',
+        name: 'Sujud Pertama (Raka\'at 2)',
+        ruling: 'Rukun • Raka\'at 2',
+        arabic: 'سُبْحَانَ رَبِّيَ الْأَعْلَى',
+        latin: 'Subhana Rabbiyal-A\'la (3×)',
+        translation: 'Maha Suci Rabbku Yang Maha Tinggi',
+        tip: 'Pastikan ketujuh anggota sujud menempel sempurna: dahi & hidung, dua telapak tangan, dua lutut, ujung jari kedua kaki.',
+        duration: 3800,
         body: 'sujud',
         arms: 'sujud',
         head: { tilt: 0, turn: 0 }
     },
     {
-        id: 'duduk_tasyahud',
-        name: 'Duduk Akhir untuk Tasyahud',
-        ruling: 'Rukun ke-9',
-        arabic: 'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ',
-        latin: 'At-tahiyyatu lillahi wash-shalawatu wath-thayyibat',
-        translation: 'Segala penghormatan, ibadah, dan kebaikan hanya milik Allah',
-        tip: 'Duduk tawarruk: kaki kiri dimasukkan ke bawah betis kanan, telunjuk kanan diisyaratkan.',
-        duration: 4500,
-        body: 'sit',
+        id: 'duduk_2',
+        name: 'Duduk Antara Dua Sujud (Raka\'at 2)',
+        ruling: 'Rukun • Raka\'at 2',
+        arabic: 'رَبِّ اغْفِرْ لِي وَارْحَمْنِي وَاهْدِنِي وَارْزُقْنِي',
+        latin: 'Rabbighfirli warhamni wahdini warzuqni',
+        translation: 'Wahai Rabbku, ampunilah aku, kasihanilah aku, berilah aku petunjuk dan rizki',
+        tip: 'Duduk iftirasy dengan tuma\'ninah sebagaimana raka\'at pertama.',
+        duration: 3500,
+        body: 'iftirasy',
+        arms: 'thighs',
+        head: { tilt: -0.2, turn: 0 }
+    },
+    {
+        id: 'sujud_2b',
+        name: 'Sujud Kedua (Raka\'at 2)',
+        ruling: 'Rukun • Raka\'at 2',
+        arabic: 'سُبْحَانَ رَبِّيَ الْأَعْلَى',
+        latin: 'Subhana Rabbiyal-A\'la (3×)',
+        translation: 'Maha Suci Rabbku Yang Maha Tinggi',
+        tip: 'Sujud terakhir sebelum duduk tasyahud akhir.',
+        duration: 3800,
+        body: 'sujud',
+        arms: 'sujud',
+        head: { tilt: 0, turn: 0 }
+    },
+
+    // ===== TASYAHUD AKHIR & SALAM =====
+    {
+        id: 'tasyahud_akhir',
+        name: 'Tasyahud Akhir (Duduk Tawarruk)',
+        ruling: 'Rukun • Tasyahud',
+        arabic: 'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ',
+        latin: 'At-tahiyyatu lillahi wash-shalawatu wath-thayyibat. As-salamu \'alaika ayyuhan-nabiyyu wa rahmatullahi wa barakatuh…',
+        translation: 'Segala penghormatan, ibadah, dan kebaikan hanya milik Allah. Semoga keselamatan, rahmat, dan keberkahan Allah tercurah atasmu wahai Nabi…',
+        tip: 'Duduk TAWARRUK: kaki kiri dikeluarkan ke bawah betis kanan, pinggul duduk menempel lantai, kaki kanan tetap ditegakkan. TELUNJUK KANAN diisyaratkan ke arah kiblat sepanjang tasyahud, pandangan ke arah telunjuk (HR. Abu Dawud — shahih).',
+        duration: 5000,
+        body: 'tawarruk',
         arms: 'tasyahud',
-        head: { tilt: 0.15, turn: 0 }
+        head: { tilt: -0.3, turn: 0 }
     },
     {
         id: 'sholawat',
-        name: 'Membaca Sholawat atas Nabi',
-        ruling: 'Rukun ke-11',
-        arabic: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ',
-        latin: "Allahumma shalli 'ala Muhammad wa 'ala ali Muhammad",
-        translation: 'Ya Allah berikanlah rahmat kepada Muhammad dan keluarga Muhammad',
-        tip: 'Diucapkan saat duduk tasyahud akhir setelah membaca tasyahud.',
-        duration: 4000,
-        body: 'sit',
+        name: 'Sholawat Ibrahimiyyah atas Nabi ﷺ',
+        ruling: 'Rukun • Setelah Tasyahud',
+        arabic: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ',
+        latin: 'Allahumma shalli \'ala Muhammad wa \'ala ali Muhammad, kama shallaita \'ala Ibrahim wa \'ala ali Ibrahim…',
+        translation: 'Ya Allah, limpahkanlah shalawat kepada Muhammad dan keluarga Muhammad, sebagaimana Engkau limpahkan kepada Ibrahim dan keluarga Ibrahim…',
+        tip: 'Setelah sholawat, berlindunglah dari EMPAT perkara: adzab Jahannam, adzab kubur, fitnah hidup & mati, dan fitnah Al-Masih Ad-Dajjal (HR. Muslim), lalu berdoa sekehendaknya.',
+        duration: 5000,
+        body: 'tawarruk',
         arms: 'tasyahud',
-        head: { tilt: 0.15, turn: 0 }
+        head: { tilt: -0.3, turn: 0 }
     },
     {
         id: 'salam_kanan',
         name: 'Salam ke Kanan',
-        ruling: 'Rukun ke-12',
+        ruling: 'Rukun • Penutup',
         arabic: 'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ',
-        latin: "Assalamu'alaikum warahmatullah",
-        translation: 'Semoga keselamatan dan rahmat Allah tercurah atasmu',
-        tip: 'Menoleh ke arah kanan hingga pipi terlihat dari belakang.',
+        latin: 'As-salamu \'alaikum wa rahmatullah',
+        translation: 'Semoga keselamatan dan rahmat Allah tercurah atas kalian',
+        tip: 'Menoleh ke KANAN hingga pipi terlihat dari belakang sambil mengucapkan salam.',
         duration: 3000,
-        body: 'sit',
+        body: 'tawarruk',
         arms: 'tasyahud',
-        head: { tilt: 0.05, turn: -1.0 }
+        head: { tilt: 0, turn: -1.05 }
     },
     {
         id: 'salam_kiri',
         name: 'Salam ke Kiri',
-        ruling: 'Penyempurna',
+        ruling: 'Penyempurna • Selesai',
         arabic: 'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ',
-        latin: "Assalamu'alaikum warahmatullah",
-        translation: 'Semoga keselamatan dan rahmat Allah tercurah atasmu',
-        tip: 'Menoleh ke arah kiri hingga pipi terlihat dari belakang. Sholat selesai.',
+        latin: 'As-salamu \'alaikum wa rahmatullah',
+        translation: 'Semoga keselamatan dan rahmat Allah tercurah atas kalian',
+        tip: 'Menoleh ke KIRI hingga pipi terlihat dari belakang. Sholat selesai — lanjutkan dzikir ba\'da sholat sebagaimana dicontohkan Nabi ﷺ.',
         duration: 3000,
-        body: 'sit',
+        body: 'tawarruk',
         arms: 'tasyahud',
-        head: { tilt: 0.05, turn: 1.0 }
+        head: { tilt: 0, turn: 1.05 }
     }
 ];
 
-// ----- Resolve a pose entry into numerical bone targets -----
-// Convention summary:
-//   - shoulder.rotation order (XYZ Euler): R = R_z * R_y * R_x
-//   - For LEFT arm:  positive shoulderZ tilts arm INWARD when shoulderX < 0,
-//                    OUTWARD when shoulderX > 0. Use elbowZ for forearm flex
-//                    around world Z axis (lateral abduction at elbow).
-//   - For sedekap forearms to flex FORWARD (toward kiblat -Z), use POSITIVE
-//                    elbowX (not negative — that flips backward).
+// ----- Resolve a pose entry into numerical joint targets -----
+// Semua nilai sendi di bawah sudah DIVERIFIKASI NUMERIK terhadap posisi world
+// (dahi/tangan/lutut/kaki vs lantai y=0) lewat probing Three.js langsung.
 function resolvePose(pose) {
     const A = ANATOMY;
-    const PI = Math.PI;
+    const leg0 = () => ({ hipX: 0, hipZ: 0, kneeX: 0, ankleX: 0 });
     const t = {
         hipY: A.standHipY,
+        hipX: 0,
         torsoX: 0,
-        legHipX: 0,
-        legKneeX: 0,
+        torsoZ: 0,
+        legL: leg0(),
+        legR: leg0(),
         armL: { shoulderX: 0, shoulderY: 0, shoulderZ: 0.05, elbowX: 0, elbowZ: 0 },
         armR: { shoulderX: 0, shoulderY: 0, shoulderZ: -0.05, elbowX: 0, elbowZ: 0 },
         headX: pose.head?.tilt || 0,
-        headY: pose.head?.turn || 0
+        headY: pose.head?.turn || 0,
+        isyarat: 0
     };
 
     switch (pose.body) {
         case 'stand':
-            t.hipY = A.standHipY;
             break;
+
         case 'ruku':
-            // Back bowed toward horizontal. Because the hips don't translate
-            // backward in this rig, a fully-straight leg would push the
-            // shoulders well in front of the knees and the hands could never
-            // reach them. A small forward knee bend (legHipX) with vertical
-            // shins (legKneeX = -legHipX, feet stay under the body) brings the
-            // knees within reach so the hands rest on them — the iconic ruku.
-            t.hipY = A.standHipY;
-            t.torsoX = -1.35;
-            t.legHipX = 0.50;
-            t.legKneeX = -0.50;
+            // Punggung dibungkukkan hampir horizontal. Lutut sedikit menekuk ke
+            // depan agar tangan bisa menggenggam lutut (tanpa ini bahu terlalu
+            // jauh di depan lutut), telapak kaki tetap menapak.
+            t.torsoX = -1.42;
+            t.legL.hipX = t.legR.hipX = 0.30;
+            t.legL.kneeX = t.legR.kneeX = -0.30;
+            t.hipY = A.standHipY - 0.04;
+            // Kepala diangkat sedikit relatif torso agar SEGARIS punggung
+            // (tidak mendongak, tidak terkulai) — pandangan ke tempat sujud.
+            t.headX = 0.30;
             break;
-        case 'sit':
-            // Iftirasy: knees + shins resting flat on the floor, seated back on
-            // the heels. Thighs slope down-forward to the knees (legHipX) and
-            // the calves fold back flat (legKneeX). Tuned so knee & foot sit at
-            // y≈0 instead of floating above an invisible chair.
+
+        case 'iftirasy':
+            // Duduk antara dua sujud / tasyahud awal: lutut & betis menapak
+            // lantai, duduk di atas kaki kiri yang terlipat rata. Kaki KANAN
+            // ditegakkan — jari menapak lantai, tumit terangkat (ankleX).
             t.hipY = 0.48;
-            t.legHipX = 0.95;
-            t.legKneeX = -2.5;
+            t.legL = { hipX: 0.95, hipZ: 0, kneeX: -2.50, ankleX: 1.60 };
+            t.legR = { hipX: 0.95, hipZ: 0, kneeX: -2.50, ankleX: -1.00 };
             break;
+
+        case 'tawarruk':
+            // Tasyahud akhir: pinggul turun ke lantai dan bergeser, kaki kiri
+            // dikeluarkan menyamping di bawah betis kanan (hipZ), kaki kanan
+            // tetap ditegakkan. Torso sedikit miring karena tumpuan di pinggul.
+            t.hipY = 0.42;
+            t.hipX = -0.10;
+            t.torsoZ = 0.07;
+            t.legL = { hipX: 0.80, hipZ: 0.50, kneeX: -2.40, ankleX: -1.40 };
+            t.legR = { hipX: 0.95, hipZ: 0, kneeX: -2.50, ankleX: -1.20 };
+            break;
+
         case 'sujud':
-            // Kneeling with the forehead on the mat. Hips raised above the
-            // heels (hipY higher than sitting) so the shoulders stay high
-            // enough for the hands to reach the floor beside the head without
-            // clipping through it. Torso folds forward and the chin tucks
-            // (headX) so the forehead actually touches the mat.
+            // Berlutut dengan dahi menyentuh sajadah. Pinggul lebih tinggi
+            // dari tumit, lutut + ujung jari kaki menapak (jari ditegakkan —
+            // ankleX), dada turun, dagu ditekuk (headX) sehingga dahi
+            // benar-benar sampai ke lantai.
             t.hipY = 0.60;
-            t.legHipX = 0.65;
-            t.legKneeX = -2.4;
+            t.legL = { hipX: 0.65, hipZ: 0, kneeX: -2.40, ankleX: 1.30 };
+            t.legR = { hipX: 0.65, hipZ: 0, kneeX: -2.40, ankleX: 1.30 };
             t.torsoX = -1.70;
             t.headX = -0.30;
             break;
@@ -231,51 +324,45 @@ function resolvePose(pose) {
 
     switch (pose.arms) {
         case 'takbir': {
-            // Upper arm horizontal-outward (shoulderZ ≈ ±π/2 abduction),
-            // forearm vertical UP via elbowZ ≈ ∓π/2 (mirror of shoulderZ
-            // so both bring forearm direction in the world XY plane to (0, 1, 0)).
-            // Result: hands ar at ear level, palms forward toward Kiblat.
-            // Slight reduction below π/2 keeps arms a bit forward of the body.
+            // Kedua tangan diangkat sejajar telinga, telapak menghadap kiblat.
             const SZ = 1.45;
-            const EZ = 1.45;
-            t.armL = { shoulderX: 0,  shoulderY: 0, shoulderZ: -SZ, elbowX: 0, elbowZ: -EZ };
-            t.armR = { shoulderX: 0,  shoulderY: 0, shoulderZ:  SZ, elbowX: 0, elbowZ:  EZ };
+            t.armL = { shoulderX: 0.15, shoulderY: 0, shoulderZ: -SZ, elbowX: 0, elbowZ: -SZ };
+            t.armR = { shoulderX: 0.15, shoulderY: 0, shoulderZ:  SZ, elbowX: 0, elbowZ:  SZ };
             break;
         }
-        case 'crossed':
-            // Sedekap: hands fold at center of body in front of belly/chest.
-            // Upper arms hang slightly inward (shoulderZ small), forearms flex
-            // FORWARD (elbowX positive) and slightly INWARD (elbowZ small mirror).
-            t.armL = { shoulderX: 0.10, shoulderY: 0, shoulderZ:  0.55, elbowX: 1.55, elbowZ: 0 };
-            t.armR = { shoulderX: 0.10, shoulderY: 0, shoulderZ: -0.55, elbowX: 1.55, elbowZ: 0 };
+        case 'sedekap':
+            // Tangan kanan DI ATAS tangan kiri, menumpuk di tengah dada.
+            // Rotasi internal bahu (shoulderY) menyapukan lengan bawah
+            // melintang dada sehingga kedua tangan bertemu di tengah.
+            t.armL = { shoulderX: 0.10, shoulderY: -0.60, shoulderZ:  0.50, elbowX: 2.00, elbowZ: 0 };
+            t.armR = { shoulderX: 0.18, shoulderY:  0.60, shoulderZ: -0.50, elbowX: 2.00, elbowZ: 0 };
             break;
         case 'down':
-            // I'tidal — arms hang naturally at sides
+            // I'tidal — lengan turun lurus di samping badan
             t.armL = { shoulderX: 0, shoulderY: 0, shoulderZ:  0.10, elbowX: 0, elbowZ: 0 };
             t.armR = { shoulderX: 0, shoulderY: 0, shoulderZ: -0.10, elbowX: 0, elbowZ: 0 };
             break;
         case 'knees':
-            // Ruku grip on knees. With the back bowed ~78° and a small forward
-            // knee bend, the hands reach down-and-slightly-back onto the knees.
-            t.armL = { shoulderX: 0.95, shoulderY: 0, shoulderZ:  0.10, elbowX: -0.10, elbowZ: 0 };
-            t.armR = { shoulderX: 0.95, shoulderY: 0, shoulderZ: -0.10, elbowX: -0.10, elbowZ: 0 };
+            // Ruku': tangan menggenggam lutut, siku lurus.
+            t.armL = { shoulderX: 0.70, shoulderY: 0, shoulderZ:  0.12, elbowX: -0.05, elbowZ: 0 };
+            t.armR = { shoulderX: 0.70, shoulderY: 0, shoulderZ: -0.12, elbowX: -0.05, elbowZ: 0 };
             break;
         case 'sujud':
-            // Upper arm hangs straight down in world (shoulderX cancels the
-            // torso tilt), then a strong forearm flex (elbowX) lays the hands
-            // flat on the mat beside the head, fingers toward kiblat.
-            t.armL = { shoulderX: 1.55, shoulderY: 0, shoulderZ:  0.12, elbowX: 1.80, elbowZ: 0 };
-            t.armR = { shoulderX: 1.55, shoulderY: 0, shoulderZ: -0.12, elbowX: 1.80, elbowZ: 0 };
+            // Telapak tangan rata di lantai sejajar bahu di samping kepala,
+            // SIKU DIANGKAT dari lantai & dijauhkan dari lambung (sunnah).
+            t.armL = { shoulderX: 0.70, shoulderY: 0, shoulderZ:  0.28, elbowX: 2.20, elbowZ: 0 };
+            t.armR = { shoulderX: 0.70, shoulderY: 0, shoulderZ: -0.28, elbowX: 2.20, elbowZ: 0 };
             break;
         case 'thighs':
-            // Sitting hands resting on the thighs/knees.
-            t.armL = { shoulderX: 0.45, shoulderY: 0, shoulderZ:  0.15, elbowX: 0.35, elbowZ: 0 };
-            t.armR = { shoulderX: 0.45, shoulderY: 0, shoulderZ: -0.15, elbowX: 0.35, elbowZ: 0 };
+            // Duduk: telapak tangan di atas paha dekat lutut.
+            t.armL = { shoulderX: 0.55, shoulderY: 0, shoulderZ:  0.15, elbowX: 0.55, elbowZ: 0 };
+            t.armR = { shoulderX: 0.55, shoulderY: 0, shoulderZ: -0.15, elbowX: 0.55, elbowZ: 0 };
             break;
         case 'tasyahud':
-            // Hands on the thighs; right hand slightly more flexed (telunjuk isyarat).
-            t.armL = { shoulderX: 0.45, shoulderY: 0, shoulderZ:  0.15, elbowX: 0.35, elbowZ: 0 };
-            t.armR = { shoulderX: 0.50, shoulderY: 0, shoulderZ: -0.15, elbowX: 0.30, elbowZ: 0 };
+            // Tangan di paha; telunjuk kanan diisyaratkan ke kiblat.
+            t.armL = { shoulderX: 0.55, shoulderY: 0, shoulderZ:  0.15, elbowX: 0.55, elbowZ: 0 };
+            t.armR = { shoulderX: 0.60, shoulderY: 0, shoulderZ: -0.15, elbowX: 0.60, elbowZ: 0 };
+            t.isyarat = 1;
             break;
     }
 
@@ -294,7 +381,7 @@ export default class Peraga3D {
         this.autoRotate = true;
         this.playTimer = null;
         this.transitionStart = 0;
-        this.transitionDuration = 800;
+        this.transitionDuration = 900;
         this.fromTargets = null;
         this.toTargets = null;
         this.currentTargets = resolvePose(POSES[0]);
@@ -431,9 +518,8 @@ export default class Peraga3D {
         // After rotation.x = -π/2, plane's "+Y" (top of canvas) maps to -Z.
         // We want canvas-top (mihrab arch) at -Z (front/kiblat). ✓
         // The figure's footprint runs from z≈+0.25 (seated/standing, back of mat)
-        // to z≈-1.35 (ruku/sujud forehead reaching forward). Centre the mat on
-        // that span (≈ -0.55) and size it (1.5 × 3.4) so the body sits ON the mat
-        // with a margin in front toward the kiblat — not floating beside it.
+        // to z≈-1.35 (sujud forehead reaching forward). Centre the mat on that
+        // span so the body sits ON the mat with a margin toward the kiblat.
         this.sajadah = new THREE.Mesh(matGeo, matMat);
         this.sajadah.rotation.x = -Math.PI / 2;
         this.sajadah.position.set(0, 0.01, -0.55);
@@ -624,7 +710,7 @@ export default class Peraga3D {
         peciTrimRing.position.y = 0.46;
         headGroup.add(peciTrimRing);
 
-        // Beard (small box on chin) — at -Z because character faces -Z
+        // Beard — at -Z because character faces -Z
         const beard = new THREE.Mesh(
             new THREE.SphereGeometry(0.10, 16, 12),
             beardMat
@@ -644,7 +730,6 @@ export default class Peraga3D {
         headGroup.add(eyeR);
 
         // ===== Arms =====
-        // Left side = +X (robust convention; "kanan-kiri" pas dilihat dari belakang)
         const armRig = (sideX) => {
             const shoulder = new THREE.Group();
             shoulder.position.set(sideX, 0.85, 0);
@@ -679,7 +764,7 @@ export default class Peraga3D {
             );
             elbow.add(elbowBall);
 
-            // Forearm (cylinder, sleeve to skin)
+            // Forearm (cylinder)
             const lowerArm = new THREE.Mesh(
                 new THREE.CylinderGeometry(0.075, 0.07, 0.40, 16),
                 robeMat
@@ -698,13 +783,24 @@ export default class Peraga3D {
             hand.castShadow = true;
             elbow.add(hand);
 
-            return { shoulder, elbow };
+            return { shoulder, elbow, hand };
         };
 
-        const armL = armRig(-0.42); // left side (+character left, -X world if looking from kiblat)
+        const armL = armRig(-0.42);
         const armR = armRig(0.42);
 
-        // ===== Legs =====
+        // Telunjuk kanan (isyarat saat tasyahud) — kecil, menunjuk searah
+        // -Z lokal tangan (≈ ke kiblat saat duduk). Default tersembunyi.
+        const finger = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.018, 0.014, 0.14, 8),
+            skinMat
+        );
+        finger.rotation.x = -Math.PI / 2; // +Y → -Z
+        finger.position.set(0, -0.52, -0.12);
+        finger.visible = false;
+        armR.elbow.add(finger);
+
+        // ===== Legs (with ankle joints) =====
         const legRig = (sideX) => {
             const hip = new THREE.Group();
             hip.position.set(sideX, -ANATOMY.legHipOffset, 0);
@@ -746,16 +842,21 @@ export default class Peraga3D {
             lowerLeg.castShadow = true;
             knee.add(lowerLeg);
 
-            // Ankle/foot — point forward (-Z)
+            // Ankle joint — lets the foot plant its toes (sujud, duduk) or
+            // lie flat (standing) independently of the calf.
+            const ankle = new THREE.Group();
+            ankle.position.y = -ANATOMY.lowerLegLen;
+            knee.add(ankle);
+
             const foot = new THREE.Mesh(
                 new THREE.BoxGeometry(0.18, ANATOMY.footHeight, 0.32),
                 skinMat
             );
-            foot.position.set(0, -ANATOMY.lowerLegLen - ANATOMY.footHeight / 2, -0.07);
+            foot.position.set(0, -ANATOMY.footHeight / 2, -0.07);
             foot.castShadow = true;
-            knee.add(foot);
+            ankle.add(foot);
 
-            return { hip, knee };
+            return { hip, knee, ankle };
         };
 
         const legL = legRig(-0.18);
@@ -768,8 +869,9 @@ export default class Peraga3D {
             head: headGroup,
             armLShoulder: armL.shoulder, armLElbow: armL.elbow,
             armRShoulder: armR.shoulder, armRElbow: armR.elbow,
-            legLHip: legL.hip, legLKnee: legL.knee,
-            legRHip: legR.hip, legRKnee: legR.knee
+            legLHip: legL.hip, legLKnee: legL.knee, legLAnkle: legL.ankle,
+            legRHip: legR.hip, legRKnee: legR.knee, legRAnkle: legR.ankle,
+            fingerR: finger
         };
 
         this.scene.add(character);
@@ -781,46 +883,61 @@ export default class Peraga3D {
         if (!p.hip) return;
 
         p.hip.position.y = t.hipY;
-        p.torso.rotation.set(t.torsoX, 0, 0);
+        p.hip.position.x = t.hipX || 0;
+        p.torso.rotation.set(t.torsoX, 0, t.torsoZ || 0);
         p.head.rotation.set(t.headX, t.headY, 0);
 
-        p.legLHip.rotation.set(t.legHipX, 0, 0);
-        p.legRHip.rotation.set(t.legHipX, 0, 0);
-        p.legLKnee.rotation.set(t.legKneeX, 0, 0);
-        p.legRKnee.rotation.set(t.legKneeX, 0, 0);
+        const L = t.legL, R = t.legR;
+        p.legLHip.rotation.set(L.hipX, 0, L.hipZ || 0);
+        p.legLKnee.rotation.set(L.kneeX, 0, 0);
+        p.legLAnkle.rotation.set(L.ankleX || 0, 0, 0);
+        p.legRHip.rotation.set(R.hipX, 0, R.hipZ || 0);
+        p.legRKnee.rotation.set(R.kneeX, 0, 0);
+        p.legRAnkle.rotation.set(R.ankleX || 0, 0, 0);
 
         p.armLShoulder.rotation.set(t.armL.shoulderX, t.armL.shoulderY || 0, t.armL.shoulderZ);
         p.armRShoulder.rotation.set(t.armR.shoulderX, t.armR.shoulderY || 0, t.armR.shoulderZ);
-        // Elbow uses both X (flex) and Z (lateral abduction at elbow joint)
         p.armLElbow.rotation.set(t.armL.elbowX, 0, t.armL.elbowZ || 0);
         p.armRElbow.rotation.set(t.armR.elbowX, 0, t.armR.elbowZ || 0);
+
+        p.fingerR.visible = (t.isyarat || 0) > 0.5;
 
         this.currentTargets = JSON.parse(JSON.stringify(t));
     }
 
     interpolateTargets(from, to, t) {
-        const lerp = (a, b, t) => a + (b - a) * t;
+        const lerp = (a, b, k) => (a || 0) + ((b || 0) - (a || 0)) * k;
         const ease = t * t * (3 - 2 * t);
 
         const lerpArm = (af, at) => ({
-            shoulderX: lerp(af.shoulderX || 0, at.shoulderX || 0, ease),
-            shoulderY: lerp(af.shoulderY || 0, at.shoulderY || 0, ease),
-            shoulderZ: lerp(af.shoulderZ || 0, at.shoulderZ || 0, ease),
-            elbowX:    lerp(af.elbowX    || 0, at.elbowX    || 0, ease),
-            elbowZ:    lerp(af.elbowZ    || 0, at.elbowZ    || 0, ease),
+            shoulderX: lerp(af.shoulderX, at.shoulderX, ease),
+            shoulderY: lerp(af.shoulderY, at.shoulderY, ease),
+            shoulderZ: lerp(af.shoulderZ, at.shoulderZ, ease),
+            elbowX:    lerp(af.elbowX,    at.elbowX,    ease),
+            elbowZ:    lerp(af.elbowZ,    at.elbowZ,    ease),
+        });
+        const lerpLeg = (lf, lt) => ({
+            hipX:   lerp(lf.hipX,   lt.hipX,   ease),
+            hipZ:   lerp(lf.hipZ,   lt.hipZ,   ease),
+            kneeX:  lerp(lf.kneeX,  lt.kneeX,  ease),
+            ankleX: lerp(lf.ankleX, lt.ankleX, ease),
         });
 
-        const out = {
+        this.applyTargets({
             hipY: lerp(from.hipY, to.hipY, ease),
+            hipX: lerp(from.hipX, to.hipX, ease),
             torsoX: lerp(from.torsoX, to.torsoX, ease),
-            legHipX: lerp(from.legHipX, to.legHipX, ease),
-            legKneeX: lerp(from.legKneeX, to.legKneeX, ease),
-            headX: lerp(from.headX, to.headX, ease),
-            headY: lerp(from.headY, to.headY, ease),
+            torsoZ: lerp(from.torsoZ, to.torsoZ, ease),
+            legL: lerpLeg(from.legL, to.legL),
+            legR: lerpLeg(from.legR, to.legR),
             armL: lerpArm(from.armL, to.armL),
             armR: lerpArm(from.armR, to.armR),
-        };
-        this.applyTargets(out);
+            headX: lerp(from.headX, to.headX, ease),
+            headY: lerp(from.headY, to.headY, ease),
+            // Tampilkan telunjuk hanya jika pose tujuan memakai isyarat dan
+            // transisi sudah melewati pertengahan.
+            isyarat: ease > 0.5 ? (to.isyarat || 0) : (from.isyarat || 0)
+        });
     }
 
     setStep(index, animate = true) {
