@@ -1208,6 +1208,56 @@
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
 }
 
+/* ===== Timeline raka'at groups ===== */
+.peraga-tl-group {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.35rem 0.6rem 0.45rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+}
+
+.peraga-tl-group + .peraga-tl-group {
+    margin-left: 0.35rem;
+    border-left: 1px dashed rgba(0, 255, 255, 0.25);
+    border-radius: 0 10px 10px 0;
+}
+
+.peraga-tl-group.active {
+    background: rgba(0, 255, 255, 0.06);
+    border-color: rgba(0, 255, 255, 0.35);
+}
+
+.peraga-tl-label {
+    font-family: var(--font-orbitron, 'Orbitron'), sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    white-space: nowrap;
+    transition: color 0.3s;
+}
+
+.peraga-tl-group.active .peraga-tl-label {
+    color: var(--primary-cyan, #00ffff);
+}
+
+.peraga-tl-dots {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+/* Tint halus per fase: raka'at 2 keunguan, penutup keemasan */
+.peraga-dot-p2 { border-color: rgba(187, 134, 252, 0.35); }
+.peraga-dot-p2.done { background: rgba(187, 134, 252, 0.2); border-color: rgba(187, 134, 252, 0.6); color: #bb86fc; }
+.peraga-dot-p3 { border-color: rgba(255, 215, 0, 0.35); }
+.peraga-dot-p3.done { background: rgba(255, 215, 0, 0.18); border-color: rgba(255, 215, 0, 0.55); color: #ffd700; }
+
 /* Bacaan Panel */
 .peraga-bacaan-panel {
     background: linear-gradient(135deg,

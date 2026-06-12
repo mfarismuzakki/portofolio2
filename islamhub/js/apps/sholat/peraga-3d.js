@@ -1073,11 +1073,27 @@ export default class Peraga3D {
         if ($('peragaBacaanTip')) $('peragaBacaanTip').innerHTML = `<i class="fas fa-lightbulb"></i> ${pose.tip}`;
 
         const timeline = document.getElementById('peragaTimeline');
-        if (timeline && timeline.children.length === POSES.length) {
-            Array.from(timeline.children).forEach((dot, i) => {
-                dot.classList.toggle('active', i === this.currentStep);
-                dot.classList.toggle('done', i < this.currentStep);
-            });
+        if (timeline) {
+            const dots = timeline.querySelectorAll('.peraga-dot');
+            if (dots.length === POSES.length) {
+                const activePhase = this._phaseOf(pose);
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === this.currentStep);
+                    dot.classList.toggle('done', i < this.currentStep);
+                });
+                timeline.querySelectorAll('.peraga-tl-group').forEach(g => {
+                    g.classList.toggle('active', parseInt(g.dataset.phase) === activePhase);
+                });
+                // Auto-scroll horizontal timeline agar dot aktif selalu terlihat
+                // (scroll manual pada kontainer saja — tidak menggulung halaman)
+                const activeDot = dots[this.currentStep];
+                if (activeDot) {
+                    const tlRect = timeline.getBoundingClientRect();
+                    const dRect = activeDot.getBoundingClientRect();
+                    const delta = (dRect.left + dRect.width / 2) - (tlRect.left + tlRect.width / 2);
+                    timeline.scrollTo({ left: timeline.scrollLeft + delta, behavior: 'smooth' });
+                }
+            }
         }
     }
 
@@ -1090,14 +1106,34 @@ export default class Peraga3D {
         btn.classList.toggle('playing', this.isPlaying);
     }
 
+    // Fase tiap pose untuk pengelompokan timeline: 1 = raka'at 1,
+    // 2 = raka'at 2, 3 = tasyahud & salam.
+    _phaseOf(pose) {
+        if (pose.ruling.includes("Raka'at 1")) return 1;
+        if (pose.ruling.includes("Raka'at 2")) return 2;
+        return 3;
+    }
+
     buildTimeline() {
         const timeline = document.getElementById('peragaTimeline');
         if (!timeline) return;
-        timeline.innerHTML = POSES.map((pose, i) => `
-            <button class="peraga-dot" data-step="${i}" title="${pose.name}">
-                <span class="peraga-dot-num">${i + 1}</span>
-            </button>
+
+        const labels = { 1: "Raka'at 1", 2: "Raka'at 2", 3: 'Tasyahud & Salam' };
+        const groups = { 1: [], 2: [], 3: [] };
+        POSES.forEach((pose, i) => {
+            groups[this._phaseOf(pose)].push(`
+                <button class="peraga-dot peraga-dot-p${this._phaseOf(pose)}" data-step="${i}" title="${pose.name}">
+                    <span class="peraga-dot-num">${i + 1}</span>
+                </button>`);
+        });
+
+        timeline.innerHTML = [1, 2, 3].map(p => `
+            <div class="peraga-tl-group" data-phase="${p}">
+                <span class="peraga-tl-label">${labels[p]}</span>
+                <div class="peraga-tl-dots">${groups[p].join('')}</div>
+            </div>
         `).join('');
+
         timeline.querySelectorAll('.peraga-dot').forEach((dot) => {
             dot.addEventListener('click', () => {
                 const step = parseInt(dot.dataset.step);
