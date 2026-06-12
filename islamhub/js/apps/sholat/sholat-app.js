@@ -605,7 +605,7 @@ export default class SholatApp {
     async showPeraga3D() {
         if (!this.peraga3D) {
             try {
-                const module = await import('./peraga-3d.js?v=2.1.0');
+                const module = await import('./peraga-3d.js?v=3.1.0');
                 const Peraga3D = module.default;
                 this.peraga3D = new Peraga3D();
             } catch (err) {

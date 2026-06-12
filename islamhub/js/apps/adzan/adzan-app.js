@@ -23,7 +23,8 @@ export default class AdzanApp {
         this.timezone = 'Asia/Jakarta';
         this.gmtOffset = '+7';
         this.locationDisplay = 'Jakarta, Indonesia';
-        this.method = 'KEMENAG';
+        // Metode hisab — persisten antar sesi (default jadwal resmi Kemenag)
+        this.method = localStorage.getItem('islamhub_adzan_method') || 'KEMENAG';
 
         this.prayerTimes = {};
         this.nextPrayer = null;
@@ -321,14 +322,21 @@ export default class AdzanApp {
                 console.log(`[Adzan] Jadwal lokal: ${nearest.name} (${nearest.distKm.toFixed(1)} km)`);
             }
 
-            // 4. Ambil data hari ini sesuai metode
-            const methodMap = { 'KEMENAG': 11, 'MWL': 3, 'ISNA': 2, 'Egypt': 5, 'Makkah': 4, 'Karachi': 1 };
-            const methodId = String(methodMap[this.method] || 11);
+            // 4. Ambil data hari ini sesuai metode.
+            // KEMENAG = method "20" (jadwal resmi Bimas Islam, sudah termasuk
+            // ihtiyat +2 menit & koreksi ketinggian — Aladhan tidak punya ini).
+            // Fallback ke "11" (data lama) bila file belum di-patch.
+            const methodMap = { 'KEMENAG': 20, 'MWL': 3, 'ISNA': 2, 'Egypt': 5, 'Makkah': 4, 'Karachi': 1 };
+            const methodId = String(methodMap[this.method] || 20);
             const now = new Date();
             const monthKey = `${now.getFullYear()}-${now.getMonth() + 1}`;
             const day = now.getDate();
 
-            const monthData = ((this._citySchedule.methods || {})[methodId] || {})[monthKey];
+            const methods = this._citySchedule.methods || {};
+            let monthData = (methods[methodId] || {})[monthKey];
+            if ((!monthData || !monthData[day - 1]) && methodId === '20') {
+                monthData = (methods['11'] || {})[monthKey];
+            }
             if (!monthData || !monthData[day - 1]) return null;
 
             const entry = monthData[day - 1];
@@ -373,14 +381,22 @@ export default class AdzanApp {
     }
 
     async _fetchFromAPI() {
+        // Untuk metode KEMENAG, prioritaskan jadwal resmi Bimas Islam
+        // (api.myquran.com) — Aladhan tidak memuat ihtiyat & koreksi
+        // ketinggian sehingga 2-8 menit lebih cepat dari jadwal resmi.
+        if (this.method === 'KEMENAG') {
+            const ok = await this._fetchFromKemenagAPI();
+            if (ok) return;
+            console.warn('[Adzan] myQuran gagal — fallback Aladhan method 20');
+        }
         try {
             const now = new Date();
             const timestamp = Math.floor(now.getTime() / 1000);
             const methodMap = {
-                'KEMENAG': 11, 'MWL': 3, 'ISNA': 2,
+                'KEMENAG': 20, 'MWL': 3, 'ISNA': 2,
                 'Egypt': 5, 'Makkah': 4, 'Karachi': 1
             };
-            const methodId = methodMap[this.method] || 11;
+            const methodId = methodMap[this.method] || 20;
             const url = `${this.API_URL}/${timestamp}?latitude=${this.lat}&longitude=${this.lon}&method=${methodId}`;
 
             const controller = new AbortController();
@@ -413,6 +429,53 @@ export default class AdzanApp {
             if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) {
                 this.showError('Gagal memuat jadwal sholat. Coba jalankan ulang download-jadwal.py.');
             }
+        }
+    }
+
+    // Jadwal resmi Kemenag (Bimas Islam) via api.myquran.com.
+    // Kota dipilih dari index lokal berdasarkan jarak ke posisi user.
+    // Return true bila berhasil diterapkan.
+    async _fetchFromKemenagAPI() {
+        try {
+            if (!this._cityIndex) {
+                const res = await fetch('js/data/jadwal-index.json');
+                if (res.ok) this._cityIndex = await res.json();
+            }
+            if (!this._cityIndex) return false;
+
+            const nearest = this._findNearestCity(this._cityIndex);
+            if (!nearest || !nearest.kemenagId || nearest.distKm > 200) return false;
+
+            const now = new Date();
+            const ymd = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 10000);
+            const res = await fetch(
+                `https://api.myquran.com/v2/sholat/jadwal/${nearest.kemenagId}/${ymd}`,
+                { signal: controller.signal }
+            );
+            clearTimeout(timeout);
+            if (!res.ok) return false;
+            const data = await res.json();
+            const j = data && data.data && data.data.jadwal;
+            if (!j || !j.subuh) return false;
+
+            console.log(`[Adzan] Jadwal Kemenag resmi: ${nearest.name} (${nearest.distKm.toFixed(1)} km)`);
+            this._applyPrayerData({
+                Imsak: j.imsak,
+                Subuh: j.subuh,
+                Syuruq: j.terbit,
+                Dzuhur: j.dzuhur,
+                Ashar: j.ashar,
+                Maghrib: j.maghrib,
+                Isya: j.isya
+            }, null);
+            await this.updateSunnahPrayers();
+            if (this.notificationEnabled) this.scheduleNotifications();
+            return true;
+        } catch (e) {
+            console.warn('[Adzan] myQuran API gagal:', e);
+            return false;
         }
     }
 
@@ -932,6 +995,7 @@ export default class AdzanApp {
             methodSelect.value = this.method;
             methodSelect.addEventListener('change', (e) => {
                 this.method = e.target.value;
+                localStorage.setItem('islamhub_adzan_method', this.method);
                 this.fetchPrayerTimes();
             });
         }
