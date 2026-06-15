@@ -62,7 +62,9 @@ const POSES = [
         duration: 3800,
         body: 'ruku',
         arms: 'knees',
-        head: { tilt: 0, turn: 0 }
+        head: { tilt: 0, turn: 0 },
+        // Raf'ul yadain: angkat tangan dulu sambil berdiri sebelum membungkuk.
+        via: { body: 'stand', arms: 'takbir', head: { tilt: -0.1, turn: 0 } }
     },
     {
         id: 'itidal_1',
@@ -75,7 +77,9 @@ const POSES = [
         duration: 3200,
         body: 'stand',
         arms: 'down',
-        head: { tilt: -0.25, turn: 0 }
+        head: { tilt: -0.25, turn: 0 },
+        // Raf'ul yadain: bangkit dari ruku' dengan tangan terangkat, lalu turun.
+        via: { body: 'stand', arms: 'takbir', head: { tilt: -0.1, turn: 0 } }
     },
     {
         id: 'sujud_1a',
@@ -142,7 +146,8 @@ const POSES = [
         duration: 3800,
         body: 'ruku',
         arms: 'knees',
-        head: { tilt: 0, turn: 0 }
+        head: { tilt: 0, turn: 0 },
+        via: { body: 'stand', arms: 'takbir', head: { tilt: -0.1, turn: 0 } }
     },
     {
         id: 'itidal_2',
@@ -155,7 +160,8 @@ const POSES = [
         duration: 3200,
         body: 'stand',
         arms: 'down',
-        head: { tilt: -0.25, turn: 0 }
+        head: { tilt: -0.25, turn: 0 },
+        via: { body: 'stand', arms: 'takbir', head: { tilt: -0.1, turn: 0 } }
     },
     {
         id: 'sujud_2a',
@@ -290,23 +296,24 @@ function resolvePose(pose) {
             break;
 
         case 'iftirasy':
-            // Duduk antara dua sujud / tasyahud awal: lutut & betis menapak
-            // lantai, duduk di atas kaki kiri yang terlipat rata. Kaki KANAN
-            // ditegakkan — jari menapak lantai, tumit terangkat (ankleX).
-            t.hipY = 0.48;
-            t.legL = { hipX: 0.95, hipZ: 0, kneeX: -2.50, ankleX: 1.60 };
-            t.legR = { hipX: 0.95, hipZ: 0, kneeX: -2.50, ankleX: -1.00 };
+            // Duduk antara dua sujud / tasyahud awal: paha hampir mendatar,
+            // betis terlipat penuh ke belakang menapak lantai, telapak kaki
+            // rata sehingga LUTUT & BETIS benar-benar di lantai (tidak
+            // mengambang) dan badan duduk di atas kedua tumit.
+            t.hipY = 0.34;
+            t.legL = { hipX: 1.15, hipZ: 0, kneeX: -2.75, ankleX: 1.55 };
+            t.legR = { hipX: 1.15, hipZ: 0, kneeX: -2.75, ankleX: 1.55 };
             break;
 
         case 'tawarruk':
-            // Tasyahud akhir: pinggul turun ke lantai dan bergeser, kaki kiri
-            // dikeluarkan menyamping di bawah betis kanan (hipZ), kaki kanan
-            // tetap ditegakkan. Torso sedikit miring karena tumpuan di pinggul.
-            t.hipY = 0.42;
-            t.hipX = -0.10;
-            t.torsoZ = 0.07;
-            t.legL = { hipX: 0.80, hipZ: 0.50, kneeX: -2.40, ankleX: -1.40 };
-            t.legR = { hipX: 0.95, hipZ: 0, kneeX: -2.50, ankleX: -1.20 };
+            // Tasyahud akhir: PINGGUL TURUN MENEMPEL LANTAI (tidak mengambang),
+            // kaki kiri dikeluarkan menyamping di bawah betis kanan (hipZ),
+            // badan sedikit miring bertumpu pada pinggul kiri.
+            t.hipY = 0.27;
+            t.hipX = -0.05;
+            t.torsoZ = 0.06;
+            t.legL = { hipX: 1.20, hipZ: 0.55, kneeX: -2.80, ankleX: 1.55 };
+            t.legR = { hipX: 1.20, hipZ: 0, kneeX: -2.75, ankleX: 1.55 };
             break;
 
         case 'sujud':
@@ -317,25 +324,29 @@ function resolvePose(pose) {
             t.hipY = 0.60;
             t.legL = { hipX: 0.65, hipZ: 0, kneeX: -2.40, ankleX: 1.30 };
             t.legR = { hipX: 0.65, hipZ: 0, kneeX: -2.40, ankleX: 1.30 };
-            t.torsoX = -1.70;
-            t.headX = -0.30;
+            // Torso dibungkukkan lebih dalam dan kepala ditundukkan pas sehingga
+            // DAHI dan HIDUNG sama-sama menyentuh sajadah (diverifikasi numerik:
+            // dahi & hidung ≈ y0.04, telapak tangan rata di lantai ≈ y0.04).
+            t.torsoX = -1.78;
+            t.headX = -0.27;
             break;
     }
 
     switch (pose.arms) {
         case 'takbir': {
-            // Kedua tangan diangkat sejajar telinga, telapak menghadap kiblat.
-            const SZ = 1.45;
-            t.armL = { shoulderX: 0.15, shoulderY: 0, shoulderZ: -SZ, elbowX: 0, elbowZ: -SZ };
-            t.armR = { shoulderX: 0.15, shoulderY: 0, shoulderZ:  SZ, elbowX: 0, elbowZ:  SZ };
+            // Kedua tangan diangkat ke DEPAN sejajar bahu, telapak menghadap
+            // kiblat, lengan bawah ditekuk ke atas (bukan terentang ke samping).
+            t.armL = { shoulderX: 0.55, shoulderY: 0, shoulderZ:  0.22, elbowX: 2.45, elbowZ: 0 };
+            t.armR = { shoulderX: 0.55, shoulderY: 0, shoulderZ: -0.22, elbowX: 2.45, elbowZ: 0 };
             break;
         }
         case 'sedekap':
-            // Tangan kanan DI ATAS tangan kiri, menumpuk di tengah dada.
-            // Rotasi internal bahu (shoulderY) menyapukan lengan bawah
-            // melintang dada sehingga kedua tangan bertemu di tengah.
-            t.armL = { shoulderX: 0.10, shoulderY: -0.60, shoulderZ:  0.50, elbowX: 2.00, elbowZ: 0 };
-            t.armR = { shoulderX: 0.18, shoulderY:  0.60, shoulderZ: -0.50, elbowX: 2.00, elbowZ: 0 };
+            // Tangan KANAN bertumpu DI ATAS tangan kiri, menumpuk lurus di
+            // tengah dada (diverifikasi: tangan kanan ≈3cm lebih tinggi & lebih
+            // depan dari tangan kiri, keduanya di garis tengah). shoulderY
+            // menyapukan lengan bawah melintang dada agar kedua tangan bertemu.
+            t.armL = { shoulderX: 0.18, shoulderY: -0.70, shoulderZ:  0.52, elbowX: 1.80, elbowZ: 0 };
+            t.armR = { shoulderX: 0.06, shoulderY:  0.70, shoulderZ: -0.52, elbowX: 1.95, elbowZ: 0 };
             break;
         case 'down':
             // I'tidal — lengan turun lurus di samping badan
@@ -350,18 +361,19 @@ function resolvePose(pose) {
         case 'sujud':
             // Telapak tangan rata di lantai sejajar bahu di samping kepala,
             // SIKU DIANGKAT dari lantai & dijauhkan dari lambung (sunnah).
-            t.armL = { shoulderX: 0.70, shoulderY: 0, shoulderZ:  0.28, elbowX: 2.20, elbowZ: 0 };
-            t.armR = { shoulderX: 0.70, shoulderY: 0, shoulderZ: -0.28, elbowX: 2.20, elbowZ: 0 };
+            t.armL = { shoulderX: 0.30, shoulderY: 0, shoulderZ:  0.28, elbowX: 2.30, elbowZ: 0 };
+            t.armR = { shoulderX: 0.30, shoulderY: 0, shoulderZ: -0.28, elbowX: 2.30, elbowZ: 0 };
             break;
         case 'thighs':
-            // Duduk: telapak tangan di atas paha dekat lutut.
-            t.armL = { shoulderX: 0.55, shoulderY: 0, shoulderZ:  0.15, elbowX: 0.55, elbowZ: 0 };
-            t.armR = { shoulderX: 0.55, shoulderY: 0, shoulderZ: -0.15, elbowX: 0.55, elbowZ: 0 };
+            // Duduk: telapak tangan menempel DI ATAS paha (diverifikasi tangan
+            // turun ke permukaan paha, tidak mengambang di depan).
+            t.armL = { shoulderX: 0.30, shoulderY: 0, shoulderZ:  0.18, elbowX: 0.35, elbowZ: 0 };
+            t.armR = { shoulderX: 0.30, shoulderY: 0, shoulderZ: -0.18, elbowX: 0.35, elbowZ: 0 };
             break;
         case 'tasyahud':
-            // Tangan di paha; telunjuk kanan diisyaratkan ke kiblat.
-            t.armL = { shoulderX: 0.55, shoulderY: 0, shoulderZ:  0.15, elbowX: 0.55, elbowZ: 0 };
-            t.armR = { shoulderX: 0.60, shoulderY: 0, shoulderZ: -0.15, elbowX: 0.60, elbowZ: 0 };
+            // Tangan menempel di paha; telunjuk kanan diisyaratkan ke kiblat.
+            t.armL = { shoulderX: 0.30, shoulderY: 0, shoulderZ:  0.18, elbowX: 0.35, elbowZ: 0 };
+            t.armR = { shoulderX: 0.32, shoulderY: 0, shoulderZ: -0.18, elbowX: 0.40, elbowZ: 0 };
             t.isyarat = 1;
             break;
     }
@@ -384,6 +396,7 @@ export default class Peraga3D {
         this.transitionDuration = 900;
         this.fromTargets = null;
         this.toTargets = null;
+        this.viaTargets = null;
         this.currentTargets = resolvePose(POSES[0]);
         this.cameraAngle = Math.PI * 0.85; // start looking from kiblat side, character faces camera-ish
         this.dragging = false;
@@ -948,11 +961,18 @@ export default class Peraga3D {
         if (animate && oldIndex !== safeIdx) {
             this.fromTargets = JSON.parse(JSON.stringify(this.currentTargets));
             this.toTargets = resolvePose(POSES[safeIdx]);
+            // Waypoint (raf'ul yadain): jika pose tujuan punya `via`, transisi
+            // melewati keadaan antara (berdiri + angkat tangan) sehingga gerakan
+            // mengangkat tangan terlihat sebelum/ketika menuju ruku & i'tidal.
+            const viaSpec = POSES[safeIdx].via;
+            this.viaTargets = viaSpec ? resolvePose(viaSpec) : null;
+            this.transitionDuration = this.viaTargets ? 1600 : 900;
             this.transitionStart = performance.now();
         } else {
             this.applyTargets(resolvePose(POSES[safeIdx]));
             this.fromTargets = null;
             this.toTargets = null;
+            this.viaTargets = null;
         }
 
         this.updateUI();
@@ -1167,11 +1187,18 @@ export default class Peraga3D {
         if (this.fromTargets && this.toTargets) {
             const elapsed = performance.now() - this.transitionStart;
             const t = Math.min(1, elapsed / this.transitionDuration);
-            this.interpolateTargets(this.fromTargets, this.toTargets, t);
+            if (this.viaTargets) {
+                // Dua fase: from → via (paruh pertama), via → to (paruh kedua).
+                if (t < 0.5) this.interpolateTargets(this.fromTargets, this.viaTargets, t / 0.5);
+                else this.interpolateTargets(this.viaTargets, this.toTargets, (t - 0.5) / 0.5);
+            } else {
+                this.interpolateTargets(this.fromTargets, this.toTargets, t);
+            }
             if (t >= 1) {
                 this.applyTargets(this.toTargets);
                 this.fromTargets = null;
                 this.toTargets = null;
+                this.viaTargets = null;
             }
         }
 
