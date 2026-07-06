@@ -143,7 +143,7 @@ export default class KalenderApp {
             <div class="kalender-countdown-section">
                 <div class="kalender-countdown-header">
                     <i class="fas fa-hourglass-half"></i>
-                    <h3>Hitung Mundur Acara Islam</h3>
+                    <h3>Hitung Mundur Tanggal Penting</h3>
                 </div>
                 <div class="kalender-countdown-grid">
                     ${upcomingEvents.map((e, i) => `

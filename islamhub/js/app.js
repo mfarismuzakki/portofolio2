@@ -17,7 +17,6 @@ const FOOTER_PINNABLE = [
     { id: 'hadits',   name: 'Hadits',          icon: 'fa-scroll' },
     { id: 'fiqh',     name: 'Fiqh Praktis',    icon: 'fa-scale-balanced' },
     { id: 'haji',     name: 'Haji & Umrah',    icon: 'fa-kaaba' },
-    { id: 'tanyajawab', name: 'Tanya Jawab',   icon: 'fa-comments' },
 ];
 const DEFAULT_FOOTER_PINS = ['adzan', 'alquran', 'streaming'];
 
@@ -39,7 +38,6 @@ const DROPDOWN_APP_CONFIG = [
     { id: 'hadits',  name: 'Hadits Browser',         shortDesc: 'Koleksi hadits shahih berdasarkan kategori',icon: 'fa-scroll',            iconBg: 'linear-gradient(135deg,rgba(147,112,219,0.75),rgba(100,50,200,0.5))' },
     { id: 'fiqh',    name: 'Fiqh Praktis',           shortDesc: 'Panduan ibadah sesuai dalil shahih',        icon: 'fa-scale-balanced',    iconBg: 'linear-gradient(135deg,rgba(0,191,255,0.7),rgba(0,128,255,0.5))' },
     { id: 'haji',    name: 'Haji & Umrah',           shortDesc: 'Panduan visual manasik dan peta lokasi suci',icon: 'fa-kaaba',            iconBg: 'linear-gradient(135deg,rgba(255,140,0,0.75),rgba(255,80,0,0.5))' },
-    { id: 'tanyajawab', name: 'Tanya Jawab Islam',   shortDesc: 'Chat AI berbasis Al-Quran & Sunnah',         icon: 'fa-comments',          iconBg: 'linear-gradient(135deg,rgba(0,255,255,0.7),rgba(0,128,255,0.5))' },
 ];
 
 class IslamHubApp {
