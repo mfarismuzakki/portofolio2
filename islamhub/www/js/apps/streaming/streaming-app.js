@@ -5,9 +5,15 @@ class StreamingApp {
         this.signalAnimationInterval = null;
         
         // Retry / reconnect state
+        // NOTE: retries are UNBOUNDED by design — a live radio stream should
+        // keep trying to reconnect for as long as the user hasn't pressed stop,
+        // no matter how long a bad-signal patch lasts (could be many minutes).
+        // Giving up after a fixed number of attempts was the root cause of
+        // "radio dies on weak signal and never comes back".
         this.retryCount = 0;
-        this.maxRetries = 8;
         this.retryBaseDelay = 3000; // ms, doubles each attempt
+        this.maxRetryDelay = 20000; // cap backoff so it keeps trying roughly every 20s
+        this.reassurancePopupShown = false;
         this.retryTimeout = null;
         this.stalledTimeout = null;
         this.isRetrying = false;
@@ -32,42 +38,46 @@ class StreamingApp {
         ];
         
         // Live Makkah & Madinah
+        // NOTE: uses YouTube's "live_stream?channel=" embed — this always
+        // resolves to whatever is CURRENTLY live on that channel, instead of
+        // a fixed video ID that goes dead the moment that particular
+        // broadcast ends (this was why these links kept breaking).
         this.liveHaramain = [
             {
                 name: 'Makkah Live',
-                url: 'https://www.youtube.com/embed/HfN2GCUE4Ro',
+                url: 'https://www.youtube.com/embed/live_stream?channel=UCos52azQNBgW63_9uDJoPDA',
                 description: 'Live streaming 24/7 dari Masjidil Haram Makkah',
                 icon: 'fas fa-kaaba',
                 color: 'makkah'
             },
             {
                 name: 'Madinah Live',
-                url: 'https://www.youtube.com/embed/uzRUh-4oSj0',
+                url: 'https://www.youtube.com/embed/live_stream?channel=UC0bcRFUvOwYWYkhkLFzLwPg',
                 description: 'Live streaming 24/7 dari Masjid Nabawi Madinah',
                 icon: 'fas fa-mosque',
                 color: 'madinah'
             }
         ];
-        
+
         // Video streaming channels
         this.videoChannels = [
             {
                 name: 'Khalid Basalamah TV',
-                url: 'https://www.youtube.com/embed/63ftY04qXVk',
+                url: 'https://www.youtube.com/embed/live_stream?channel=UCJHC3VbFsp7kJ2NxPGltwiw',
                 description: 'Kajian Ilmiah 24/7 dari Ustadz Khalid Basalamah',
                 logo: 'assets/logo/khalid_tv.jpg',
                 color: 'khalid'
             },
             {
                 name: 'Syafiq Riza Basalamah TV',
-                url: 'https://www.youtube.com/embed/UBEBkz6SKTk',
+                url: 'https://www.youtube.com/embed/live_stream?channel=UC3_QdDQnRVRDJzq56JTO_Zw',
                 description: 'Siaran 24 Jam dari Ustadz Syafiq Riza Basalamah',
                 logo: 'assets/logo/syafiq_tv.jpg',
                 color: 'syafiq'
             },
             {
                 name: 'Rodja TV',
-                url: 'https://rodja.tv/live/',
+                url: 'https://www.youtube.com/embed/live_stream?channel=UCghNwGdNSxfTyIV-8Bz_EFg',
                 description: 'Live Streaming TV Dakwah Ahlus Sunnah',
                 logo: 'assets/logo/rodja_tv.png',
                 color: 'rodja'
@@ -105,8 +115,38 @@ class StreamingApp {
                     <p class="subtitle">Radio dan video streaming kajian Islam live 24/7</p>
                 </div>
 
+                <!-- Filter & Search Bar -->
+                <div class="streaming-toolbar">
+                    <div class="streaming-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="streamingSearchInput" placeholder="Cari channel atau radio...">
+                    </div>
+                    <div class="streaming-filters">
+                        <button class="streaming-filter-btn active" data-filter="all">
+                            <i class="fas fa-th"></i> Semua
+                        </button>
+                        <button class="streaming-filter-btn" data-filter="radio">
+                            <i class="fas fa-radio"></i> Radio
+                        </button>
+                        <button class="streaming-filter-btn" data-filter="video">
+                            <i class="fas fa-tv"></i> Video TV
+                        </button>
+                        <button class="streaming-filter-btn" data-filter="haramain">
+                            <i class="fas fa-kaaba"></i> Haramain
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Now Stats -->
+                <div class="streaming-livestats">
+                    <div class="livestats-item">
+                        <span class="live-dot"></span>
+                        <span><strong id="liveCountTotal">${this.radioStations.length + this.videoChannels.length + this.liveHaramain.length}</strong> Channel Live Sekarang</span>
+                    </div>
+                </div>
+
                 <!-- Radio Streaming Section -->
-                <div class="streaming-section">
+                <div class="streaming-section" data-section="radio">
                     <div class="section-header">
                         <i class="fas fa-radio"></i>
                         <h2>Streaming Radio Kajian</h2>
@@ -137,7 +177,7 @@ class StreamingApp {
                 </div>
 
                 <!-- Video Streaming Section -->
-                <div class="streaming-section">
+                <div class="streaming-section" data-section="video">
                     <div class="section-header">
                         <i class="fas fa-tv"></i>
                         <h2>Streaming Video Kajian</h2>
@@ -170,7 +210,7 @@ class StreamingApp {
                 </div>
 
                 <!-- Live Haramain Section -->
-                <div class="streaming-section">
+                <div class="streaming-section" data-section="haramain">
                     <div class="section-header">
                         <i class="fas fa-kaaba"></i>
                         <h2>Live Makkah & Madinah</h2>
@@ -261,13 +301,66 @@ class StreamingApp {
                 btn.addEventListener('click', () => this.toggleRadio(index));
             }
         });
-        
+
+        // Filter buttons
+        document.querySelectorAll('.streaming-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.streaming-filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.applyStreamingFilter(btn.dataset.filter, this._currentSearch || '');
+            });
+        });
+
+        // Search input
+        const searchInput = document.getElementById('streamingSearchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                this._currentSearch = e.target.value.toLowerCase();
+                const activeFilter = document.querySelector('.streaming-filter-btn.active')?.dataset.filter || 'all';
+                this.applyStreamingFilter(activeFilter, this._currentSearch);
+            });
+        }
+
         // Audio error/reconnect handling (radioPlayer is the persistent global element)
         const radioPlayer = document.getElementById('radioPlayer');
         this.setupAudioErrorHandling(radioPlayer);
-        
+
         // Simulate signal strength animation (updates global player icon)
         this.startSignalAnimation();
+    }
+
+    applyStreamingFilter(filter, searchTerm) {
+        const sections = document.querySelectorAll('.streaming-section');
+        let visibleCount = 0;
+
+        sections.forEach(section => {
+            const sectionType = section.dataset.section;
+            const matchesFilter = filter === 'all' || sectionType === filter;
+
+            if (!matchesFilter) {
+                section.style.display = 'none';
+                return;
+            }
+
+            // Filter individual cards by search term
+            const cards = section.querySelectorAll('.radio-card, .video-card');
+            let sectionHasVisible = false;
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const matchesSearch = !searchTerm || text.includes(searchTerm);
+                card.style.display = matchesSearch ? '' : 'none';
+                if (matchesSearch) {
+                    sectionHasVisible = true;
+                    visibleCount++;
+                }
+            });
+
+            section.style.display = sectionHasVisible ? '' : 'none';
+        });
+
+        const liveCount = document.getElementById('liveCountTotal');
+        if (liveCount) liveCount.textContent = visibleCount;
     }
 
     setupAudioErrorHandling(radioPlayer) {
@@ -357,22 +450,23 @@ class StreamingApp {
 
     scheduleRetry(reason) {
         if (this.currentStream === null) return;
-        if (this.retryCount >= this.maxRetries) {
-            console.error('[Streaming] Max retries reached, giving up.');
-            this.updateSignalStatus('failed');
-            this.showStreamingPopup(
-                'Koneksi stream terputus dan gagal dipulihkan setelah beberapa percobaan. Silakan coba putar ulang secara manual.',
-                'error'
-            );
-            return;
-        }
 
         this.isRetrying = true;
-        const delay = Math.min(this.retryBaseDelay * Math.pow(2, this.retryCount), 30000);
+        const delay = Math.min(this.retryBaseDelay * Math.pow(2, this.retryCount), this.maxRetryDelay);
         this.retryCount++;
 
         console.log(`[Streaming] Retry #${this.retryCount} scheduled in ${delay}ms (reason: ${reason})`);
         this.updateSignalStatus('reconnecting');
+
+        // Reassure the user once that we're still trying in the background —
+        // but never actually give up, since signal can come back at any time.
+        if (this.retryCount === 3 && !this.reassurancePopupShown) {
+            this.reassurancePopupShown = true;
+            this.showStreamingPopup(
+                'Sinyal internet kurang stabil. Aplikasi akan terus mencoba menyambung ulang otomatis di latar belakang.',
+                'info'
+            );
+        }
 
         clearTimeout(this.retryTimeout);
         this.retryTimeout = setTimeout(() => {
@@ -424,6 +518,7 @@ class StreamingApp {
     resetRetryState() {
         this.retryCount = 0;
         this.isRetrying = false;
+        this.reassurancePopupShown = false;
         clearTimeout(this.retryTimeout);
         clearTimeout(this.stalledTimeout);
         this.retryTimeout = null;
