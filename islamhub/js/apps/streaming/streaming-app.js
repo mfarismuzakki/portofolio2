@@ -5,9 +5,15 @@ class StreamingApp {
         this.signalAnimationInterval = null;
         
         // Retry / reconnect state
+        // NOTE: retries are UNBOUNDED by design — a live radio stream should
+        // keep trying to reconnect for as long as the user hasn't pressed stop,
+        // no matter how long a bad-signal patch lasts (could be many minutes).
+        // Giving up after a fixed number of attempts was the root cause of
+        // "radio dies on weak signal and never comes back".
         this.retryCount = 0;
-        this.maxRetries = 8;
         this.retryBaseDelay = 3000; // ms, doubles each attempt
+        this.maxRetryDelay = 20000; // cap backoff so it keeps trying roughly every 20s
+        this.reassurancePopupShown = false;
         this.retryTimeout = null;
         this.stalledTimeout = null;
         this.isRetrying = false;
@@ -32,42 +38,46 @@ class StreamingApp {
         ];
         
         // Live Makkah & Madinah
+        // NOTE: uses YouTube's "live_stream?channel=" embed — this always
+        // resolves to whatever is CURRENTLY live on that channel, instead of
+        // a fixed video ID that goes dead the moment that particular
+        // broadcast ends (this was why these links kept breaking).
         this.liveHaramain = [
             {
                 name: 'Makkah Live',
-                url: 'https://www.youtube.com/embed/JAp-_85-mbA',
+                url: 'https://www.youtube.com/embed/live_stream?channel=UCos52azQNBgW63_9uDJoPDA',
                 description: 'Live streaming 24/7 dari Masjidil Haram Makkah',
                 icon: 'fas fa-kaaba',
                 color: 'makkah'
             },
             {
                 name: 'Madinah Live',
-                url: 'https://www.youtube.com/embed/4IfiKULlBYg',
+                url: 'https://www.youtube.com/embed/live_stream?channel=UC0bcRFUvOwYWYkhkLFzLwPg',
                 description: 'Live streaming 24/7 dari Masjid Nabawi Madinah',
                 icon: 'fas fa-mosque',
                 color: 'madinah'
             }
         ];
-        
+
         // Video streaming channels
         this.videoChannels = [
             {
                 name: 'Khalid Basalamah TV',
-                url: 'https://www.youtube.com/embed/63ftY04qXVk',
+                url: 'https://www.youtube.com/embed/live_stream?channel=UCJHC3VbFsp7kJ2NxPGltwiw',
                 description: 'Kajian Ilmiah 24/7 dari Ustadz Khalid Basalamah',
                 logo: 'assets/logo/khalid_tv.jpg',
                 color: 'khalid'
             },
             {
                 name: 'Syafiq Riza Basalamah TV',
-                url: 'https://www.youtube.com/embed/UBEBkz6SKTk',
+                url: 'https://www.youtube.com/embed/live_stream?channel=UC3_QdDQnRVRDJzq56JTO_Zw',
                 description: 'Siaran 24 Jam dari Ustadz Syafiq Riza Basalamah',
                 logo: 'assets/logo/syafiq_tv.jpg',
                 color: 'syafiq'
             },
             {
                 name: 'Rodja TV',
-                url: 'https://rodja.tv/live/',
+                url: 'https://www.youtube.com/embed/live_stream?channel=UCghNwGdNSxfTyIV-8Bz_EFg',
                 description: 'Live Streaming TV Dakwah Ahlus Sunnah',
                 logo: 'assets/logo/rodja_tv.png',
                 color: 'rodja'
@@ -440,22 +450,23 @@ class StreamingApp {
 
     scheduleRetry(reason) {
         if (this.currentStream === null) return;
-        if (this.retryCount >= this.maxRetries) {
-            console.error('[Streaming] Max retries reached, giving up.');
-            this.updateSignalStatus('failed');
-            this.showStreamingPopup(
-                'Koneksi stream terputus dan gagal dipulihkan setelah beberapa percobaan. Silakan coba putar ulang secara manual.',
-                'error'
-            );
-            return;
-        }
 
         this.isRetrying = true;
-        const delay = Math.min(this.retryBaseDelay * Math.pow(2, this.retryCount), 30000);
+        const delay = Math.min(this.retryBaseDelay * Math.pow(2, this.retryCount), this.maxRetryDelay);
         this.retryCount++;
 
         console.log(`[Streaming] Retry #${this.retryCount} scheduled in ${delay}ms (reason: ${reason})`);
         this.updateSignalStatus('reconnecting');
+
+        // Reassure the user once that we're still trying in the background —
+        // but never actually give up, since signal can come back at any time.
+        if (this.retryCount === 3 && !this.reassurancePopupShown) {
+            this.reassurancePopupShown = true;
+            this.showStreamingPopup(
+                'Sinyal internet kurang stabil. Aplikasi akan terus mencoba menyambung ulang otomatis di latar belakang.',
+                'info'
+            );
+        }
 
         clearTimeout(this.retryTimeout);
         this.retryTimeout = setTimeout(() => {
@@ -507,6 +518,7 @@ class StreamingApp {
     resetRetryState() {
         this.retryCount = 0;
         this.isRetrying = false;
+        this.reassurancePopupShown = false;
         clearTimeout(this.retryTimeout);
         clearTimeout(this.stalledTimeout);
         this.retryTimeout = null;
