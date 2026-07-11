@@ -24,11 +24,26 @@
                 if (entry.isIntersecting) {
                     pills.forEach(function (p) { p.classList.remove('is-active'); });
                     match.pill.classList.add('is-active');
+                    match.pill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 }
             });
         }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
 
         targets.forEach(function (t) { obs.observe(t.el); });
+    }
+
+    /* ---------------- horizontal wheel-scroll for the pills strip ---------------- */
+    // Lets a normal vertical mouse wheel scroll the pills-nav sideways
+    // (touchpads/touch already scroll it horizontally without this).
+    function initPillsWheelScroll() {
+        document.querySelectorAll('.lec-pills-inner').forEach(function (strip) {
+            strip.addEventListener('wheel', function (e) {
+                if (strip.scrollWidth <= strip.clientWidth) return;
+                if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+                e.preventDefault();
+                strip.scrollLeft += e.deltaY;
+            }, { passive: false });
+        });
     }
 
     /* ---------------- back-to-top button ---------------- */
@@ -86,6 +101,7 @@
 
     function boot() {
         initScrollSpy();
+        initPillsWheelScroll();
         initBackToTop();
         initStatusFilter();
         initTextSearch();
