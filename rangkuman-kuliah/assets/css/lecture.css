@@ -368,6 +368,15 @@ img, svg { max-width: 100%; }
 }
 .lec-point-list li strong { color: var(--ink); }
 
+/* Q&A pairs — used in exam study-question review sections */
+.lec-point-list li.lec-qa { border-left-color: var(--accent-deep); }
+.lec-qa-q { color: var(--ink); font-weight: 600; }
+.lec-qa-a {
+    margin-top: 5px; padding-top: 6px; border-top: 1px dashed var(--border);
+    color: var(--ink-soft); font-size: .92em;
+}
+.lec-qa-a b { color: var(--accent-deep); font-weight: 600; }
+
 /* ---------------------------------------------------------------------
    Tables
    --------------------------------------------------------------------- */
