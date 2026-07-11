@@ -118,7 +118,7 @@ img, svg { max-width: 100%; }
    --------------------------------------------------------------------- */
 .lec-topbar {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 24px;
+    height: 68px; padding: 0 24px; box-sizing: border-box;
     background: rgba(246, 240, 222, .95);
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(8px);
@@ -185,15 +185,21 @@ img, svg { max-width: 100%; }
    Pills navigation — sticky, used for jumping between sessions/modules
    --------------------------------------------------------------------- */
 .lec-pills-nav {
-    position: sticky; top: 49px; z-index: 55;
+    position: sticky; top: 68px; z-index: 55;
     background: rgba(246, 240, 222, .96);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--border);
     padding: 10px 0;
+    overflow: hidden;
 }
 .lec-pills-inner {
-    max-width: var(--maxw); margin: 0 auto; padding: 0 24px;
+    max-width: var(--maxw); margin: 0 auto; padding: 0 40px 0 24px;
     display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+}
+.lec-pills-nav::after {
+    content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 48px;
+    background: linear-gradient(to right, transparent, rgba(246, 240, 222, .96) 70%);
+    pointer-events: none;
 }
 .lec-pills-inner::-webkit-scrollbar { display: none; }
 .lec-pill {
@@ -211,7 +217,11 @@ img, svg { max-width: 100%; }
    Sections
    --------------------------------------------------------------------- */
 .lec-main { padding: 44px 0 24px; }
-.lec-section { margin-bottom: 52px; scroll-margin-top: 110px; }
+/* generic fallback: any anchor-jump target gets clearance under the
+   sticky topbar + pills-nav, regardless of which component class (if
+   any) it also carries */
+.lec-main section[id], .lec-wrap section[id] { scroll-margin-top: 130px; }
+.lec-section { margin-bottom: 52px; scroll-margin-top: 130px; }
 .lec-section-head {
     display: flex; align-items: baseline; gap: 14px; margin-bottom: 20px;
     padding-bottom: 13px; border-bottom: 2px solid var(--border);
@@ -231,7 +241,7 @@ img, svg { max-width: 100%; }
 .lec-session {
     background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
     box-shadow: var(--shadow); margin-bottom: 28px; overflow: hidden;
-    border-left: 5px solid var(--accent); scroll-margin-top: 110px;
+    border-left: 5px solid var(--accent); scroll-margin-top: 130px;
 }
 .lec-session-header {
     padding: 18px 24px 14px; display: flex; align-items: flex-start; gap: 14px;
@@ -618,8 +628,8 @@ td.center { text-align: center; }
     .lec-hero { padding: 44px 18px 38px; }
     .lec-session-header, .lec-session-body { padding-left: 16px; padding-right: 16px; }
     .lec-two-col { grid-template-columns: 1fr; }
-    .lec-topbar { padding: 12px 16px; }
-    .lec-pills-nav { top: 45px; }
+    .lec-topbar { height: 60px; padding: 0 16px; }
+    .lec-pills-nav { top: 60px; }
 }
 
 @media print {
