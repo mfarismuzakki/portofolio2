@@ -1,0 +1,628 @@
+/* =====================================================================
+   LECTURE.CSS — shared design system for all "Rangkuman Kuliah" pages
+   One canonical look (parchment / gold manuscript aesthetic) shared by
+   every subject page. Each page only needs to:
+     1) link this stylesheet + lecture.js
+     2) set <body data-subject="arb|tafseer|sirah|..."> for accent theming
+     3) use the component classes documented below
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   Fonts — one canonical set for every lecture page
+   --------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,400&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    /* base ink / parchment palette */
+    --ink: #1E2A45;
+    --ink-soft: #4B5568;
+    --ink-mute: #7A8296;
+    --vellum: #F6F0DE;
+    --vellum-deep: #EFE6CC;
+    --card: #FFFDF7;
+    --border: #E3D8B8;
+    --shadow: 0 1px 2px rgba(30, 42, 69, .05), 0 4px 14px rgba(30, 42, 69, .06);
+
+    /* dark chrome (hero / topbar-dark / footer) */
+    --dark-1: #1A2540;
+    --dark-2: #233252;
+    --dark-cream: #F3ECD8;
+    --dark-gold: #D8C48A;
+
+    /* gold — universal default accent */
+    --gold: #A9822E;
+    --gold-deep: #7C5E1F;
+    --gold-bg: #FBEEDA;
+
+    /* callout palette (5 hues, reused everywhere) */
+    --maroon: #7B3131; --maroon-bg: #F6E6E1;
+    --sage: #3F6B4C;   --sage-bg: #E7F0E4;
+    --teal: #276661;   --teal-bg: #E1EEEC;
+    --amber: #8C5B12;  --amber-bg: #FBEEDA;
+    --plum: #5B3A6B;   --plum-bg: #EEE4F1;
+
+    /* hadith authenticity grading — standardized across all pages */
+    --shahih: #166534; --shahih-bg: #dcfce7; --shahih-border: #4ade80;
+    --hasan: #1e40af; --hasan-bg: #dbeafe; --hasan-border: #60a5fa;
+    --hasan-mursal: #14532d; --hasan-mursal-bg: #dcfce7; --hasan-mursal-border: #4ade80;
+    --daif: #92400e; --daif-bg: #fef3c7; --daif-border: #f59e0b;
+    --daif-jiddan: #7c2d12; --daif-jiddan-bg: #ffedd5; --daif-jiddan-border: #f97316;
+    --mursal: #4c1d95; --mursal-bg: #ede9fe; --mursal-border: #a78bfa;
+    --munkar: #be185d; --munkar-bg: #fce7f3; --munkar-border: #f472b6;
+    --mawdu: #991b1b; --mawdu-bg: #fee2e2; --mawdu-border: #f87171;
+    --not-est: #374151; --not-est-bg: #f3f4f6; --not-est-border: #9ca3af;
+
+    /* subject accent — overridden per page via [data-subject] below */
+    --accent: var(--gold);
+    --accent-deep: var(--gold-deep);
+    --accent-bg: var(--gold-bg);
+
+    --radius: 10px;
+    --radius-lg: 14px;
+    --maxw: 1180px;
+
+    /* legacy aliases — kept so any leftover inline style="...var(--x)..."
+       from source documents (pre-unification) still resolves safely */
+    --bg: var(--vellum);
+    --cream: var(--dark-cream);
+    --cream-dark: var(--vellum-deep);
+    --gold-light: var(--dark-gold);
+    --green-dark: var(--dark-1);
+    --green-mid: #2D6A4F;
+    --green-light: #52B788;
+    --accent-red: #8B2635;
+    --accent-blue: #1B4F72;
+    --text-dark: var(--ink);
+    --text-mid: var(--ink-soft);
+    --brown: #6B4423;
+}
+
+/* subject accent themes -------------------------------------------------- */
+body[data-subject="arb"]     { --accent: #A9822E; --accent-deep: #7C5E1F; --accent-bg: #FBEEDA; }
+body[data-subject="tafseer"] { --accent: #2D7A45; --accent-deep: #1c5230; --accent-bg: #E7F0E4; }
+body[data-subject="sirah"]   { --accent: #52B788; --accent-deep: #276641; --accent-bg: #E1F3EA; }
+body[data-subject="aqeedah"] { --accent: #1B4F72; --accent-deep: #123a56; --accent-bg: #E3EEF6; }
+body[data-subject="fiqh"]    { --accent: #7B3131; --accent-deep: #5c2323; --accent-bg: #F6E6E1; }
+body[data-subject="lughah"]  { --accent: #5B3A6B; --accent-deep: #402850; --accent-bg: #EEE4F1; }
+body[data-subject="general"] { --accent: #8C5B12; --accent-deep: #64400d; --accent-bg: #FBEEDA; }
+
+/* ---------------------------------------------------------------------
+   Reset + base
+   --------------------------------------------------------------------- */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    margin: 0;
+    background: var(--vellum);
+    color: var(--ink);
+    font-family: 'Literata', Georgia, serif;
+    line-height: 1.65;
+}
+.ar {
+    font-family: 'Amiri', 'Traditional Arabic', serif;
+    direction: rtl;
+    unicode-bidi: isolate;
+}
+h1, h2, h3, h4 { font-family: 'Inter', sans-serif; letter-spacing: -0.01em; margin: 0; }
+a { color: inherit; }
+img, svg { max-width: 100%; }
+
+.lec-wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+.lec-eyebrow {
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--accent-deep);
+}
+
+/* ---------------------------------------------------------------------
+   Top bar — identical across the hub + every lecture page
+   --------------------------------------------------------------------- */
+.lec-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px;
+    background: rgba(246, 240, 222, .95);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(8px);
+    position: sticky; top: 0; z-index: 60;
+}
+.lec-back-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--ink-soft); text-decoration: none; font-size: .86rem;
+    font-family: 'Inter', sans-serif; font-weight: 500;
+    padding: 7px 14px; border: 1px solid var(--border); border-radius: 30px;
+    transition: all .2s ease; background: var(--card);
+}
+.lec-back-link:hover { color: var(--accent-deep); border-color: var(--accent); }
+.lec-topbar-badge {
+    font-family: 'Inter', sans-serif; font-size: .68rem; letter-spacing: 2px;
+    color: var(--accent-deep); border: 1px solid var(--border); background: var(--accent-bg);
+    padding: 5px 12px; border-radius: 30px; text-transform: uppercase; white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------
+   Hero
+   --------------------------------------------------------------------- */
+.corner-svg { position: absolute; width: 96px; height: 96px; opacity: .55; }
+.corner-tl { top: 14px; left: 14px; }
+.corner-tr { top: 14px; right: 14px; transform: scaleX(-1); }
+.hero-star { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: .06; width: 520px; height: 520px; }
+
+.lec-hero {
+    position: relative;
+    background: linear-gradient(180deg, var(--dark-2) 0%, var(--dark-1) 100%);
+    color: var(--dark-cream);
+    padding: 56px 24px 48px;
+    text-align: center;
+    overflow: hidden;
+    border-bottom: 4px solid var(--accent);
+}
+.lec-hero .lec-kicker {
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+    letter-spacing: .18em; text-transform: uppercase; color: var(--dark-gold);
+    margin-bottom: 14px; position: relative;
+}
+.lec-hero h1 {
+    font-family: 'Amiri', serif; font-size: clamp(1.9rem, 5vw, 3rem); font-weight: 700;
+    color: #FBF6E8; margin-bottom: 10px; position: relative;
+}
+.lec-hero .lec-sub {
+    font-family: 'Literata', serif; font-size: 18px; color: #CBD3E8;
+    font-style: italic; margin-bottom: 18px; position: relative; max-width: 680px;
+    margin-left: auto; margin-right: auto;
+}
+.lec-hero .lec-tagline {
+    font-family: 'Inter', sans-serif; font-size: 13.5px; color: #9FAAC7;
+    max-width: 620px; margin: 0 auto; position: relative;
+}
+.lec-hero-ornament { font-size: 22px; color: var(--dark-gold); letter-spacing: 8px; margin-bottom: 12px; opacity: .8; position: relative; }
+.lec-hero-badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 18px; position: relative; }
+.lec-hero-badge {
+    display: inline-block; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+    background: rgba(216, 196, 138, .15); border: 1px solid rgba(216, 196, 138, .4);
+    color: var(--dark-cream); padding: 6px 15px; border-radius: 20px;
+}
+
+/* ---------------------------------------------------------------------
+   Pills navigation — sticky, used for jumping between sessions/modules
+   --------------------------------------------------------------------- */
+.lec-pills-nav {
+    position: sticky; top: 49px; z-index: 55;
+    background: rgba(246, 240, 222, .96);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 0;
+}
+.lec-pills-inner {
+    max-width: var(--maxw); margin: 0 auto; padding: 0 24px;
+    display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+}
+.lec-pills-inner::-webkit-scrollbar { display: none; }
+.lec-pill {
+    font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 500; color: var(--ink-soft);
+    white-space: nowrap; padding: 7px 13px; border-radius: 20px; text-decoration: none;
+    transition: .15s; border: 1px solid transparent;
+}
+.lec-pill:hover { background: var(--vellum-deep); color: var(--ink); }
+.lec-pill.is-active { background: var(--accent); color: #fff; border-color: var(--accent-deep); }
+.lec-pill .num {
+    display: inline-block; opacity: .65; margin-right: 4px; font-family: 'Amiri', serif;
+}
+
+/* ---------------------------------------------------------------------
+   Sections
+   --------------------------------------------------------------------- */
+.lec-main { padding: 44px 0 24px; }
+.lec-section { margin-bottom: 52px; scroll-margin-top: 110px; }
+.lec-section-head {
+    display: flex; align-items: baseline; gap: 14px; margin-bottom: 20px;
+    padding-bottom: 13px; border-bottom: 2px solid var(--border);
+}
+.lec-section-num {
+    font-family: 'Amiri', serif; font-size: 15px; color: var(--accent-deep); font-weight: 700;
+    background: var(--accent-bg); border-radius: 50%; width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.lec-section-head h2 { font-size: 24px; color: var(--ink); font-weight: 700; }
+.lec-section-head .ar-title { font-family: 'Amiri', serif; font-size: 20px; color: var(--accent-deep); margin-left: 8px; }
+.lec-section-desc { color: var(--ink-soft); font-size: 15px; margin: -8px 0 20px; max-width: 820px; }
+
+/* ---------------------------------------------------------------------
+   Session card — the atomic content unit (module / session / lesson)
+   --------------------------------------------------------------------- */
+.lec-session {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow); margin-bottom: 28px; overflow: hidden;
+    border-left: 5px solid var(--accent); scroll-margin-top: 110px;
+}
+.lec-session-header {
+    padding: 18px 24px 14px; display: flex; align-items: flex-start; gap: 14px;
+    background: linear-gradient(to right, var(--accent-bg), transparent);
+}
+.lec-session-num {
+    min-width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Amiri', serif; font-size: 1.15rem; font-weight: 700;
+    background: var(--accent); color: #fff;
+}
+.lec-session-title-block h3 { font-size: 1.15rem; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.lec-session-tag {
+    font-size: .74rem; color: var(--ink-mute); letter-spacing: .07em; text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+}
+.lec-session-body { padding: 6px 24px 24px; }
+.lec-session-body p { margin: 8px 0; font-size: 15.5px; }
+.lec-session-body ul, .lec-session-body ol { margin: 8px 0; padding-left: 20px; }
+.lec-session-body li { margin: 5px 0; font-size: 15px; }
+
+/* per-session period theming (historical era colour-coding, independent
+   of the overall subject accent) */
+.lec-session.theme-red  { border-left-color: #8B2635; }
+.lec-session.theme-blue { border-left-color: #1B4F72; }
+.lec-session.theme-gold { border-left-color: var(--gold); }
+.lec-session.theme-teal { border-left-color: #52B788; }
+.lec-session.theme-red  .lec-session-header { background: linear-gradient(to right, rgba(139,38,53,.07), transparent); }
+.lec-session.theme-blue .lec-session-header { background: linear-gradient(to right, rgba(27,79,114,.07), transparent); }
+.lec-session.theme-gold .lec-session-header { background: linear-gradient(to right, rgba(201,168,76,.1), transparent); }
+.lec-session.theme-teal .lec-session-header { background: linear-gradient(to right, rgba(82,183,136,.09), transparent); }
+.lec-session.theme-red  .lec-session-num { background: #8B2635; }
+.lec-session.theme-blue .lec-session-num { background: #1B4F72; }
+.lec-session.theme-gold .lec-session-num { background: var(--gold); color: var(--dark-1); }
+.lec-session.theme-teal .lec-session-num { background: #52B788; color: var(--dark-1); }
+.lec-session.theme-red  .lec-discourse { border-top-color: #8B2635; }
+.lec-session.theme-blue .lec-discourse { border-top-color: #1B4F72; }
+.lec-session.theme-gold .lec-discourse { border-top-color: var(--gold); }
+.lec-session.theme-teal .lec-discourse { border-top-color: #52B788; }
+.lec-session.theme-red  .lec-discourse-title { color: #8B2635; }
+.lec-session.theme-blue .lec-discourse-title { color: #1B4F72; }
+.lec-session.theme-gold .lec-discourse-title { color: #6B4423; }
+.lec-session.theme-red  .lec-point-list li { border-left-color: #e08090; }
+.lec-session.theme-blue .lec-point-list li { border-left-color: #7FB3D3; }
+.lec-session.theme-gold .lec-point-list li { border-left-color: var(--gold); }
+
+/* discourse — a titled sub-block inside a session (narrative + hadith quotes) */
+.lec-discourse {
+    margin: 18px 0; padding: 16px 18px; background: var(--vellum); border-radius: var(--radius);
+    border-top: 3px solid var(--accent);
+}
+.lec-discourse-title {
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: .95rem; color: var(--accent-deep);
+    margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+}
+.lec-discourse p { margin-bottom: 8px; color: var(--ink-soft); }
+.lec-discourse p:last-child { margin-bottom: 0; }
+
+/* ---------------------------------------------------------------------
+   Card — smaller, general-purpose content block
+   --------------------------------------------------------------------- */
+.lec-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 20px 22px; margin-bottom: 16px;
+}
+.lec-card h3, .lec-card h4 { font-size: 16px; color: var(--accent-deep); margin-bottom: 10px; font-weight: 600; }
+.lec-card p { margin: 8px 0; font-size: 15px; }
+.lec-cards-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 14px 0; }
+
+/* ---------------------------------------------------------------------
+   Callout / colored box (5 hues) — replaces "box", "callout",
+   "highlight-box", "tip-box", "discourse" from the source docs
+   --------------------------------------------------------------------- */
+.lec-callout {
+    border-radius: var(--radius); padding: 15px 19px; margin: 14px 0;
+    border-left: 4px solid; font-size: 14.5px;
+}
+.lec-callout-title {
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 12.5px; text-transform: uppercase;
+    letter-spacing: .05em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+.lec-callout p { margin: 4px 0; }
+.lec-callout.gold, .lec-callout.amber { background: var(--amber-bg); border-color: var(--amber); }
+.lec-callout.gold .lec-callout-title, .lec-callout.amber .lec-callout-title { color: var(--amber); }
+.lec-callout.maroon, .lec-callout.red { background: var(--maroon-bg); border-color: var(--maroon); }
+.lec-callout.maroon .lec-callout-title, .lec-callout.red .lec-callout-title { color: var(--maroon); }
+.lec-callout.sage, .lec-callout.green { background: var(--sage-bg); border-color: var(--sage); }
+.lec-callout.sage .lec-callout-title, .lec-callout.green .lec-callout-title { color: var(--sage); }
+.lec-callout.teal, .lec-callout.blue { background: var(--teal-bg); border-color: var(--teal); }
+.lec-callout.teal .lec-callout-title, .lec-callout.blue .lec-callout-title { color: var(--teal); }
+.lec-callout.plum { background: var(--plum-bg); border-color: var(--plum); }
+.lec-callout.plum .lec-callout-title { color: var(--plum); }
+
+/* hadith / quote-style callout */
+.lec-quote {
+    background: linear-gradient(135deg, var(--vellum), var(--vellum-deep));
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px 14px 34px;
+    margin: 12px 0; font-style: italic; color: var(--ink-soft); font-size: .92rem; position: relative;
+}
+.lec-quote::before {
+    content: '\201C'; position: absolute; left: 10px; top: 2px; font-size: 2.4rem;
+    color: var(--accent); opacity: .5; font-family: 'Amiri', serif; line-height: 1;
+}
+.lec-quote-ref { display: block; font-style: normal; font-size: .78rem; color: var(--ink-mute); margin-top: 6px; }
+
+/* ---------------------------------------------------------------------
+   Key points summary block
+   --------------------------------------------------------------------- */
+.lec-key-points {
+    background: var(--dark-1); color: var(--dark-cream); border-radius: var(--radius);
+    padding: 16px 20px; margin-top: 16px;
+}
+.lec-key-points h4 {
+    font-family: 'Inter', sans-serif; color: var(--dark-gold); margin-bottom: 10px;
+    font-size: .9rem; letter-spacing: .04em; text-transform: uppercase;
+}
+.lec-key-points ul { padding-left: 18px; margin: 0; }
+.lec-key-points li { font-size: .88rem; margin-bottom: 5px; color: #E3E8F0; }
+
+.lec-point-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+.lec-point-list li {
+    padding: 8px 14px; background: var(--card); border-radius: 6px; font-size: .93rem;
+    border-left: 3px solid var(--accent); color: var(--ink-soft); line-height: 1.6;
+}
+.lec-point-list li strong { color: var(--ink); }
+
+/* ---------------------------------------------------------------------
+   Tables
+   --------------------------------------------------------------------- */
+.lec-table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); margin: 14px 0; }
+.lec-table-wrap table { margin: 0; border: none; border-radius: 0; }
+
+/* generic table styling — applies whether or not a table sits inside
+   .lec-table-wrap, so bare <table> elements in content need no wrapper */
+.lec-main table, .lec-session-body table {
+    width: 100%; border-collapse: collapse; background: var(--card); font-size: 14.5px;
+    border-radius: var(--radius); overflow: hidden; margin: 14px 0;
+    border: 1px solid var(--border);
+}
+.lec-main th, .lec-session-body th {
+    background: var(--vellum-deep); color: var(--ink); font-family: 'Inter', sans-serif;
+    font-weight: 600; font-size: 12.5px; text-transform: uppercase; letter-spacing: .04em;
+    padding: 11px 14px; text-align: left; border-bottom: 2px solid var(--border);
+}
+.lec-main td, .lec-session-body td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.lec-main tr:last-child td, .lec-session-body tr:last-child td { border-bottom: none; }
+.lec-main tr:hover td, .lec-session-body tr:hover td { background: var(--vellum); }
+
+/* ---------------------------------------------------------------------
+   Badges — generic pill + hadith-authenticity status badges
+   --------------------------------------------------------------------- */
+.lec-badge {
+    display: inline-block; background: var(--accent); color: #fff; font-size: .7rem; font-weight: 700;
+    padding: 2px 10px; border-radius: 20px; letter-spacing: .05em; text-transform: uppercase;
+    vertical-align: middle; margin-left: 6px; font-family: 'Inter', sans-serif;
+}
+.lec-status {
+    display: inline-flex; align-items: center; gap: 4px; font-size: .74rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px; border: 1px solid; font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+}
+.lec-status-shahih { color: var(--shahih); background: var(--shahih-bg); border-color: var(--shahih-border); }
+.lec-status-hasan { color: var(--hasan); background: var(--hasan-bg); border-color: var(--hasan-border); }
+.lec-status-hasan-mursal { color: var(--hasan-mursal); background: var(--hasan-mursal-bg); border-color: var(--hasan-mursal-border); }
+.lec-status-daif { color: var(--daif); background: var(--daif-bg); border-color: var(--daif-border); }
+.lec-status-daif-jiddan { color: var(--daif-jiddan); background: var(--daif-jiddan-bg); border-color: var(--daif-jiddan-border); }
+.lec-status-mursal { color: var(--mursal); background: var(--mursal-bg); border-color: var(--mursal-border); }
+.lec-status-munkar { color: var(--munkar); background: var(--munkar-bg); border-color: var(--munkar-border); }
+.lec-status-mawdu { color: var(--mawdu); background: var(--mawdu-bg); border-color: var(--mawdu-border); }
+.lec-status-not-est { color: var(--not-est); background: var(--not-est-bg); border-color: var(--not-est-border); }
+
+/* ---------------------------------------------------------------------
+   Legend / glossary / search bar (used by reference-table style pages)
+   --------------------------------------------------------------------- */
+.lec-legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; justify-content: center; }
+.lec-legend-item {
+    display: flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px;
+    font-size: .75rem; font-weight: 600; cursor: pointer; transition: opacity .2s, transform .2s;
+    font-family: 'Inter', sans-serif; border: 1px solid transparent;
+}
+.lec-legend-item:hover { opacity: .75; transform: translateY(-1px); }
+.lec-legend-item.is-active { box-shadow: 0 0 0 2px currentColor inset; }
+.lec-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* reference-table section title bar (single-line, no numbered circle) */
+.lec-ref-title {
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1.02rem; color: var(--accent-deep);
+    border-left: 5px solid var(--accent); padding: 9px 16px; margin-bottom: 14px;
+    background: linear-gradient(to right, var(--accent-bg), transparent);
+    border-radius: 0 8px 8px 0;
+}
+
+/* reference table column-width utilities */
+.col-no { width: 32px; color: var(--ink-mute); font-size: .75rem; }
+.col-narration { width: 38%; }
+.col-source { width: 20%; color: var(--ink-soft); font-size: .78rem; }
+.col-status { width: 120px; }
+.col-reason { color: var(--ink-mute); font-size: .78rem; }
+@media (max-width: 640px) { .col-source, .col-reason { display: none; } }
+tr.highlight td { background: #fef9c3 !important; }
+.lec-glossary {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px;
+    margin: 16px 0; padding: 18px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.lec-glossary-item .term { font-weight: 700; font-size: .88rem; margin-bottom: 2px; }
+.lec-glossary-item .def { font-size: .8rem; color: var(--ink-soft); }
+
+.lec-search-bar { margin: 18px 0; }
+.lec-search-bar input {
+    width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius);
+    font-family: 'Inter', sans-serif; font-size: .92rem; background: var(--card); color: var(--ink);
+}
+.lec-search-bar input:focus { outline: none; border-color: var(--accent); }
+
+/* ---------------------------------------------------------------------
+   Quick facts / scholar block (Tafsir-style reference panels)
+   --------------------------------------------------------------------- */
+.lec-quick-facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;
+    background: var(--vellum-deep); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px; margin: 14px 0;
+}
+.lec-quick-facts .qf { text-align: center; }
+.lec-quick-facts .qf .lbl { font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-mute); font-family: 'Inter', sans-serif; }
+.lec-quick-facts .qf .val { font-size: .95rem; font-weight: 600; color: var(--ink); margin-top: 2px; }
+
+.lec-scholar-block {
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+    padding: 12px 16px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    margin: 10px 0;
+}
+.lec-scholar-block .scholar-name { font-weight: 700; color: var(--accent-deep); }
+.lec-scholar-block .scholar-dates { font-size: .8rem; color: var(--ink-mute); }
+.lec-scholar-block .scholar-work { font-size: .85rem; color: var(--ink-soft); font-style: italic; }
+
+/* ---------------------------------------------------------------------
+   Timeline strip (dark full-bleed horizontal scroller)
+   --------------------------------------------------------------------- */
+.lec-timeline {
+    background: var(--dark-1); padding: 28px 0; overflow-x: auto;
+}
+.lec-timeline h2 {
+    font-family: 'Amiri', serif; color: var(--dark-gold); text-align: center;
+    margin-bottom: 20px; font-size: 1.2rem;
+}
+.lec-timeline-track { display: flex; gap: 4px; padding: 0 24px; min-width: max-content; }
+
+/* ---------------------------------------------------------------------
+   Mind-map wrapper (generic container for bespoke SVG/diagram content)
+   --------------------------------------------------------------------- */
+.lec-mindmap-wrap {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    margin: 16px 0; overflow: hidden;
+}
+.lec-mindmap-wrap > svg { display: block; width: 100%; }
+.lec-mm-header {
+    padding: 11px 20px; background: var(--dark-1); border-bottom: 2px solid var(--accent);
+    font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--dark-gold);
+}
+.lec-session-sub { font-size: .85rem; color: var(--ink-mute); font-style: italic; margin-top: 2px; }
+.lec-diagram-wrapper {
+    margin: 20px 0; border-radius: var(--radius); overflow: hidden;
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+}
+.lec-diagram-wrapper figcaption {
+    background: var(--vellum-deep); text-align: center; font-size: .8rem; color: var(--ink-mute);
+    padding: 7px; font-style: italic;
+}
+
+/* ---------------------------------------------------------------------
+   Accordion module — collapsible <details> content unit, used for
+   dense reference material (grammar modules, fiqh rulings, etc.)
+   --------------------------------------------------------------------- */
+details.lec-module {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    margin-bottom: 12px; box-shadow: var(--shadow); overflow: hidden;
+}
+details.lec-module summary {
+    padding: 15px 20px; cursor: pointer; list-style: none; display: flex; align-items: center; gap: 14px;
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 15px; color: var(--ink);
+    transition: .15s;
+}
+details.lec-module summary::-webkit-details-marker { display: none; }
+details.lec-module summary:hover { background: var(--vellum-deep); }
+details.lec-module summary .lec-arrow { margin-left: auto; transition: .2s; color: var(--ink-mute); font-size: 14px; }
+details.lec-module[open] summary .lec-arrow { transform: rotate(180deg); }
+details.lec-module .lec-module-body { padding: 4px 20px 20px; }
+
+/* ---------------------------------------------------------------------
+   Grid utilities
+   --------------------------------------------------------------------- */
+.lec-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.lec-grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.lec-grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media (max-width: 760px) { .lec-grid2, .lec-grid3, .lec-grid4 { grid-template-columns: 1fr; } }
+
+.lec-letterbox {
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 8px;
+}
+.lec-letterbox .ar { font-size: 28px; margin-bottom: 4px; }
+.lec-letterbox .name { font-family: 'Inter', sans-serif; font-size: 11px; color: var(--ink-mute); }
+
+/* ---------------------------------------------------------------------
+   Filterable list controls (vocab browsers, glossaries, etc.)
+   --------------------------------------------------------------------- */
+.lec-filter-controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
+.lec-filter-search {
+    flex: 1; min-width: 220px; padding: 10px 16px; border: 1px solid var(--border); border-radius: 8px;
+    font-family: 'Inter', sans-serif; font-size: 14px; background: var(--card); color: var(--ink);
+}
+.lec-filter-search:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.lec-tab-btn {
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; padding: 8px 15px; border-radius: 20px;
+    border: 1px solid var(--border); background: var(--card); color: var(--ink-soft); cursor: pointer; transition: .15s;
+}
+.lec-tab-btn.is-active { background: var(--ink); color: #F3ECD8; border-color: var(--ink); }
+.lec-tab-btn:hover:not(.is-active) { background: var(--vellum-deep); }
+.lec-filter-count { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink-mute); margin-bottom: 10px; }
+.lec-cat-title {
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 14px; color: var(--accent-deep);
+    margin: 20px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+}
+.lec-tag {
+    font-size: 11px; background: var(--maroon-bg); color: var(--maroon); padding: 1px 7px;
+    border-radius: 8px; font-family: 'Inter', sans-serif; font-weight: 600;
+}
+.lec-no-results { padding: 30px; text-align: center; color: var(--ink-mute); font-family: 'Inter', sans-serif; font-size: 14px; }
+
+.lec-progress-track { display: flex; gap: 4px; margin: 14px 0 0; flex-wrap: wrap; }
+.lec-progress-dot {
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: var(--ink-mute);
+    background: var(--vellum-deep); border-radius: 6px; padding: 4px 8px;
+}
+
+/* table cell utilities */
+td.arabic { font-family: 'Amiri', serif; font-size: 18px; direction: rtl; color: var(--ink); }
+td.bold { font-weight: 600; color: var(--accent-deep); }
+td.center { text-align: center; }
+
+/* small one-off helpers */
+.ar-inline { font-family: 'Amiri', serif; font-size: 1.1em; color: var(--ink); margin-left: 6px; font-weight: 400; }
+.lec-mindmap-svg { width: 100%; height: auto; display: block; }
+.lec-divider-deco { display: flex; align-items: center; justify-content: center; margin: 8px 0 30px; gap: 10px; }
+.lec-divider-deco svg { width: 16px; height: 16px; opacity: .5; }
+.lec-divider-deco .line { height: 1px; background: var(--border); flex: 1; max-width: 180px; }
+.lec-footer .ar { font-size: 16px; color: var(--dark-gold); margin-bottom: 8px; display: block; }
+
+/* ---------------------------------------------------------------------
+   Misc utility
+   --------------------------------------------------------------------- */
+.lec-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0; }
+.lec-divider { text-align: center; color: var(--accent); font-size: 1.1rem; letter-spacing: 10px; margin: 10px 0; opacity: .5; }
+.lec-hidden { display: none !important; }
+
+/* ---------------------------------------------------------------------
+   Back-to-top button
+   --------------------------------------------------------------------- */
+.lec-top-btn {
+    position: fixed; right: 22px; bottom: 22px; width: 44px; height: 44px; z-index: 70;
+    border-radius: 50%; border: none; cursor: pointer; display: grid; place-items: center;
+    background: var(--accent); color: #fff; box-shadow: 0 8px 22px rgba(0,0,0,.25);
+    opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s ease;
+}
+.lec-top-btn.is-visible { opacity: 1; pointer-events: auto; }
+.lec-top-btn:hover { transform: translateY(-3px); }
+
+/* ---------------------------------------------------------------------
+   Footer
+   --------------------------------------------------------------------- */
+.lec-footer {
+    background: var(--dark-1); color: rgba(255, 255, 255, .45);
+    text-align: center; padding: 30px; font-size: .82rem; font-family: 'Inter', sans-serif;
+}
+.lec-footer a { color: var(--dark-gold); text-decoration: none; }
+.lec-footer a:hover { color: #fff; }
+
+/* ---------------------------------------------------------------------
+   Responsive
+   --------------------------------------------------------------------- */
+@media (max-width: 720px) {
+    .lec-hero { padding: 44px 18px 38px; }
+    .lec-session-header, .lec-session-body { padding-left: 16px; padding-right: 16px; }
+    .lec-two-col { grid-template-columns: 1fr; }
+    .lec-topbar { padding: 12px 16px; }
+    .lec-pills-nav { top: 45px; }
+}
+
+@media print {
+    .lec-topbar, .lec-pills-nav, .lec-top-btn { display: none !important; }
+    .lec-hero { background: var(--dark-1) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
