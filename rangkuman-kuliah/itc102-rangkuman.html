@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to Computers (ITC 102) - Rangkuman Komprehensif</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/lecture.css?v=4">
+<script src="assets/js/lecture.js?v=3" defer></script>
+</head>
+<body data-subject="general">
+<div class="lec-topbar">
+ <a href="index.html" class="lec-back-link"><i class="fas fa-arrow-left"></i> Kembali ke Rangkuman Kuliah</a>
+ <span class="lec-topbar-badge">Introduction to Computers (ITC 102) &middot; Semester 1</span>
+</div>
+
+<div class="lec-hero">
+ <div class="lec-kicker">Islamic Online University &middot; Semester 1</div>
+ <h1>Introduction to Computers</h1>
+ <div class="lec-sub">Rangkuman Komprehensif Satu Semester Penuh</div>
+ <div class="lec-tagline">Dari konsep dasar teknologi informasi, perangkat keras/lunak, internet, dan keamanan digital, hingga Microsoft Word/Excel/PowerPoint/Access, kolaborasi online, kecerdasan buatan, dan etika ICT dari perspektif Islam.</div>
+ <div class="lec-hero-badge">Mencakup Modul 1-30</div>
+</div>
+
+<nav class="lec-pills-nav">
+ <div class="lec-pills-inner">
+ <a class="lec-pill" href="#pendahuluan">Pendahuluan</a>
+ <a class="lec-pill" href="#dasar-it">Dasar IT</a>
+ <a class="lec-pill" href="#cpu">CPU &amp; Memori</a>
+ <a class="lec-pill" href="#io">Input &amp; Output</a>
+ <a class="lec-pill" href="#storage">Storage</a>
+ <a class="lec-pill" href="#software">Perangkat Lunak</a>
+ <a class="lec-pill" href="#sistem">Sistem Operasi</a>
+ <a class="lec-pill" href="#internet">Internet &amp; WWW</a>
+ <a class="lec-pill" href="#ecommerce">E-Commerce</a>
+ <a class="lec-pill" href="#webtools">Evolusi Web &amp; Tools</a>
+ <a class="lec-pill" href="#keamanan">Keamanan Digital</a>
+ <a class="lec-pill" href="#word">MS Word</a>
+ <a class="lec-pill" href="#excel">MS Excel</a>
+ <a class="lec-pill" href="#ppt">MS PowerPoint</a>
+ <a class="lec-pill" href="#access">MS Access</a>
+ <a class="lec-pill" href="#kolaborasi">Kolaborasi Online</a>
+ <a class="lec-pill" href="#ai">Kecerdasan Buatan</a>
+ <a class="lec-pill" href="#etika">Etika ICT &amp; Islam</a>
+ <a class="lec-pill" href="#glosarium">Glosarium</a>
+ <a class="lec-pill" href="#examqs">Pertanyaan Kajian</a>
+ </div>
+</nav>
+
+<main class="lec-wrap lec-main">
+
+<!-- ============ PENDAHULUAN ============ -->
+<section id="pendahuluan">
+ <div class="lec-section-head"><div class="lec-section-num">P</div><h2>Pendahuluan</h2></div>
+ <div class="lec-callout gold">
+ <div class="lec-callout-title">Kenapa bagian ini penting</div>
+ <p>Mata kuliah ini memberi literasi komputer dasar - dari cara kerja perangkat keras dan lunak, internet, keamanan digital, hingga keterampilan praktis Microsoft Office (Word, Excel, PowerPoint, Access). Modul terakhir (28-30) unik karena membahas kolaborasi online, kecerdasan buatan, dan etika ICT ditinjau dari perspektif Al-Qur'an dan Hadis - relevan bagi mahasiswa IOU yang belajar jarak jauh sepenuhnya berbasis teknologi.</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Sumber Referensi Mata Kuliah</h3>
+ <div class="lec-table-wrap">
+ <table>
+ <thead><tr><th>Sumber</th><th>Keterangan</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Discovering Computers</td><td>Seri buku teks literasi komputer (Vermaat, dkk., Cengage Learning) - istilah dan struktur topik modul 1-10 (IT, perangkat keras, input/output, storage, software, internet, keamanan) mengikuti kerangka buku ini</td></tr>
+ <tr><td class="bold">Microsoft Office 2019/365 Dokumentasi Resmi</td><td>Modul 11-27 (Word, Excel, PowerPoint, Access) - materi praktik langkah demi langkah menggunakan antarmuka Microsoft Office</td></tr>
+ <tr><td class="bold">Silabus Modul 28-30 (materi kuliah IOU)</td><td>Kolaborasi online (Google Docs/Forms), kecerdasan buatan, dan etika ICT - modul 30 secara khusus menyertakan rujukan ayat Al-Qur'an dan Hadis untuk setiap topik etika</td></tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+</section>
+
+<!-- ============ DASAR IT ============ -->
+<section id="dasar-it">
+ <div class="lec-section-head"><div class="lec-section-num">1</div><h2>Konsep Dasar Teknologi Informasi</h2></div>
+
+ <div class="lec-card">
+ <h3>3 Era &amp; Elemen Dasar IT</h3>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Era</th><th>Ciri Khas</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Era Pertanian</td><td>Pengolahan lahan, ternak, subsistensi</td></tr>
+ <tr><td class="bold">Era Industri</td><td>Otomasi, revolusi industri, penemuan mesin</td></tr>
+ <tr><td class="bold">Era Informasi (abad 21)</td><td>Pekerja/pengguna berfokus pada penciptaan, distribusi, dan pemakaian informasi</td></tr>
+ </tbody>
+ </table></div>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Elemen</th><th>Definisi</th><th>Contoh</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Data</td><td>Fakta mentah, belum diproses, tidak bermakna sendiri</td><td>Teks, diagram, grafik, angka, nama</td></tr>
+ <tr><td class="bold">Informasi</td><td>Data yang telah diproses, bermakna bagi pengguna</td><td>Ide, paragraf, kalimat, cerita</td></tr>
+ <tr><td class="bold">Pengetahuan (Knowledge)</td><td>Informasi yang disusun untuk menyampaikan pemahaman dan pengalaman memecahkan masalah</td><td>Informasi yang sudah terorganisasi</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Fungsi &amp; Manfaat IT</h3>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Fungsi</th><th>Contoh</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Collecting (Mengumpulkan)</td><td>Membaca meteran listrik</td></tr>
+ <tr><td class="bold">Processing (Memproses)</td><td>Menghitung suara pemilu, memproses tagihan</td></tr>
+ <tr><td class="bold">Generating (Menghasilkan)</td><td>Tagihan listrik, tabel, grafik</td></tr>
+ <tr><td class="bold">Storing (Menyimpan)</td><td>Catatan pajak, catatan keanggotaan</td></tr>
+ <tr><td class="bold">Retrieving (Mengambil Kembali)</td><td>E-mail, pesan suara, laporan</td></tr>
+ <tr><td class="bold">Delivering (Menyampaikan)</td><td>Mengirim e-mail, pesan suara</td></tr>
+ </tbody>
+ </table></div>
+ <p>4 manfaat utama IT: <strong>Speed</strong> (kecepatan), <strong>Consistency</strong> (konsistensi hasil untuk pekerjaan berulang), <strong>Precision</strong> (presisi/akurasi), <strong>Reliability</strong> (dapat diandalkan menghasilkan hasil yang sama berulang kali).</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Klasifikasi Komputer &amp; Pengguna</h3>
+ <p>4 kategori komputer: <strong>Microcomputer</strong>, <strong>Minicomputer</strong>, <strong>Mainframe</strong>, <strong>Supercomputer</strong>. 5 tipe pengguna teknologi: Home User, Small/Home Office User, Mobile User, Power User, Enterprise User.</p>
+ <p>E-Government (G2C, G2E, G2B, G2G) memakai teknologi serupa E-Commerce (B2C, B2B, C2C) untuk mengoptimalkan layanan - 3 dampak ICT pada e-governance: inovasi, dukungan proses, dan otomasi proses.</p>
+ </div>
+</section>
+
+<!-- ============ CPU & MEMORI ============ -->
+<section id="cpu">
+ <div class="lec-section-head"><div class="lec-section-num">2</div><h2>Perangkat Keras: CPU &amp; Memori</h2></div>
+
+ <div class="lec-card">
+ <h3>Central Processing Unit (CPU)</h3>
+ <p>CPU (prosesor) menafsirkan dan menjalankan instruksi dasar serta mengendalikan operasi komputer. Terdiri dari <strong>Control Unit (CU)</strong> - mengarahkan dan mengoordinasikan seluruh aktivitas komputer, serta <strong>Arithmetic Logic Unit (ALU)</strong> - melakukan operasi aritmatika (+, -, *, /) dan operasi logika (AND, OR, NOT, =, &lt;, &gt;).</p>
+ <div class="lec-callout gold">
+ <div class="lec-callout-title">Machine Cycle (Siklus Mesin)</div>
+ <p>4 tahap: <strong>Fetching</strong> (mengambil instruksi) &rarr; <strong>Decoding</strong> (menerjemahkan) &rarr; <strong>Executing</strong> (menjalankan) &rarr; <strong>Storing</strong> (menyimpan hasil).</p>
+ </div>
+ <p>Produsen prosesor PC terkemuka: Intel, AMD, VIA. Produsen prosesor perangkat mobile: Qualcomm (Snapdragon), Huawei (Kirin), Samsung (Exynos), Nvidia (Tegra).</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Memori: RAM &amp; ROM</h3>
+ <p>Bit (binary digit) adalah unit data terkecil; Byte (256 karakter) adalah unit dasar memori.</p>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Jenis</th><th>Sifat</th><th>Contoh</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Volatile Memory</td><td>Kehilangan isi saat daya dimatikan</td><td>RAM</td></tr>
+ <tr><td class="bold">Nonvolatile Memory</td><td>Isi tetap tersimpan meski daya dimatikan</td><td>ROM, flash memory, CMOS</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Perawatan Komputer &amp; Perangkat Mobile</h3>
+ <p><strong>Perawatan perangkat keras</strong>: bersihkan layar dengan kain lembap, bersihkan keyboard dengan compressed air, jaga ventilasi bebas debu. <strong>Perawatan perangkat lunak</strong>: hapus instalasi program tidak terpakai, defragment hard disk, instal software hanya dari sumber terpercaya. <strong>Menjaga baterai</strong>: isi penuh untuk perangkat baru, hindari cabut charger di tengah pengisian, nonaktifkan Wi-Fi/Bluetooth saat tidak dipakai, atur kecerahan layar.</p>
+ </div>
+</section>
+
+<!-- ============ INPUT & OUTPUT ============ -->
+<section id="io">
+ <div class="lec-section-head"><div class="lec-section-num">3</div><h2>Perangkat Input &amp; Output</h2></div>
+
+ <div class="lec-card">
+ <h3>3 Pendekatan Entri Data</h3>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Pendekatan</th><th>Deskripsi</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Offline (Batch)</td><td>Data dikoreksi dan dikonfirmasi sebelum diproses</td></tr>
+ <tr><td class="bold">Online</td><td>Data langsung diperiksa dan dikoreksi</td></tr>
+ <tr><td class="bold">Interactive</td><td>Data diperiksa setiap kali dimasukkan, tanpa menunggu seluruh data selesai</td></tr>
+ </tbody>
+ </table></div>
+ <p>Metode input umum: keyboard, pointing devices, touch screen, pen input, motion input, voice input, video input, scanner. Contoh aplikasi gabungan: POS Terminal (kasir supermarket) dan ATM (mesin bank) menggabungkan berbagai perangkat input (barcode scanner, card reader, fingerprint scanner) dan output (printer struk, layar).</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>4 Jenis Output &amp; Teknologi Terkait</h3>
+ <p>4 jenis output dasar: <strong>Text</strong>, <strong>Graphics</strong>, <strong>Audio</strong>, <strong>Video</strong>.</p>
+ <div class="lec-key-points">
+ <h4>Topik Tambahan Modul 3</h4>
+ <ul>
+ <li>Keamanan webcam: cabut/tutup lensa, gunakan kata sandi kuat</li>
+ <li>QR Code: barcode 2D yang dapat dipindai/dibuat lewat aplikasi khusus</li>
+ <li>Radiasi perangkat: minimalkan risiko dengan duduk jauh dari monitor, kurangi koneksi nirkabel</li>
+ <li>Embedded Technology &amp; Internet-of-Things (IoT): prosesor tertanam pada produk sehari-hari (jam alarm, kulkas, mesin cuci)</li>
+ <li>Assistive Technology: Braille Al-Qur'an pertama diproduksi 1985-1986 di Saudi Arabia mengikuti fatwa Grand Mufti Syaikh Abdul Aziz bin Baz</li>
+ </ul>
+ </div>
+ </div>
+</section>
+
+<!-- ============ STORAGE ============ -->
+<section id="storage">
+ <div class="lec-section-head"><div class="lec-section-num">4</div><h2>Penyimpanan Data (Storage)</h2></div>
+
+ <div class="lec-card">
+ <h3>Storage vs Memory</h3>
+ <p><strong>Storage</strong> (nonvolatile) menyimpan data secara permanen untuk penggunaan di masa depan, sedangkan <strong>Memory</strong> (kebanyakan volatile) menyimpan data sementara. Storage device diklasifikasikan menjadi Sequential Access (magnetic tape) dan Direct Access (magnetic disk, optical disk, flash/memory card).</p>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Jenis Storage</th><th>Contoh Penggunaan</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Hard Disk (HDD)</td><td>Sistem operasi, software, data pengguna - internal, eksternal, atau removable</td></tr>
+ <tr><td class="bold">Flash Memory/USB</td><td>Gambar digital, file untuk dibawa berpindah</td></tr>
+ <tr><td class="bold">CD/DVD</td><td>Software, backup, film, musik</td></tr>
+ <tr><td class="bold">Cloud Storage</td><td>Sinkronisasi file, backup, kolaborasi dokumen (Google Drive, Dropbox, iCloud)</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Head Crash &amp; Pemulihan File</h3>
+ <p>Penyebab head crash: jarak terlalu dekat antara head baca/tulis dan platter, debu/kotoran/rambut/asap, komponen usang, overheating, file rusak, lonjakan listrik. Tanda peringatan: komputer melambat, sering freeze, blue screen, suara aneh.</p>
+ <p>File yang dihapus sebenarnya tidak langsung hilang - hanya jalur aksesnya yang hilang. Cara pemulihan: jangan menyimpan file baru di disk tersebut, gunakan software freeware (Recuva, Recover My Files) atau jasa data recovery komersial.</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Jenis Storage Lain &amp; NAS/SAN</h3>
+ <p>Magnetic stripe card, smart card (contact/contactless), microfilm/microfiche, RFID tag. <strong>NAS</strong> (Network Attached Storage) - server di jaringan dengan alamat IP sendiri. <strong>SAN</strong> (Storage Area Network) - jaringan kecepatan tinggi menghubungkan storage ke banyak server, bahkan lintas lokasi jauh.</p>
+ </div>
+</section>
+
+<!-- ============ PERANGKAT LUNAK APLIKASI ============ -->
+<section id="software">
+ <div class="lec-section-head"><div class="lec-section-num">5</div><h2>Perangkat Lunak Aplikasi</h2></div>
+
+ <div class="lec-card">
+ <h3>Bentuk Perangkat Lunak Aplikasi</h3>
+ <p>Packaged software, custom software, web application, open source software, shareware, freeware, public-domain software. 4 kategori software aplikasi lanjutan: Business Software, Graphics &amp; Multimedia Software, Home/Personal/Education Software, Communication Software.</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>4 Kategori Productivity Software</h3>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Kategori</th><th>Fungsi</th><th>Contoh</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Word Processor</td><td>Membuat, mengedit, memformat dokumen (WYSIWYG - "What You See Is What You Get")</td><td>MS Word, Google Docs, LibreOffice Writer</td></tr>
+ <tr><td class="bold">Spreadsheet</td><td>Mengatur data dalam baris/kolom, kalkulasi dengan fungsi &amp; formula, membuat chart</td><td>MS Excel, Google Sheets, LibreOffice Calc</td></tr>
+ <tr><td class="bold">Database</td><td>Mengelola koleksi data untuk akses, pengambilan, dan pengelolaan</td><td>MS Access</td></tr>
+ <tr><td class="bold">Presentation</td><td>Membuat alat bantu visual untuk mengomunikasikan ide ke audiens</td><td>MS PowerPoint, Google Slides</td></tr>
+ </tbody>
+ </table></div>
+ <p>Fitur word processor lanjutan: AutoCorrect, AutoFormat, Collaboration, Grammar Checker, Mail Merge, Macros, Tracking Changes, Thesaurus, Voice Recognition.</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Web-Based &amp; Open Source Software</h3>
+ <p>Software berbasis web berjalan di server, diakses lewat browser - keuntungan: tanpa instalasi, memungkinkan kolaborasi, tanpa masalah kompatibilitas, data terupdate otomatis. Open source software didistribusikan dengan kode sumbernya dan lisensi modifikasi terbuka, contoh: LibreOffice, VLC, GIMP, Linux, Audacity.</p>
+ </div>
+</section>
+
+<!-- ============ SISTEM OPERASI ============ -->
+<section id="sistem">
+ <div class="lec-section-head"><div class="lec-section-num">6</div><h2>Perangkat Lunak Sistem &amp; Sistem Operasi</h2></div>
+
+ <div class="lec-card">
+ <h3>4 Kategori System Software</h3>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Jenis</th><th>Peran</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Operating System</td><td>Mengoperasikan komputer, mengoordinasikan sumber daya, menyediakan antarmuka pengguna, menjalankan aplikasi</td></tr>
+ <tr><td class="bold">Utility Software</td><td>Tugas khusus terkait manajemen sumber daya dan file - identifikasi masalah hardware, file hilang, backup data</td></tr>
+ <tr><td class="bold">Device Driver</td><td>Memungkinkan perangkat input/output berkomunikasi dengan sistem komputer</td></tr>
+ <tr><td class="bold">Language Translator</td><td>Menerjemahkan instruksi program yang ditulis programmer ke bahasa yang dipahami komputer</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>5 Fitur Sistem Operasi</h3>
+ <p><strong>Multitasking</strong> (menjalankan lebih dari satu proses bersamaan), <strong>Multi User</strong> (lebih dari satu pengguna mengakses sekaligus), <strong>Multiprocessing</strong> (menangani lebih dari satu prosesor sekaligus), <strong>Batch Processing</strong> (mode pemrosesan bertahap), <strong>Virtual Memory</strong> (memakai secondary storage sebagai bagian dari memori utama). OS desktop utama: Windows, Mac OS, UNIX, Chrome OS. OS mobile utama: Android, iOS.</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Utility Programs</h3>
+ <p>Disk Cleanup, Disk Defragmenter, Personal Firewall, Antivirus Programs, Backup and Restore Utilities. Internet filter: Anti-spam programs, Web filters, Phishing filters, Pop-up blockers.</p>
+ </div>
+</section>
+
+<!-- ============ INTERNET & WWW ============ -->
+<section id="internet">
+ <div class="lec-section-head"><div class="lec-section-num">7</div><h2>Internet &amp; World Wide Web</h2></div>
+
+ <div class="lec-card">
+ <h3>Evolusi Internet</h3>
+ <p>Berakar dari proyek Pentagon's Advanced Research Projects Agency (ARPA) - beroperasi September 1969, menghubungkan 4 universitas: UCLA, UC Santa Barbara, Stanford Research Institute, University of Utah. Tujuan awal: menghubungkan ilmuwan lintas lokasi untuk proyek militer/sains, serta tetap berfungsi meski diserang. Tidak ada satu pihak pun yang memiliki Internet.</p>
+ <p><strong>LAN</strong> (Local Area Network) - jaringan dalam satu organisasi. <strong>Intranet</strong> - bagian internet yang terbatas dalam satu organisasi. Protokol dasar: TCP/IP (Transmission Control Protocol/Internet Protocol).</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>IP Address &amp; Domain Name</h3>
+ <p>Setiap komputer yang terhubung internet punya alamat unik (IP address) - 4 kelompok angka 0-255 dipisah titik (contoh: 138.68.107.54). Domain Name System (DNS) menerjemahkan IP address ke teks yang mudah dibaca (contoh: www.iou.edu.gm). ccTLD (country code Top-Level Domain): sa (Arab Saudi), pk (Pakistan), in (India), id (Indonesia), my (Malaysia).</p>
+ <p>Komponen URL (Uniform Resource Locator): Protocol, Domain name, Path, Web page name.</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Pencarian Efektif: Boolean Search</h3>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Istilah Boolean</th><th>Fungsi</th><th>Contoh</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">AND</td><td>Mencari item yang memuat KEDUA kata kunci</td><td>"adult learning AND online courses"</td></tr>
+ <tr><td class="bold">OR</td><td>Mencari item yang memuat SALAH SATU kata kunci</td><td>"adult learners OR adult students"</td></tr>
+ <tr><td class="bold">NOT</td><td>MENGECUALIKAN item dengan kata kunci tertentu</td><td>"NOT bachelor programs"</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Browsing Aman &amp; Wi-Fi Publik</h3>
+ <p>Panduan browsing aman: verifikasi keamanan situs, matikan location sharing, hapus riwayat browsing, jangan simpan kata sandi, gunakan phishing filter dan pop-up blocker, gunakan private browsing/proxy server. Panduan Wi-Fi publik: hindari mengetik kata sandi/info finansial, logout dari situs, matikan koneksi nirkabel saat tidak dipakai, waspada terhadap orang yang mengintip dari belakang bahu.</p>
+ </div>
+</section>
+
+<!-- ============ E-COMMERCE ============ -->
+<section id="ecommerce">
+ <div class="lec-section-head"><div class="lec-section-num">8</div><h2>E-Commerce</h2></div>
+
+ <div class="lec-card">
+ <h3>3 Jenis Kehadiran Bisnis</h3>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Jenis</th><th>Ciri</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Bricks-and-mortar</td><td>Tidak memiliki kehadiran web sama sekali</td></tr>
+ <tr><td class="bold">Click-and-order</td><td>Menjual barang terutama lewat web, tanpa toko fisik</td></tr>
+ <tr><td class="bold">Clicks-and-mortar</td><td>Memiliki kehadiran fisik maupun online</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>8 Langkah Transaksi E-Commerce</h3>
+ <ol style="padding-left:20px">
+ <li>Pelanggan mengunjungi toko elektronik e-retailer via internet</li>
+ <li>Pelanggan mengumpulkan barang dalam keranjang belanja elektronik</li>
+ <li>Pelanggan memasukkan info pembayaran; e-retailer mengirim info finansial ke bank</li>
+ <li>Bank melakukan pemeriksaan keamanan dan mengirim otorisasi kembali</li>
+ <li>Server e-retailer mengirim konfirmasi, memproses pesanan, mengirim ke pusat pemenuhan</li>
+ <li>Pusat pemenuhan mengemas pesanan, menyiapkan pengiriman, memperbarui catatan</li>
+ <li>Informasi pengiriman diposting di web selama pesanan dalam perjalanan</li>
+ <li>Pesanan diterima pelanggan</li>
+ </ol>
+ </div>
+</section>
+
+<!-- ============ EVOLUSI WEB & TOOLS ============ -->
+<section id="webtools">
+ <div class="lec-section-head"><div class="lec-section-num">9</div><h2>Evolusi Web &amp; Tools Online</h2></div>
+
+ <div class="lec-card">
+ <h3>Evolusi Web 1.0 hingga 5.0</h3>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Versi</th><th>Karakteristik</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Web 1.0</td><td>Mengembangkan internet dasar</td></tr>
+ <tr><td class="bold">Web 2.0</td><td>Shopping cart &amp; web statis</td></tr>
+ <tr><td class="bold">Web 3.0</td><td>Semantic executing web</td></tr>
+ <tr><td class="bold">Web 4.0</td><td>Mobile web</td></tr>
+ <tr><td class="bold">Web 5.0</td><td>Symbiotic web</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Tools Online Populer per Kategori</h3>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Kategori</th><th>Tools</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Bahasa</td><td>Dictionary.com, Grammarly (pengecek ejaan/tata bahasa, dikembangkan Alex Shevchenko dkk. di Kiev, 2009)</td></tr>
+ <tr><td class="bold">Referensi</td><td>Zotero (dirancang Roy Rosenzweig - kelola, kutip, bagikan sumber riset), CiteThisForMe</td></tr>
+ <tr><td class="bold">Formulir Online</td><td>Google Forms, SurveyMonkey</td></tr>
+ <tr><td class="bold">Cek Plagiarisme</td><td>SmallSEOTools, Grammarly, PlagiarismCheckerX</td></tr>
+ <tr><td class="bold">E-book/Artikel</td><td>Library Genesis (libgen), Google Scholar</td></tr>
+ <tr><td class="bold">Komunikasi</td><td>Zoom, Google Meet, MS Teams</td></tr>
+ <tr><td class="bold">Caller ID/Anti-Spam</td><td>Truecaller (diinisiasi 2010)</td></tr>
+ <tr><td class="bold">Riwayat Halaman Web</td><td>Wayback Machine (proyek nirlaba Internet Archive)</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+</section>
+
+<!-- ============ KEAMANAN DIGITAL ============ -->
+<section id="keamanan">
+ <div class="lec-section-head"><div class="lec-section-num">10</div><h2>Keamanan Digital &amp; Kejahatan Siber</h2></div>
+
+ <div class="lec-card">
+ <h3>Cybercrime &amp; Jenis Serangan</h3>
+ <p>Kategori pelaku kejahatan siber: hacker, cracker, script kiddie, corporate spy, unethical employee, cyberextortionist, cyberterrorist. <strong>Cyberwarfare</strong> - serangan menargetkan jaringan komputer pemerintah untuk melumpuhkan negara.</p>
+ <p>Jenis serangan internet/jaringan: Malware, Botnets, Denial of Service Attacks, Back Doors, Spoofing (e-mail spoofing, IP spoofing).</p>
+ <div class="lec-callout amber">
+ <div class="lec-callout-title">Cara Mengamankan Diri</div>
+ <p>Gunakan antivirus, waspada lampiran e-mail tak dikenal, pindai media removable sebelum dipakai, terapkan firewall, backup rutin. Untuk jaringan rumah: gunakan router/firewall, nonaktifkan macro security, perbarui software, tetap update informasi keamanan.</p>
+ </div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Autentikasi &amp; Kontrol Akses</h3>
+ <p>4 cara autentikasi identitas pengguna:</p>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Kategori</th><th>Contoh</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Something the individual knows</td><td>Password, PIN, pertanyaan keamanan</td></tr>
+ <tr><td class="bold">Something the individual possesses</td><td>Smartcard, kunci elektronik, kunci fisik</td></tr>
+ <tr><td class="bold">Something the individual is (static biometrics)</td><td>Sidik jari, retina, wajah</td></tr>
+ <tr><td class="bold">Something the individual does (dynamic biometrics)</td><td>Pola suara, tulisan tangan, ritme mengetik</td></tr>
+ </tbody>
+ </table></div>
+ <p>CAPTCHA (Completely Automated Public Turing test) dikembangkan Carnegie Mellon University untuk membedakan manusia dan komputer.</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Backup &amp; Keamanan Jaringan Nirkabel</h3>
+ <p>Backup: gunakan media berkualitas tinggi, simpan di tempat tahan api/panas, simpan salinan off-site. Mengamankan jaringan Wi-Fi rumah: ganti password default, ganti SSID (nama jaringan), jangan broadcast SSID, aktifkan enkripsi WPA2, aktifkan fitur MAC filtering, pilih lokasi router yang aman.</p>
+ </div>
+</section>
+
+<!-- ============ MS WORD ============ -->
+<section id="word">
+ <div class="lec-section-head"><div class="lec-section-num">11</div><h2>Microsoft Word - Fitur &amp; Fungsi</h2></div>
+ <p class="lec-section-desc">Modul 11-15 membahas Microsoft Word secara mendalam, dari antarmuka dasar hingga fitur referensi akademik.</p>
+
+ <div class="lec-card">
+ <h3>Modul 11: Antarmuka &amp; Dasar Word</h3>
+ <div class="lec-table-wrap"><table>
+ <tbody>
+ <tr><td class="bold">Elemen jendela</td><td>Scroll Bar, Status Bar, Ribbon, Live Preview, Quick Access Toolbar</td></tr>
+ <tr><td class="bold">Non-printing characters</td><td>Karakter tak tercetak (spasi, paragraf, tab) yang membantu melihat struktur dokumen</td></tr>
+ <tr><td class="bold">Groups vs Menus</td><td>Groups = kumpulan tombol terkait dalam satu tab Ribbon; Menu = daftar opsi dropdown</td></tr>
+ <tr><td class="bold">Shortcut Ribbon</td><td>Tekan Alt untuk menampilkan huruf akses cepat tiap tab Ribbon</td></tr>
+ <tr><td class="bold">File menu (Backstage View)</td><td>Info dokumen, cetak, bagikan, opsi lanjutan</td></tr>
+ <tr><td class="bold">Dictation</td><td>Fitur input suara ke teks di Word</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Modul 12: Format Teks &amp; Halaman</h3>
+ <div class="lec-table-wrap"><table>
+ <tbody>
+ <tr><td class="bold">Page numbering</td><td>Insert &gt; Page Number; bisa dihapus khusus halaman pertama lewat opsi "Different First Page"</td></tr>
+ <tr><td class="bold">Indentasi paragraf</td><td>2 jenis: First Line Indent dan Hanging Indent</td></tr>
+ <tr><td class="bold">Header/Footer</td><td>Insert &gt; Header/Footer, bisa disesuaikan per halaman</td></tr>
+ <tr><td class="bold">Columns</td><td>Layout &gt; Columns untuk membuat teks berkolom</td></tr>
+ <tr><td class="bold">Line spacing shortcut</td><td>Ctrl+1 (single), Ctrl+2 (double), Ctrl+5 (1.5 spasi)</td></tr>
+ <tr><td class="bold">Orientasi halaman</td><td>Landscape atau Portrait lewat Layout &gt; Orientation</td></tr>
+ <tr><td class="bold">Bold/Italic/Underline shortcut</td><td>Ctrl+B, Ctrl+I, Ctrl+U</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Modul 13: Gambar, Bentuk &amp; SmartArt</h3>
+ <div class="lec-table-wrap"><table>
+ <tbody>
+ <tr><td class="bold">Floating vs Inline objects</td><td>Floating = bisa dipindah bebas dan teks membungkusnya (text wrap); Inline = terikat pada posisi teks seperti karakter</td></tr>
+ <tr><td class="bold">Text wrapping</td><td>Opsi mengatur bagaimana teks membungkus gambar/objek</td></tr>
+ <tr><td class="bold">Alternative text (Alt Text)</td><td>Teks alternatif gambar untuk aksesibilitas (pembaca layar)</td></tr>
+ <tr><td class="bold">SmartArt &amp; Icons</td><td>Grafis visual siap pakai untuk diagram/struktur</td></tr>
+ <tr><td class="bold">Backstage view (document info)</td><td>Melihat metadata dan info dokumen lewat File menu</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Modul 14: Tabel, Daftar &amp; Format Lanjutan</h3>
+ <div class="lec-table-wrap"><table>
+ <tbody>
+ <tr><td class="bold">Convert text to table</td><td>Pilih teks &rarr; Insert &gt; Table &gt; Convert Text to Table (dan sebaliknya)</td></tr>
+ <tr><td class="bold">Multilevel list</td><td>Daftar bertingkat dengan penomoran/bullet berjenjang</td></tr>
+ <tr><td class="bold">Sort items</td><td>Mengurutkan isi tabel/daftar secara otomatis</td></tr>
+ <tr><td class="bold">Formula dalam tabel</td><td>Insert formula sederhana (SUM, dll.) langsung di sel tabel Word</td></tr>
+ <tr><td class="bold">Tab stops</td><td>Titik perhentian tab untuk menyusun teks berkolom rapi</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Modul 15: Referensi Akademik &amp; Mail Merge</h3>
+ <div class="lec-table-wrap"><table>
+ <tbody>
+ <tr><td class="bold">Table of Contents</td><td>Dibuat otomatis dari heading style, bisa diperbarui (Update Field)</td></tr>
+ <tr><td class="bold">Footnote &amp; Endnote</td><td>Catatan kaki (bawah halaman) dan catatan akhir (akhir dokumen) - bisa dikonversi satu sama lain</td></tr>
+ <tr><td class="bold">In-text citation</td><td>Author-focus (nama penulis dalam kalimat) vs Info-focus (nama penulis dalam kurung di akhir kalimat)</td></tr>
+ <tr><td class="bold">Mail Merge</td><td>Menggabungkan dokumen induk dengan sumber data (mis. daftar nama) untuk membuat banyak dokumen personal sekaligus, dibantu Mail Merge Wizard</td></tr>
+ <tr><td class="bold">Comments</td><td>Menambah/menghapus komentar tinjauan pada dokumen</td></tr>
+ <tr><td class="bold">Restrict access</td><td>Melindungi dokumen dari perubahan format dan akses tak sah</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+</section>
+
+<!-- ============ MS EXCEL ============ -->
+<section id="excel">
+ <div class="lec-section-head"><div class="lec-section-num">12</div><h2>Microsoft Excel - Fitur &amp; Fungsi</h2></div>
+ <p class="lec-section-desc">Modul 16-20 membahas Microsoft Excel dari antarmuka dasar hingga PivotTable dan Chart.</p>
+
+ <div class="lec-card">
+ <h3>Modul 16-17: Antarmuka, Sel &amp; Format Dasar</h3>
+ <div class="lec-table-wrap"><table>
+ <tbody>
+ <tr><td class="bold">Workbook vs Worksheet</td><td>Workbook = file Excel keseluruhan; Worksheet = satu lembar kerja/sheet di dalamnya</td></tr>
+ <tr><td class="bold">Name Box vs Formula Bar</td><td>Name Box menampilkan alamat sel aktif; Formula Bar menampilkan isi/formula sel aktif</td></tr>
+ <tr><td class="bold">Fill Handle</td><td>Kotak kecil di sudut sel untuk menyalin/mengisi otomatis data berpola (angka, tanggal)</td></tr>
+ <tr><td class="bold">Freeze Panes</td><td>Mengunci baris/kolom judul agar tetap terlihat saat scroll</td></tr>
+ <tr><td class="bold">Merge cells &amp; Wrap text</td><td>Menggabungkan beberapa sel dan melipat teks otomatis dalam sel</td></tr>
+ <tr><td class="bold">Protect worksheet</td><td>Mengunci sel tertentu agar tidak bisa diedit/disalin orang lain</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Modul 18: Formula &amp; Fungsi</h3>
+ <p><strong>Formula vs Function</strong>: Formula adalah ekspresi perhitungan yang ditulis manual (mis. =A1+A2); Function adalah formula bawaan siap pakai (mis. =SUM(A1:A4)).</p>
+ <div class="lec-table-wrap"><table>
+ <tbody>
+ <tr><td class="bold">Absolute vs Relative reference</td><td>Relative ($tidak dipakai) berubah otomatis saat disalin ke sel lain; Absolute ($A$1) tetap merujuk sel yang sama saat disalin</td></tr>
+ <tr><td class="bold">Order of operations</td><td>Urutan evaluasi formula mengikuti kaidah matematika standar (kurung, pangkat, kali/bagi, tambah/kurang)</td></tr>
+ <tr><td class="bold">Function Library</td><td>Kumpulan fungsi terorganisasi berdasarkan kategori (matematika, statistik, teks, tanggal)</td></tr>
+ <tr><td class="bold">Conditional formatting</td><td>Memformat sel otomatis berdasarkan kondisi nilai tertentu</td></tr>
+ <tr><td class="bold">Show/Hide formula</td><td>Ctrl+` (tombol tilde) menampilkan/menyembunyikan formula di sel, bukan hasilnya</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Modul 19: Fungsi Kondisional, PivotTable &amp; What-If Analysis</h3>
+ <div class="lec-table-wrap"><table>
+ <tbody>
+ <tr><td class="bold">Fungsi IF</td><td>Menghasilkan nilai berbeda berdasarkan kondisi benar/salah</td></tr>
+ <tr><td class="bold">Fungsi AND/OR</td><td>Menggabungkan beberapa kondisi logika sekaligus dalam satu pengujian</td></tr>
+ <tr><td class="bold">COUNT, COUNTA, COUNTBLANK</td><td>COUNT menghitung sel berisi angka; COUNTA menghitung sel berisi apa saja (tidak kosong); COUNTBLANK menghitung sel kosong</td></tr>
+ <tr><td class="bold">CONCAT &amp; TRIM</td><td>CONCAT menggabungkan teks dari beberapa sel; TRIM menghapus spasi berlebih</td></tr>
+ <tr><td class="bold">PivotTable</td><td>Tabel interaktif untuk meringkas, mengelompokkan, dan menganalisis data besar - dilengkapi slicer dan timeline untuk filter visual</td></tr>
+ <tr><td class="bold">What-If Analysis</td><td>Goal Seek (mencari nilai input untuk hasil tertentu) dan Scenario (membandingkan beberapa skenario nilai)</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Modul 20: Chart (Grafik)</h3>
+ <p>Membuat chart dari data worksheet (termasuk data non-contiguous/tidak berurutan), mengubah jenis dan gaya chart, mengedit judul chart dan sumbu, menampilkan gridlines dan legenda, serta mengubah ukuran dan posisi chart.</p>
+ </div>
+</section>
+
+<!-- ============ MS POWERPOINT ============ -->
+<section id="ppt">
+ <div class="lec-section-head"><div class="lec-section-num">13</div><h2>Microsoft PowerPoint - Fitur &amp; Fungsi</h2></div>
+ <p class="lec-section-desc">Modul 21-25 membahas PowerPoint dari pengaturan slide dasar hingga animasi dan media.</p>
+
+ <div class="lec-card">
+ <h3>Modul 21-22: Pengaturan Slide &amp; Tampilan</h3>
+ <div class="lec-table-wrap"><table>
+ <tbody>
+ <tr><td class="bold">Presentation Views vs Master Views</td><td>Presentation View untuk mengedit konten normal; Master View untuk mengubah desain/layout yang berlaku ke semua slide sejenis</td></tr>
+ <tr><td class="bold">Slide Sorter View</td><td>Memindahkan urutan slide secara visual (thumbnail)</td></tr>
+ <tr><td class="bold">Header &amp; Footer slide</td><td>Menambahkan info tetap (tanggal, nomor slide) di setiap slide</td></tr>
+ <tr><td class="bold">Export file types</td><td>PowerPoint bisa diekspor ke PDF, video, gambar, dll.</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Modul 23-24: Objek, Gambar, Tabel &amp; Chart</h3>
+ <div class="lec-table-wrap"><table>
+ <tbody>
+ <tr><td class="bold">Grouping objects</td><td>Menggabungkan beberapa objek menjadi satu kesatuan yang bisa dipindah/diformat bersama</td></tr>
+ <tr><td class="bold">Send forward/backward</td><td>Mengatur urutan tumpukan (layer) objek yang saling tumpang tindih</td></tr>
+ <tr><td class="bold">Insert Excel spreadsheet</td><td>Menyisipkan tabel data Excel langsung ke dalam slide</td></tr>
+ <tr><td class="bold">SmartArt Graphics</td><td>Membuat diagram visual siap pakai di dalam slide</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Modul 25: Media, Animasi &amp; Transisi</h3>
+ <div class="lec-table-wrap"><table>
+ <tbody>
+ <tr><td class="bold">Animation Pane</td><td>Panel untuk mengatur urutan dan waktu animasi setiap objek di slide</td></tr>
+ <tr><td class="bold">Transition</td><td>Efek perpindahan antar slide, bisa ditambah suara dan diatur waktunya (manual/otomatis)</td></tr>
+ <tr><td class="bold">Insert Audio/Video</td><td>Menyisipkan dan mengatur pemutaran otomatis media di slide</td></tr>
+ <tr><td class="bold">WordArt</td><td>Teks dekoratif dengan efek visual siap pakai</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+</section>
+
+<!-- ============ MS ACCESS ============ -->
+<section id="access">
+ <div class="lec-section-head"><div class="lec-section-num">14</div><h2>Microsoft Access - Fitur &amp; Fungsi</h2></div>
+ <p class="lec-section-desc">Modul 26-27 membahas dasar-dasar basis data (database) memakai Microsoft Access.</p>
+
+ <div class="lec-card">
+ <h3>Modul 26: Dasar Database &amp; Objek Access</h3>
+ <p>Objek utama dalam Access: <strong>Tables</strong> (menyimpan data), <strong>Queries</strong> (menyaring/mengambil data tertentu), <strong>Forms</strong> (antarmuka input data), <strong>Reports</strong> (menyajikan data untuk dicetak). Tabel dapat dibuat lewat Design View (mendefinisikan field dan tipe data secara manual) atau mode lainnya.</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Modul 27: Relasi, Primary Key, Form &amp; Report</h3>
+ <div class="lec-table-wrap"><table>
+ <tbody>
+ <tr><td class="bold">Primary Key</td><td>Field unik yang mengidentifikasi setiap record secara tunggal - dasar untuk membangun relasi antar tabel</td></tr>
+ <tr><td class="bold">3 jenis relasi</td><td>One-to-One, One-to-Many, Many-to-Many - menentukan bagaimana data antar tabel saling terhubung</td></tr>
+ <tr><td class="bold">Validation rule</td><td>Aturan pada field properties (Table Design View) yang membatasi nilai valid yang boleh dimasukkan</td></tr>
+ <tr><td class="bold">Form Wizard</td><td>Alat bantu otomatis membuat form input data dari tabel/query</td></tr>
+ <tr><td class="bold">Report</td><td>Dibuat berdasarkan tabel atau query, dengan header/footer dan format nilai yang bisa disesuaikan</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+</section>
+
+<!-- ============ KOLABORASI ONLINE ============ -->
+<section id="kolaborasi">
+ <div class="lec-section-head"><div class="lec-section-num">15</div><h2>Kolaborasi Online: Google Docs &amp; Forms</h2></div>
+
+ <div class="lec-card">
+ <h3>2 Metode Kolaborasi</h3>
+ <div class="lec-table-wrap"><table>
+ <thead><tr><th>Metode</th><th>Fungsi</th><th>Contoh</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Collaborative Software</td><td>Berbagi dokumen real-time, rapat online, chat/whiteboard/video conference</td><td>MS Teams, Google Meet, GoToMeeting</td></tr>
+ <tr><td class="bold">Document Management System</td><td>Akses dokumen dan pelacakan perubahan</td><td>Google Docs, OpenKM, LogicalDOC</td></tr>
+ </tbody>
+ </table></div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Google Docs: Kolaborasi &amp; Riwayat</h3>
+ <p><strong>Peran kolaborator</strong>: Viewer (hanya melihat), Commenter (bisa memberi komentar), Editor (bisa mengedit langsung). Akses berbagi: Restricted, Your Organisation, Anyone with the link.</p>
+ <p><strong>Version History</strong> (File &gt; Version History) melihat dan menamai riwayat revisi dokumen. <strong>Suggestion mode</strong> memungkinkan perubahan diusulkan tanpa langsung mengubah teks asli - pemilik dokumen bisa menerima/menolaknya.</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Google Forms: Membuat &amp; Mengelola Respons</h3>
+ <p>10 tipe pertanyaan: Short Answer, Paragraph, Multiple Choice, Checkboxes, Drop-down, File Upload, Linear Scale, Multiple Choice Grid, Checkbox Grid, Date and Time.</p>
+ <p>Respons tersimpan otomatis di tab Responses, dan bisa dihubungkan ke Google Spreadsheet baru atau yang sudah ada untuk pengolahan lebih lanjut. Fitur Quiz (Settings &gt; Quizzes) memungkinkan kunci jawaban otomatis untuk penilaian.</p>
+ </div>
+</section>
+
+<!-- ============ KECERDASAN BUATAN ============ -->
+<section id="ai">
+ <div class="lec-section-head"><div class="lec-section-num">16</div><h2>Kecerdasan Buatan (AI) &amp; Sistem Pakar</h2></div>
+
+ <div class="lec-card">
+ <h3>4 Kategori Definisi AI</h3>
+ <p>Acting Humanly, Thinking Humanly, Thinking Rationally, Acting Rationally - AI mengandalkan algoritma untuk mencapai hasil, memadukan pencarian tujuan (goal seeking), pemrosesan data, dan akuisisi data.</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Expert System (Sistem Pakar)</h3>
+ <p>Muncul pertama tahun 1970-an, memakai pengetahuan pakar manusia yang disimpan dalam komputer untuk memecahkan masalah yang biasanya membutuhkan keahlian manusia. 4 komponen dasar: <strong>Knowledge Acquisition Facility</strong> (mengumpulkan keahlian dari berbagai sumber), <strong>Knowledge Base</strong> (menyimpan fakta dan aturan heuristik), <strong>Inference Engine</strong> (program yang menarik kesimpulan/solusi), <strong>Explanation Facility</strong> (membantu pengguna memahami bagaimana sistem mencapai keputusan).</p>
+ <p>3 cara representasi pengetahuan: <strong>Rule-based</strong> (pernyataan IF...THEN), <strong>Frame-based</strong> (basis data terorganisasi), <strong>Logic-based</strong> (teori himpunan untuk membangun relasi).</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Aplikasi AI &amp; Robotika</h3>
+ <p>Contoh aplikasi AI: pengenalan wajah, game AI, pengenalan tulisan tangan, natural language processing, pengenalan suara, computer vision, Google Translate (memakai sistem Google Neural Machine Translation/GNMT). Kelas robot: manipulator, mobile, humanoid - dipakai dalam industri (Industry 4.0), bedah robotik (Da Vinci), layanan (Roomba, robot restoran), hingga eksplorasi lingkungan berbahaya (NASA Mars rover).</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Proses Pemecahan Masalah &amp; Logika Proposisi</h3>
+ <p>4 fase pemecahan masalah: <strong>Goal formulation</strong> &rarr; <strong>Problem formulation</strong> &rarr; <strong>Search</strong> &rarr; <strong>Execution</strong>. Logika proposisi: pernyataan (proposisi) yang bernilai benar atau salah, dihubungkan dengan konektif (Conjunction/AND, Disjunction/OR, Negation/NOT, Conditional, Biconditional).</p>
+ </div>
+</section>
+
+<!-- ============ ETIKA ICT & ISLAM ============ -->
+<section id="etika">
+ <div class="lec-section-head"><div class="lec-section-num">17</div><h2>Etika ICT dari Perspektif Islam</h2></div>
+ <p class="lec-section-desc">Modul 30 secara khusus meninjau berbagai aspek etika ICT melalui rujukan Al-Qur'an dan Hadis - modul yang membedakan mata kuliah ini dari buku teks literasi komputer sekuler pada umumnya.</p>
+
+ <div class="lec-card">
+ <h3>Etika vs Moral</h3>
+ <p><strong>Morals</strong> (moral) dipengaruhi agama, budaya, dan keluarga. <strong>Ethics</strong> (etika) dipengaruhi organisasi/kelompok. Keduanya membantu menentukan mana yang benar dan salah, serta menilai secara estetis, hukum, dan religius.</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Privasi dalam Islam</h3>
+ <p>Hak individu/perusahaan untuk menolak atau membatasi pengumpulan dan penggunaan informasi tentang diri mereka.</p>
+ <div class="lec-callout gold">
+ <div class="lec-callout-title">Rujukan Al-Qur'an &amp; Hadis</div>
+ <p>QS. An-Nur 24:27 (larangan memasuki rumah orang lain tanpa izin); QS. Al-Hujurat 49:11 (larangan mengolok-olok/merendahkan orang lain); Sahih al-Bukhari no. 6064.</p>
+ </div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Hak Kekayaan Intelektual Digital</h3>
+ <p>Copyright memberi hak eksklusif menduplikasi, menerbitkan, dan menjual karya. Pertanyaan etis: bolehkah mengunduh konten situs orang lain? Bolehkah mahasiswa memposting makalah mereka secara online?</p>
+ <div class="lec-callout gold">
+ <div class="lec-callout-title">Rujukan Al-Qur'an &amp; Hadis</div>
+ <p>QS. Al-Ma'idah 5:2 (tolong-menolong dalam kebaikan, bukan dosa); Riyad as-Salihin, hadis no. 1579.</p>
+ </div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Kejahatan Komputer, Hacking &amp; Spionase</h3>
+ <p>Kategori kejahatan komputer: destruction, theft, manipulation, cloning. Ajaran Islam melarang mengakses, membobol, dan melakukan aktivitas tidak sah secara digital.</p>
+ <div class="lec-callout gold">
+ <div class="lec-callout-title">Rujukan Al-Qur'an &amp; Hadis</div>
+ <p>QS. Ali 'Imran 3:104 (perintah mengajak kepada kebaikan, mencegah kemungkaran); QS. An-Nisa 4:123; Sahih al-Bukhari no. 2653; QS. Al-Baqarah 2:190; QS. Al-Hujurat 49:12 (larangan berprasangka buruk dan memata-matai).</p>
+ </div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Netiket &amp; Aturan Plagiarisme IOU</h3>
+ <p>Forum diskusi IOU secara eksplisit melarang postingan yang mempromosikan ekstremisme, kekerasan, ujaran kebencian, radikalisme, atau membocorkan informasi rahasia (seperti soal ujian). Penulisan tugas wajib mengikuti gaya referensi APA (American Psychological Association) - mencakup parafrase, kutipan langsung, dan pengakuan penulis asli.</p>
+ </div>
+
+ <div class="lec-card">
+ <h3>Media Sosial &amp; Etika E-mail</h3>
+ <p><strong>Manfaat media sosial</strong>: mempererat hubungan, mendorong sosialisasi, sarana dakwah dan penyebaran ajaran Islam (dikaitkan dengan QS. At-Tahrim 66:6). <strong>Kekurangan</strong>: minimnya kontak manusia langsung, keterbukaan berlebih atas kehidupan pribadi, penyalahgunaan kebebasan berbicara.</p>
+ <div class="lec-callout amber">
+ <div class="lec-callout-title">10 Etika E-mail</div>
+ <p>Subjek jelas (jangan "berteriak"/huruf kapital semua), gunakan salam pembuka sesuai, cek lampiran, hati-hati humor lintas budaya, pertimbangkan tujuan e-mail, jangan sembarang Reply All/CC semua orang, balas tepat waktu, sadari e-mail bisa diteruskan ke mana saja, selalu cek ejaan, tulis alamat e-mail penerima paling akhir (agar tidak terkirim belum selesai).</p>
+ </div>
+ </div>
+
+ <div class="lec-card">
+ <h3>Green Computing &amp; Kesehatan</h3>
+ <p><strong>Green Computing</strong>: mengurangi konsumsi listrik dan limbah lingkungan - program Energy Star (EPA &amp; DOE) mendorong perangkat hemat energi. <strong>Risiko kesehatan</strong>: Repetitive Strain Injury (RSI) termasuk tendonitis dan carpal tunnel syndrome, serta Computer Vision Syndrome (CVS). Pencegahan: istirahat rutin, latihan tangan/lengan, wrist rest, jarak mouse dari tepi meja. <strong>Ergonomics</strong>: menyesuaikan peralatan pada manusia (bukan sebaliknya) untuk meminimalkan gerakan dan kelelahan. <strong>Internet Addiction</strong>: ketika penggunaan internet menghambat aspek penting kehidupan seseorang.</p>
+ </div>
+</section>
+
+<!-- ============ GLOSARIUM ============ -->
+<section id="glosarium">
+ <div class="lec-section-head"><div class="lec-section-num">G</div><h2>Glosarium Istilah Penting</h2></div>
+ <div class="lec-table-wrap">
+ <table>
+ <thead><tr><th>Istilah</th><th>Arti</th></tr></thead>
+ <tbody>
+ <tr><td class="bold">Bit / Byte</td><td>Bit = unit data terkecil (0/1); Byte = 8 bit, unit dasar memori (setara 1 karakter)</td></tr>
+ <tr><td class="bold">CPU (Processor)</td><td>Pusat pemrosesan komputer, terdiri dari Control Unit dan Arithmetic Logic Unit</td></tr>
+ <tr><td class="bold">RAM / ROM</td><td>RAM = memori volatile (hilang saat mati); ROM = memori nonvolatile (permanen)</td></tr>
+ <tr><td class="bold">Cloud Storage</td><td>Layanan penyimpanan data via internet (Google Drive, Dropbox, iCloud)</td></tr>
+ <tr><td class="bold">Open Source Software</td><td>Software yang didistribusikan bersama kode sumbernya untuk dimodifikasi bebas</td></tr>
+ <tr><td class="bold">Operating System</td><td>Program yang mengoordinasikan sumber daya dan menjalankan aplikasi komputer</td></tr>
+ <tr><td class="bold">TCP/IP</td><td>Protokol dasar yang menjalankan komunikasi data di internet</td></tr>
+ <tr><td class="bold">Domain Name / IP Address</td><td>IP Address = alamat numerik unik komputer; Domain Name = versi teks yang mudah dibaca</td></tr>
+ <tr><td class="bold">Malware</td><td>Perangkat lunak berbahaya (virus, worm, trojan, dsb.)</td></tr>
+ <tr><td class="bold">Firewall</td><td>Perangkat keras/lunak yang melindungi jaringan dari akses tidak sah</td></tr>
+ <tr><td class="bold">CAPTCHA</td><td>Uji otomatis untuk membedakan manusia dan komputer/bot</td></tr>
+ <tr><td class="bold">PivotTable</td><td>Fitur Excel untuk meringkas dan menganalisis data besar secara interaktif</td></tr>
+ <tr><td class="bold">Primary Key</td><td>Field unik pengidentifikasi record dalam tabel database (Access)</td></tr>
+ <tr><td class="bold">Expert System</td><td>Sistem yang meniru cara berpikir pakar manusia untuk memecahkan masalah</td></tr>
+ <tr><td class="bold">Ergonomics</td><td>Ilmu penyesuaian peralatan kerja agar sesuai kebutuhan manusia, mengurangi cedera</td></tr>
+ <tr><td class="bold">Green Computing</td><td>Praktik penggunaan perangkat komputer yang hemat energi dan ramah lingkungan</td></tr>
+ </tbody>
+ </table>
+ </div>
+</section>
+
+<!-- ============ EXAM QUESTIONS ============ -->
+<section id="examqs" class="lec-session">
+ <div class="lec-session-header">
+ <div class="lec-session-num">U</div>
+ <div class="lec-session-title-block">
+ <div class="lec-session-tag">PERSIAPAN UJIAN</div>
+ <h3>Pertanyaan Kajian Ujian Tengah &amp; Akhir Semester</h3>
+ <div class="lec-session-sub">Daftar resmi TITC102 Study Questions, IOU - lengkap dengan jawaban</div>
+ </div>
+ </div>
+ <div class="lec-session-body">
+ <p>Daftar pertanyaan kajian resmi dari Islamic Online University, dilengkapi jawaban ringkas berdasarkan pembahasan di atas.</p>
+
+ <details class="lec-module" open>
+ <summary>Ujian Tengah Semester - Modul 1-15 <span class="lec-arrow">&#9660;</span></summary>
+ <div class="lec-module-body">
+ <ul class="lec-point-list">
+ <li class="lec-qa"><span class="lec-qa-q">Apa itu komputer, dan apa hubungan antara data dan informasi?</span><div class="lec-qa-a"><b>Jawaban:</b> Komputer adalah perangkat elektronik yang memproses data menjadi informasi. Data adalah fakta mentah belum diproses (tidak bermakna sendiri); Informasi adalah data yang telah diproses menjadi bermakna bagi pengguna.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bedakan tiga jenis era.</span><div class="lec-qa-a"><b>Jawaban:</b> Era Pertanian (pengolahan lahan/ternak), Era Industri (otomasi, revolusi industri), Era Informasi (fokus pada penciptaan, distribusi, dan pemakaian informasi - abad ke-21).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Sebutkan dan jelaskan lima komponen komputer.</span><div class="lec-qa-a"><b>Jawaban:</b> Hardware (perangkat keras), Software (perangkat lunak), Data, People (pengguna), dan Procedures (prosedur/langkah kerja) - kelima komponen ini bekerja bersama membentuk sistem informasi yang fungsional.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa itu control unit dan arithmetic logic unit pada prosesor?</span><div class="lec-qa-a"><b>Jawaban:</b> Control Unit (CU) mengarahkan dan mengoordinasikan seluruh aktivitas komputer serta mengatur pergerakan data antar memori/ALU/perangkat I/O. Arithmetic Logic Unit (ALU) melakukan operasi aritmatika (+, -, *, /) dan operasi logika/perbandingan (=, &lt;, &gt;, AND, OR, NOT).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa empat langkah dalam machine cycle?</span><div class="lec-qa-a"><b>Jawaban:</b> Fetching (mengambil instruksi), Decoding (menerjemahkan), Executing (menjalankan), Storing (menyimpan hasil).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa itu bit, dan bagaimana rangkaian bit merepresentasikan data?</span><div class="lec-qa-a"><b>Jawaban:</b> Bit (binary digit) adalah unit data terkecil bernilai 0 atau 1. Rangkaian 8 bit membentuk 1 byte, yang setara dengan satu karakter (256 kemungkinan kombinasi karakter).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bagaimana cara kerja POS terminal dan ATM?</span><div class="lec-qa-a"><b>Jawaban:</b> Keduanya menggabungkan berbagai perangkat input dan output: POS terminal memakai keyboard, barcode scanner, card reader, dan printer struk untuk mencatat pembelian dan memproses pembayaran; ATM memakai magnetic card reader, keypad, touch screen, dan cash dispenser untuk transaksi perbankan.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa perangkat input alternatif untuk pengguna difabel?</span><div class="lec-qa-a"><b>Jawaban:</b> Termasuk dalam kategori assistive technology - seperti printer Braille (termasuk Braille Al-Qur'an, pertama diproduksi di Saudi Arabia 1985-1986), voice input, dan perangkat input yang disesuaikan kebutuhan khusus pengguna.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa empat jenis output?</span><div class="lec-qa-a"><b>Jawaban:</b> Text, Graphics, Audio, Video.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa perbedaan storage device dari storage media?</span><div class="lec-qa-a"><b>Jawaban:</b> Storage device adalah perangkat keras yang merekam dan mengambil data (mis. hard disk drive); storage media adalah materi fisik tempat data benar-benar disimpan (mis. platter di dalam hard disk, atau kepingan CD/DVD).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa itu cloud storage dan apa keunggulannya?</span><div class="lec-qa-a"><b>Jawaban:</b> Layanan penyimpanan data lewat internet (Google Drive, Dropbox, iCloud, dll). Keunggulan: sinkronisasi file lintas perangkat, backup otomatis, kolaborasi dokumen, dan akses dari mana saja.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bagaimana kartu magnetic stripe dan smart card digunakan?</span><div class="lec-qa-a"><b>Jawaban:</b> Magnetic stripe card menyimpan data pada pita magnetik (kartu ATM/debit klasik). Smart card menyimpan data pada chip tertanam, tersedia dalam versi contact (harus disentuhkan) dan contactless (tap saja) - dipakai untuk pembayaran, identitas, dan akses.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bedakan packaged software dari freeware.</span><div class="lec-qa-a"><b>Jawaban:</b> Packaged software dijual dalam bentuk paket komersial berlisensi (harus dibeli); freeware adalah software gratis untuk digunakan namun kode sumbernya tidak selalu terbuka/tidak boleh dimodifikasi bebas.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan lima karakteristik aplikasi pengolah kata (word processing).</span><div class="lec-qa-a"><b>Jawaban:</b> Membuat dokumen (entri teks/gambar), mengedit (insert/delete/cut/copy/paste), memformat (font, ukuran, tampilan), fitur WYSIWYG ("What You See Is What You Get"), dan fitur tambahan seperti AutoCorrect, Grammar Checker, Mail Merge, dan Tracking Changes.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apakah ada perbedaan antara aplikasi berbasis web dan berbasis cloud?</span><div class="lec-qa-a"><b>Jawaban:</b> Aplikasi web-based berjalan di server dan diakses lewat browser tanpa instalasi; aplikasi cloud-based secara spesifik menyimpan dan memproses data di infrastruktur cloud. Keduanya saling tumpang tindih namun cloud-based lebih menekankan penyimpanan/pemrosesan terdistribusi, bukan hanya cara akses.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa itu system software, dan apa dua jenis system software?</span><div class="lec-qa-a"><b>Jawaban:</b> System software adalah program yang memungkinkan aplikasi berinteraksi dengan komputer dan mengelola sumber daya internal/eksternal. Terbagi 4 kategori: Operating System, Utility Software, Device Driver, Language Translator (soal menyebut "dua jenis" - kemungkinan merujuk pembagian utama Operating System vs Utility Software).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa fungsi-fungsi sistem operasi?</span><div class="lec-qa-a"><b>Jawaban:</b> Memulai komputer, menyediakan antarmuka pengguna, mengelola program dan memori, mengoordinasikan jaringan, memantau kinerja, mengatur keamanan, menjadwalkan tugas dan mengonfigurasi perangkat, serta menyediakan manajemen file dan utilitas lain.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa tujuan berbagai utility programs?</span><div class="lec-qa-a"><b>Jawaban:</b> Melakukan tugas pemeliharaan sistem: Disk Cleanup (membersihkan file tak terpakai), Disk Defragmenter (merapikan susunan file di disk), Personal Firewall (memblokir akses tidak sah), Antivirus (mendeteksi malware), Backup/Restore Utilities (mencadangkan dan memulihkan data).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa keuntungan menggunakan jaringan?</span><div class="lec-qa-a"><b>Jawaban:</b> Berbagi sumber daya (printer, file, koneksi internet), memungkinkan komunikasi (e-mail, chat, video conference), memungkinkan kolaborasi real-time, dan sentralisasi manajemen data/keamanan.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa perbedaan LAN, MAN, dan WAN?</span><div class="lec-qa-a"><b>Jawaban:</b> LAN (Local Area Network) mencakup area terbatas seperti satu gedung/kampus. MAN (Metropolitan Area Network) mencakup area kota. WAN (Wide Area Network) mencakup area luas lintas kota/negara - internet adalah contoh WAN terbesar.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bedakan perangkat komunikasi kabel (wired) dan nirkabel (wireless).</span><div class="lec-qa-a"><b>Jawaban:</b> Wired menggunakan kabel fisik (Ethernet, fiber optic) untuk transmisi data - umumnya lebih stabil dan cepat. Wireless menggunakan gelombang radio (Wi-Fi, Bluetooth) tanpa kabel fisik - lebih fleksibel namun rentan gangguan sinyal.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan karakteristik khas bricks-and-mortar, click-and-order, dan clicks-and-mortar dalam e-Commerce.</span><div class="lec-qa-a"><b>Jawaban:</b> Bricks-and-mortar tidak memiliki kehadiran web sama sekali. Click-and-order menjual barang terutama lewat web tanpa toko fisik. Clicks-and-mortar memiliki kehadiran fisik maupun online sekaligus.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan langkah-langkah dalam transaksi e-Commerce.</span><div class="lec-qa-a"><b>Jawaban:</b> (1) Pelanggan mengunjungi toko elektronik; (2) mengumpulkan barang di keranjang belanja; (3) memasukkan info pembayaran, dikirim ke bank; (4) bank melakukan pemeriksaan keamanan dan mengirim otorisasi; (5) server mengirim konfirmasi dan memproses ke pusat pemenuhan; (6) pusat pemenuhan mengemas dan mengirim laporan; (7) info pengiriman diposting; (8) pesanan diterima pelanggan.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Diskusikan kekhawatiran utama terkait pembayaran online.</span><div class="lec-qa-a"><b>Jawaban:</b> Risiko pencurian data kartu/finansial, keamanan transmisi data pribadi, penipuan (fraud), dan masalah kepemilikan/privasi data pengguna oleh pihak ketiga.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Sebutkan dan jelaskan dua layanan dan alat untuk keperluan referensi dan bahasa.</span><div class="lec-qa-a"><b>Jawaban:</b> Grammarly (pemeriksa ejaan, tata bahasa, gaya penulisan, dikembangkan tim Kiev-Ukraina 2009) dan Zotero (alat manajemen referensi untuk mengumpulkan, mengorganisasi, mengutip, dan berbagi sumber riset, dirancang Roy Rosenzweig).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Diskusikan evolusi web dengan menguraikan kontribusi/karakteristik khasnya.</span><div class="lec-qa-a"><b>Jawaban:</b> Web 1.0 (mengembangkan internet dasar), Web 2.0 (shopping cart &amp; web statis), Web 3.0 (semantic executing web), Web 4.0 (mobile web), Web 5.0 (symbiotic web) - evolusi dari "Web of Things" menuju "Web of Thoughts".</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Diskusikan berbagai fitur yang tersedia di Grammarly.</span><div class="lec-qa-a"><b>Jawaban:</b> Meninjau kesalahan ejaan, tata bahasa, tanda baca, kejelasan (clarity), keterlibatan (engagement), dan penyampaian (delivery) - tersedia sebagai ekstensi Chrome gratis, integrasi Google Docs, keyboard smartphone, dan add-in Microsoft Word.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bedakan cyberwarfare dari cyberterrorism.</span><div class="lec-qa-a"><b>Jawaban:</b> Cyberwarfare menargetkan jaringan komputer pemerintah untuk melumpuhkan suatu negara; keduanya (cyberwarfare dan cyberterrorism) sama-sama membutuhkan tim ahli, dana besar, dan perencanaan bertahun-tahun, namun cyberterrorism lebih menyasar teror/ketakutan publik sedangkan cyberwarfare menyasar kelumpuhan infrastruktur negara.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bedakan empat jenis pelaku cybercrime.</span><div class="lec-qa-a"><b>Jawaban:</b> Hacker (mengakses sistem tanpa izin, motif beragam), Cracker (membobol sistem dengan niat jahat), Script Kiddie (memakai skrip/alat orang lain tanpa keahlian mendalam), Cyberextortionist (memeras korban dengan ancaman siber) - kategori lain termasuk corporate spy, unethical employee, dan cyberterrorist.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Uraikan metode-metode untuk mengamankan diri dari serangan jaringan.</span><div class="lec-qa-a"><b>Jawaban:</b> Gunakan antivirus, waspada lampiran e-mail tak dikenal, pindai media removable, terapkan firewall, backup rutin, gunakan router/firewall di rumah, nonaktifkan macro security, dan selalu perbarui software.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bagaimana cara mengakses opsi Ribbon di Microsoft Office Word menggunakan tombol pintasan?</span><div class="lec-qa-a"><b>Jawaban:</b> Tekan tombol Alt - setiap tab dan tombol Ribbon akan menampilkan huruf akses cepat (KeyTip) yang bisa ditekan untuk membuka fungsi tersebut tanpa mouse.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan tiga non-printing characters dan kegunaannya.</span><div class="lec-qa-a"><b>Jawaban:</b> Karakter seperti tanda paragraf (&para;), tanda spasi (&middot;), dan tanda tab (&rarr;) tidak tercetak di dokumen namun membantu penulis melihat struktur/format dokumen secara jelas saat mengedit.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa perbedaan antara Groups dan Menus di Word?</span><div class="lec-qa-a"><b>Jawaban:</b> Groups adalah kumpulan tombol/perintah terkait yang ditampilkan langsung di dalam satu tab Ribbon; Menu adalah daftar opsi yang muncul dalam bentuk dropdown setelah tombol tertentu diklik.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Identifikasi tiga tombol pintasan yang dipakai untuk memformat spasi baris di Word.</span><div class="lec-qa-a"><b>Jawaban:</b> Ctrl+1 (spasi tunggal), Ctrl+2 (spasi ganda), Ctrl+5 (spasi 1.5 baris).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan langkah-langkah menghapus penomoran halaman untuk halaman pertama dokumen.</span><div class="lec-qa-a"><b>Jawaban:</b> Masuk ke Header/Footer Tools &gt; Design, centang opsi "Different First Page" - penomoran halaman pertama akan otomatis kosong sementara halaman berikutnya tetap bernomor.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Sebutkan dua jenis indentasi paragraf.</span><div class="lec-qa-a"><b>Jawaban:</b> First Line Indent (indentasi hanya baris pertama paragraf) dan Hanging Indent (indentasi seluruh baris kecuali baris pertama).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bedakan objek floating dan inline.</span><div class="lec-qa-a"><b>Jawaban:</b> Floating object bisa dipindah bebas di halaman dengan teks yang membungkusnya (text wrapping); Inline object terikat pada posisi teks, bergerak seperti karakter biasa mengikuti alur teks.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Diskusikan tujuan backstage view di bawah menu File.</span><div class="lec-qa-a"><b>Jawaban:</b> Menampilkan info dokumen (metadata, ukuran file, riwayat), opsi cetak, opsi berbagi/kolaborasi, pengaturan akun, dan opsi lanjutan aplikasi - semua di satu tempat terpisah dari area pengeditan dokumen.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Diskusikan langkah-langkah atau opsi untuk menghapus warna latar belakang gambar.</span><div class="lec-qa-a"><b>Jawaban:</b> Pilih gambar &rarr; Picture Format &gt; Remove Background - Word akan otomatis mendeteksi area latar belakang untuk dihapus, yang bisa disesuaikan manual sebelum dikonfirmasi.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan dua opsi yang tersedia untuk desain bullet.</span><div class="lec-qa-a"><b>Jawaban:</b> Memilih simbol bullet standar dari galeri bawaan Word, atau mendefinisikan bullet kustom (Define New Bullet) memakai simbol/gambar sendiri sebagai penanda daftar.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan berbagai opsi yang tersedia dalam mengedit atau memformat properti tabel.</span><div class="lec-qa-a"><b>Jawaban:</b> Mengatur lebar kolom/tinggi baris, penggabungan (merge)/pemisahan (split) sel, perataan teks dalam sel, arah teks, border dan shading, serta gaya tabel siap pakai dari Table Design.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan langkah-langkah mengonversi teks menjadi tabel di Word.</span><div class="lec-qa-a"><b>Jawaban:</b> Pilih teks yang dipisahkan tab/koma &rarr; Insert &gt; Table &gt; Convert Text to Table &rarr; tentukan jumlah kolom dan pemisah data - Word otomatis menyusunnya menjadi tabel.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Diskusikan tujuan dan manfaat mail merge di Word.</span><div class="lec-qa-a"><b>Jawaban:</b> Menggabungkan dokumen induk (template) dengan sumber data (daftar nama/alamat) untuk menghasilkan banyak dokumen personal sekaligus secara otomatis - bermanfaat untuk surat massal, label, undangan, dan sertifikat.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bedakan author-focus dan info-focus untuk kutipan dalam teks (in-text citation).</span><div class="lec-qa-a"><b>Jawaban:</b> Author-focus menempatkan nama penulis langsung dalam kalimat (mis. "Menurut Smith (2020)..."); Info-focus menempatkan nama penulis dalam tanda kurung di akhir kalimat (mis. "...seperti ditemukan dalam penelitian (Smith, 2020)").</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan langkah-langkah membuat table of contents.</span><div class="lec-qa-a"><b>Jawaban:</b> Terapkan Heading Style (Heading 1, 2, dst.) pada judul-judul dokumen &rarr; letakkan kursor di lokasi yang diinginkan &rarr; References &gt; Table of Contents &gt; pilih gaya - daftar isi akan otomatis tersusun dan bisa diperbarui (Update Field) jika dokumen berubah.</div></li>
+ </ul>
+ </div>
+ </details>
+
+ <details class="lec-module" open>
+ <summary>Ujian Akhir Semester - Modul 16-30 <span class="lec-arrow">&#9660;</span></summary>
+ <div class="lec-module-body">
+ <ul class="lec-point-list">
+ <li class="lec-qa"><span class="lec-qa-q">Apa itu cell address di Excel?</span><div class="lec-qa-a"><b>Jawaban:</b> Kombinasi huruf kolom dan angka baris yang menunjukkan lokasi unik sebuah sel di worksheet, misalnya A1 (kolom A, baris 1).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa yang dimaksud Relative cell referencing dan Absolute cell referencing di MS Excel?</span><div class="lec-qa-a"><b>Jawaban:</b> Relative reference (mis. A1) berubah otomatis mengikuti posisi baru saat formula disalin ke sel lain. Absolute reference (mis. $A$1) tetap merujuk sel yang sama persis meski formula disalin ke mana pun.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bagaimana cara freeze panes di Excel?</span><div class="lec-qa-a"><b>Jawaban:</b> Pilih sel/baris/kolom acuan &rarr; tab View &gt; Freeze Panes &gt; pilih opsi (Freeze Panes, Freeze Top Row, atau Freeze First Column) agar baris/kolom judul tetap terlihat saat scroll.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bagaimana cara membatasi seseorang menyalin sel dari worksheet Anda?</span><div class="lec-qa-a"><b>Jawaban:</b> Gunakan fitur Protect Worksheet (tab Review) untuk mengunci sel tertentu agar tidak bisa disalin/diedit tanpa kata sandi.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa perbedaan Formula dan Function di Excel?</span><div class="lec-qa-a"><b>Jawaban:</b> Formula adalah ekspresi perhitungan yang ditulis manual oleh pengguna (mis. =A1+A2); Function adalah formula bawaan/predefined siap pakai (mis. =SUM(A1:A4), =AVERAGE(), =COUNT()).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Sebutkan urutan operasi (order of operations) yang dipakai Excel saat mengevaluasi formula.</span><div class="lec-qa-a"><b>Jawaban:</b> Mengikuti kaidah matematika standar: Tanda kurung () &rarr; Pangkat/Eksponen &rarr; Perkalian dan Pembagian (kiri ke kanan) &rarr; Penjumlahan dan Pengurangan (kiri ke kanan).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bagaimana formula untuk: kalikan nilai di sel A1 dengan 10, tambahkan hasilnya dengan 5, lalu bagi dengan 2?</span><div class="lec-qa-a"><b>Jawaban:</b> =((A1*10)+5)/2</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa perbedaan COUNT, COUNTA, dan COUNTBLANK?</span><div class="lec-qa-a"><b>Jawaban:</b> COUNT menghitung sel berisi angka saja; COUNTA menghitung sel berisi apa saja (angka, teks, tanggal - tidak kosong); COUNTBLANK menghitung sel yang benar-benar kosong.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa pintasan untuk menambahkan filter ke tabel?</span><div class="lec-qa-a"><b>Jawaban:</b> Ctrl+Shift+L.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bagaimana cara membuat hyperlink di Excel?</span><div class="lec-qa-a"><b>Jawaban:</b> Pilih sel &rarr; klik kanan &gt; Link (atau Ctrl+K) &rarr; masukkan alamat URL/lokasi tujuan &rarr; klik OK.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bagaimana cara menggabungkan beberapa string teks sel menjadi satu sel?</span><div class="lec-qa-a"><b>Jawaban:</b> Gunakan fungsi CONCAT atau CONCATENATE, misalnya =CONCAT(A1," ",B1), atau operator "&amp;" seperti =A1&amp;" "&amp;B1.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bagaimana cara memisahkan satu kolom menjadi 2 kolom atau lebih?</span><div class="lec-qa-a"><b>Jawaban:</b> Pilih kolom &rarr; tab Data &gt; Text to Columns &rarr; pilih Delimited (dipisah karakter seperti koma/spasi) atau Fixed Width, ikuti wizard hingga selesai.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bagaimana cara kerja fungsi IF() di Excel?</span><div class="lec-qa-a"><b>Jawaban:</b> =IF(kondisi, nilai_jika_benar, nilai_jika_salah) - menguji suatu kondisi logika dan menghasilkan salah satu dari dua nilai tergantung hasil ujinya.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa itu Pivot Table?</span><div class="lec-qa-a"><b>Jawaban:</b> Tabel interaktif untuk meringkas, mengelompokkan, dan menganalisis data dalam jumlah besar secara fleksibel, dilengkapi fitur slicer dan timeline untuk penyaringan visual.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Diberikan tabel siswa - tulis fungsi untuk menambahkan status lulus/gagal pada kolom hasil berdasarkan kriteria tertentu.</span><div class="lec-qa-a"><b>Jawaban:</b> Umumnya memakai fungsi IF, contoh: =IF(B2&gt;=60,"Lulus","Gagal") - menyesuaikan sel referensi dan nilai batas kelulusan sesuai kriteria soal.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Animation Painter bekerja mirip Format Painter di Microsoft Office. Jelaskan cara kerjanya.</span><div class="lec-qa-a"><b>Jawaban:</b> Pilih objek yang sudah memiliki animasi &rarr; klik Animation Painter (tab Animations) &rarr; klik objek lain untuk menyalin animasi yang sama persis, tanpa perlu mengatur ulang dari awal.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Untuk membuat satu bagian slide memakai template desain berbeda dari slide lain, apa yang harus dilakukan?</span><div class="lec-qa-a"><b>Jawaban:</b> Gunakan fitur Section (klik kanan pada slide panel &gt; Add Section) untuk mengelompokkan slide, lalu terapkan desain/tema berbeda khusus pada section tersebut lewat Design tab dengan opsi "Apply to Selected Slides".</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Dengan custom animation, bagaimana membuat teks muncul huruf demi huruf di slide?</span><div class="lec-qa-a"><b>Jawaban:</b> Pilih teks &rarr; Animations &gt; pilih efek entrance (mis. Appear/Fade) &rarr; buka Effect Options &gt; atur Animate Text menjadi "By Letter" agar teks muncul satu huruf pada satu waktu.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Anda sudah mengustomisasi template desain di satu presentasi dan ingin memakainya di presentasi lain. Apa cara terbaik melakukannya?</span><div class="lec-qa-a"><b>Jawaban:</b> Simpan slide/tema tersebut sebagai file Template (.potx) lewat Save As, kemudian buka file template itu saat membuat presentasi baru, atau gunakan fitur "Reuse Slides" untuk mengimpor slide dari presentasi lain.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Saat presentasi berlangsung dan perlu kembali ke slide beberapa slide sebelumnya, bagaimana caranya?</span><div class="lec-qa-a"><b>Jawaban:</b> Klik kanan saat dalam Slide Show &gt; pilih "See All Slides" untuk melihat thumbnail seluruh slide dan langsung memilih slide yang dituju, atau ketik nomor slide lalu tekan Enter.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Tombol apa yang ditekan untuk masuk Slide Show view dan selalu mulai dari slide pertama?</span><div class="lec-qa-a"><b>Jawaban:</b> Tombol F5.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa fungsi Notes pane di bagian bawah jendela PowerPoint?</span><div class="lec-qa-a"><b>Jawaban:</b> Tempat menulis catatan pembicara (speaker notes) yang tidak ditampilkan ke audiens saat presentasi, namun bisa dilihat presenter di Presenter View sebagai panduan saat berbicara.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Sebutkan beberapa cara membuat presentasi baru di PowerPoint.</span><div class="lec-qa-a"><b>Jawaban:</b> Blank Presentation dari awal, memakai template/tema bawaan, mencari template online, atau mengimpor/menggunakan kembali (Reuse) slide dari presentasi lain.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Dalam konteks animasi PowerPoint, apa itu trigger?</span><div class="lec-qa-a"><b>Jawaban:</b> Trigger adalah objek yang, ketika diklik, akan memicu (menjalankan) animasi pada objek lain - memungkinkan animasi berjalan sesuai interaksi presenter, bukan otomatis berurutan.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bagaimana membuat halaman catatan pembicara yang menampilkan slide, catatan terkait, dan logo perusahaan di setiap halaman?</span><div class="lec-qa-a"><b>Jawaban:</b> Buka View &gt; Notes Master untuk mengatur tata letak halaman catatan, tambahkan logo/elemen tetap di Notes Master tersebut sehingga muncul konsisten di semua halaman catatan saat dicetak.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa yang dimuat dalam lingkungan (environment) PowerPoint?</span><div class="lec-qa-a"><b>Jawaban:</b> Ribbon dengan tab-tab fungsi, Slide Panel (thumbnail slide), area edit slide utama, Notes pane, Status bar, dan Quick Access Toolbar.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa itu backstage view?</span><div class="lec-qa-a"><b>Jawaban:</b> Tampilan yang muncul saat mengklik menu File, memuat info dokumen, opsi simpan/cetak/bagikan, dan pengaturan aplikasi - terpisah dari area pengeditan utama.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bagaimana cara mengustomisasi slide layout?</span><div class="lec-qa-a"><b>Jawaban:</b> Buka View &gt; Slide Master &gt; pilih/edit layout yang ingin diubah (posisi placeholder, font, warna) - perubahan akan berlaku ke semua slide yang memakai layout tersebut.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jika seseorang tidak memiliki PowerPoint, bagaimana ia bisa melihat presentasi tersebut?</span><div class="lec-qa-a"><b>Jawaban:</b> Menggunakan PowerPoint Online/Web (gratis via akun Microsoft), mengekspor presentasi ke format PDF atau video, atau memakai aplikasi pemutar PowerPoint Viewer gratis.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Tipe data apa yang valid di Microsoft Office Access?</span><div class="lec-qa-a"><b>Jawaban:</b> Short Text, Long Text, Number, Date/Time, Currency, AutoNumber, Yes/No, OLE Object, Hyperlink, dan Attachment.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa tujuan validation rule pada field properties (dalam table design view)?</span><div class="lec-qa-a"><b>Jawaban:</b> Membatasi nilai yang boleh dimasukkan ke suatu field agar sesuai kriteria tertentu (mis. angka dalam rentang tertentu), mencegah kesalahan input data.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Tipe data apa yang sebaiknya dipilih untuk field kode pos (zip code)?</span><div class="lec-qa-a"><b>Jawaban:</b> Short Text (bukan Number) - karena kode pos bisa memiliki angka nol di depan dan tidak pernah dipakai untuk perhitungan matematis.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan dua karakteristik penting Primary Key.</span><div class="lec-qa-a"><b>Jawaban:</b> (1) Nilainya harus unik untuk setiap record (tidak boleh ada duplikat); (2) Tidak boleh kosong (null) - setiap record wajib memiliki nilai primary key.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan tiga jenis relasi yang dapat dibuat di Access, beserta contohnya.</span><div class="lec-qa-a"><b>Jawaban:</b> One-to-One (satu record tabel A berpasangan dengan tepat satu record tabel B, mis. karyawan dan nomor induk pegawainya), One-to-Many (satu record tabel A berpasangan dengan banyak record tabel B, mis. satu pelanggan dengan banyak pesanan), Many-to-Many (banyak record saling berpasangan lewat tabel penghubung, mis. siswa dan mata kuliah).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Identifikasi berbagai cara membuat tabel baru di Microsoft Office Access.</span><div class="lec-qa-a"><b>Jawaban:</b> Table Design View (mendefinisikan field manual), Datasheet View (langsung mengetik data), mengimpor data dari Excel/sumber lain, atau memakai Table Templates bawaan.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan perbedaan antara akses pemirsa (viewer) dan peran kolaborator di Google Docs.</span><div class="lec-qa-a"><b>Jawaban:</b> Viewer hanya bisa melihat dokumen tanpa mengubah apa pun. Collaborator (Commenter atau Editor) bisa menambahkan komentar/saran (Commenter) atau langsung mengedit isi dokumen (Editor).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan bagaimana pengguna dapat menyimpan respons yang diterima memakai Google Forms.</span><div class="lec-qa-a"><b>Jawaban:</b> Respons otomatis tersimpan di tab Responses pada form itu sendiri, dan bisa dihubungkan ke Google Spreadsheet baru atau spreadsheet yang sudah ada untuk diolah lebih lanjut.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bedakan tools kolaborasi online dari tools document management system, sertakan contoh yang sesuai.</span><div class="lec-qa-a"><b>Jawaban:</b> Tools kolaborasi online fokus pada interaksi real-time (chat, video conference, whiteboard) - contoh: Microsoft Teams, Google Meet, GoToMeeting. Document management system fokus pada penyimpanan, akses, dan pelacakan perubahan dokumen - contoh: Google Docs, OpenKM, LogicalDOC.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Bedakan antara "acting humanly" dan "thinking humanly" dalam kategori Artificial Intelligence.</span><div class="lec-qa-a"><b>Jawaban:</b> "Acting humanly" berfokus pada sistem yang berperilaku seperti manusia dari luar (mis. lolos Turing Test) tanpa harus meniru proses berpikirnya; "Thinking humanly" berfokus pada sistem yang benar-benar meniru proses kognitif/cara berpikir manusia secara internal.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan tiga cara pengetahuan dapat direpresentasikan dalam Expert System.</span><div class="lec-qa-a"><b>Jawaban:</b> Rule-based (pernyataan IF...THEN), Frame-based (basis data terorganisasi/frame), Logic-based (memakai teori himpunan untuk membangun relasi antar fakta).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Diskusikan empat fase proses pemecahan masalah.</span><div class="lec-qa-a"><b>Jawaban:</b> Goal formulation (merumuskan tujuan), Problem formulation (merumuskan masalah), Search (mencari solusi), Execution (menjalankan solusi).</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Apa manfaat dan kekurangan interaksi media sosial?</span><div class="lec-qa-a"><b>Jawaban:</b> Manfaat: mempererat hubungan, mendorong sosialisasi, sarana dakwah dan penyebaran ajaran Islam. Kekurangan: minimnya kontak manusia langsung, keterbukaan berlebih atas kehidupan pribadi, dan penyalahgunaan kebebasan berbicara.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Jelaskan mengapa etika e-mail (e-mail etiquette) itu penting.</span><div class="lec-qa-a"><b>Jawaban:</b> Mencerminkan karakter pribadi, etos kerja, dan perhatian terhadap detail; menyampaikan profesionalisme dan efisiensi dalam komunikasi tertulis, terutama karena e-mail bisa diteruskan/disimpan sebagai catatan permanen.</div></li>
+ <li class="lec-qa"><span class="lec-qa-q">Identifikasi berbagai risiko penggunaan ponsel dalam jangka panjang dan jelaskan cara pencegahannya.</span><div class="lec-qa-a"><b>Jawaban:</b> Risiko: Repetitive Strain Injury (RSI), Computer Vision Syndrome (CVS), kecanduan internet, gangguan postur. Pencegahan: istirahat rutin, batasi waktu layar, jaga jarak pandang layar, terapkan ergonomi saat memegang perangkat, dan sadari tanda-tanda kecanduan digital sejak dini.</div></li>
+ </ul>
+ </div>
+ </details>
+
+ </div>
+</section>
+
+</main>
+
+<footer class="lec-footer">
+ <p>Introduction to Computers</p>
+ <p>Introduction to Computers (ITC 102) &middot; IOU Bachelor of Arts in Islamic Studies &middot; <a href="index.html">Rangkuman Kuliah</a></p>
+</footer>
+
+</body>
+</html>
