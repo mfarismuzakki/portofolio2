@@ -54,6 +54,10 @@ capacitor-cordova-android-plugins/
 coverage/
 .nyc_output/
 
+# Large Quran audio (~3.3 GB) — too big for GitHub Pages (1 GB limit).
+# Host separately (CDN/object storage) and point getAudioPathForPage() to that URL.
+assets/audio/alquran/
+
 # Temporary files
 tmp/
 temp/
