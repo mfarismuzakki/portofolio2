@@ -239,7 +239,7 @@
   /* Cards */
   .cards-row {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
     gap: 16px;
     margin: 24px 0;
   }
@@ -451,6 +451,7 @@
     .hero { padding: 40px 24px; }
     .hero h1 { font-size: 24px; }
   }
+@media(max-width:640px){.cmp-table{display:block;max-width:100%;overflow-x:auto}.card{min-width:0;overflow-wrap:anywhere}}
 </style>
 </head>
 <body>

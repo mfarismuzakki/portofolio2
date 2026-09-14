@@ -143,3 +143,8 @@ body:has(dialog[open]){overflow:hidden}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}
 *{transition:none!important}
 }
+
+/* Keep navigation quiet, without a personal wordmark. */
+.site-nav{width:100%}.site-nav a:first-child{margin-right:auto}
+
+.monitoring-gallery{margin:28px 0 36px}.monitoring-gallery figure{margin:0}.monitoring-gallery img{width:100%;height:auto;border:1px solid var(--line);border-radius:12px}.monitoring-gallery figcaption{padding:13px 0}

@@ -659,3 +659,30 @@ table:has(td.arabic) th, table:has(td.arabic) td { text-align: center; }
     .lec-topbar, .lec-pills-nav, .lec-top-btn { display: none !important; }
     .lec-hero { background: var(--dark-1) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* Reading refresh: calmer paper, comfortable margins and consistent navigation. */
+:root{--vellum:#f7f8f4;--vellum-deep:#edf1e8;--card:#fff;--border:#dce4db;--ink:#283d36;--ink-soft:#4d6157;--ink-mute:#65766b;--dark-1:#173f35;--dark-2:#235545;--shadow:0 2px 12px rgba(30,60,45,.035);--maxw:1060px}
+body{line-height:1.8}
+.lec-topbar,.lec-pills-nav{background:rgba(247,248,244,.97)}
+.lec-pills-nav::after{background:linear-gradient(to right,transparent,#f7f8f4 70%)}
+.lec-wrap.lec-main{padding:38px 24px 24px}
+.lec-hero{padding:45px 24px 38px}
+.lec-hero h1{font-size:clamp(1.9rem,4vw,3rem);line-height:1.25}
+.lec-tagline{line-height:1.8;max-width:740px;margin-left:auto;margin-right:auto}
+.corner-svg,.hero-star{opacity:.035}
+.lec-session{border-left-width:3px;margin-bottom:30px}
+.lec-session-header{padding:24px 28px 18px}
+.lec-session-body{padding:10px 28px 28px}
+.lec-session-body p,.lec-session-body li{line-height:1.85}
+.lec-section-head h2{font-size:clamp(1.2rem,2.5vw,1.55rem)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+@media(max-width:720px){
+ .lec-wrap.lec-main{padding:28px 16px 20px}
+ .lec-topbar{gap:10px}.lec-topbar-badge{display:none}
+ .lec-back-link{font-size:.76rem;padding:6px 10px}
+ .lec-session-header,.lec-session-body{padding-left:18px;padding-right:18px}
+ .lec-section-head{gap:9px;align-items:flex-start}
+ .lec-hero-badge{max-width:100%;line-height:1.7}
+ .lec-pills-inner{padding-left:16px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
