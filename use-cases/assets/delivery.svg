@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">DELIVERY / CI-CD pipeline</title><desc id="desc">Repeatable container delivery shared by both projects.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7d9db7"/></marker></defs>
+<rect width="1200" height="630" fill="#0c1420"/>
+<text x="35" y="47" fill="#edf4fa" font-size="25" font-family="Arial" font-weight="bold">DELIVERY / CI-CD pipeline</text>
+<text x="35" y="75" fill="#9eb2c9" font-size="14" font-family="Arial">Repeatable container delivery shared by both projects.</text>
+<polyline points="265,230 335,230" fill="none" stroke="#7d9db7" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="300" y="214" text-anchor="middle" fill="#abc0d1" font-size="11" font-family="Arial">trigger</text>
+<polyline points="565,230 635,230" fill="none" stroke="#7d9db7" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="600" y="214" text-anchor="middle" fill="#abc0d1" font-size="11" font-family="Arial">push image</text>
+<polyline points="865,230 935,230" fill="none" stroke="#7d9db7" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="900" y="214" text-anchor="middle" fill="#abc0d1" font-size="11" font-family="Arial">pull image</text>
+<polyline points="450,405 450,290" fill="none" stroke="#7d9db7" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="474" y="354" text-anchor="middle" fill="#abc0d1" font-size="11" font-family="Arial">deploy</text>
+<polyline points="750,405 750,335 1050,335 1050,290" fill="none" stroke="#7d9db7" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="860" y="326" text-anchor="middle" fill="#abc0d1" font-size="11" font-family="Arial">configuration</text>
+<polyline points="1050,290 1100,340 1100,405" fill="none" stroke="#7d9db7" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="1127" y="360" text-anchor="middle" fill="#abc0d1" font-size="11" font-family="Arial">logs</text>
+<rect x="35" y="175" width="230" height="115" rx="9" fill="#142131" stroke="#85baff" stroke-width="1.5"/>
+<rect x="35" y="189" width="3" height="24" fill="#85baff"/>
+<text x="53" y="209" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">01 / Source change</text>
+<text x="53" y="235" fill="#a9bdd0" font-size="13" font-family="Arial">Git repository</text>
+<text x="53" y="255" fill="#a9bdd0" font-size="13" font-family="Arial">Push to deployment branch</text>
+<rect x="335" y="175" width="230" height="115" rx="9" fill="#142131" stroke="#69e4d2" stroke-width="1.5"/>
+<rect x="335" y="189" width="3" height="24" fill="#69e4d2"/>
+<text x="353" y="209" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">02 / GitHub Actions</text>
+<text x="353" y="235" fill="#a9bdd0" font-size="13" font-family="Arial">Build application container</text>
+<text x="353" y="255" fill="#a9bdd0" font-size="13" font-family="Arial">Deployment configuration</text>
+<rect x="635" y="175" width="230" height="115" rx="9" fill="#142131" stroke="#e6b975" stroke-width="1.5"/>
+<rect x="635" y="189" width="3" height="24" fill="#e6b975"/>
+<text x="653" y="209" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">03 / Amazon ECR</text>
+<text x="653" y="235" fill="#a9bdd0" font-size="13" font-family="Arial">Versioned Docker image</text>
+<text x="653" y="255" fill="#a9bdd0" font-size="13" font-family="Arial">Container registry</text>
+<rect x="935" y="175" width="230" height="115" rx="9" fill="#142131" stroke="#69e4d2" stroke-width="1.5"/>
+<rect x="935" y="189" width="3" height="24" fill="#69e4d2"/>
+<text x="953" y="209" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">04 / ECS Fargate</text>
+<text x="953" y="235" fill="#a9bdd0" font-size="13" font-family="Arial">Deploy service revision</text>
+<text x="953" y="255" fill="#a9bdd0" font-size="13" font-family="Arial">Health-checked rollout</text>
+<rect x="335" y="405" width="230" height="110" rx="9" fill="#142131" stroke="#c4a3ff" stroke-width="1.5"/>
+<rect x="335" y="419" width="3" height="24" fill="#c4a3ff"/>
+<text x="353" y="439" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">Infrastructure as code</text>
+<text x="353" y="465" fill="#a9bdd0" font-size="13" font-family="Arial">AWS CloudFormation</text>
+<text x="353" y="485" fill="#a9bdd0" font-size="13" font-family="Arial">Service &amp; resource definitions</text>
+<rect x="635" y="405" width="230" height="110" rx="9" fill="#142131" stroke="#c4a3ff" stroke-width="1.5"/>
+<rect x="635" y="419" width="3" height="24" fill="#c4a3ff"/>
+<text x="653" y="439" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">Runtime configuration</text>
+<text x="653" y="465" fill="#a9bdd0" font-size="13" font-family="Arial">Secrets passed at deployment</text>
+<text x="653" y="485" fill="#a9bdd0" font-size="13" font-family="Arial">Environment-specific settings</text>
+<rect x="935" y="405" width="230" height="110" rx="9" fill="#142131" stroke="#85baff" stroke-width="1.5"/>
+<rect x="935" y="419" width="3" height="24" fill="#85baff"/>
+<text x="953" y="439" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">Observability</text>
+<text x="953" y="465" fill="#a9bdd0" font-size="13" font-family="Arial">Amazon CloudWatch</text>
+<text x="953" y="485" fill="#a9bdd0" font-size="13" font-family="Arial">Application &amp; container logs</text>
+<text x="35" y="605" fill="#8096ad" font-family="Arial" font-size="12">Portfolio architecture · simplified system view · Muhammad Faris Muzakki</text></svg>

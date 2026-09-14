@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">I-SMART / Application architecture</title><desc id="desc">An operational WebGIS connecting irrigation plans, field execution and an AI assistant.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7d9db7"/></marker></defs>
+<rect width="1200" height="630" fill="#0c1420"/>
+<text x="35" y="47" fill="#edf4fa" font-size="25" font-family="Arial" font-weight="bold">I-SMART / Application architecture</text>
+<text x="35" y="75" fill="#9eb2c9" font-size="14" font-family="Arial">An operational WebGIS connecting irrigation plans, field execution and an AI assistant.</text>
+<rect x="320" y="120" width="845" height="430" rx="10" fill="none" stroke="#41637c" stroke-dasharray="5 5"/>
+<text x="336" y="145" fill="#41637c" font-family="Arial" font-size="12" letter-spacing="1">AWS CLOUD / APPLICATION, DATABASE &amp; AI</text>
+<polyline points="275,220 340,220" fill="none" stroke="#7d9db7" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="308" y="205" text-anchor="middle" fill="#abc0d1" font-size="11" font-family="Arial">HTTPS</text>
+<polyline points="760,230 675,230" fill="none" stroke="#7d9db7" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="718" y="212" text-anchor="middle" fill="#abc0d1" font-size="11" font-family="Arial">import / sync</text>
+<polyline points="505,300 505,395" fill="none" stroke="#7d9db7" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="525" y="353" text-anchor="middle" fill="#abc0d1" font-size="11" font-family="Arial">SQL</text>
+<polyline points="675,265 715,265 715,450 760,450" fill="none" stroke="#7d9db7" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="716" y="359" text-anchor="middle" fill="#abc0d1" font-size="11" font-family="Arial">tool calls</text>
+<polyline points="760,480 675,480" fill="none" stroke="#7d9db7" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="718" y="469" text-anchor="middle" fill="#abc0d1" font-size="11" font-family="Arial">read data</text>
+<polyline points="275,445 310,445 310,275 340,275" fill="none" stroke="#7d9db7" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="298" y="348" text-anchor="middle" fill="#abc0d1" font-size="11" font-family="Arial"></text>
+<rect x="35" y="170" width="240" height="115" rx="9" fill="#142131" stroke="#85baff" stroke-width="1.5"/>
+<rect x="35" y="184" width="3" height="24" fill="#85baff"/>
+<text x="53" y="204" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">People &amp; permissions</text>
+<text x="53" y="230" fill="#a9bdd0" font-size="13" font-family="Arial">Admins · operators · viewers</text>
+<text x="53" y="250" fill="#a9bdd0" font-size="13" font-family="Arial">Entra ID SSO / local login</text>
+<text x="53" y="270" fill="#a9bdd0" font-size="13" font-family="Arial">Plantation Group access scope</text>
+<rect x="340" y="170" width="335" height="130" rx="9" fill="#142131" stroke="#69e4d2" stroke-width="1.5"/>
+<rect x="340" y="184" width="3" height="24" fill="#69e4d2"/>
+<text x="358" y="204" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">Django + WebGIS</text>
+<text x="358" y="230" fill="#a9bdd0" font-size="13" font-family="Arial">Leaflet maps · Chart.js dashboards</text>
+<text x="358" y="250" fill="#a9bdd0" font-size="13" font-family="Arial">Planning engine · versioned plans</text>
+<text x="358" y="270" fill="#a9bdd0" font-size="13" font-family="Arial">Calendar · actual irrigation records</text>
+<rect x="760" y="170" width="385" height="115" rx="9" fill="#142131" stroke="#c4a3ff" stroke-width="1.5"/>
+<rect x="760" y="184" width="3" height="24" fill="#c4a3ff"/>
+<text x="778" y="204" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">Data integration</text>
+<text x="778" y="230" fill="#a9bdd0" font-size="13" font-family="Arial">Excel plans &amp; master data</text>
+<text x="778" y="250" fill="#a9bdd0" font-size="13" font-family="Arial">GeoJSON field boundaries</text>
+<text x="778" y="270" fill="#a9bdd0" font-size="13" font-family="Arial">CropX synchronization</text>
+<rect x="340" y="395" width="335" height="120" rx="9" fill="#142131" stroke="#c4a3ff" stroke-width="1.5"/>
+<rect x="340" y="409" width="3" height="24" fill="#c4a3ff"/>
+<text x="358" y="429" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">Amazon RDS / PostgreSQL</text>
+<text x="358" y="455" fill="#a9bdd0" font-size="13" font-family="Arial">Locations · water sources · plan results</text>
+<text x="358" y="475" fill="#a9bdd0" font-size="13" font-family="Arial">Draft / published plan versions</text>
+<text x="358" y="495" fill="#a9bdd0" font-size="13" font-family="Arial">Field actuals · accounts · chat history</text>
+<rect x="760" y="395" width="385" height="120" rx="9" fill="#142131" stroke="#69e4d2" stroke-width="1.5"/>
+<rect x="760" y="409" width="3" height="24" fill="#69e4d2"/>
+<text x="778" y="429" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">AI assistant / Amazon Bedrock</text>
+<text x="778" y="455" fill="#a9bdd0" font-size="13" font-family="Arial">LangChain tool calling · read-only queries</text>
+<text x="778" y="475" fill="#a9bdd0" font-size="13" font-family="Arial">Plan, harvest, water &amp; fuel analytics</text>
+<text x="778" y="495" fill="#a9bdd0" font-size="13" font-family="Arial">Charts · Excel exports · user guide search</text>
+<rect x="35" y="395" width="240" height="120" rx="9" fill="#142131" stroke="#e6b975" stroke-width="1.5"/>
+<rect x="35" y="409" width="3" height="24" fill="#e6b975"/>
+<text x="53" y="429" fill="#edf4fa" font-family="Arial" font-size="16" font-weight="bold">Cloud delivery</text>
+<text x="53" y="455" fill="#a9bdd0" font-size="13" font-family="Arial">Docker · AWS ECS Fargate</text>
+<text x="53" y="475" fill="#a9bdd0" font-size="13" font-family="Arial">GitHub Actions → ECR</text>
+<text x="53" y="495" fill="#a9bdd0" font-size="13" font-family="Arial">CloudFormation · CloudWatch</text>
+<text x="35" y="605" fill="#8096ad" font-family="Arial" font-size="12">Portfolio architecture · simplified system view · Muhammad Faris Muzakki</text></svg>
