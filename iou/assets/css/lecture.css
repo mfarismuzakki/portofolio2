@@ -132,6 +132,24 @@ img, svg { max-width: 100%; }
     transition: all .2s ease; background: var(--card);
 }
 .lec-back-link:hover { color: var(--accent-deep); border-color: var(--accent); }
+.lec-topbar-actions {
+    display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+}
+.lec-lang-switch {
+    display: inline-flex; border: 1px solid var(--border); border-radius: 8px;
+    overflow: hidden; background: var(--card);
+}
+.lec-lang-switch button {
+    border: 0; background: transparent; color: var(--ink-soft);
+    padding: 7px 11px; font-size: .72rem; font-weight: 650;
+    letter-spacing: .04em; line-height: 1; font-family: 'Inter', sans-serif; cursor: pointer;
+}
+.lec-lang-switch button[aria-pressed=true] {
+    background: var(--accent-deep); color: #fff;
+}
+.lec-lang-switch button:hover:not([aria-pressed=true]) {
+    color: var(--accent-deep); background: var(--accent-bg);
+}
 .lec-topbar-badge {
     font-family: 'Inter', sans-serif; font-size: .68rem; letter-spacing: 2px;
     color: var(--accent-deep); border: 1px solid var(--border); background: var(--accent-bg);
@@ -679,6 +697,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-off
 @media(max-width:720px){
  .lec-wrap.lec-main{padding:28px 16px 20px}
  .lec-topbar{gap:10px}.lec-topbar-badge{display:none}
+ .lec-lang-switch button{padding:6px 9px;font-size:.66rem}
  .lec-back-link{font-size:.76rem;padding:6px 10px}
  .lec-session-header,.lec-session-body{padding-left:18px;padding-right:18px}
  .lec-section-head{gap:9px;align-items:flex-start}
