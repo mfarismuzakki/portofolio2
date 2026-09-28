@@ -605,9 +605,12 @@ export default class SholatApp {
     async showPeraga3D() {
         if (!this.peraga3D) {
             try {
-                const module = await import('./peraga-3d.js?v=4.0.0');
-                const Peraga3D = module.default;
-                this.peraga3D = new Peraga3D();
+                // Fast tab/search changes must share one import and one renderer.
+                this.peragaLoading ||= import('./peraga-3d.js?v=4.0.1').then(module => {
+                    this.peraga3D ||= new module.default();
+                    return this.peraga3D;
+                });
+                await this.peragaLoading;
             } catch (err) {
                 console.error('Gagal memuat Peraga 3D:', err);
                 const panel = document.getElementById('sholatPeraga');
@@ -624,7 +627,9 @@ export default class SholatApp {
             }
         }
         // Defer init until canvas is visible & sized
-        requestAnimationFrame(() => this.peraga3D.onShow());
+        requestAnimationFrame(() => {
+            if (this.currentTab === 'peraga' && document.getElementById('sholatPeraga')?.offsetParent) this.peraga3D.onShow();
+        });
     }
 
     showLoading() {

@@ -757,6 +757,15 @@ class IslamHubApp {
     }
 
     async loadApp(appName) {
+        this.loadingApps ||= new Map();
+        if (this.loadedApps.has(appName)) return;
+        if (this.loadingApps.has(appName)) return this.loadingApps.get(appName);
+        const pending = this.initializeApp(appName);
+        this.loadingApps.set(appName, pending);
+        try { await pending; } finally { this.loadingApps.delete(appName); }
+    }
+
+    async initializeApp(appName) {
         try {
             console.log(`Loading app: ${appName}`);
             

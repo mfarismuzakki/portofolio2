@@ -1,4 +1,4 @@
-import MosqueScene from './mosque-scene.js';
+import MosqueScene from './mosque-scene.js?v=4.0.1';
 
 const POSES = [
     // ===== RAKA'AT 1 =====
@@ -53,7 +53,7 @@ const POSES = [
         tip: 'Bangkit dari ruku\' sambil raf\'ul yadain seraya mengucap "Sami\'allahu liman hamidah". Berdiri tegak sempurna dengan tenang sebelum turun sujud, jangan tergesa-gesa.',
         duration: 3200,
         body: 'stand',
-        arms: 'sedekap',
+        arms: 'down',
         head: { tilt: -0.25, turn: 0 },
         // Raf'ul yadain: bangkit dari ruku' dengan tangan terangkat, lalu turun.
         via: { body: 'stand', arms: 'takbir', head: { tilt: -0.1, turn: 0 } }
@@ -136,7 +136,7 @@ const POSES = [
         tip: 'Bangkit dari ruku\' dengan raf\'ul yadain, berdiri tegak sempurna dengan tuma\'ninah.',
         duration: 3200,
         body: 'stand',
-        arms: 'sedekap',
+        arms: 'down',
         head: { tilt: -0.25, turn: 0 },
         via: { body: 'stand', arms: 'takbir', head: { tilt: -0.1, turn: 0 } }
     },
@@ -241,7 +241,7 @@ export default class Peraga3D {
     onShow(){
         if(!this.bound){
             this.bound=true;this.buildUI();this.bindControls();
-            try{this.world=new MosqueScene(document.getElementById('peragaCanvas'));}catch(error){document.querySelector('.peraga-stage').innerHTML='<p class="peraga-fallback">'+error.message+' Bacaan dan urutan langkah tetap dapat dipelajari di bawah.</p>';}
+            try{this.world=new MosqueScene(document.getElementById('peragaCanvas'));this.world.onStatus=message=>this.showSceneStatus(message);}catch(error){document.querySelector('.peraga-stage').innerHTML='<p class="peraga-fallback">'+error.message+' Bacaan dan urutan langkah tetap dapat dipelajari di bawah.</p>';}
             this.observer=new IntersectionObserver(entries=>{if(entries[0].isIntersecting&&!document.hidden){this.world?.start();}else{this.pause();this.world?.stop();}});this.observer.observe(document.getElementById('sholatPeraga'));
             document.addEventListener('visibilitychange',()=>{if(document.hidden)this.onHide();else if(document.getElementById('sholatPeraga').offsetParent)this.world?.start();});
         }
@@ -253,12 +253,22 @@ export default class Peraga3D {
     }
     bindControls(){
         const on=(id,fn)=>document.getElementById(id)?.addEventListener('click',fn);
+        on('peragaRecoverBtn',()=>this.world?.recover());
         on('peragaPrevBtn',()=>{this.pause();this.setStep(this.currentStep-1);});
         on('peragaNextBtn',()=>{this.pause();this.setStep(this.currentStep+1);});
         on('peragaPlayBtn',()=>this.isPlaying?this.pause():this.play());
-        on('peragaResetBtn',()=>{this.pause();this.setStep(0,false);if(this.world){this.world.angle=2.25;this.world.pitch=.18;this.world.rotate=false;}});
-        on('peragaRotateBtn',()=>{if(this.world){this.world.rotate=!this.world.rotate;document.getElementById('peragaRotateBtn').setAttribute('aria-pressed',this.world.rotate);}});
-        document.querySelectorAll('[data-prayer-view]').forEach(b=>b.addEventListener('click',()=>{if(this.world){this.world.angle=+b.dataset.prayerView;this.world.pitch=.12;this.world.rotate=false;}document.querySelectorAll('[data-prayer-view]').forEach(x=>x.setAttribute('aria-pressed',x===b));}));
+        on('peragaResetBtn',()=>{this.pause();this.setStep(0,false);if(this.world)this.world.setView(2.25,.18);this.syncCameraButtons('2.25');});
+        on('peragaRotateBtn',()=>{if(this.world){this.world.setAutoRotate(!this.world.rotate);document.getElementById('peragaRotateBtn').setAttribute('aria-pressed',this.world.rotate);}});
+        document.querySelectorAll('[data-prayer-view]').forEach(b=>b.addEventListener('click',()=>{if(this.world)this.world.setView(+b.dataset.prayerView);this.syncCameraButtons(b.dataset.prayerView);}));
+    }
+    syncCameraButtons(view){
+        document.querySelectorAll('[data-prayer-view]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.prayerView===view));
+        document.getElementById('peragaRotateBtn').setAttribute('aria-pressed','false');
+    }
+    showSceneStatus(message){
+        const status=document.getElementById('peragaSceneStatus');
+        if(!status)return;status.hidden=!message;status.querySelector('p').textContent=message;
+        if(message)this.pause();
     }
     setStep(index,animate=true){
         index=Math.max(0,Math.min(POSES.length-1,index));const previous=POSES[this.currentStep],p=POSES[index];this.currentStep=index;
@@ -271,7 +281,7 @@ export default class Peraga3D {
         set('peragaStepNum',index+1);set('peragaStepTotal',POSES.length);set('peragaPoseName',p.name);set('peragaBacaanName',p.name);set('peragaBacaanRuling',index<7?'Rakaat 1':index<13?'Rakaat 2':'Tasyahud & salam');
         set('peragaBacaanArabic',p.arabic);set('peragaBacaanLatin',p.latin);set('peragaBacaanTranslation',p.translation);
         let tip=p.tip;
-        if(p.id.startsWith('itidal'))tip+=' Peraga bersedekap kembali mengikuti pilihan Ibnu Baz; posisi tangan setelah rukuk diperselisihkan ulama.';
+        if(p.id.startsWith('itidal'))tip+=' Setelah mengangkat tangan, turunkan keduanya di samping badan. Peraga memakai posisi irsal; posisi tangan setelah rukuk merupakan perkara yang diperselisihkan ulama.';
         if(p.arabic.includes('…')||p.latin.includes('…'))tip+=' Bacaan di atas adalah cuplikan. Buka tab Bacaan Sholat untuk teks lengkap.';
         set('peragaBacaanTip',tip);
         document.getElementById('peragaCanvas')?.setAttribute('aria-label',p.name+'. '+tip);

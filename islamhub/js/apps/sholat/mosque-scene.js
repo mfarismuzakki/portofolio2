@@ -1,5 +1,26 @@
 // Procedural teaching model. World: +Y up, -Z qibla, +X person's right.
 // Explicit contact points keep the palms, knees and toes on the prayer mat.
+export function sampleTransition(path, elapsed, duration) {
+    // A queued RAF can predate the input event that started a new transition.
+    // Never use a negative segment index, including after rapid pose changes.
+    const progress = Math.max(0, Math.min(1, elapsed / Math.max(1, duration)));
+    if (progress === 0) return { pose: path[0], complete: false };
+    if (progress === 1) return { pose: path[path.length - 1], complete: true };
+    const position = progress * (path.length - 1);
+    const index = Math.min(Math.floor(position), path.length - 2);
+    const fraction = position - index;
+    const blend = fraction * fraction * (3 - 2 * fraction);
+    const from = path[index], to = path[index + 1], pose = {};
+    for (const key of Object.keys(to)) {
+        pose[key] = Array.isArray(to[key])
+            ? to[key].map((value, axis) => from[key][axis] + (value - from[key][axis]) * blend)
+            : typeof to[key] === 'number'
+                ? from[key] + (to[key] - from[key]) * blend
+                : blend < .5 ? from[key] : to[key];
+    }
+    return { pose, complete: progress === 1 };
+}
+
 export function posture(pose) {
     const p = { hip:[0,.91,0], chest:[0,1.45,0], head:[0,1.73,-.02], tilt:pose.head?.tilt || 0, turn:pose.head?.turn || 0, hands:pose.arms };
     const seated = pose.body === 'iftirasy';
@@ -20,9 +41,13 @@ export function posture(pose) {
         p['wrist'+side]=[s*.27,p.chest[1]-.52,p.chest[2]-.02];
         if(pose.arms==='takbir') {p['elbow'+side]=[s*.36,1.18,-.07];p['wrist'+side]=[s*.34,1.51,-.14];}
         if(pose.arms==='sedekap') {p['elbow'+side]=[s*.28,1.16,-.11];p['wrist'+side]=[-s*.035,1.30+(side==='R'?.035:0),-.20-(side==='R'?.045:0)];}
-        if(pose.arms==='knees') {p['elbow'+side]=[s*.24,.72,-.31];p['wrist'+side]=[s*.16,.53,-.045];}
+        if(pose.arms==='knees') {p['elbow'+side]=[s*.195,.73,-.268];p['wrist'+side]=[s*.16,.53,-.045];}
         if(pose.arms==='sujud') {p['elbow'+side]=[s*.40,.30,-.46];p['wrist'+side]=[s*.30,.053,-.70];}
         if(pose.arms==='thighs'||pose.arms==='tasyahud') {p['elbow'+side]=[s*.25,.56,.08];p['wrist'+side]=[s*.16,.23,-.17];}
+        p['handEuler'+side]=pose.arms==='takbir'?[0,0,0]
+            :pose.arms==='sedekap'?[0,0,side==='R'?Math.PI/2:-Math.PI/2]
+            :pose.arms==='down'?[0,side==='R'?Math.PI/2:-Math.PI/2,Math.PI]
+            :[-Math.PI/2,0,0];
     }
     return p;
 }
@@ -34,18 +59,22 @@ export default class MosqueScene {
         const T=this.T;
         this.scene=new T.Scene(); this.scene.background=new T.Color('#e5ddd0'); this.scene.fog=new T.Fog('#e5ddd0',9,24);
         this.camera=new T.PerspectiveCamera(38,1,.1,40);
-        this.renderer=new T.WebGLRenderer({canvas,antialias:true}); this.renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+        const smallScreen=matchMedia('(max-width: 700px)').matches;
+        this.renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'low-power'}); this.renderer.setPixelRatio(Math.min(devicePixelRatio,smallScreen?1.5:2));
         this.renderer.outputEncoding=T.sRGBEncoding; this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.05;this.renderer.shadowMap.enabled=true; this.renderer.shadowMap.type=T.PCFSoftShadowMap;
         this.scene.add(new T.HemisphereLight(0xfffaf1,0x777365,.65));
         const sun=new T.DirectionalLight(0xffeed4,.85); sun.position.set(-3,7,-4);sun.castShadow=true;
-        sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-5;sun.shadow.camera.right=5;sun.shadow.camera.top=5;sun.shadow.camera.bottom=-5;sun.shadow.bias=-.0003;this.scene.add(sun);
-        this.mats={cloth:this.mat('#e8e2d6'),pants:this.mat('#c8c8b7'),skin:this.mat('#b78464'),trim:this.mat('#b5955e'),wall:this.mat('#e8deca'),green:this.mat('#285b50'),dark:this.mat('#23483f')};
+        sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-4;sun.shadow.camera.right=4;sun.shadow.camera.top=4;sun.shadow.camera.bottom=-4;sun.shadow.bias=-.0003;this.scene.add(sun);
+        this.renderer.shadowMap.autoUpdate=false;
+        this.mats={cloth:this.mat('#a1ad94'),pants:this.mat('#d1c8b3'),skin:this.mat('#b78464'),trim:this.mat('#b5955e'),wall:this.mat('#e8deca'),green:this.mat('#285b50'),dark:this.mat('#23483f'),cap:this.mat('#f2ebdd')};
         this.meshes={};this.room();this.figure(); this.angle=2.25;this.pitch=.18;this.radius=4.4;this.rotate=false;
         this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(canvas.parentElement);
         canvas.addEventListener('pointerdown',e=>{this.drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);this.rotate=false;});
-        canvas.addEventListener('pointermove',e=>{if(!this.drag)return;this.angle-=(e.clientX-this.drag.x)*.009;this.pitch=Math.max(.04,Math.min(.8,this.pitch+(e.clientY-this.drag.y)*.004));this.drag={x:e.clientX,y:e.clientY};});
+        canvas.addEventListener('pointermove',e=>{if(!this.drag)return;this.angle-=(e.clientX-this.drag.x)*.009;this.pitch=Math.max(.04,Math.min(.8,this.pitch+(e.clientY-this.drag.y)*.004));this.drag={x:e.clientX,y:e.clientY};this.requestRender();});
         const end=()=>this.drag=null;canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);
-        canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();this.stop();canvas.setAttribute('aria-label','Tampilan 3D terhenti. Muat ulang halaman untuk memulihkan.');});
+        canvas.addEventListener('lostpointercapture',end);
+        canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();this.contextLost=true;this.stop();this.onStatus?.('Tampilan 3D terhenti. Tekan Pulihkan tampilan. Bacaan dan tombol langkah tetap tersedia.');});
+        canvas.addEventListener('webglcontextrestored',()=>{this.contextLost=false;this.renderer.shadowMap.needsUpdate=true;this.onStatus?.('');this.start();});
     }
     mat(color){return new this.T.MeshStandardMaterial({color,roughness:.88});}
     mesh(geometry,material,parent=this.scene){const m=new this.T.Mesh(geometry,material);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
@@ -88,11 +117,12 @@ export default class MosqueScene {
         const skull=this.mesh(new T.SphereGeometry(1,32,24),m.skin,this.head);skull.scale.set(.12,.165,.125);
         const nose=this.mesh(new T.SphereGeometry(.027,16,12),m.skin,this.head);nose.scale.set(.6,1,1);nose.position.set(0,-.012,-.126);
         for(const side of [-1,1]){const ear=this.mesh(new T.SphereGeometry(1,16,12),m.skin,this.head);ear.scale.set(.018,.035,.024);ear.position.set(side*.12,0,0);}
-        const cap=this.mesh(new T.SphereGeometry(.123,32,16,0,Math.PI*2,0,1.08),m.cloth,this.head);cap.position.y=.051;
+        const cap=this.mesh(new T.SphereGeometry(.123,32,16,0,Math.PI*2,0,1.08),m.cap,this.head);cap.position.y=.051;
         for(const s of ['L','R']){
             tube('thigh'+s,.105,m.pants);tube('shin'+s,.079,m.pants);tube('upper'+s,.075,m.cloth);tube('fore'+s,.061,m.cloth);
-            this.meshes['knee'+s]=this.mesh(new T.SphereGeometry(.093,20,16),m.pants);
-            this.meshes['elbow'+s]=this.mesh(new T.SphereGeometry(.067,20,16),m.cloth);
+            this.meshes['shoulder'+s]=this.mesh(new T.SphereGeometry(.081,24,18),m.cloth);
+            this.meshes['knee'+s]=this.mesh(new T.SphereGeometry(.102,24,18),m.pants);
+            this.meshes['elbow'+s]=this.mesh(new T.SphereGeometry(.074,24,18),m.cloth);
             this.meshes['foot'+s]=this.mesh(new T.SphereGeometry(1,20,16),m.skin);
             for(let i=0;i<5;i++)this.meshes['toe'+s+i]=this.mesh(new T.SphereGeometry(.013,12,10),m.skin);
             const hand=new T.Group(); this.scene.add(hand);this.meshes['hand'+s]=hand;
@@ -110,31 +140,40 @@ export default class MosqueScene {
         for(const s of ['L','R']){
             this.segment('thigh'+s,p['hip'+s],p['knee'+s]);this.segment('shin'+s,p['knee'+s],p['ankle'+s]);
             this.segment('upper'+s,p['shoulder'+s],p['elbow'+s]);this.segment('fore'+s,p['elbow'+s],p['wrist'+s]);
-            for(const j of ['knee','elbow'])this.meshes[j+s].position.set(...p[j+s]);
+            for(const j of ['shoulder','knee','elbow'])this.meshes[j+s].position.set(...p[j+s]);
             const a=p['ankle'+s],b=p['toe'+s],v=new this.T.Vector3(...b).sub(new this.T.Vector3(...a));
             const foot=this.meshes['foot'+s];foot.position.set(...a).addScaledVector(v,.5);foot.scale.set(.065,v.length()*.6,.042);foot.quaternion.setFromUnitVectors(new this.T.Vector3(0,1,0),v.normalize());
             const cross=new this.T.Vector3(v.z,0,-v.x).normalize();
             for(let i=0;i<5;i++)this.meshes['toe'+s+i].position.set(...b).addScaledVector(cross,(i-2)*.023);
-            const hand=this.meshes['hand'+s];hand.position.set(...p['wrist'+s]);hand.rotation.set(0,0,0);
-            if(p.hands==='sedekap')hand.rotation.z=s==='R'?Math.PI/2:-Math.PI/2;
-            else if(p.hands!=='takbir')hand.rotation.x=-Math.PI/2;
+            const hand=this.meshes['hand'+s];hand.position.set(...p['wrist'+s]);hand.rotation.set(...p['handEuler'+s]);
             for(let i=0;i<4;i++){const f=this.meshes['finger'+s+i];f.scale.y=p.hands==='tasyahud'&&s==='R'&&i!==0?.35:1;f.position.y=f.scale.y===1?.068:.040;}
         }
+        this.renderer.shadowMap.needsUpdate=true;
     }
     setPose(spec,animate=true,via=[]){
-        const target=posture(spec);this.path=animate&&this.current?[structuredClone(this.current),...via.map(posture),target]:null;
-        this.started=performance.now();this.duration=this.path?(this.path.length-1)*850:0;if(!this.path)this.apply(target);
+        const target=posture(spec);const from=this.current&&Object.fromEntries(Object.entries(this.current).map(([key,value])=>[key,Array.isArray(value)?[...value]:value]));this.path=animate&&from?[from,...via.map(posture),target]:null;
+        this.started=performance.now();this.duration=this.path?(this.path.length-1)*850:0;if(!this.path)this.apply(target);this.requestRender();
     }
-    resize(){const w=this.canvas.clientWidth,h=this.canvas.clientHeight;if(!w||!h)return;this.renderer.setSize(w,h,false);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();}
+    resize(){const w=this.canvas.clientWidth,h=this.canvas.clientHeight;if(!w||!h)return;if(w!==this.width||h!==this.height){this.width=w;this.height=h;this.renderer.setSize(w,h,false);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.requestRender();}}
+    setView(angle,pitch=.12){this.angle=angle;this.pitch=pitch;this.rotate=false;this.requestRender();}
+    setAutoRotate(value){this.rotate=value;this.lastTime=0;this.requestRender();}
+    requestRender(){if(this.running&&!this.contextLost&&!this.raf)this.raf=requestAnimationFrame(this.frame);}
+    recover(){if(this.contextLost)this.renderer.forceContextRestore();else{this.onStatus?.('');this.start();}}
     frame=(time)=>{
-        if(!this.running)return;
+        this.raf=null;
+        if(!this.running||this.contextLost)return;
+        try {
         const dt=Math.min((time-(this.lastTime||time))/1000,.05);this.lastTime=time;
-        if(this.path){const t=Math.min((time-this.started)/this.duration,1)*(this.path.length-1),i=Math.min(Math.floor(t),this.path.length-2),u=t-i,k=u*u*(3-2*u),a=this.path[i],b=this.path[i+1],p={};
-            for(const key of Object.keys(b))p[key]=Array.isArray(b[key])?b[key].map((n,j)=>a[key][j]+(n-a[key][j])*k):typeof b[key]==='number'?a[key]+(b[key]-a[key])*k:b[key];this.apply(p);if(t>=this.path.length-1)this.path=null;}
+        if(this.path){const sample=sampleTransition(this.path,time-this.started,this.duration);this.apply(sample.pose);if(sample.complete)this.path=null;}
         if(this.rotate)this.angle+=dt*.18;
         const r=this.radius*(this.camera.aspect<.8?1.12:1);this.camera.position.set(Math.sin(this.angle)*r,1+Math.sin(this.pitch)*r,Math.cos(this.angle)*r-.25);this.camera.lookAt(0,.87,-.28);
-        this.renderer.render(this.scene,this.camera);this.raf=requestAnimationFrame(this.frame);
+        this.renderer.render(this.scene,this.camera);
+        if(this.path||this.rotate)this.requestRender();
+        } catch(error) {
+            this.stop();this.onStatus?.('Tampilan 3D mengalami kendala. Tekan Pulihkan tampilan untuk mencoba lagi.');
+            console.error('Prayer scene render failed:',error);
+        }
     };
-    start(){if(this.running)return;this.running=true;this.lastTime=0;this.resize();this.raf=requestAnimationFrame(this.frame);}
-    stop(){this.running=false;cancelAnimationFrame(this.raf);}
+    start(){if(this.contextLost)return;this.running=true;this.lastTime=0;this.resize();this.requestRender();}
+    stop(){this.running=false;cancelAnimationFrame(this.raf);this.raf=null;}
 }
