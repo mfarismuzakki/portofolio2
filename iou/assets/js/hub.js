@@ -51,6 +51,8 @@
       descArb102: 'Dari dasar-dasar tata bahasa hingga materi akhir semester.',
       descIser102: 'Rangkuman materi perkuliahan untuk membantu belajar dan mengulang pokok pembahasan.',
       descIser201: "Fase Madinah dari tahun pertama Hijrah hingga wafatnya Nabi ﷺ: Badr, Uhud, Ahzab, Hudaybiyah, Khaybar, Fathu Makkah, Tabuk, Haji Wada', lengkap dengan cek riwayat per sesi dan bank soal UTS/UAS.",
+      descIaqd201: "Syarh Al-'Aqidah At-Tahawiyyah karya Ibnu Abil 'Izz dalam 21 modul: kenabian, takfir, harap dan cemas, takdir dan perbuatan hamba, doa, wali dan karamah, hingga sekte-sekte menyimpang, lengkap dengan peta firqah dan bank soal.",
+      descEnes101: "Literasi akademik dan bahasa Inggris dalam 30 unit: gaya belajar, strategi membaca, mencatat, plagiarisme, proses menulis, tanda baca, grammar, hingga keterampilan ujian, lengkap dengan panduan tugas esai dan bank soal.",
       descItaf102: 'Rangkuman materi perkuliahan untuk membantu belajar dan mengulang pokok pembahasan.'
     },
     en: {
@@ -104,6 +106,8 @@
       descArb102: 'From the fundamentals of grammar through to end-of-semester material.',
       descIser102: 'Lecture summaries to help you study and review the main topics.',
       descIser201: "The Madinah phase from the first year of Hijrah to the Prophet's ﷺ death: Badr, Uhud, Ahzab, Hudaybiyah, Khaybar, the Conquest of Makkah, Tabuk and the Farewell Hajj, with a narration check per session and a midterm/final question bank.",
+      descIaqd201: "Ibn Abil-'Izz's commentary on Al-'Aqidah At-Tahawiyyah in 21 modules: prophethood, takfir, hope and fear, qadar and human actions, du'a, saints and miracles, and the heretical sects, with a sect map and question bank.",
+      descEnes101: "Academic literacy and English in 30 units: learning styles, reading strategies, note-taking, plagiarism, the writing process, punctuation, grammar and exam skills, with an essay assignment guide and question bank.",
       descItaf102: 'Lecture summaries to help you study and review the main topics.'
     }
   };
