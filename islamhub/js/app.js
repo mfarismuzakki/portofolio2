@@ -656,6 +656,9 @@ class IslamHubApp {
             return; // Don't proceed with normal switch
         }
         
+        if (this.currentApp === 'sholat' && appName !== 'sholat') window.sholatApp?.peraga3D?.onHide();
+        if (appName === 'sholat' && window.sholatApp?.currentTab === 'peraga') requestAnimationFrame(() => window.sholatApp.peraga3D?.onShow());
+
         // Hide current app
         document.querySelectorAll('.app-component').forEach(comp => {
             comp.classList.remove('active');

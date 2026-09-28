@@ -1,0 +1,83 @@
+/* Calm, touch-friendly learning spaces; loaded after global theme overrides. */
+#sholat-app .sholat-container{max-width:1180px;padding:24px 20px 100px;min-width:0}
+#sholat-app .sholat-header h2{font-family:system-ui,sans-serif;text-shadow:none;color:#e6ecdf;font-size:clamp(24px,4vw,34px)}
+#sholat-app .sholat-header p{font-family:system-ui,sans-serif;font-size:14px;line-height:1.7}
+#sholat-app .sholat-tabs{display:flex;justify-content:flex-start;gap:8px;overflow-x:auto;max-width:100%;padding:0 0 12px}
+#sholat-app .sholat-tab{flex:0 0 auto;min-width:0;font-family:system-ui,sans-serif;font-size:13px;padding:12px 16px;border-radius:12px;background:#172824;border:1px solid #34493f;box-shadow:none;color:#dce7df}
+#sholat-app .sholat-tab.active{background:#d3e1c7;color:#183329;border-color:#d3e1c7;animation:none}
+#sholat-app .sholat-tab::after,#sholat-app .sholat-tab::before{display:none}
+#sholatPeraga{font-family:system-ui,sans-serif;background:#f6f4ed;color:#213d33;border:1px solid #dddccc;border-radius:22px;overflow:hidden;max-width:100%;min-width:0;margin:8px 0 18px}
+#sholatPeraga button{font:600 13px/1.3 system-ui,sans-serif;cursor:pointer;min-height:44px;border:1px solid #ced4c8;border-radius:10px;padding:10px 14px;background:#fffef8;color:#234a3b;box-shadow:none;transition:background .15s}
+#sholatPeraga button:hover{background:#e5ecde}#sholatPeraga button:focus-visible,.manasik-game button:focus-visible{outline:3px solid #ac792d;outline-offset:3px}
+#sholatPeraga button:disabled{opacity:.4;cursor:default}
+#sholatPeraga .peraga-intro{padding:26px 28px;display:flex;align-items:center;gap:20px;justify-content:space-between;border-bottom:1px solid #dedfd3}
+.peraga-eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;color:#6b7f66}
+#sholatPeraga h3{font:600 25px/1.3 system-ui,sans-serif;margin:8px 0;color:#244335}
+#sholatPeraga .peraga-intro p{font-size:13px;line-height:1.8;color:#667269;max-width:530px;margin:0}
+.peraga-mode{font-size:11px;border:1px solid #ccd4c4;border-radius:25px;padding:10px 14px;white-space:nowrap}
+#sholatPeraga .peraga-overlay-top{position:static;display:flex;align-items:center;gap:12px;padding:16px 24px;background:#eeeee4;pointer-events:auto;transform:none}
+#sholatPeraga .peraga-step-badge{display:inline-flex;gap:4px;font:600 12px system-ui;padding:8px 10px;border-radius:8px;color:#fff;background:#345848;border:0;box-shadow:none;white-space:nowrap}
+#peragaPoseName{font:600 15px/1.5 system-ui,sans-serif;margin:0;color:#294335;min-width:0}
+#sholatPeraga .peraga-stage{height:480px;min-height:0;max-height:none;border:0;border-radius:0;background:#e5ddd0;box-shadow:none;overflow:hidden;position:relative}
+#sholatPeraga .peraga-stage::before{display:none}
+#sholatPeraga #peragaCanvas{display:block;width:100%;height:100%;position:static;touch-action:pan-y;cursor:grab}
+.peraga-scene-label{position:absolute;left:20px;bottom:16px;background:#f8f6edf0;padding:8px 12px;border-radius:6px;font-size:9px;letter-spacing:1.2px;pointer-events:none;color:#455947}
+#sholatPeraga .peraga-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid #dedfd3;flex-wrap:wrap}
+.peraga-toolbar>span{font-size:11px;color:#647464}
+.peraga-views{display:flex;gap:6px}
+#sholatPeraga button[aria-pressed=true],#sholatPeraga .peraga-dot.active{background:#345848;color:white;border-color:#345848}
+#sholatPeraga .peraga-overlay-controls{position:static;transform:none;display:flex;justify-content:center;flex-wrap:wrap;gap:8px;padding:20px 18px 8px;border:0;border-radius:0;background:none;box-shadow:none}
+#sholatPeraga #peragaPlayBtn{background:#345848;color:#fff;min-width:104px}
+#sholatPeraga .peraga-timeline{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:14px 20px 20px;background:none;border:0;border-radius:0;overflow:visible}
+#sholatPeraga .peraga-dot{width:36px;min-height:36px;height:36px;flex:0 0 36px;padding:0;border-radius:50%;font-size:11px;color:#576550}
+#sholatPeraga .peraga-dot::after{display:none}
+#sholatPeraga .peraga-bacaan-panel{background:#fffef8;border:0;border-top:1px solid #dcded1;border-radius:0;padding:26px 32px;margin:0}
+#sholatPeraga .peraga-bacaan-header{display:flex;justify-content:space-between;align-items:start;gap:12px}
+#sholatPeraga .peraga-bacaan-header h3{font:600 17px/1.5 system-ui,sans-serif;margin:0}
+#sholatPeraga .peraga-bacaan-ruling{font-size:10px;white-space:nowrap;background:#ecf0e3;color:#526546;padding:6px 9px;border:0;border-radius:6px}
+#sholatPeraga .peraga-bacaan-arabic{font-family:'Noto Naskh Arabic',serif;font-size:clamp(26px,4vw,36px);line-height:2.2;text-align:right;direction:rtl;color:#254b39;margin:20px 0 14px;animation:none;text-shadow:none;overflow-wrap:anywhere}
+#sholatPeraga .peraga-bacaan-latin{color:#536950;font-size:14px;line-height:1.8;animation:none}
+#sholatPeraga .peraga-bacaan-translation{color:#747968;font-size:13px;line-height:1.8;margin-top:8px;animation:none}
+#sholatPeraga .peraga-bacaan-tip{background:#eef1e7;color:#455741;border:0;border-left:3px solid #8aa376;font-size:13px;line-height:1.9;padding:14px 18px;margin-top:18px;border-radius:0 10px 10px 0}
+.peraga-sources{font:13px/1.8 system-ui,sans-serif;color:#aebab0;padding:18px 4px}.peraga-sources summary{cursor:pointer;color:#d5e3cf}.peraga-sources p{margin-top:14px}.peraga-sources a{color:#c2d9ab;text-decoration:underline}
+.peraga-fallback{padding:40px;font:16px/1.8 system-ui}
+.manasik-game{font:14px/1.65 system-ui,sans-serif;background:#f5f1e7;color:#233f36;border-radius:22px;overflow:hidden;margin:20px 0;min-width:0}
+.manasik-game *{box-sizing:border-box}
+.manasik-game button{font:600 13px/1.4 system-ui,sans-serif;min-height:44px;cursor:pointer;border:1px solid #cfd2be;background:#fffdf6;color:#365441;padding:10px 15px;border-radius:10px}
+.manasik-game button:disabled{opacity:.5;cursor:default}
+.mg-header{padding:26px;display:flex;justify-content:space-between;gap:18px;align-items:center;border-bottom:1px solid #dddcc9;flex-wrap:wrap}
+.mg-header h3{font:600 clamp(22px,3vw,29px)/1.2 system-ui!important;color:#244435!important;margin:8px 0!important}
+.mg-header p{color:#697660;font-size:13px;margin:0}
+.mg-modes{display:flex;gap:6px}.mg-modes button[aria-pressed=true]{background:#345848;color:#fff}
+.mg-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(250px,1fr)}
+.mg-world{position:relative;background:#dce6d2;min-width:0}
+.mg-world canvas{display:block;width:100%;aspect-ratio:1.2;touch-action:pan-y;outline-offset:-4px}
+.mg-map-label{position:absolute;left:18px;top:16px;font-size:10px;letter-spacing:1.5px;pointer-events:none;color:#55704c;background:#f7f7e3dd;padding:5px 9px;border-radius:5px}
+.mg-mission{padding:24px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.mg-mission h4{font:600 22px/1.35 system-ui;margin:0;color:#264b37}.mg-mission p{margin:0;font-size:13px;line-height:1.9;color:#63705c}
+.mg-status{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#7b815f}
+.mg-progress{height:5px;border-radius:5px;background:#dfdfcb;overflow:hidden}.mg-progress>span{height:100%;background:#64845b;display:block;transition:width .3s}
+.mg-choices{display:grid;gap:8px}.mg-choices button{text-align:left}.mg-choices button:hover{background:#e6eddc}
+.mg-feedback{min-height:42px;background:#e8eddc;border-radius:8px;padding:10px 12px;font-size:12px;color:#385834}
+.mg-count{font-size:27px;font-weight:600;color:#365b40;line-height:1.3}
+.mg-action{background:#345848!important;color:#fff!important;width:100%}
+.mg-footer{border-top:1px solid #d9ddc9;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:11px;color:#66765c}
+.mg-footer a{color:#3e6348;text-decoration:underline}.mg-route{padding:0 24px 20px;display:flex;flex-wrap:wrap;gap:8px;font-size:11px}.mg-route span{padding:5px 9px;border-radius:5px;background:#e9eadc}.mg-route .done{background:#d3e1c7}
+.mg-instructions{padding:12px 18px;font-size:12px;color:#536d4c;background:#ecf0de;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.mg-instructions button{margin-left:auto}
+@media(max-width:700px){
+ #sholat-app .sholat-container{padding:18px 10px 100px}#sholatPeraga{border-radius:16px}
+ #sholatPeraga .peraga-intro{padding:20px;display:block}.peraga-mode{display:inline-block;margin-top:12px}
+ #sholatPeraga h3{font-size:22px}#sholatPeraga .peraga-stage{height:380px}
+ #sholatPeraga .peraga-overlay-top{padding:12px 14px}#peragaPoseName{font-size:13px}
+ #sholatPeraga .peraga-toolbar{padding:12px 14px;gap:8px}#sholatPeraga .peraga-toolbar button{padding:8px 12px}
+ #sholatPeraga .peraga-overlay-controls{padding:14px 10px 4px;gap:6px}#sholatPeraga .peraga-overlay-controls button{padding:9px 11px;font-size:12px}
+ #sholatPeraga .peraga-timeline{padding:12px 12px 16px}#sholatPeraga .peraga-dot{min-height:40px;height:40px;width:40px;flex-basis:40px}
+ #sholatPeraga .peraga-bacaan-panel{padding:20px 18px}#sholatPeraga .peraga-bacaan-header{flex-wrap:wrap}
+ .peraga-scene-label{font-size:8px;left:12px;bottom:12px}.mg-layout{grid-template-columns:minmax(0,1fr)}.mg-header,.mg-mission{padding:20px}.mg-world canvas{aspect-ratio:1.2}.mg-header h3{font-size:24px!important}
+}
+@media(prefers-reduced-motion:reduce){#sholatPeraga *, .manasik-game *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+body[data-current-app="sholat"] .floating-prayer-widget,body[data-current-app="haji"] .floating-prayer-widget{display:none!important}
+
+#sholatPeraga .peraga-overlay-top{flex-direction:row;text-align:left}

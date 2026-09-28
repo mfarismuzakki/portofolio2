@@ -1,3 +1,4 @@
+import ManasikGame from './manasik-game.js';
 // Peta Perjalanan Haji & Umrah — Panduan Visual Manasik
 import { HAJI_LOCATIONS, MANASIK_HAJI, MANASIK_UMRAH, LARANGAN_IHRAM, HAJI_MIQAT } from '../../data/haji/haji-data.js';
 
@@ -6,7 +7,7 @@ export default class HajiApp {
         this.state = globalState;
         this.mainApp = mainApp;
         this.container = document.getElementById('haji-app');
-        this.activeTab = 'haji';
+        this.activeTab = 'game';
         this.selectedLocation = null;
         this.leafletMap = null;
         this.completedSteps = this.loadCompleted();
@@ -54,6 +55,7 @@ export default class HajiApp {
     async init() {
         this.render();
         this.setupEvents();
+        this.game = new ManasikGame(this.container.querySelector('#manasikGame'));
     }
 
     render() {
@@ -66,14 +68,17 @@ export default class HajiApp {
 
             <!-- Tabs -->
             <div class="haji-tabs">
-                <button class="haji-tab active" data-tab="haji"><i class="fas fa-kaaba"></i> Manasik Haji</button>
+                <button class="haji-tab active" data-tab="game"><i class="fas fa-gamepad"></i> Game Manasik</button>
+                <button class="haji-tab" data-tab="haji"><i class="fas fa-kaaba"></i> Manasik Haji</button>
                 <button class="haji-tab" data-tab="umrah"><i class="fas fa-rotate"></i> Manasik Umrah</button>
                 <button class="haji-tab" data-tab="peta"><i class="fas fa-map-marked-alt"></i> Peta Lokasi</button>
                 <button class="haji-tab" data-tab="ihram"><i class="fas fa-ban"></i> Larangan Ihram</button>
             </div>
 
+            <div class="haji-panel" id="panel-game"><div id="manasikGame"></div></div>
+
             <!-- MANASIK HAJI -->
-            <div class="haji-panel" id="panel-haji">
+            <div class="haji-panel" id="panel-haji" style="display:none">
                 <div class="haji-intro">
                     <i class="fas fa-info-circle"></i>
                     <p>Haji wajib bagi Muslim yang <strong>mampu secara fisik dan finansial</strong>, sekali seumur hidup. "Dan bagi Allah atas manusia adalah kewajiban haji ke Baitullah bagi yang mampu..." (QS. Ali Imran: 97)</p>
@@ -300,7 +305,7 @@ export default class HajiApp {
                 this.activeTab = tab.dataset.tab;
                 this.container.querySelectorAll('.haji-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                ['haji', 'umrah', 'peta', 'ihram'].forEach(t => {
+                ['haji', 'umrah', 'peta', 'ihram', 'game'].forEach(t => {
                     const panel = document.getElementById(`panel-${t}`);
                     if (panel) panel.style.display = t === this.activeTab ? 'block' : 'none';
                 });

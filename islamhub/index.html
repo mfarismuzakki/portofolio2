@@ -35,7 +35,7 @@
     
     <!-- Styles -->
         <!-- Styles - Modular CSS Architecture -->
-    <link rel="stylesheet" href="css/style-modular.css?v=1.5.0">
+    <link rel="stylesheet" href="css/style-modular.css?v=1.6.0">
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
@@ -678,34 +678,11 @@
 
                     <!-- 3D Peraga Viewer -->
                     <div class="sholat-peraga" id="sholatPeraga" style="display: none;">
-                        <div class="peraga-stage">
-                            <canvas id="peragaCanvas"></canvas>
-                            <div class="peraga-overlay-top">
-                                <div class="peraga-step-badge">
-                                    <span class="peraga-step-num" id="peragaStepNum">1</span>
-                                    <span class="peraga-step-total">/ <span id="peragaStepTotal">18</span></span>
-                                </div>
-                                <div class="peraga-pose-name" id="peragaPoseName">Takbiratul Ihram</div>
-                            </div>
-                            <div class="peraga-overlay-controls">
-                                <button class="peraga-ctrl" id="peragaPrevBtn" title="Sebelumnya">
-                                    <i class="fas fa-step-backward"></i>
-                                </button>
-                                <button class="peraga-ctrl peraga-ctrl-main" id="peragaPlayBtn" title="Putar Otomatis">
-                                    <i class="fas fa-play"></i>
-                                </button>
-                                <button class="peraga-ctrl" id="peragaNextBtn" title="Selanjutnya">
-                                    <i class="fas fa-step-forward"></i>
-                                </button>
-                                <button class="peraga-ctrl peraga-ctrl-small" id="peragaResetBtn" title="Reset Tampilan">
-                                    <i class="fas fa-undo"></i>
-                                </button>
-                                <button class="peraga-ctrl peraga-ctrl-small" id="peragaRotateBtn" title="Auto-rotate Kamera">
-                                    <i class="fas fa-sync-alt"></i>
-                                </button>
-                            </div>
-                        </div>
-
+                        <div class="peraga-intro"><div><span class="peraga-eyebrow">BELAJAR DENGAN TENANG</span><h3>Sholat, langkah demi langkah.</h3><p>Contoh sholat dua rakaat. Amati posisi tubuh, pelajari bacaan, lalu lanjutkan saat siap.</p></div><span class="peraga-mode">17 langkah · 3D interaktif</span></div>
+                        <div class="peraga-overlay-top"><span class="peraga-step-badge"><span id="peragaStepNum">1</span> / <span id="peragaStepTotal">17</span></span><h4 id="peragaPoseName" aria-live="polite">Takbiratul Ihram</h4></div>
+                        <div class="peraga-stage"><canvas id="peragaCanvas" role="img" aria-label="Peraga sholat di dalam masjid"></canvas><span class="peraga-scene-label">MASJID · ARAH KIBLAT SESUAI SAJADAH</span></div>
+                        <div class="peraga-toolbar"><div class="peraga-views" aria-label="Sudut pandang"><button data-prayer-view="3.14159" aria-pressed="false">Depan</button><button data-prayer-view="1.5708" aria-pressed="false">Samping</button><button data-prayer-view="2.25" aria-pressed="true">Perspektif</button></div><span>Geser peraga untuk melihat sudut lain</span></div>
+                        <div class="peraga-overlay-controls"><button id="peragaPrevBtn" aria-label="Langkah sebelumnya">← Kembali</button><button id="peragaPlayBtn">▶ Putar</button><button id="peragaNextBtn" aria-label="Langkah berikutnya">Lanjut →</button><button id="peragaResetBtn" aria-label="Ulang dari awal">↺ Ulang</button><button id="peragaRotateBtn" aria-label="Putar kamera otomatis" aria-pressed="false">⟳ Kamera</button></div>
                         <!-- Progress Timeline -->
                         <div class="peraga-timeline" id="peragaTimeline"></div>
 
@@ -721,6 +698,8 @@
                             <div class="peraga-bacaan-tip" id="peragaBacaanTip"></div>
                         </div>
                     </div>
+
+                    <details class="peraga-sources"><summary>Rujukan gerakan & catatan belajar</summary><p>Peragaan dua rakaat mengikuti pilihan Syaikh Ibnu Baz dalam <a href="https://risala.prh.gov.sa/as/contents/106?translated=true" target="_blank" rel="noopener">Kaifiyyatu Shalatin Nabi ﷺ</a>: tangan kanan di atas kiri, rukuk dengan punggung rata, sujud pada tujuh anggota, serta iftirasy pada sholat dua rakaat. Tawarruk digunakan pada tasyahud terakhir sholat tiga atau empat rakaat dalam pendapat ini.</p><p>Perbedaan dalam duduk, posisi tangan setelah rukuk, dan cara turun sujud dibahas ulama. Animasi adalah ilustrasi posisi, bukan patokan durasi sholat. Tuma’ninah tetap diperlukan. Cocokkan praktik dengan bimbingan pengajar.</p></details>
 
                     <!-- Filters (dynamic based on tab) -->
                     <!-- <div class="sholat-filters" id="sholatFilters">
@@ -990,7 +969,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
         <!-- Main App Script -->
-    <script type="module" src="js/app.js?v=1.2.4"></script>
+    <script type="module" src="js/app.js?v=1.3.0"></script>
 
     <!-- Auto-fix for update loop - runs before everything -->
     <script>

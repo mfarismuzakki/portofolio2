@@ -44,3 +44,5 @@
 
 /* Responsive */
 @import url('components/responsive.css');
+
+@import url('components/simulations.css?v=1.0.0');
