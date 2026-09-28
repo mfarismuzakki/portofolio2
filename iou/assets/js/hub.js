@@ -50,6 +50,7 @@
       descFqh102: 'Rangkuman komprehensif satu semester - kajian hukum-hukum praktis ibadah sehari-hari berdasarkan kitab Al-Mulakhkhas Al-Fiqhi karya Syaikh Shalih bin Fauzan Al-Fauzan.',
       descArb102: 'Dari dasar-dasar tata bahasa hingga materi akhir semester.',
       descIser102: 'Rangkuman materi perkuliahan untuk membantu belajar dan mengulang pokok pembahasan.',
+      descIser201: "Fase Madinah dari tahun pertama Hijrah hingga wafatnya Nabi ﷺ: Badr, Uhud, Ahzab, Hudaybiyah, Khaybar, Fathu Makkah, Tabuk, Haji Wada', lengkap dengan cek riwayat per sesi dan bank soal UTS/UAS.",
       descItaf102: 'Rangkuman materi perkuliahan untuk membantu belajar dan mengulang pokok pembahasan.'
     },
     en: {
@@ -102,6 +103,7 @@
       descFqh102: 'A comprehensive one-semester summary — practical rulings of daily worship based on Al-Mulakhkhas Al-Fiqhi by Shaykh Salih bin Fawzan Al-Fawzan.',
       descArb102: 'From the fundamentals of grammar through to end-of-semester material.',
       descIser102: 'Lecture summaries to help you study and review the main topics.',
+      descIser201: "The Madinah phase from the first year of Hijrah to the Prophet's ﷺ death: Badr, Uhud, Ahzab, Hudaybiyah, Khaybar, the Conquest of Makkah, Tabuk and the Farewell Hajj, with a narration check per session and a midterm/final question bank.",
       descItaf102: 'Lecture summaries to help you study and review the main topics.'
     }
   };
