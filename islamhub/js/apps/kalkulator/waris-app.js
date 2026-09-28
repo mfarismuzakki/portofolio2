@@ -2,6 +2,8 @@
 // Berdasarkan kalkulator_waris standalone app
 // Menggunakan Metode Jumhur Ulama
 
+import { computeFaraid } from './waris-engine.js';
+
 export default class WarisApp {
     constructor(state, mainApp) {
         this.state = state;
@@ -762,212 +764,25 @@ export default class WarisApp {
     processInheritanceCalculation() {
         const { tirkah, heirs } = this.data;
         const netAssets = tirkah.netAssets;
-        
+        const calc = computeFaraid(heirs);
+
         const results = {
             tirkah: tirkah,
-            heirs: [],
+            heirs: calc.shares.map(s => ({
+                type: s.type,
+                category: s.category,
+                count: s.count || 1,
+                fraction: s.fraction,
+                percentage: s.share.value * 100,
+                amount: s.share.value * netAssets,
+                condition: s.condition
+            })),
             totalPercentage: 0,
-            hasAwl: false,
-            hasRadd: false
+            hasAwl: calc.hasAwl,
+            hasRadd: calc.hasRadd,
+            notes: calc.notes
         };
-
-        // Tentukan ahli waris yang sah
-        const validHeirs = this.determineValidHeirs(heirs);
-        
-        // Hitung bagian Ashabul Furudh
-        const furudhShares = this.calculateFurudhShares(validHeirs);
-        
-        // Total bagian pasti
-        const totalFurudh = Object.values(furudhShares).reduce((sum, share) => sum + (share.decimal || 0), 0);
-        
-        // Handle Awl
-        if (totalFurudh > 1) {
-            results.hasAwl = true;
-            this.applyAwl(furudhShares, totalFurudh);
-        }
-        
-        // Hitung Asabah
-        const remainingShare = Math.max(0, 1 - totalFurudh);
-        const asabahHeirs = this.calculateAsabah(validHeirs, remainingShare);
-        
-        // Handle Radd
-        if (remainingShare > 0 && asabahHeirs.length === 0 && Object.keys(furudhShares).length > 0) {
-            results.hasRadd = true;
-            this.applyRadd(furudhShares, remainingShare);
-        }
-        
-        // Susun hasil akhir
-        results.heirs = this.compileFinalResults(furudhShares, asabahHeirs, netAssets);
         results.totalPercentage = results.heirs.reduce((sum, heir) => sum + heir.percentage, 0);
-
-        return results;
-    }
-
-    determineValidHeirs(heirs) {
-        const valid = { ...heirs };
-        
-        // Aturan Hajb
-        const hasChildren = (heirs.sons && heirs.sons > 0) || (heirs.daughters && heirs.daughters > 0);
-        const hasFather = heirs.father && heirs.father > 0;
-        
-        // Anak menghalangi saudara
-        if (hasChildren) {
-            delete valid.fullBrothers;
-            delete valid.fullSisters;
-            delete valid.halfBrothers;
-            delete valid.halfSisters;
-        }
-        
-        return valid;
-    }
-
-    calculateFurudhShares(heirs) {
-        const shares = {};
-        const rules = this.inheritanceRules.ashabulFurudh;
-        
-        // Suami/Istri
-        if (heirs.husband && heirs.husband > 0) {
-            const hasChild = (heirs.sons && heirs.sons > 0) || (heirs.daughters && heirs.daughters > 0);
-            shares.husband = hasChild ? rules.spouse.husband.withChild : rules.spouse.husband.withoutChild;
-        }
-        
-        if (heirs.wife && heirs.wife > 0) {
-            const hasChild = (heirs.sons && heirs.sons > 0) || (heirs.daughters && heirs.daughters > 0);
-            const rule = hasChild ? rules.spouse.wife.withChild : rules.spouse.wife.withoutChild;
-            shares.wife = { ...rule, count: heirs.wife };
-        }
-        
-        // Ayah
-        if (heirs.father && heirs.father > 0) {
-            const hasChild = (heirs.sons && heirs.sons > 0) || (heirs.daughters && heirs.daughters > 0);
-            if (hasChild) {
-                shares.father = rules.parents.father.withChild;
-            }
-        }
-        
-        // Ibu
-        if (heirs.mother && heirs.mother > 0) {
-            const hasChild = (heirs.sons && heirs.sons > 0) || (heirs.daughters && heirs.daughters > 0);
-            
-            if (hasChild) {
-                shares.mother = rules.parents.mother.withChild;
-            } else {
-                shares.mother = rules.parents.mother.normal;
-            }
-        }
-        
-        // Anak perempuan (tanpa anak laki-laki)
-        if (heirs.daughters && heirs.daughters > 0 && (!heirs.sons || heirs.sons === 0)) {
-            if (heirs.daughters === 1) {
-                shares.daughters = rules.children.daughter.alone;
-            } else {
-                shares.daughters = { ...rules.children.daughter.withSister, count: heirs.daughters };
-            }
-        }
-        
-        return shares;
-    }
-
-    calculateAsabah(heirs, remainingShare) {
-        const asabahList = [];
-        
-        if (remainingShare <= 0) return asabahList;
-        
-        // Anak laki-laki bersama perempuan
-        if (heirs.sons > 0) {
-            const totalParts = heirs.sons * 2 + (heirs.daughters || 0);
-            
-            asabahList.push({
-                type: 'sons',
-                count: heirs.sons,
-                shareRatio: 2,
-                totalParts: totalParts,
-                share: remainingShare
-            });
-            
-            if (heirs.daughters > 0) {
-                asabahList.push({
-                    type: 'daughters_with_sons',
-                    count: heirs.daughters,
-                    shareRatio: 1,
-                    totalParts: totalParts,
-                    share: remainingShare
-                });
-            }
-        }
-        // Ayah sebagai asabah
-        else if (heirs.father > 0 && heirs.sons === 0) {
-            asabahList.push({
-                type: 'father',
-                count: 1,
-                share: remainingShare
-            });
-        }
-        
-        return asabahList;
-    }
-
-    applyAwl(furudhShares, totalFurudh) {
-        Object.keys(furudhShares).forEach(heir => {
-            furudhShares[heir].decimal = furudhShares[heir].decimal / totalFurudh;
-            furudhShares[heir].isAwl = true;
-        });
-    }
-
-    applyRadd(furudhShares, remainingShare) {
-        const totalCurrentShare = Object.values(furudhShares).reduce((sum, share) => sum + share.decimal, 0);
-        
-        Object.keys(furudhShares).forEach(heir => {
-            const proportionalAdd = (furudhShares[heir].decimal / totalCurrentShare) * remainingShare;
-            furudhShares[heir].decimal += proportionalAdd;
-            furudhShares[heir].isRadd = true;
-        });
-    }
-
-    compileFinalResults(furudhShares, asabahHeirs, netAssets) {
-        const results = [];
-        
-        // Ashabul Furudh
-        Object.entries(furudhShares).forEach(([heirType, share]) => {
-            const amount = share.decimal * netAssets;
-            const percentage = share.decimal * 100;
-            
-            results.push({
-                type: heirType,
-                category: 'Ashabul Furudh',
-                count: share.count || 1,
-                fraction: share.fraction,
-                percentage: percentage,
-                amount: amount,
-                condition: share.condition
-            });
-        });
-        
-        // Asabah
-        asabahHeirs.forEach(heir => {
-            let amount, percentage, condition;
-            
-            if (heir.totalParts) {
-                amount = (heir.share * heir.shareRatio / heir.totalParts) * netAssets;
-                percentage = (heir.share * heir.shareRatio / heir.totalParts) * 100;
-                condition = heir.type === 'sons' ? 'Asabah (2 bagian)' : 'Asabah (1 bagian)';
-            } else {
-                amount = heir.share * netAssets;
-                percentage = heir.share * 100;
-                condition = 'Asabah (sisa)';
-            }
-            
-            results.push({
-                type: heir.type,
-                category: 'Asabah',
-                count: heir.count,
-                fraction: 'Sisa',
-                percentage: percentage,
-                amount: amount,
-                condition: condition
-            });
-        });
-        
         return results;
     }
 
@@ -1036,6 +851,13 @@ export default class WarisApp {
         });
 
         html += '</div>';
+
+        // Catatan kasus khusus ('awl, radd, Umariyyatan)
+        if (results.notes && results.notes.length) {
+            html += `<div class="waris-result-card"><h4><i class="fas fa-circle-info"></i> Catatan Perhitungan</h4>`;
+            results.notes.forEach(n => { html += `<div class="waris-heir-condition">${n}</div>`; });
+            html += '</div>';
+        }
 
         // Dalil
         html += `
