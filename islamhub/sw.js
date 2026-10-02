@@ -2,7 +2,7 @@
 
 // IMPORTANT: Update version setiap kali push update!
 // Format: islamhub-v[major].[minor].[patch]-[timestamp]
-const CACHE_VERSION = '1.9.2-20260928-waris-faraid';
+const CACHE_VERSION = '1.10.0-20261002-manasik-adventure';
 const CACHE_NAME = `islamhub-v${CACHE_VERSION}`;
 
 // Strategi: Network First untuk HTML/JS/CSS, Cache First untuk assets statis

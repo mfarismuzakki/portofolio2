@@ -1,4 +1,4 @@
-import ManasikGame from './manasik-game.js';
+import ManasikGame from './manasik-adventure.js?v=2.0.0';
 // Peta Perjalanan Haji & Umrah — Panduan Visual Manasik
 import { HAJI_LOCATIONS, MANASIK_HAJI, MANASIK_UMRAH, LARANGAN_IHRAM, HAJI_MIQAT } from '../../data/haji/haji-data.js';
 
@@ -139,7 +139,7 @@ export default class HajiApp {
             <div class="haji-panel" id="panel-umrah" style="display:none">
                 <div class="haji-intro">
                     <i class="fas fa-info-circle"></i>
-                    <p>Umrah adalah ibadah sunnah muakkadah yang dapat dilakukan kapan saja sepanjang tahun (kecuali hari Arafah). <em>"Umrah ke umrah berikutnya adalah penghapus dosa di antara keduanya"</em> (HR. Bukhari & Muslim)</p>
+                    <p>Pelajari urutan umrah: ihram dari miqat, tawaf, sa’i, lalu mencukur atau memendekkan rambut. <em>"Umrah ke umrah berikutnya adalah penghapus dosa di antara keduanya"</em> (HR. Bukhari & Muslim). <a href="https://binbaz.org.sa/fatwas/11982/صفة-العمرة" target="_blank" rel="noopener">Rujukan tata cara umrah</a>.</p>
                 </div>
 
                 <h3 class="haji-section-title"><i class="fas fa-list-ol"></i> Rukun Umrah (Urutan)</h3>
@@ -303,6 +303,7 @@ export default class HajiApp {
         this.container.querySelectorAll('.haji-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 this.activeTab = tab.dataset.tab;
+                this.game?.setActive(this.activeTab === 'game');
                 this.container.querySelectorAll('.haji-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 ['haji', 'umrah', 'peta', 'ihram', 'game'].forEach(t => {

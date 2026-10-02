@@ -1,0 +1,108 @@
+/* A self-contained game surface: warm stone, forest green and quiet gold. */
+#haji-app .haji-container{max-width:1200px}
+.mg-adventure{--mg-ink:#224d3e;--mg-muted:#667460;--mg-gold:#9a7937;background:#f8f6ed;border:1px solid #d9dfcc;box-shadow:0 18px 55px #001b1a24}
+.mg-adventure [hidden]{display:none!important}
+.mg-adventure .mg-eyebrow{font:700 10px/1.5 system-ui,sans-serif;letter-spacing:2px;color:#79825c}
+.mg-adventure .mg-header{padding:28px 30px;gap:20px;background:linear-gradient(110deg,#fffdf5,#edf1e3)}
+.mg-adventure .mg-header h3{font-size:clamp(22px,2.5vw,31px)!important;letter-spacing:-.8px}
+.mg-adventure .mg-header p{max-width:510px;line-height:1.7}
+.mg-adventure .mg-modes{padding:5px;background:#e5e9dc;border-radius:15px;gap:4px}
+.mg-adventure .mg-modes button{border:0;background:transparent;min-width:100px;text-align:left;line-height:1.5}
+.mg-adventure .mg-modes button small{display:block;font-size:10px;font-weight:400;opacity:.8}
+.mg-adventure .mg-modes button[aria-pressed=true]{background:#244f40;box-shadow:0 3px 8px #1d433520}
+.mg-adventure .mg-layout{grid-template-columns:minmax(0,1.65fr) minmax(280px,1fr);align-items:stretch}
+.mg-adventure .mg-playfield{min-width:0;background:#e2e8d5;border-right:1px solid #d9dfcc}
+.mg-adventure .mg-world{position:relative;isolation:isolate}
+.mg-adventure .mg-world canvas{width:100%;height:auto;aspect-ratio:1.5;display:block;cursor:pointer;touch-action:pan-y}
+.mg-adventure .mg-world canvas:focus-visible{outline:3px solid #9a7937;outline-offset:-4px}
+.mg-adventure .mg-hud{position:absolute;inset:16px 16px auto;display:flex;gap:8px;justify-content:space-between;align-items:center;pointer-events:none}
+.mg-adventure .mg-hud span{padding:8px 12px;background:#fffdf3ed;color:#3b5946;border:1px solid #ffffff80;border-radius:8px;font:600 11px/1.5 system-ui;box-shadow:0 3px 12px #233f3310}
+.mg-adventure .mg-hud .mg-live{font-size:9px;letter-spacing:.6px;background:#244f40;color:#f1eacb}
+.mg-adventure .mg-world-caption{position:absolute;inset:auto 18px 13px;pointer-events:none;color:#4e674e;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mg-adventure .mg-world-caption span{font-size:11px;font-weight:650}
+.mg-adventure .mg-world-caption small{font-size:8px;max-width:130px;text-align:right;background:#edf0dfdd;border-radius:4px;padding:3px 5px}
+.mg-adventure .mg-controls{padding:16px;background:#eef1e3;border-top:1px solid #d5dcc5}
+.mg-adventure .mg-current-objective{display:flex;align-items:center;gap:10px;margin-bottom:12px;color:#335b42}
+.mg-adventure .mg-current-objective span{font-size:9px;letter-spacing:1px;white-space:nowrap;color:#7b866c}
+.mg-adventure .mg-current-objective strong{font:600 13px/1.5 system-ui}
+.mg-adventure .mg-primary-controls{display:grid;grid-template-columns:1.4fr 1fr;gap:8px}
+.mg-adventure .mg-primary{background:#244f40;color:#fffbed;border-color:#244f40;box-shadow:0 4px 10px #244f401a}
+.mg-adventure .mg-primary:hover{background:#32664f}
+.mg-adventure .mg-primary-controls button{min-height:48px}
+.mg-adventure .mg-secondary-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.mg-adventure .mg-secondary-controls label{display:flex;align-items:center;gap:7px;font-size:11px;color:#667460;margin-right:auto}
+.mg-adventure select{font:600 11px system-ui;color:#365441;background:#fffdf6;border:1px solid #cfd2be;border-radius:8px;min-height:44px;padding:8px 6px}
+.mg-adventure .mg-secondary-controls button{font-size:11px;padding:8px 10px}
+.mg-adventure .mg-control-hint{font:11px/1.7 system-ui;color:#748069;margin:12px 0 0}
+.mg-adventure .mg-mission{padding:26px;gap:16px;background:#fcfbf4}
+.mg-adventure .mg-mission h4{font-size:25px;letter-spacing:-.6px;line-height:1.25}
+.mg-adventure .mg-status{font-size:9px;letter-spacing:1.3px;line-height:1.8}
+.mg-adventure .mg-description{font-size:13px;line-height:1.85}
+.mg-adventure .mg-progress{height:4px;margin-top:-6px}
+.mg-adventure .mg-progress span{background:#a38b50}
+.mg-adventure .mg-counter{display:flex;align-items:baseline;gap:10px;margin-top:12px;padding-top:6px}
+.mg-adventure .mg-count{font-size:34px;color:#31543c;letter-spacing:-1.5px;font-variant-numeric:tabular-nums}
+.mg-adventure .mg-counter-label{font-size:11px;color:#7c856d}
+.mg-adventure .mg-tokens{display:flex;flex-wrap:wrap;gap:6px;margin-top:-5px}
+.mg-adventure .mg-tokens span{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;font-size:10px;border:1px solid #d9deca;color:#859077}
+.mg-adventure .mg-tokens span.done{background:#3f654c;border-color:#3f654c;color:#fffbed}
+.mg-adventure .mg-feedback{font-size:12px;line-height:1.75;background:#edf1e3;border:1px solid #dfe5d1;border-radius:12px;padding:12px 14px}
+.mg-adventure .mg-quiz{border-top:1px solid #e3e5d6;padding-top:13px}
+.mg-adventure .mg-quiz summary{font-size:12px;color:#486548;cursor:pointer;min-height:32px;list-style-position:inside}
+.mg-adventure .mg-quiz summary span{font-size:10px;color:#929780;margin-left:6px}
+.mg-adventure .mg-choices{padding:10px 0 5px}
+.mg-adventure .mg-choices button{font-size:12px}
+.mg-adventure .mg-quiz-result{font-size:12px}
+.mg-adventure .mg-source{color:#7c753e;font-size:11px;text-underline-offset:3px}
+.mg-adventure .mg-journey{padding:24px 28px;background:#f4f4e9;border-top:1px solid #dce2cf}
+.mg-adventure .mg-journey-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}
+.mg-adventure .mg-journey h4{font:600 18px/1.5 system-ui;color:#31563f;margin:5px 0 0}
+.mg-adventure .mg-save-state{font-size:10px;color:#75856a}
+.mg-adventure .mg-route{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));padding:0;gap:8px}
+.mg-adventure .mg-route button{text-align:left;border-radius:12px;background:#fcfcf4;border:1px solid #e0e4d2;min-height:98px;display:grid;grid-template-columns:24px 1fr;column-gap:8px;align-content:start;padding:12px;position:relative}
+.mg-adventure .mg-route button[aria-current=step]{background:#e7eedb;border-color:#8da77c;box-shadow:inset 0 0 0 1px #8da77c}
+.mg-adventure .mg-route button>span{padding:0;border-radius:50%;background:#e8ebdd;width:24px;height:24px;display:grid;place-items:center;grid-row:span 2;font-size:10px}
+.mg-adventure .mg-route strong{font:600 11px/1.5 system-ui;color:inherit}
+.mg-adventure .mg-route small{font-size:9px;font-weight:400;color:#7a866a;margin-top:4px}
+.mg-adventure .mg-route button:disabled{opacity:.65;background:transparent}
+.mg-adventure .mg-finish{position:absolute;inset:20% 9%;padding:26px 18px;background:#fcfbefed;border:1px solid #c8d5b7;border-radius:22px;text-align:center;display:flex;align-items:center;justify-content:center;flex-direction:column;box-shadow:0 12px 70px #1f3e3133}
+.mg-adventure .mg-finish>span{color:#b18d3f;font-size:40px;line-height:1}
+.mg-adventure .mg-finish h4{font:600 24px/1.3 system-ui;color:#244f40;margin:14px 0 8px}
+.mg-adventure .mg-finish p{font:12px/1.8 system-ui;color:#68745e;margin:0 0 16px}
+.mg-adventure .mg-footer{padding:16px 26px;background:#f9f8ef;line-height:1.8}
+.mg-adventure .mg-footer>span{flex:1;min-width:190px;max-width:720px}
+.mg-adventure .mg-footer button{font-size:11px}
+.mg-adventure .mg-reset-confirm{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#eee8d6;padding:12px;border-radius:10px}
+@media(max-width:800px){
+ #haji-app .haji-tabs{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding-bottom:8px}
+ #haji-app .haji-tab{flex:0 0 auto}
+ .mg-adventure .mg-layout{grid-template-columns:minmax(0,1fr)}
+ .mg-adventure .mg-playfield{border-right:0}
+ .mg-adventure .mg-header{padding:22px}
+ .mg-adventure .mg-mission{padding:22px;gap:14px;border-top:1px solid #dce2cf}
+ .mg-adventure .mg-mission h4{font-size:23px}
+ .mg-adventure .mg-counter{margin-top:0}
+ .mg-adventure .mg-world canvas{background:#e3e7d4;aspect-ratio:1.2}
+ .mg-adventure .mg-journey-heading{align-items:flex-start;flex-direction:column;gap:6px}
+ .mg-adventure .mg-journey{padding:22px}
+ .mg-adventure .mg-route{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:420px){
+ .mg-adventure .mg-header{padding:18px}
+ .mg-adventure .mg-header h3{font-size:21px!important}
+ .mg-adventure .mg-header p{font-size:12px}
+ .mg-adventure .mg-header{gap:12px}
+ .mg-adventure .mg-hud{inset:10px 10px auto}
+ .mg-adventure .mg-hud span{font-size:10px;padding:6px 8px}
+ .mg-adventure .mg-hud .mg-live{font-size:8px}
+ .mg-adventure .mg-controls{padding:12px}
+ .mg-adventure .mg-primary-controls{grid-template-columns:1.3fr 1fr}
+ .mg-adventure .mg-primary-controls button{font-size:11px;padding:10px 7px}
+ .mg-adventure .mg-secondary-controls{gap:5px}
+ .mg-adventure .mg-secondary-controls label{font-size:10px;gap:4px}
+ .mg-adventure .mg-world-caption{inset:auto 12px 9px}
+ .mg-adventure .mg-world-caption span{font-size:9px}
+ .mg-adventure .mg-world-caption small{font-size:7px;max-width:85px}
+ .mg-adventure .mg-finish{inset:18% 6%;padding:14px}
+ .mg-adventure .mg-finish h4{font-size:20px}
+}

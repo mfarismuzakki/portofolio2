@@ -52,37 +52,15 @@ const assert = require('node:assert/strict');
         await page.evaluate(()=>window.islamHub.switchApp('haji'));
         assert.equal(await page.evaluate(()=>window.sholatApp.peraga3D.isPlaying),false);
         await page.waitForSelector('.manasik-game canvas');
-        for(const mode of ['umrah','haji']) {
-            await page.locator(`[data-mode="${mode}"]`).click();
-            await page.locator('[data-restart]').click();
-            const missions = await page.evaluate(async mode => {
-                const data=await import('/islamhub/js/apps/haji/manasik-game.js');
-                return mode==='haji'?data.HAJI:data.UMRAH;
-            },mode);
-            for(let step=0;step<missions.length;step++) {
-                const m=missions[step];
-                for(let n=0;n<m.total;n++) {
-                    await page.locator('[data-walk]').click();
-                    await page.waitForFunction(({mode,n})=>JSON.parse(localStorage.getItem('islamhub_manasik_game_v1'))?.[mode]?.count===n+1,{mode,n});
-                }
-                assert(await page.locator('[data-walk]').isDisabled());
-                await page.getByRole('button',{name:m.answers[1-m.correct],exact:true}).click();
-                assert(await page.locator('.mg-action').isHidden(),'Wrong answers do not advance');
-                await page.getByRole('button',{name:m.answers[m.correct],exact:true}).click();
-                await page.locator('.mg-action').click();
-            }
-            assert.match(await page.locator('.mg-status').textContent(),/SELESAI/);
-            console.log(`${mode}: ${missions.length} missions completed through UI`);
-        }
-        await page.reload();await page.waitForFunction(()=>window.islamHub);
-        await page.evaluate(()=>window.islamHub.switchApp('haji'));
-        await page.locator('[data-mode="haji"]').click();
-        assert.match(await page.locator('.mg-status').textContent(),/SELESAI/,'Completion survives reload');
+        // Full manasik gameplay regression coverage: manasik-runtime.cjs.
+        await page.locator('[data-auto]').click();
+        assert.match(await page.locator('.mg-live').textContent(),/TUR OTOMATIS/);
+        await page.locator('[data-auto]').click();
         for(const width of [320,390,768,1440]) {
             await page.setViewportSize({width,height:900});
             assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`No game overflow at ${width}`);
         }
         assert.deepEqual(errors,[]);
-        console.log('PASS: geometry contacts, 17 poses, remounts, pause, both game journeys, persistence, responsive layouts, no runtime errors');
+        console.log('PASS: geometry contacts, 17 poses, remounts, pause, manasik entry, responsive layouts, no runtime errors');
     } finally { await browser.close(); }
 })().catch(error=>{console.error(error);process.exitCode=1;});
