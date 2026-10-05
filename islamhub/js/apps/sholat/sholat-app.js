@@ -102,6 +102,12 @@ export default class SholatApp {
         const peragaPanel = document.getElementById('sholatPeraga');
         if (!container) return;
 
+        const arenaPanel = document.getElementById('sholatArena');
+        const sources = document.querySelector('#sholat-app .peraga-sources');
+        if (arenaPanel) arenaPanel.style.display = this.currentTab === 'arena' ? 'block' : 'none';
+        if (sources) sources.style.display = this.currentTab === 'peraga' ? '' : 'none';
+        if (this.currentTab !== 'arena' && this.arena) this.arena.menu();
+
         // Toggle 3D peraga viewer visibility
         if (this.currentTab === 'peraga') {
             container.style.display = 'none';
@@ -112,6 +118,12 @@ export default class SholatApp {
             container.style.display = '';
             if (peragaPanel) peragaPanel.style.display = 'none';
             if (this.peraga3D) this.peraga3D.onHide();
+        }
+
+        if (this.currentTab === 'arena') {
+            container.style.display = 'none';
+            this.showArena();
+            return;
         }
 
         // Handle favorites tab
@@ -600,6 +612,20 @@ export default class SholatApp {
     truncate(text, length) {
         if (!text) return '';
         return text.length > length ? text.substring(0, length) + '...' : text;
+    }
+
+    async showArena() {
+        if (this.arena) return;
+        const host = document.getElementById('sholatArena');
+        if (!host) return;
+        try {
+            this.arenaLoading ||= import('./sholat-arena.js?v=1.0.0');
+            const { default: createSholatArena } = await this.arenaLoading;
+            this.arena ||= createSholatArena(host);
+        } catch (err) {
+            console.error('Gagal memuat Arena Sholat:', err);
+            host.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Gagal memuat Arena Game</p></div>`;
+        }
     }
 
     async showPeraga3D() {

@@ -1,4 +1,4 @@
-import ManasikGame from './manasik-adventure.js?v=2.0.0';
+import ManasikGame from './manasik-adventure.js?v=2.1.0';
 // Peta Perjalanan Haji & Umrah — Panduan Visual Manasik
 import { HAJI_LOCATIONS, MANASIK_HAJI, MANASIK_UMRAH, LARANGAN_IHRAM, HAJI_MIQAT } from '../../data/haji/haji-data.js';
 
@@ -69,6 +69,7 @@ export default class HajiApp {
             <!-- Tabs -->
             <div class="haji-tabs">
                 <button class="haji-tab active" data-tab="game"><i class="fas fa-gamepad"></i> Game Manasik</button>
+                <button class="haji-tab" data-tab="arena"><i class="fas fa-trophy"></i> Arena Game</button>
                 <button class="haji-tab" data-tab="haji"><i class="fas fa-kaaba"></i> Manasik Haji</button>
                 <button class="haji-tab" data-tab="umrah"><i class="fas fa-rotate"></i> Manasik Umrah</button>
                 <button class="haji-tab" data-tab="peta"><i class="fas fa-map-marked-alt"></i> Peta Lokasi</button>
@@ -76,6 +77,7 @@ export default class HajiApp {
             </div>
 
             <div class="haji-panel" id="panel-game"><div id="manasikGame"></div></div>
+            <div class="haji-panel" id="panel-arena" style="display:none"><div class="haji-arena-host" id="hajiArena"></div></div>
 
             <!-- MANASIK HAJI -->
             <div class="haji-panel" id="panel-haji" style="display:none">
@@ -285,6 +287,19 @@ export default class HajiApp {
         });
     }
 
+    async showArena() {
+        if (this.arena) return;
+        const host = this.container.querySelector('#hajiArena');
+        try {
+            this.arenaLoading ||= import('./haji-arena.js?v=1.0.0');
+            const { default: createHajiArena } = await this.arenaLoading;
+            this.arena ||= createHajiArena(host);
+        } catch (err) {
+            console.error('Gagal memuat Arena Manasik:', err);
+            host.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Gagal memuat Arena Game</p></div>';
+        }
+    }
+
     setupEvents() {
         // Initialize progress UI on mount
         this.updateProgressUI();
@@ -306,7 +321,9 @@ export default class HajiApp {
                 this.game?.setActive(this.activeTab === 'game');
                 this.container.querySelectorAll('.haji-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                ['haji', 'umrah', 'peta', 'ihram', 'game'].forEach(t => {
+                if (this.activeTab === 'arena') this.showArena();
+                else this.arena?.menu();
+                ['haji', 'umrah', 'peta', 'ihram', 'game', 'arena'].forEach(t => {
                     const panel = document.getElementById(`panel-${t}`);
                     if (panel) panel.style.display = t === this.activeTab ? 'block' : 'none';
                 });

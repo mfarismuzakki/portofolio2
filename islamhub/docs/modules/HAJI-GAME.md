@@ -22,6 +22,28 @@ Ilustrasi lokasi bukan denah geografis atau simulasi kerumunan dunia nyata.
   melanjutkan dari gerakan yang sudah selesai, dalam keadaan berhenti.
   Tahap yang sudah terbuka bisa diulang melalui peta perjalanan.
 
+## Mode tantangan (opsional)
+
+Tombol **🎯 Tantangan** di bawah kanvas. Mati secara default; tur otomatis tetap tanpa tantangan.
+
+- **Lontaran:** jarum bergerak pada bilah bidik. Kerikil hanya dihitung bila jarum berada di zona hijau;
+  yang meleset tidak dihitung dan diulang. Zona menyempit sedikit tiap lontaran.
+- **Tawaf:** setiap putaran manual selesai, muncul aksi cepat "Allāhu akbar" di garis Hajar Aswad (+30).
+- **Sa’i:** saat melewati penanda hijau, muncul aksi cepat "Lari kecil" (+20, jalan sedikit lebih cepat).
+- **Kuis wajib:** tahap baru terbuka setelah kuis tahap itu dijawab benar (+100 jika benar di percobaan pertama).
+- Poin disimpan per mode (`points`), dan saat perjalanan selesai skor dicatat ke XP Arena.
+
+## Arena Game
+
+Tab **Arena Game** (haji) dan **Arena Game** (sholat) memakai `js/utils/arena.js` + `game-kit.js`:
+menu, HUD (skor, nyawa, ronde, timer), layar hasil dengan bintang, XP dan level bersama di
+`localStorage` (`islamhub_arena_v1`). Timer berhenti saat arena tidak terlihat.
+
+- Haji (`haji-arena.js`): Lontar Jumrah (ketangkasan, urutan Ula → Wustha → Aqabah, kerikil cadangan),
+  Hari Manasik, Boleh atau Dilarang saat ihram (60 detik), Kuis Kilat Manasik.
+- Sholat (`sholat-arena.js`): Susun Gerakan, Tebak Gerakan 3D (memakai `MosqueScene` peraga),
+  Cocokkan Bacaan, Benar atau Salah (60 detik).
+
 ## Materi dan batas simulasi
 
 Umrah memiliki 5 tahap, haji tamattu dengan nafar awal memiliki 15 tahap. Penghitung

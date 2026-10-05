@@ -1,5 +1,6 @@
 import { UMRAH, HAJI, SOURCES } from './manasik-game.js';
 import ManasikScene, { ringPoint, locationFor } from './manasik-scene.js';
+import { progress, starsFor, blip, vibrate } from '../../utils/game-kit.js';
 
 const STORAGE = 'islamhub_manasik_game_v2';
 const clamp = (value, max) => Number.isInteger(value) ? Math.max(0, Math.min(value, max)) : 0;
@@ -21,6 +22,7 @@ export default class ManasikGame {
         this.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
         this.events = new AbortController();
         this.saved = this.readSave();
+        this.challenge = this.saved.challenge === true;
         this.render();
         this.scene = new ManasikScene(this.canvas);
         this.restore();
@@ -63,15 +65,17 @@ export default class ManasikGame {
                 <div class="mg-playfield">
                     <div class="mg-world">
                         <canvas width="1080" height="900" tabindex="0" aria-label="Dunia manasik tampak atas"></canvas>
-                        <div class="mg-hud"><span class="mg-location"></span><span class="mg-live">SIAP MENJELAJAH</span></div>
+                        <div class="mg-hud"><span class="mg-location"></span><span class="mg-score" hidden></span><span class="mg-live">SIAP MENJELAJAH</span></div>
+                        <div class="mg-aim" hidden><p>Lontar saat jarum di zona hijau. Kerikil yang meleset tidak dihitung.</p><div class="mg-aim-track"><span class="mg-aim-zone"></span><span class="mg-aim-needle"></span></div><button data-aim-throw>🤲 Lontar (Enter)</button></div>
+                        <div class="mg-aim mg-qte" hidden><p class="mg-qte-text"></p><button data-qte></button></div>
                         <div class="mg-world-caption"><span class="mg-scene-tip"></span><small>Ilustrasi lokasi · bukan skala geografis</small></div>
                         <div class="mg-finish" hidden><span>✦</span><h4>Perjalanan belajar selesai</h4><p></p><button data-again>Jelajahi lagi</button></div>
                     </div>
                     <div class="mg-controls">
                         <div class="mg-current-objective"><span></span><strong></strong></div>
                         <div class="mg-primary-controls"><button data-auto class="mg-primary">▶ Mulai tur otomatis</button><button data-walk>Jalan sendiri</button></div>
-                        <div class="mg-secondary-controls"><label>Kecepatan <select data-speed aria-label="Kecepatan simulasi"><option value="1">1× Santai</option><option value="2">2× Cepat</option><option value="3">3× Ringkas</option></select></label><button data-pause disabled>Ⅱ Jeda</button><button data-sound aria-pressed="false" title="Bacakan petunjuk jika suara perangkat tersedia">Bacakan: mati</button></div>
-                        <p class="mg-control-hint">Klik tujuan emas atau tekan Enter untuk berjalan. Tahan panah / WASD untuk mengikuti jalur. Tidak ada batas waktu.</p>
+                        <div class="mg-secondary-controls"><label>Kecepatan <select data-speed aria-label="Kecepatan simulasi"><option value="1">1× Santai</option><option value="2">2× Cepat</option><option value="3">3× Ringkas</option></select></label><button data-pause disabled>Ⅱ Jeda</button><button data-sound aria-pressed="false" title="Bacakan petunjuk jika suara perangkat tersedia">Bacakan: mati</button><button data-challenge class="mg-challenge" aria-pressed="false" title="Lontaran dengan bidikan, aksi cepat saat tawaf dan sa’i, dan kuis wajib untuk lanjut">🎯 Tantangan: mati</button></div>
+                        <p class="mg-control-hint">Klik tujuan emas atau tekan Enter untuk berjalan. Tahan panah / WASD untuk mengikuti jalur. Aktifkan Tantangan untuk mengumpulkan poin.</p>
                     </div>
                 </div>
                 <section class="mg-mission" aria-label="Panduan tahap aktif">
@@ -104,6 +108,9 @@ export default class ManasikGame {
             else if (b.hasAttribute('data-stage')) this.visit(Number(b.dataset.stage));
             else if (b.hasAttribute('data-answer')) this.answer(Number(b.dataset.answer));
             else if (b.hasAttribute('data-sound')) this.toggleNarration();
+            else if (b.hasAttribute('data-challenge')) this.toggleChallenge();
+            else if (b.hasAttribute('data-aim-throw')) this.throwAim();
+            else if (b.hasAttribute('data-qte')) this.hitQte();
             else if (b.hasAttribute('data-again')) this.reset();
             else if (b.hasAttribute('data-restart')) this.q('.mg-reset-confirm').hidden = false;
             else if (b.hasAttribute('data-cancel-reset')) this.q('.mg-reset-confirm').hidden = true;
@@ -124,7 +131,7 @@ export default class ManasikGame {
             e.preventDefault();
             if (e.repeat && [' ', 'Enter'].includes(key)) return;
             if (key === ' ') this.togglePause();
-            else if (key === 'Enter') this.ready ? this.next() : this.walk();
+            else if (key === 'Enter') this.aiming ? this.throwAim() : this.ready ? this.next() : this.walk();
             else { this.keys.add(key); this.walk(); }
         });
         on(this.canvas, 'keyup', e => this.keys.delete(e.key.length === 1 ? e.key.toLowerCase() : e.key));
@@ -140,13 +147,16 @@ export default class ManasikGame {
         this.furthest = Math.max(this.step, clamp(s.furthest, this.missions.length - 1));
         this.complete = s.complete === true && this.step === this.missions.length - 1 && this.ready;
         this.quizAnswers = Array.isArray(s.quizAnswers) ? s.quizAnswers.filter(n => Number.isInteger(n) && n >= 0 && n < this.missions.length) : [];
+        this.points = Number.isInteger(s.points) && s.points > 0 ? s.points : 0;
+        this.quizTried = [];
         this.auto = false;
         this.running = false;
         this.prepare();
     }
 
     save() {
-        this.saved[this.mode] = { step: this.step, count: this.count, furthest: this.furthest, complete: this.complete, quizAnswers: this.quizAnswers };
+        this.saved[this.mode] = { step: this.step, count: this.count, furthest: this.furthest, complete: this.complete, quizAnswers: this.quizAnswers, points: this.points };
+        this.saved.challenge = this.challenge;
         try { localStorage.setItem(STORAGE, JSON.stringify(this.saved)); }
         catch { this.q('.mg-save-state').textContent = 'Progres nonaktif: penyimpanan tidak tersedia'; }
     }
@@ -160,6 +170,8 @@ export default class ManasikGame {
     }
 
     prepare() {
+        this.closeAim();
+        this.closeQte();
         this.cancelSpeech();
         this.keys.clear();
         this.motion = null;
@@ -190,6 +202,7 @@ export default class ManasikGame {
         if (this.complete) { this.reset(); }
         this.auto = !this.auto;
         this.running = this.auto;
+        this.closeAim();
         this.keys.clear();
         this.lastTime = null;
         this.update();
@@ -208,6 +221,7 @@ export default class ManasikGame {
 
     walk() {
         if (this.complete || this.ready) return;
+        if (this.challenge && this.mission.type === 'rami' && !this.motion) { this.auto = false; this.openAim(); return; }
         this.auto = false;
         this.running = true;
         if (!this.motion) this.startMotion();
@@ -229,6 +243,8 @@ export default class ManasikGame {
         this.motion = null;
         this.dwell = 0;
         if (type === 'rami' && !this.ready) this.player = this.ramiPosition();
+        if (this.challenge && !this.auto && type === 'rami' && !this.ready) this.retryAim = setTimeout(() => this.openAim(), 350);
+        if (this.challenge && !this.auto && type === 'tawaf' && this.count % 4 === 0) this.openQte('Putaran selesai di garis Hajar Aswad. Beri isyarat dan bertakbir!', 'Allāhu akbar ✋', 30, 2600);
         this.setTarget();
         this.save();
         if (!this.auto && (this.ready || !this.keys.size)) this.running = false;
@@ -237,8 +253,15 @@ export default class ManasikGame {
 
     next() {
         if (!this.ready || this.complete) return;
+        if (this.challenge && !this.auto && !this.quizAnswers.includes(this.step)) {
+            this.q('.mg-quiz').open = true;
+            this.q('.mg-feedback').textContent = 'Mode tantangan: jawab kuis tahap ini dengan benar untuk lanjut.';
+            this.q('.mg-quiz summary').focus({ preventScroll: true });
+            return;
+        }
         if (this.step === this.missions.length - 1) {
             this.complete = true;
+            if (this.challenge) this.recordRun();
             this.running = false;
             this.auto = false;
             this.cancelSpeech();
@@ -267,8 +290,13 @@ export default class ManasikGame {
 
     answer(index) {
         const correct = index === this.mission.correct;
+        if (this.challenge && !this.quizAnswers.includes(this.step)) {
+            const first = !this.quizTried.includes(this.step);
+            if (!first || !correct) this.quizTried.push(this.step);
+            if (correct) this.addPoints(first ? 100 : 40); else { blip('bad'); vibrate(); }
+        }
         this.q('.mg-quiz-result').textContent = correct ? 'Benar. Kamu memahami inti tahap ini.' : 'Belum tepat. Coba baca petunjuk tahap ini, lalu pilih kembali.';
-        if (correct && !this.quizAnswers.includes(this.step)) { this.quizAnswers.push(this.step); this.save(); }
+        if (correct && !this.quizAnswers.includes(this.step)) { this.quizAnswers.push(this.step); this.save(); this.update(); }
     }
 
     update() {
@@ -303,7 +331,7 @@ export default class ManasikGame {
         this.q('[data-pause]').disabled = this.complete || (!this.motion && !this.auto);
         this.q('[data-pause]').textContent = this.running ? 'Ⅱ Jeda' : '▶ Lanjut';
         this.q('[data-walk]').disabled = this.ready || this.complete || (!!this.motion && this.running);
-        this.q('[data-walk]').textContent = m.type === 'tawaf' ? 'Jalan 1 putaran' : m.type === 'rami' ? 'Lontar 1 kerikil' : 'Jalan ke tujuan';
+        this.q('[data-walk]').textContent = m.type === 'tawaf' ? 'Jalan 1 putaran' : m.type === 'rami' ? (this.challenge ? '🎯 Bidik & lontar' : 'Lontar 1 kerikil') : 'Jalan ke tujuan';
         this.q('.mg-action').hidden = !this.ready || this.complete;
         this.q('.mg-action').textContent = this.step === this.missions.length - 1 ? 'Selesaikan perjalanan ✓' : 'Lanjut tahap →';
         this.q('.mg-source').href = SOURCES[this.mode];
@@ -317,8 +345,120 @@ export default class ManasikGame {
         }
         this.q('.mg-route').innerHTML = this.missions.map((stage, i) => `<button data-stage="${i}" ${i > this.furthest ? 'disabled' : ''} ${i === this.step ? 'aria-current="step"' : ''}><span>${i < this.furthest || this.complete ? '✓' : String(i + 1).padStart(2, '0')}</span><strong>${stage.title}</strong><small>${stage.place}</small></button>`).join('');
         this.q('.mg-finish').hidden = !this.complete;
-        this.q('.mg-finish p').textContent = `${this.missions.length} tahap ${this.mode === 'haji' ? 'haji tamattu' : 'umrah'} telah dijelajahi. ${this.quizAnswers.length} kuis dijawab benar.`;
+        this.q('.mg-finish p').textContent = `${this.missions.length} tahap ${this.mode === 'haji' ? 'haji tamattu' : 'umrah'} telah dijelajahi. ${this.quizAnswers.length} kuis dijawab benar.${this.challenge ? ` Poin tantangan: ${this.points}.` : ''}`;
+        this.q('.mg-score').hidden = !this.challenge;
+        this.q('.mg-score').textContent = `★ ${this.points} poin`;
+        const ch = this.q('[data-challenge]');
+        ch.setAttribute('aria-pressed', String(this.challenge));
+        ch.textContent = `🎯 Tantangan: ${this.challenge ? 'aktif' : 'mati'}`;
+        if (this.challenge && this.ready && !this.complete && !this.quizAnswers.includes(this.step)) this.q('.mg-action').textContent = 'Jawab kuis untuk lanjut ↓';
         this.canvas.setAttribute('aria-label', `${m.title}. ${feedback} Enter untuk berjalan; spasi untuk jeda.`);
+    }
+
+    toggleChallenge() {
+        this.challenge = !this.challenge;
+        this.closeAim();
+        this.closeQte();
+        this.save();
+        this.update();
+        this.q('.mg-feedback').textContent = this.challenge
+            ? 'Tantangan aktif: bidik saat melontar, tanggapi aksi cepat saat tawaf dan sa’i, dan jawab kuis untuk lanjut tahap. Tur otomatis tetap tanpa tantangan.'
+            : 'Tantangan dimatikan. Poin yang terkumpul tetap tersimpan.';
+    }
+
+    addPoints(n) {
+        this.points += n;
+        blip('ok');
+        this.save();
+        this.q('.mg-score').textContent = `★ ${this.points} poin`;
+    }
+
+    recordRun() {
+        // Ceiling: every quiz on first try, centred throws, every tawaf and sa'i prompt.
+        const max = this.missions.reduce((sum, m) => sum + 100 + (m.type === 'rami' ? m.total * 60 : m.type === 'tawaf' ? 7 * 30 : m.type === 'sai' ? 7 * 20 : 0), 0);
+        progress.record(`manasik-${this.mode}`, this.points, starsFor(this.points / max));
+    }
+
+    openAim() {
+        if (this.aiming || this.complete || this.ready) return;
+        this.aiming = true;
+        const width = Math.max(0.12, 0.26 - this.count * 0.005);
+        const start = 0.1 + Math.random() * (0.8 - width);
+        this.aimZone = [start, start + width];
+        this.needle = 0;
+        this.needleDir = 1;
+        const box = this.q('.mg-aim:not(.mg-qte)');
+        box.hidden = false;
+        box.querySelector('.mg-aim-zone').style.cssText = `left:${start * 100}%;width:${width * 100}%`;
+        let last = null;
+        const loop = now => {
+            if (!this.aiming) return;
+            const dt = last === null ? 0 : Math.min(50, now - last);
+            last = now;
+            if (this.canAnimate) {
+                this.needle += this.needleDir * dt * (0.0007 + this.count * 0.00002) * (this.reduced ? 0.6 : 1);
+                if (this.needle > 1) { this.needle = 1; this.needleDir = -1; }
+                if (this.needle < 0) { this.needle = 0; this.needleDir = 1; }
+                box.querySelector('.mg-aim-needle').style.left = `${this.needle * 100}%`;
+            }
+            this.aimRaf = requestAnimationFrame(loop);
+        };
+        this.aimRaf = requestAnimationFrame(loop);
+        box.querySelector('button').focus({ preventScroll: true });
+    }
+
+    closeAim() {
+        this.aiming = false;
+        clearTimeout(this.retryAim);
+        if (this.aimRaf) cancelAnimationFrame(this.aimRaf);
+        this.aimRaf = null;
+        const box = this.q('.mg-aim:not(.mg-qte)');
+        if (box) box.hidden = true;
+    }
+
+    throwAim() {
+        if (!this.aiming) return;
+        const [a, b] = this.aimZone;
+        const hit = this.needle >= a && this.needle <= b;
+        this.closeAim();
+        if (hit) {
+            const mid = (a + b) / 2;
+            this.addPoints(30 + Math.round((1 - Math.abs(this.needle - mid) / ((b - a) / 2)) * 30));
+            this.running = true;
+            this.startMotion();
+            this.update();
+            this.q('.mg-feedback').textContent = 'Masuk kolam. Allāhu akbar!';
+            this.run();
+        } else {
+            blip('bad'); vibrate();
+            this.q('.mg-feedback').textContent = 'Meleset: kerikil tidak masuk kolam sehingga tidak dihitung. Ambil kerikil lain dan bidik lagi.';
+            this.retryAim = setTimeout(() => this.openAim(), 650);
+        }
+    }
+
+    openQte(text, label, points, ms, effect) {
+        this.closeQte();
+        const box = this.q('.mg-qte');
+        box.hidden = false;
+        box.querySelector('.mg-qte-text').textContent = text;
+        box.querySelector('button').textContent = label;
+        this.qte = { points, effect };
+        this.qteTimer = setTimeout(() => this.closeQte(), ms / (this.speed || 1));
+    }
+
+    hitQte() {
+        if (!this.qte) return;
+        const { points, effect } = this.qte;
+        this.closeQte();
+        effect?.();
+        this.addPoints(points);
+    }
+
+    closeQte() {
+        clearTimeout(this.qteTimer);
+        this.qte = null;
+        const box = this.q('.mg-qte');
+        if (box) box.hidden = true;
     }
 
     toggleNarration() {
@@ -389,10 +529,14 @@ export default class ManasikGame {
             this.heading = this.angle - Math.PI / 2;
         } else if (this.mission.type !== 'rami') {
             this.player = { x: motion.from.x + (motion.to.x - motion.from.x) * t, y: motion.from.y + (motion.to.y - motion.from.y) * t };
+            if (this.challenge && !this.auto && this.mission.type === 'sai') {
+                const inZone = this.player.x > 300 && this.player.x < 420;
+                if (inZone && !motion.jogOffered) { motion.jogOffered = true; this.openQte('Di antara penanda hijau: laki-laki dianjurkan berlari kecil.', 'Lari kecil 🏃', 20, 1400, () => { motion.duration *= 0.8; }); }
+            }
             this.heading = Math.atan2(motion.to.y - motion.from.y, motion.to.x - motion.from.x);
         }
         if (t >= 1) this.arrive();
     }
     draw() { this.scene.draw(this); }
-    destroy() { this.destroyed = true; this.suspend(); this.observer.disconnect(); this.events.abort(); }
+    destroy() { this.destroyed = true; this.closeQte(); this.closeAim(); this.suspend(); this.observer.disconnect(); this.events.abort(); }
 }
