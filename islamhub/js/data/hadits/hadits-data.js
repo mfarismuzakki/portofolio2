@@ -10,7 +10,7 @@ export const HADITS_CATEGORIES = [
     { id: 'keluarga',  icon: 'fa-home',               label: 'Keluarga',             color: '#ff8c00' },
     { id: 'muamalah',  icon: 'fa-handshake',          label: 'Muamalah & Sosial',    color: '#9370db' },
     { id: 'akhirat',   icon: 'fa-moon',               label: 'Akhirat & Kematian',   color: '#4682b4' },
-    { id: 'doa',       icon: 'fa-hands',              label: 'Doa & Dzikir',         color: '#32cd32' },
+    { id: 'doa',       icon: 'doa',                   label: 'Doa & Dzikir',         color: '#32cd32' },
 ];
 
 export const HADITS_COLLECTION = [

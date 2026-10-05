@@ -182,7 +182,7 @@ export default class DzikirApp {
         this.container.innerHTML = `
             <div class="dzikir-container">
                 <div class="dzikir-header">
-                    <h2><i class="fas fa-hands"></i> Dzikir & Doa Harian</h2>
+                    <h2><svg class="ic-doa" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-doa"/></svg> Dzikir & Doa Harian</h2>
                     <p class="subtitle">Kumpulan dzikir dan doa dari Al-Quran dan Hadist Shahih</p>
                 </div>
 

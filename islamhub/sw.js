@@ -2,7 +2,7 @@
 
 // IMPORTANT: Update version setiap kali push update!
 // Format: islamhub-v[major].[minor].[patch]-[timestamp]
-const CACHE_VERSION = '1.11.0-20261005-arena-games';
+const CACHE_VERSION = '1.12.0-20261006-sakinah';
 const CACHE_NAME = `islamhub-v${CACHE_VERSION}`;
 
 // Strategi: Network First untuk HTML/JS/CSS, Cache First untuk assets statis

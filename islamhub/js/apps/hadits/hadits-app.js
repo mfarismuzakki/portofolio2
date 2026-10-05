@@ -1,6 +1,8 @@
 // Hadits Browser — Jelajahi hadits shahih dari berbagai kitab
 import { HADITS_COLLECTION, HADITS_CATEGORIES } from '../../data/hadits/hadits-data.js';
 
+const catIcon = c => c?.icon === 'doa' ? '<svg class="ic-doa" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-doa"/></svg>' : `<i class="fas ${c?.icon || 'fa-scroll'}"></i>`;
+
 export default class HaditsApp {
     constructor(globalState, mainApp) {
         this.state = globalState;
@@ -53,7 +55,7 @@ export default class HaditsApp {
                     <i class="fas fa-sun"></i> HADITS HARI INI
                 </div>
                 <div class="hadits-daily-cat">
-                    <i class="fas ${dailyCat?.icon || 'fa-scroll'}"></i> ${dailyCat?.label || daily.category}
+                    ${catIcon(dailyCat)} ${dailyCat?.label || daily.category}
                 </div>
                 <h3 class="hadits-daily-title">${daily.title || ''}</h3>
                 ${daily.arabic ? `<p class="hadits-daily-arabic">${daily.arabic}</p>` : ''}
@@ -96,7 +98,7 @@ export default class HaditsApp {
                 const count = HADITS_COLLECTION.filter(h => h.category === cat.id).length;
                 return `
                 <div class="hadits-cat-card" data-cat="${cat.id}" style="--cat-color:${cat.color}">
-                    <div class="hadits-cat-icon"><i class="fas ${cat.icon}"></i></div>
+                    <div class="hadits-cat-icon">${catIcon(cat)}</div>
                     <div class="hadits-cat-info">
                         <strong>${cat.label}</strong>
                         <span>${count} hadits</span>
@@ -121,7 +123,7 @@ export default class HaditsApp {
                 <div class="hadits-card" data-id="${h.id}">
                     <div class="hadits-card-header">
                         <span class="hadits-card-cat" style="--cat-color:${cat?.color || '#fff'}">
-                            <i class="fas ${cat?.icon || 'fa-scroll'}"></i> ${cat?.label || h.category}
+                            ${catIcon(cat)} ${cat?.label || h.category}
                         </span>
                         <button class="hadits-fav-btn${isFav ? ' active' : ''}" data-id="${h.id}">
                             <i class="fas${isFav ? '' : ' far'} fa-bookmark"></i>
@@ -143,7 +145,7 @@ export default class HaditsApp {
         <button class="hadits-modal-close" id="haditsModalClose"><i class="fas fa-times"></i></button>
         <div class="hadits-detail">
             <div class="hadits-detail-cat" style="--cat-color:${cat?.color || '#fff'}">
-                <i class="fas ${cat?.icon || 'fa-scroll'}"></i> ${cat?.label || h.category}
+                ${catIcon(cat)} ${cat?.label || h.category}
             </div>
             <h3 class="hadits-detail-title">${h.title}</h3>
             <div class="hadits-detail-arabic">${h.arabic}</div>

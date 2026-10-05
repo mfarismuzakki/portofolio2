@@ -37,74 +37,172 @@ class StreamingApp {
             }
         ];
         
-        // Live Makkah & Madinah
-        // NOTE: uses YouTube's "live_stream?channel=" embed — this always
-        // resolves to whatever is CURRENTLY live on that channel, instead of
-        // a fixed video ID that goes dead the moment that particular
-        // broadcast ends (this was why these links kept breaking).
-        this.liveHaramain = [
-            {
-                name: 'Makkah Live',
-                url: 'https://www.youtube.com/embed/live_stream?channel=UCos52azQNBgW63_9uDJoPDA',
-                description: 'Live streaming 24/7 dari Masjidil Haram Makkah',
-                icon: 'fas fa-kaaba',
-                color: 'makkah'
-            },
-            {
-                name: 'Madinah Live',
-                url: 'https://www.youtube.com/embed/live_stream?channel=UC0bcRFUvOwYWYkhkLFzLwPg',
-                description: 'Live streaming 24/7 dari Masjid Nabawi Madinah',
-                icon: 'fas fa-mosque',
-                color: 'madinah'
-            }
+        // Live video channels. Rendered from js/data/live-streams.json, which a scheduled
+        // GitHub Action refreshes with the broadcast that is live right now: YouTube's
+        // embed/live_stream?channel=… stopped resolving reliably, so we embed video IDs.
+        // This copy is the offline fallback.
+        this.liveChannels = [
+                    {
+                                "key": "makkah",
+                                "group": "haramain",
+                                "name": "Makkah Live",
+                                "desc": "Masjidil Haram 24 jam · Saudi Quran TV",
+                                "channelId": "UCos52azQNBgW63_9uDJoPDA",
+                                "videoId": "eC4LfEVxvKg",
+                                "always": true,
+                                "icon": "fas fa-kaaba",
+                                "color": "makkah"
+                    },
+                    {
+                                "key": "madinah",
+                                "group": "haramain",
+                                "name": "Madinah Live",
+                                "desc": "Masjid Nabawi 24 jam · Saudi Sunnah TV",
+                                "channelId": "UCROKYPep-UuODNwyipe6JMw",
+                                "videoId": "Rs7St51oDDc",
+                                "always": true,
+                                "icon": "fas fa-mosque",
+                                "color": "madinah"
+                    },
+                    {
+                                "key": "srb",
+                                "group": "kajian",
+                                "name": "Syafiq Riza Basalamah 24 Jam",
+                                "desc": "Siaran kajian 24 jam Ustadz Syafiq Riza Basalamah",
+                                "channelId": "UC3_QdDQnRVRDJzq56JTO_Zw",
+                                "videoId": "hfjPJph9FqY",
+                                "always": true,
+                                "logo": "assets/logo/syafiq_tv.jpg",
+                                "color": "syafiq"
+                    },
+                    {
+                                "key": "meds",
+                                "group": "kajian",
+                                "name": "Media Sunnah Aceh TV",
+                                "desc": "Siaran dakwah MedS.TV dari Aceh",
+                                "channelId": "UCem4zrffr93cp-o8cOPDhdQ",
+                                "videoId": "o602MxuwDk8",
+                                "always": true,
+                                "icon": "fas fa-tv",
+                                "color": "meds"
+                    },
+                    {
+                                "key": "wesal",
+                                "group": "kajian",
+                                "name": "Wesal TV Keluarga",
+                                "desc": "Kajian kitab dan siaran keluarga Wesal TV",
+                                "channelId": "UCvKr_OdVeZAABwQ2nBHuhDw",
+                                "videoId": "tRCTTCkWrio",
+                                "always": false,
+                                "icon": "fas fa-people-roof",
+                                "color": "wesal"
+                    },
+                    {
+                                "key": "rodja",
+                                "group": "kajian",
+                                "name": "Rodja TV",
+                                "desc": "Siaran langsung kajian Radio & TV Rodja",
+                                "channelId": "UCghNwGdNSxfTyIV-8Bz_EFg",
+                                "videoId": "",
+                                "always": false,
+                                "logo": "assets/logo/rodja_tv.png",
+                                "color": "rodja"
+                    },
+                    {
+                                "key": "khalid",
+                                "group": "kajian",
+                                "name": "Khalid Basalamah Official",
+                                "desc": "Kajian langsung Ustadz Khalid Basalamah",
+                                "channelId": "UCJHC3VbFsp7kJ2NxPGltwiw",
+                                "videoId": "",
+                                "always": false,
+                                "logo": "assets/logo/khalid_tv.jpg",
+                                "color": "khalid"
+                    },
+                    {
+                                "key": "yufid",
+                                "group": "kajian",
+                                "name": "Yufid.TV",
+                                "desc": "Kajian dan ceramah Islam Yufid",
+                                "channelId": "UCX-4mrOc5r691SzDhHtkOgw",
+                                "videoId": "",
+                                "always": false,
+                                "icon": "fas fa-play",
+                                "color": "yufid"
+                    },
+                    {
+                                "key": "ahsan",
+                                "group": "kajian",
+                                "name": "Ahsan TV",
+                                "desc": "Kajian sunnah Ahsan TV Indonesia",
+                                "channelId": "UC6c15GN6fw8ASTBKjODgtcw",
+                                "videoId": "h_9lI0pXLnU",
+                                "always": false,
+                                "icon": "fas fa-satellite-dish",
+                                "color": "ahsan"
+                    }
         ];
+    }
 
-        // Video streaming channels
-        this.videoChannels = [
-            {
-                name: 'Khalid Basalamah TV',
-                url: 'https://www.youtube.com/embed/live_stream?channel=UCJHC3VbFsp7kJ2NxPGltwiw',
-                description: 'Kajian Ilmiah 24/7 dari Ustadz Khalid Basalamah',
-                logo: 'assets/logo/khalid_tv.jpg',
-                color: 'khalid'
-            },
-            {
-                name: 'Syafiq Riza Basalamah TV',
-                url: 'https://www.youtube.com/embed/live_stream?channel=UC3_QdDQnRVRDJzq56JTO_Zw',
-                description: 'Siaran 24 Jam dari Ustadz Syafiq Riza Basalamah',
-                logo: 'assets/logo/syafiq_tv.jpg',
-                color: 'syafiq'
-            },
-            {
-                name: 'Rodja TV',
-                url: 'https://www.youtube.com/embed/live_stream?channel=UCghNwGdNSxfTyIV-8Bz_EFg',
-                description: 'Live Streaming TV Dakwah Ahlus Sunnah',
-                logo: 'assets/logo/rodja_tv.png',
-                color: 'rodja'
+    get liveHaramain() { return this.liveChannels.filter(c => c.group === 'haramain'); }
+    get videoChannels() { return this.liveChannels.filter(c => c.group !== 'haramain'); }
+
+    async loadLiveChannels() {
+        try {
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), 4000);
+            const res = await fetch(`js/data/live-streams.json?t=${Math.floor(Date.now() / 600000)}`, { signal: ctrl.signal });
+            clearTimeout(timer);
+            const data = await res.json();
+            if (Array.isArray(data.channels) && data.channels.length) {
+                this.liveChannels = data.channels;
+                this.liveUpdated = data.updated || '';
             }
-        ];
-        
-        // YouTube channel IDs for kajian
-        this.channels = [
-            {
-                name: 'Khalid Basalamah',
-                channelId: 'UCnRJFoeLCqZXopKZhrj_z_g',
-                description: 'Kajian Islam dari Ustadz Khalid Basalamah',
-                icon: 'fas fa-user-tie'
-            },
-            {
-                name: 'Ammi Nur Baits',
-                channelId: 'UCT2JIqKj_CZT68qUJVvzf1Q',
-                description: 'Kajian Islam dari Ustadz Ammi Nur Baits',
-                icon: 'fas fa-graduation-cap'
-            },
-            {
-                name: 'Syafiq Riza Basalamah',
-                channelId: 'UCYRCsBAL4_iW9VPi7e2KO3Q',
-                description: 'Kajian Islam dari Ustadz Syafiq Riza Basalamah',
-                icon: 'fas fa-book-reader'
-            }
-        ];
+        } catch (e) {
+            console.warn('[Streaming] live-streams.json unavailable, using built-in list', e);
+        }
+    }
+
+    liveStatus(c) {
+        if (c.live) return '<span class="status-dot live"></span><span>Live sekarang</span>';
+        if (c.always) return '<span class="status-dot live"></span><span>Siaran 24 jam</span>';
+        return '<span class="status-dot"></span><span>Kajian terjadwal</span>';
+    }
+
+    renderVideoCard(c) {
+        const media = c.logo
+            ? `<div class="video-logo"><img src="${c.logo}" alt="${c.name}" onerror="this.style.display='none'"></div>`
+            : `<div class="video-icon"><i class="${c.icon || 'fas fa-tv'}"></i></div>`;
+        const canEmbed = !!c.videoId && (c.live || c.always);
+        return `
+            <div class="video-card video-${c.color}" data-key="${c.key}">
+                <div class="video-info">
+                    ${media}
+                    <div class="video-details">
+                        <h3>${c.name}</h3>
+                        <p>${c.desc}</p>
+                        <div class="video-status">${this.liveStatus(c)}</div>
+                    </div>
+                </div>
+                <button class="btn-video" onclick="window.streamingApp.openLive('${c.key}')">
+                    <i class="fas ${canEmbed ? 'fa-play-circle' : 'fa-arrow-up-right-from-square'}"></i>
+                    <span>${canEmbed ? 'Tonton Live' : 'Buka di YouTube'}</span>
+                </button>
+            </div>`;
+    }
+
+    openLive(key) {
+        const c = this.liveChannels.find(x => x.key === key);
+        if (!c) return;
+        if (c.videoId && (c.live || c.always)) {
+            this.openVideoStream(`https://www.youtube.com/embed/${c.videoId}?autoplay=1&rel=0&playsinline=1`, c.name, c);
+        } else {
+            this.openExternal(`https://www.youtube.com/channel/${c.channelId}/live`);
+        }
+    }
+
+    openExternal(url) {
+        window.open(url, window.Capacitor?.isNativePlatform?.() ? '_system' : '_blank', 'noopener');
     }
 
     render() {
@@ -141,7 +239,7 @@ class StreamingApp {
                 <div class="streaming-livestats">
                     <div class="livestats-item">
                         <span class="live-dot"></span>
-                        <span><strong id="liveCountTotal">${this.radioStations.length + this.videoChannels.length + this.liveHaramain.length}</strong> Channel Live Sekarang</span>
+                        <span><strong id="liveCountTotal">${this.radioStations.length + this.liveChannels.filter(c => c.live || c.always).length}</strong> Channel Live Sekarang</span>
                     </div>
                 </div>
 
@@ -186,27 +284,7 @@ class StreamingApp {
                         Tonton live streaming TV dakwah Islam langsung dari browser
                     </p>
                     
-                    ${this.videoChannels.map((channel, index) => `
-                        <div class="video-card video-${channel.color}">
-                            <div class="video-info">
-                                <div class="video-logo">
-                                    <img src="${channel.logo}" alt="${channel.name}" onerror="this.style.display='none'">
-                                </div>
-                                <div class="video-details">
-                                    <h3>${channel.name}</h3>
-                                    <p>${channel.description}</p>
-                                    <div class="video-status">
-                                        <span class="status-dot live"></span>
-                                        <span>Live 24/7</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="btn-video" onclick="window.streamingApp.openVideoStream('${channel.url}', '${channel.name}')">
-                                <i class="fas fa-play-circle"></i>
-                                <span>Tonton Live</span>
-                            </button>
-                        </div>
-                    `).join('')}
+                    ${this.videoChannels.map(c => this.renderVideoCard(c)).join('')}
                 </div>
 
                 <!-- Live Haramain Section -->
@@ -219,27 +297,7 @@ class StreamingApp {
                         Saksikan langsung suasana Masjidil Haram dan Masjid Nabawi 24 jam
                     </p>
                     
-                    ${this.liveHaramain.map((live, index) => `
-                        <div class="video-card video-${live.color}">
-                            <div class="video-info">
-                                <div class="video-icon">
-                                    <i class="${live.icon}"></i>
-                                </div>
-                                <div class="video-details">
-                                    <h3>${live.name}</h3>
-                                    <p>${live.description}</p>
-                                    <div class="video-status">
-                                        <span class="status-dot live"></span>
-                                        <span>Live 24/7</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="btn-video" onclick="window.streamingApp.openVideoStream('${live.url}', '${live.name}')">
-                                <i class="fas fa-play-circle"></i>
-                                <span>Tonton Live</span>
-                            </button>
-                        </div>
-                    `).join('')}
+                    ${this.liveHaramain.map(c => this.renderVideoCard(c)).join('')}
                 </div>
 
                 <!-- Tips Section -->
@@ -270,7 +328,11 @@ class StreamingApp {
                         </button>
                     </div>
                     <div class="video-modal-body">
-                        <iframe id="videoIframe" src="" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                        <iframe id="videoIframe" src="" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-modal-foot">
+                        <span>Siaran berhenti atau tidak muncul?</span>
+                        <a id="videoYoutubeLink" href="#" target="_blank" rel="noopener">Buka di YouTube <i class="fas fa-arrow-up-right-from-square"></i></a>
                     </div>
                 </div>
             </div>
@@ -280,6 +342,8 @@ class StreamingApp {
     async init() {
         console.log('[Streaming] Initializing...');
         
+        await this.loadLiveChannels();
+
         // Render content
         const container = document.getElementById('streaming-app');
         if (container) {
@@ -687,16 +751,16 @@ class StreamingApp {
         console.log('[Streaming] Radio stopped');
     }
 
-    openVideoStream(url, name) {
-        console.log('[Streaming] Opening video stream:', name, url);
-        
+    openVideoStream(url, name, channel = null) {
         const modal = document.getElementById('videoModal');
         const iframe = document.getElementById('videoIframe');
         const title = document.getElementById('videoModalTitle');
-        
+        const link = document.getElementById('videoYoutubeLink');
+
         if (modal && iframe && title) {
             title.textContent = name;
             iframe.src = url;
+            if (link) link.href = channel ? `https://www.youtube.com/channel/${channel.channelId}/live` : url.replace('/embed/', '/watch?v=').replace('?', '&');
             modal.classList.add('show');
         }
     }

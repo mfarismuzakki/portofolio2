@@ -1250,3 +1250,10 @@
     transform: scale(1.2);
   }
 }
+
+/* Live list footer: fallback to YouTube when an embed stops */
+.video-modal-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 16px; font-size: 13px; color: var(--text-secondary); border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.video-modal-foot a { color: var(--primary-cyan); font-weight: 600; text-decoration: none; }
+.video-status .status-dot:not(.live) { background: #8a8f99; box-shadow: none; animation: none; }
+.video-card.video-meds .video-icon, .video-card.video-wesal .video-icon, .video-card.video-yufid .video-icon, .video-card.video-ahsan .video-icon { background: linear-gradient(135deg, rgba(0, 200, 167, 0.35), rgba(0, 128, 255, 0.25)); color: #fff; }
+.video-card.video-meds .btn-video, .video-card.video-wesal .btn-video, .video-card.video-yufid .btn-video, .video-card.video-ahsan .btn-video { background: linear-gradient(135deg, #00c9a7, #0080ff); color: #fff; }

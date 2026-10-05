@@ -1,4 +1,5 @@
 /* ===== IslamHub - Main Application Controller ===== */
+import SakinahHome, { doaIcon, currentTheme, applyTheme } from './home.js';
 
 // Apps that are eligible to occupy the 3 customizable footer slots. The first
 // slot (Home) and last slot (Lainnya) are always fixed.
@@ -10,7 +11,7 @@ const FOOTER_PINNABLE = [
     { id: 'waris',    name: 'Kalkulator Waris',icon: 'fa-calculator' },
     { id: 'qibla',    name: 'Arah Kiblat',     icon: 'fa-compass' },
     { id: 'sirah',    name: 'Sirah Nabi',      icon: 'fa-tree' },
-    { id: 'dzikir',   name: 'Dzikir & Doa',    icon: 'fa-hands' },
+    { id: 'dzikir',   name: 'Dzikir & Doa',    icon: 'doa' },
     { id: 'zakat',    name: 'Kalkulator Zakat',icon: 'fa-hand-holding-heart' },
     { id: 'kalender', name: 'Kalender Hijri',  icon: 'fa-calendar-alt' },
     { id: 'asmaul',   name: 'Asmaul Husna',    icon: 'fa-star-and-crescent' },
@@ -31,7 +32,7 @@ const DROPDOWN_APP_CONFIG = [
     { id: 'waris',    name: 'Kalkulator Waris',    shortDesc: 'Hitung pembagian warisan syar\'i',           icon: 'fa-calculator',        iconBg: 'linear-gradient(135deg,rgba(255,51,102,0.7),rgba(255,128,0,0.5))' },
     { id: 'qibla',   name: 'Arah Kiblat',          shortDesc: 'Kompas digital arah kiblat',                icon: 'fa-compass',           iconBg: 'linear-gradient(135deg,rgba(0,200,167,0.7),rgba(0,255,255,0.5))' },
     { id: 'sirah',   name: 'Sirah Nabi',            shortDesc: 'Kisah para nabi dan rasul',                 icon: 'fa-tree',              iconBg: 'linear-gradient(135deg,rgba(0,128,255,0.7),rgba(139,0,255,0.5))' },
-    { id: 'dzikir',  name: 'Dzikir & Doa',          shortDesc: 'Kumpulan dzikir dan doa harian',            icon: 'fa-hands',             iconBg: 'linear-gradient(135deg,rgba(255,128,0,0.7),rgba(255,51,102,0.5))' },
+    { id: 'dzikir',  name: 'Dzikir & Doa',          shortDesc: 'Kumpulan dzikir dan doa harian',            icon: 'doa',                  iconBg: 'linear-gradient(135deg,rgba(255,128,0,0.7),rgba(255,51,102,0.5))' },
     { id: 'zakat',   name: 'Kalkulator Zakat',      shortDesc: 'Hitung zakat maal, fitrah, dan profesi',    icon: 'fa-hand-holding-heart',iconBg: 'linear-gradient(135deg,rgba(0,255,136,0.7),rgba(0,200,100,0.5))' },
     { id: 'kalender',name: 'Kalender Hijriyah',     shortDesc: 'Kalender Islam dan konversi tanggal',       icon: 'fa-calendar-alt',      iconBg: 'linear-gradient(135deg,rgba(0,191,255,0.7),rgba(0,128,255,0.5))' },
     { id: 'asmaul',  name: 'Asmaul Husna',          shortDesc: '99 Nama-Nama Allah dengan makna dan dalil', icon: 'fa-star-and-crescent', iconBg: 'linear-gradient(135deg,rgba(255,215,0,0.75),rgba(212,168,83,0.55))' },
@@ -83,6 +84,8 @@ class IslamHubApp {
         this.renderFooterNav();
         this.renderMoreAppsDropdown();
         this.setupSettingsSheet();
+        this.home = new SakinahHome(this, DROPDOWN_APP_CONFIG);
+        this.home.init();
         
         // Load Adzan app in background — prayer time fetch must not block the main loader
         this.loadApp('adzan').catch(err => console.warn('[adzan] background load failed:', err));
@@ -711,6 +714,7 @@ class IslamHubApp {
         // Update body class untuk footer visibility
         if (appName === 'home') {
             document.body.classList.add('home-active');
+            document.dispatchEvent(new CustomEvent('islamhub:home'));
         } else {
             document.body.classList.remove('home-active');
         }
@@ -755,6 +759,9 @@ class IslamHubApp {
             document.documentElement.scrollTop = 0;
         });
     }
+
+    // Used by cross-app shortcut buttons inside Adzan and Kalender.
+    openApp(appName) { return this.switchApp(appName); }
 
     async loadApp(appName) {
         this.loadingApps ||= new Map();
@@ -823,7 +830,11 @@ class IslamHubApp {
             await appInstance.init();
             
             // Store app instances globally for reset functionality
-            if (appName === 'dzikir') {
+            if (appName === 'adzan') {
+                window.adzanApp = appInstance;
+                this.home?.renderTimes(appInstance.prayerTimes, appInstance.nextPrayer?.name);
+                this.home?.renderDate();
+            } else if (appName === 'dzikir') {
                 window.dzikirApp = appInstance;
             } else if (appName === 'alquran') {
                 window.alquranApp = appInstance;
@@ -893,7 +904,7 @@ class IslamHubApp {
             const app = FOOTER_PINNABLE.find(a => a.id === id);
             if (!app) return '';
             return `<button class="bottom-nav-item" data-app="${app.id}">
-                <i class="fas ${app.icon}"></i>
+                ${app.icon === 'doa' ? doaIcon() : `<i class="fas ${app.icon}"></i>`}
                 <span>${app.name}</span>
             </button>`;
         }).join('');
@@ -938,7 +949,7 @@ class IslamHubApp {
             return `
             <button class="more-app-item" data-app="${app.id}">
                 <div class="more-app-icon" style="background:${app.iconBg}">
-                    <i class="fas ${app.icon}"></i>
+                    ${app.icon === 'doa' ? doaIcon() : `<i class="fas ${app.icon}"></i>`}
                 </div>
                 <div class="more-app-info">
                     <h4>${app.name}</h4>
@@ -1023,7 +1034,7 @@ class IslamHubApp {
                     <div class="settings-app-item" data-app="${app.id}" draggable="true">
                         <div class="settings-drag-handle"><i class="fas fa-grip-vertical"></i></div>
                         <div class="settings-app-icon" style="background:${app.iconBg}">
-                            <i class="fas ${app.icon}"></i>
+                            ${app.icon === 'doa' ? doaIcon() : `<i class="fas ${app.icon}"></i>`}
                         </div>
                         <span class="settings-app-name">${app.name}</span>
                         <div class="settings-app-btns">
@@ -1039,7 +1050,25 @@ class IslamHubApp {
             </div>
         `;
 
-        list.innerHTML = footerHTML + reorderHTML;
+        const theme = currentTheme();
+        const themeHTML = `
+            <div class="settings-section">
+                <div class="settings-section-head">
+                    <i class="fas fa-palette"></i>
+                    <h4>Tema tampilan</h4>
+                </div>
+                <div class="theme-choice">
+                    <button type="button" class="theme-opt ${theme === 'sakinah' ? 'on' : ''}" data-theme-opt="sakinah"><span class="theme-swatch sk"></span>Sakinah<small>Terang, hijau & emas</small></button>
+                    <button type="button" class="theme-opt ${theme === 'classic' ? 'on' : ''}" data-theme-opt="classic"><span class="theme-swatch cl"></span>Klasik<small>Gelap, neon</small></button>
+                </div>
+            </div>
+        `;
+        list.innerHTML = themeHTML + footerHTML + reorderHTML;
+        list.querySelectorAll('[data-theme-opt]').forEach(b => b.addEventListener('click', () => {
+            applyTheme(b.dataset.themeOpt);
+            this.updateFloatingWidgetVisibility(this.currentApp);
+            this.renderSettingsList();
+        }));
 
         // Wire footer pin selects
         list.querySelectorAll('.footer-pin-select').forEach(sel => {
@@ -1238,6 +1267,12 @@ class IslamHubApp {
         if (prayerTimeEl) prayerTimeEl.textContent = data.prayerTime;
         if (countdownEl) countdownEl.textContent = data.countdown;
         if (cityEl) cityEl.textContent = data.city;
+        const times = window.adzanApp?.prayerTimes;
+        if (times && data.prayerName && data.prayerName !== this._homeNext) {
+            this._homeNext = data.prayerName;
+            this.home?.renderTimes(times, data.prayerName);
+            this.home?.renderDate();
+        }
     }
 
     // Update floating widget
@@ -1263,6 +1298,13 @@ class IslamHubApp {
             return;
         }
         
+        // The home screen already shows the prayer card, so the floating widget would duplicate it.
+        if (appName === 'home') {
+            floatingWidget.style.opacity = '0';
+            floatingWidget.style.display = 'none';
+            return;
+        }
+
         // Show widget on home and hide on adzan page
         if (appName === 'home') {
             floatingWidget.style.display = 'block';

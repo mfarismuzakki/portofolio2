@@ -205,7 +205,7 @@ export default class AdzanApp {
                 <!-- Cross-App Integration: Dzikir & Doa -->
                 <div class="sunnah-section" style="margin-top: 20px; background: linear-gradient(135deg, var(--bg-surface-2), rgba(0,255,255,0.05));">
                     <div class="section-header" style="color: var(--primary-cyan);">
-                        <i class="fas fa-hands"></i>
+                        <svg class="ic-doa" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-doa"/></svg>
                         <h3>Dzikir Setelah Sholat</h3>
                     </div>
                     <p class="section-description" style="margin-bottom: 15px;">Sempurnakan ibadah sholat fardhu Anda dengan rangkaian dzikir sesuai sunnah.</p>

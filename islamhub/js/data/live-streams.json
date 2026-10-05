@@ -1,0 +1,113 @@
+{
+  "updated": "2026-10-05T15:30Z",
+  "channels": [
+    {
+      "key": "makkah",
+      "group": "haramain",
+      "name": "Makkah Live",
+      "desc": "Masjidil Haram 24 jam · Saudi Quran TV",
+      "channelId": "UCos52azQNBgW63_9uDJoPDA",
+      "videoId": "eC4LfEVxvKg",
+      "always": true,
+      "icon": "fas fa-kaaba",
+      "color": "makkah",
+      "live": true
+    },
+    {
+      "key": "madinah",
+      "group": "haramain",
+      "name": "Madinah Live",
+      "desc": "Masjid Nabawi 24 jam · Saudi Sunnah TV",
+      "channelId": "UCROKYPep-UuODNwyipe6JMw",
+      "videoId": "Rs7St51oDDc",
+      "always": true,
+      "icon": "fas fa-mosque",
+      "color": "madinah",
+      "live": true
+    },
+    {
+      "key": "srb",
+      "group": "kajian",
+      "name": "Syafiq Riza Basalamah 24 Jam",
+      "desc": "Siaran kajian 24 jam Ustadz Syafiq Riza Basalamah",
+      "channelId": "UC3_QdDQnRVRDJzq56JTO_Zw",
+      "videoId": "hfjPJph9FqY",
+      "always": true,
+      "logo": "assets/logo/syafiq_tv.jpg",
+      "color": "syafiq",
+      "live": true
+    },
+    {
+      "key": "meds",
+      "group": "kajian",
+      "name": "Media Sunnah Aceh TV",
+      "desc": "Siaran dakwah MedS.TV dari Aceh",
+      "channelId": "UCem4zrffr93cp-o8cOPDhdQ",
+      "videoId": "o602MxuwDk8",
+      "always": true,
+      "icon": "fas fa-tv",
+      "color": "meds",
+      "live": true
+    },
+    {
+      "key": "wesal",
+      "group": "kajian",
+      "name": "Wesal TV Keluarga",
+      "desc": "Kajian kitab dan siaran keluarga Wesal TV",
+      "channelId": "UCvKr_OdVeZAABwQ2nBHuhDw",
+      "videoId": "tRCTTCkWrio",
+      "always": false,
+      "icon": "fas fa-people-roof",
+      "color": "wesal",
+      "live": false
+    },
+    {
+      "key": "rodja",
+      "group": "kajian",
+      "name": "Rodja TV",
+      "desc": "Siaran langsung kajian Radio & TV Rodja",
+      "channelId": "UCghNwGdNSxfTyIV-8Bz_EFg",
+      "videoId": "",
+      "always": false,
+      "logo": "assets/logo/rodja_tv.png",
+      "color": "rodja",
+      "live": false
+    },
+    {
+      "key": "khalid",
+      "group": "kajian",
+      "name": "Khalid Basalamah Official",
+      "desc": "Kajian langsung Ustadz Khalid Basalamah",
+      "channelId": "UCJHC3VbFsp7kJ2NxPGltwiw",
+      "videoId": "",
+      "always": false,
+      "logo": "assets/logo/khalid_tv.jpg",
+      "color": "khalid",
+      "live": false
+    },
+    {
+      "key": "yufid",
+      "group": "kajian",
+      "name": "Yufid.TV",
+      "desc": "Kajian dan ceramah Islam Yufid",
+      "channelId": "UCX-4mrOc5r691SzDhHtkOgw",
+      "videoId": "",
+      "always": false,
+      "icon": "fas fa-play",
+      "color": "yufid",
+      "live": false
+    },
+    {
+      "key": "ahsan",
+      "group": "kajian",
+      "name": "Ahsan TV",
+      "desc": "Kajian sunnah Ahsan TV Indonesia",
+      "channelId": "UC6c15GN6fw8ASTBKjODgtcw",
+      "videoId": "h_9lI0pXLnU",
+      "always": false,
+      "icon": "fas fa-satellite-dish",
+      "color": "ahsan",
+      "live": true
+    }
+  ]
+}

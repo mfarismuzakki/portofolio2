@@ -228,7 +228,7 @@ export default class ZakatApp {
             { icon: 'fa-person-cane', label: 'Fakir', desc: 'Tidak memiliki harta sama sekali' },
             { icon: 'fa-hand-holding', label: 'Miskin', desc: 'Berpenghasilan tapi tidak cukup' },
             { icon: 'fa-user-tie', label: 'Amil', desc: 'Pengelola zakat' },
-            { icon: 'fa-hands-praying', label: 'Muallaf', desc: 'Orang yang baru masuk Islam' },
+            { icon: 'fa-handshake', label: 'Muallaf', desc: 'Orang yang baru masuk Islam' },
             { icon: 'fa-link-slash', label: 'Riqab', desc: 'Memerdekakan budak' },
             { icon: 'fa-weight-hanging', label: 'Gharim', desc: 'Terlilit utang halal' },
             { icon: 'fa-road', label: 'Fi Sabilillah', desc: 'Di jalan Allah' },

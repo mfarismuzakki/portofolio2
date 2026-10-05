@@ -44,7 +44,9 @@
 
 /* Responsive */
 @import url('components/responsive.css');
+@import url('components/sakinah-theme.css?v=1.0.0');
 
 @import url('components/simulations.css?v=1.0.1');
 @import url('components/manasik-game.css?v=2.0.0');
 @import url('components/arena.css?v=1.0.0');
+@import url('components/sakinah.css?v=1.0.0');
