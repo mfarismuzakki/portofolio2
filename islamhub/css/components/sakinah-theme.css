@@ -21,12 +21,12 @@ html[data-theme="sakinah"] .prayer-time-target {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .next-prayer-ring-wrapper.imminent .next-prayer-ring-progress {
-  stroke: rgb(150, 95, 30) !important;
+  stroke: rgb(135, 82, 22) !important;
   filter: drop-shadow(0 0 18px rgba(31, 61, 51, 0.12));
   animation: sk-nextPrayerImminent 1s ease-in-out infinite;
 }
 html[data-theme="sakinah"] .next-prayer-ring-wrapper.imminent .countdown-timer {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
   text-shadow: none;
 }
 @keyframes sk-nextPrayerImminent {
@@ -56,7 +56,7 @@ html[data-theme="sakinah"] .btn-offset-step:hover, html[data-theme="sakinah"] .b
   box-shadow: 0 0 8px rgba(31, 61, 51, 0.045);
 }
 html[data-theme="sakinah"] .btn-offset-reset {
-  color: var(--text-muted, rgb(109, 122, 104));
+  color: var(--text-muted, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .hijri-correction-badge {
   background: rgba(47, 114, 88, 0.08);
@@ -66,7 +66,7 @@ html[data-theme="sakinah"] .prayer-time-card {
   border: 1px solid rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .prayer-time-card.next-prayer {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 114, 88, 0.15));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 111, 138, 0.15));
   box-shadow: 0 0 25px rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .prayer-time-card.next-prayer::before {
@@ -193,10 +193,10 @@ html[data-theme="sakinah"] .adzan-display-mode {
 }
 html[data-theme="sakinah"] .adm-bg::after {
   background: linear-gradient(180deg,
-    rgba(20, 36, 30, 0.33) 0%,
+    rgba(255, 253, 247, 0.92) 0%,
     rgba(255, 253, 247, 0.92) 28%,
     rgba(255, 253, 247, 0.92) 55%,
-    rgba(20, 36, 30, 0.248) 100%);
+    rgba(255, 253, 247, 0.92) 100%);
 }
 html[data-theme="sakinah"] .adm-top-bar {
   background: rgb(255, 253, 247);
@@ -212,7 +212,7 @@ html[data-theme="sakinah"] .adm-masjid-name {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-masjid-name i {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-hijri {
   color: rgb(31, 61, 51);
@@ -231,7 +231,7 @@ html[data-theme="sakinah"] .adm-close-btn:hover {
   color: rgb(160, 70, 50);
 }
 html[data-theme="sakinah"] .adm-center-display {
-  background: rgba(20, 36, 30, 0.319);
+  background: rgba(255, 253, 247, 0.92);
   border: 1px solid rgba(31, 61, 51, 0.135);
 }
 html[data-theme="sakinah"] .adm-center-next-label {
@@ -244,7 +244,7 @@ html[data-theme="sakinah"] .adm-center-next-arabic {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .adm-center-countdown {
-  color: var(--adm-countdown-color, rgb(150, 95, 30));
+  color: var(--adm-countdown-color, rgb(135, 82, 22));
   text-shadow: none;
 }
 html[data-theme="sakinah"] .adm-center-next-time {
@@ -268,32 +268,32 @@ html[data-theme="sakinah"] .adm-prayer-countdown {
   background: rgba(255, 253, 247, 0.92);
 }
 html[data-theme="sakinah"] .adm-prayer-arabic {
-  color: rgb(109, 122, 104);
+  color: rgb(87, 100, 90);
 }
 html[data-theme="sakinah"] .adm-prayer-col.adm-next .adm-prayer-arabic {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .adm-sunnah-card {
-  background: rgba(20, 36, 30, 0.303);
-  border: 1px solid rgba(194, 122, 44, 0.4);
+  background: rgba(255, 253, 247, 0.92);
+  border: 1px solid rgba(168, 98, 30, 0.4);
 }
 html[data-theme="sakinah"] .adm-sunnah-icon {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-sunnah-name {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-sunnah-desc {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .adm-sunnah-ref {
-  color: rgba(109, 122, 104, 0.8);
+  color: rgba(87, 100, 90, 0.8);
 }
 html[data-theme="sakinah"] .adm-prayer-col.adm-active {
   background: rgb(255, 253, 247);
 }
 html[data-theme="sakinah"] .adm-prayer-col.adm-next {
-  background: linear-gradient(180deg, rgb(194, 122, 44) 0%, rgb(194, 122, 44) 100%);
+  background: linear-gradient(180deg, rgb(168, 98, 30) 0%, rgb(168, 98, 30) 100%);
 }
 html[data-theme="sakinah"] .adm-prayer-col.adm-next .adm-prayer-label {
   color: rgb(31, 61, 51);
@@ -306,7 +306,7 @@ html[data-theme="sakinah"] .adm-ticker-wrap {
   border-top: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .adm-ticker-label {
-  color: rgba(150, 95, 30, 0.85);
+  color: rgba(135, 82, 22, 0.85);
 }
 html[data-theme="sakinah"] .adm-ticker-content {
   color: rgb(31, 61, 51);
@@ -325,9 +325,9 @@ html[data-theme="sakinah"] .adm-radio-btn:hover, html[data-theme="sakinah"] .adm
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-radio-btn.active, html[data-theme="sakinah"] .adm-video-btn.active {
-  background: rgba(194, 122, 44, 0.18);
-  border-color: rgba(194, 122, 44, 0.55);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.18);
+  border-color: rgba(168, 98, 30, 0.55);
+  color: rgb(135, 82, 22);
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.105);
 }
 html[data-theme="sakinah"] .adm-settings-panel {
@@ -340,17 +340,17 @@ html[data-theme="sakinah"] .adm-settings-header {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-settings-header i {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-settings-header-close {
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
 }
 html[data-theme="sakinah"] .adm-settings-header-close:hover {
   color: rgb(31, 61, 51);
   background: rgba(255, 253, 247, 0.9);
 }
 html[data-theme="sakinah"] .adm-settings-section-title {
-  color: rgba(109, 122, 104, 0.75);
+  color: rgba(87, 100, 90, 0.75);
 }
 html[data-theme="sakinah"] .adm-theme-option {
   border: 2px solid rgba(31, 61, 51, 0.11);
@@ -359,10 +359,10 @@ html[data-theme="sakinah"] .adm-theme-option:hover {
   border-color: rgba(31, 61, 51, 0.16);
 }
 html[data-theme="sakinah"] .adm-theme-option.active {
-  border-color: rgba(194, 122, 44, 0.55);
+  border-color: rgba(168, 98, 30, 0.55);
 }
 html[data-theme="sakinah"] .adm-theme-preview-default {
-  background: linear-gradient(180deg, rgb(255, 253, 247) 50%, rgb(194, 122, 44) 100%);
+  background: linear-gradient(180deg, rgb(255, 253, 247) 50%, rgb(168, 98, 30) 100%);
 }
 html[data-theme="sakinah"] .adm-theme-preview-cyan {
   background: linear-gradient(180deg, rgb(246, 243, 234) 50%, rgb(47, 114, 88) 100%);
@@ -371,13 +371,13 @@ html[data-theme="sakinah"] .adm-theme-preview-green {
   background: linear-gradient(180deg, rgb(246, 243, 234) 50%, rgb(47, 114, 88) 100%);
 }
 html[data-theme="sakinah"] .adm-theme-preview-blue {
-  background: linear-gradient(180deg, rgb(246, 243, 234) 50%, rgb(107, 90, 166) 100%);
+  background: linear-gradient(180deg, rgb(246, 243, 234) 50%, rgb(47, 111, 138) 100%);
 }
 html[data-theme="sakinah"] .adm-theme-option span {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .adm-theme-option.active span {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-settings-row {
   border-bottom: 1px solid rgba(31, 61, 51, 0.095);
@@ -386,7 +386,7 @@ html[data-theme="sakinah"] .adm-settings-row-label {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .adm-settings-row-label i {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-toggle-slider {
   background: rgb(255, 253, 247);
@@ -396,7 +396,7 @@ html[data-theme="sakinah"] .adm-toggle-slider::before {
   box-shadow: 0 1px 4px rgba(31, 61, 51, 0.066);
 }
 html[data-theme="sakinah"] .adm-toggle input:checked + .adm-toggle-slider {
-  background: rgb(194, 122, 44);
+  background: rgb(168, 98, 30);
 }
 html[data-theme="sakinah"] .adm-color-preview {
   border: 2px solid rgba(31, 61, 51, 0.16);
@@ -414,8 +414,8 @@ html[data-theme="sakinah"] .adm-color-preset:hover {
   box-shadow: 0 4px 12px rgba(31, 61, 51, 0.088);
 }
 html[data-theme="sakinah"] .adm-adzan-alert-box {
-  background: rgba(20, 36, 30, 0.468);
-  border: 2px solid rgba(194, 122, 44, 0.55);
+  background: rgba(255, 253, 247, 0.92);
+  border: 2px solid rgba(168, 98, 30, 0.55);
   box-shadow: 0 0 60px rgba(31, 61, 51, 0.12);
   animation: sk-adm-alert-pulse 1s ease infinite alternate;
 }
@@ -431,7 +431,7 @@ html[data-theme="sakinah"] .adm-adzan-alert-label {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .adm-adzan-alert-name {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="cyan"] .adm-top-bar {
   background: rgb(246, 243, 234);
@@ -649,19 +649,19 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="green"] .adm-sett
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-top-bar {
   background: rgb(246, 243, 234);
-  border-bottom: 1px solid rgba(107, 90, 166, 0.25);
+  border-bottom: 1px solid rgba(47, 111, 138, 0.25);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-clock {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-clock-secs {
-  color: rgba(36, 88, 69, 0.85);
+  color: rgba(38, 92, 128, 0.85);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-masjid-name {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-masjid-name i {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-hijri {
   color: rgb(31, 61, 51);
@@ -670,9 +670,9 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-grego
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-close-btn, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-settings-btn, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-video-btn, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-radio-btn {
-  background: rgba(107, 90, 166, 0.08);
-  border-color: rgba(107, 90, 166, 0.35);
-  color: rgba(36, 88, 69, 0.85);
+  background: rgba(47, 111, 138, 0.08);
+  border-color: rgba(47, 111, 138, 0.35);
+  color: rgba(38, 92, 128, 0.85);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-close-btn:hover {
   background: rgba(181, 84, 63, 0.2);
@@ -680,32 +680,32 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-close
   color: rgb(160, 70, 50);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-settings-btn:hover, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-video-btn:hover, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-radio-btn:hover {
-  background: rgba(107, 90, 166, 0.18);
-  color: rgb(36, 88, 69);
+  background: rgba(47, 111, 138, 0.18);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-radio-btn.active, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-video-btn.active {
-  background: rgba(107, 90, 166, 0.2);
-  border-color: rgba(47, 114, 88, 0.55);
-  color: rgb(36, 88, 69);
+  background: rgba(47, 111, 138, 0.2);
+  border-color: rgba(47, 111, 138, 0.55);
+  color: rgb(38, 92, 128);
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.105);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-bottom {
   background: rgb(246, 243, 234);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-col {
-  border-color: rgba(107, 90, 166, 0.2);
+  border-color: rgba(47, 111, 138, 0.2);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-label {
-  color: rgba(36, 88, 69, 0.85);
+  color: rgba(38, 92, 128, 0.85);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-time {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-col.adm-active {
-  background: rgba(107, 90, 166, 0.07);
+  background: rgba(47, 111, 138, 0.07);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-col.adm-next {
-  background: linear-gradient(180deg, rgba(107, 90, 166, 0.9) 0%, rgba(107, 90, 166, 0.85) 100%);
+  background: linear-gradient(180deg, rgba(47, 111, 138, 0.9) 0%, rgba(47, 111, 138, 0.85) 100%);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-col.adm-next .adm-prayer-label {
   color: rgb(31, 61, 51);
@@ -715,23 +715,23 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-praye
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-ticker-wrap {
   background: rgb(246, 243, 234);
-  border-top-color: rgba(107, 90, 166, 0.2);
+  border-top-color: rgba(47, 111, 138, 0.2);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-ticker-label {
-  color: rgba(36, 88, 69, 0.85);
+  color: rgba(38, 92, 128, 0.85);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-sunnah-card {
-  border-color: rgba(107, 90, 166, 0.4);
+  border-color: rgba(47, 111, 138, 0.4);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-sunnah-icon, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-sunnah-name {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-adzan-alert-box {
-  border-color: rgba(107, 90, 166, 0.55);
+  border-color: rgba(47, 111, 138, 0.55);
   box-shadow: 0 0 60px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-adzan-alert-name {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 @keyframes sk-adm-alert-pulse-blue {
   from {
@@ -745,14 +745,14 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-adzan
   animation: sk-sk-adm-alert-pulse-blue 1s ease infinite alternate;
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-theme-option.active, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-toggle input:checked + .adm-toggle-slider {
-  border-color: rgba(107, 90, 166, 0.55);
-  background: rgb(107, 90, 166);
+  border-color: rgba(47, 111, 138, 0.55);
+  background: rgb(47, 111, 138);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-theme-option.active span {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-settings-header i, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-settings-row-label i {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 @media (max-width: 480px) {
   html[data-theme="sakinah"] .adm-prayer-col {
@@ -764,7 +764,7 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-setti
 }
 html[data-theme="sakinah"] .adm-select {
   background: rgba(255, 253, 247, 0.83);
-  border: 1px solid rgba(194, 122, 44, 0.5);
+  border: 1px solid rgba(168, 98, 30, 0.5);
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-select option {
@@ -775,12 +775,12 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="cyan"] .adm-selec
   border-color: rgba(47, 114, 88, 0.5);
 }
 html[data-theme="sakinah"] .adm-preview-btn {
-  background: rgba(194, 122, 44, 0.15);
-  border: 1px solid rgba(194, 122, 44, 0.55);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.15);
+  border: 1px solid rgba(168, 98, 30, 0.55);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-preview-btn:hover {
-  background: rgba(194, 122, 44, 0.3);
+  background: rgba(168, 98, 30, 0.3);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="cyan"] .adm-preview-btn {
   background: rgba(47, 114, 88, 0.1);
@@ -807,7 +807,7 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="cyan"] .adm-previ
   background: rgba(181, 84, 63, 0.32);
 }
 html[data-theme="sakinah"] .adm-preview-playing {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="cyan"] .adm-preview-playing {
   color: rgb(36, 88, 69);
@@ -826,34 +826,34 @@ html[data-theme="sakinah"] .adm-audio-bar {
   border-bottom: 1px solid rgba(31, 61, 51, 0.085);
 }
 html[data-theme="sakinah"] .adm-audio-bar-waves span {
-  background: rgb(194, 122, 44);
+  background: rgb(168, 98, 30);
 }
 html[data-theme="sakinah"] .adm-audio-bar-icon {
-  background: rgba(194, 122, 44, 0.12);
-  border: 1.5px solid rgba(194, 122, 44, 0.45);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.12);
+  border: 1.5px solid rgba(168, 98, 30, 0.45);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-audio-bar:not(.adm-audio-idle) .adm-audio-bar-icon {
-  background: rgba(194, 122, 44, 0.2);
+  background: rgba(168, 98, 30, 0.2);
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.075);
 }
 html[data-theme="sakinah"] .adm-audio-bar-label {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-audio-bar-sub {
-  color: rgba(109, 122, 104, 0.75);
+  color: rgba(87, 100, 90, 0.75);
 }
 html[data-theme="sakinah"] .adm-audio-ctrl-btn {
-  border: 1.5px solid rgba(194, 122, 44, 0.55);
-  background: rgba(194, 122, 44, 0.1);
-  color: rgb(150, 95, 30);
+  border: 1.5px solid rgba(168, 98, 30, 0.55);
+  background: rgba(168, 98, 30, 0.1);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-audio-ctrl-btn:hover {
-  background: rgba(194, 122, 44, 0.28);
-  border-color: rgba(194, 122, 44, 0.55);
+  background: rgba(168, 98, 30, 0.28);
+  border-color: rgba(168, 98, 30, 0.55);
 }
 html[data-theme="sakinah"] .adm-audio-ctrl-btn.muted {
-  color: rgba(109, 122, 104, 0.65);
+  color: rgba(87, 100, 90, 0.65);
   border-color: rgba(31, 61, 51, 0.16);
 }
 html[data-theme="sakinah"] .adm-audio-stop-btn {
@@ -892,7 +892,7 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="cyan"] .adm-audio
   border-color: rgba(47, 114, 88, 0.55);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="cyan"] .adm-audio-ctrl-btn.muted {
-  color: rgba(109, 122, 104, 0.6);
+  color: rgba(87, 100, 90, 0.6);
   border-color: rgba(31, 61, 51, 0.135);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="cyan"] .adm-audio-stop-btn {
@@ -908,10 +908,10 @@ html[data-theme="sakinah"] .adm-theme-preview-maroon {
   background: linear-gradient(180deg, rgb(246, 243, 234) 50%, rgb(181, 84, 63) 100%);
 }
 html[data-theme="sakinah"] .adm-theme-preview-white {
-  background: linear-gradient(180deg, rgb(255, 253, 247) 50%, rgb(194, 122, 44) 100%);
+  background: linear-gradient(180deg, rgb(255, 253, 247) 50%, rgb(168, 98, 30) 100%);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="default"] .adm-center-countdown {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="cyan"] .adm-center-countdown {
@@ -923,7 +923,7 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="green"] .adm-cent
   text-shadow: none;
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-center-countdown {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="maroon"] .adm-center-countdown {
@@ -931,7 +931,7 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="maroon"] .adm-cen
   text-shadow: none;
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-center-countdown {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-bg="dark"] .adm-bg {
@@ -948,7 +948,7 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-bg="ramadan"] .adm-bg {
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-bg="ramadan"] .adm-bg::after {
   background: radial-gradient(ellipse at 25% 55%, rgba(107, 90, 166, 0.08) 0%, transparent 45%),
-    radial-gradient(ellipse at 75% 30%, rgba(194, 122, 44, 0.07) 0%, transparent 40%);
+    radial-gradient(ellipse at 75% 30%, rgba(168, 98, 30, 0.07) 0%, transparent 40%);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="maroon"] .adm-top-bar {
   background: rgb(246, 243, 234);
@@ -1076,7 +1076,7 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="maroon"] .adm-bg-
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-top-bar {
   background: rgb(255, 253, 247);
-  border-bottom: 2px solid rgba(176, 138, 60, 0.35);
+  border-bottom: 2px solid rgba(138, 102, 36, 0.35);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-clock {
   color: rgb(36, 88, 69);
@@ -1088,7 +1088,7 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-masj
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-masjid-name i {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-hijri {
   color: rgb(31, 61, 51);
@@ -1111,14 +1111,14 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-sett
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-radio-btn.active, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-video-btn.active {
-  background: rgba(194, 122, 44, 0.14);
-  border-color: rgba(194, 122, 44, 0.55);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.14);
+  border-color: rgba(168, 98, 30, 0.55);
+  color: rgb(135, 82, 22);
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.075);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-bottom {
   background: rgb(255, 253, 247);
-  border-top: 2px solid rgba(176, 138, 60, 0.3);
+  border-top: 2px solid rgba(138, 102, 36, 0.3);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-prayer-col {
   border-color: rgba(31, 61, 51, 0.1);
@@ -1127,7 +1127,7 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-pray
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-prayer-arabic {
-  color: rgb(109, 122, 104);
+  color: rgb(87, 100, 90);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-prayer-time {
   color: rgb(31, 61, 51);
@@ -1136,7 +1136,7 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-pray
   background: rgb(255, 253, 247);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-prayer-col.adm-next {
-  background: linear-gradient(180deg, rgb(194, 122, 44) 0%, rgb(194, 122, 44) 100%);
+  background: linear-gradient(180deg, rgb(168, 98, 30) 0%, rgb(168, 98, 30) 100%);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-prayer-col.adm-next .adm-prayer-label {
   color: rgb(31, 61, 51);
@@ -1149,23 +1149,23 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-pray
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-ticker-wrap {
   background: rgb(246, 243, 234);
-  border-top-color: rgba(176, 138, 60, 0.3);
+  border-top-color: rgba(138, 102, 36, 0.3);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-ticker-label {
-  color: rgba(140, 105, 40, 0.85);
+  color: rgba(120, 90, 32, 0.85);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-sunnah-card {
-  border-color: rgba(176, 138, 60, 0.45);
+  border-color: rgba(138, 102, 36, 0.45);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-sunnah-icon, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-sunnah-name {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-adzan-alert-box {
-  border-color: rgba(194, 122, 44, 0.55);
+  border-color: rgba(168, 98, 30, 0.55);
   box-shadow: 0 0 60px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-adzan-alert-name {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 @keyframes sk-adm-alert-pulse-white {
   from {
@@ -1179,25 +1179,25 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-adza
   animation: sk-sk-adm-alert-pulse-white 1s ease infinite alternate;
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-theme-option.active, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-toggle input:checked + .adm-toggle-slider {
-  border-color: rgba(194, 122, 44, 0.55);
-  background: rgb(194, 122, 44);
+  border-color: rgba(168, 98, 30, 0.55);
+  background: rgb(168, 98, 30);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-theme-option.active span {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-settings-header i, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-settings-row-label i {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-fontsize-btn.active {
-  border-color: rgba(194, 122, 44, 0.55);
-  background: rgba(194, 122, 44, 0.18);
-  color: rgb(150, 95, 30);
+  border-color: rgba(168, 98, 30, 0.55);
+  background: rgba(168, 98, 30, 0.18);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-bg-option.active {
-  border-color: rgba(194, 122, 44, 0.55);
+  border-color: rgba(168, 98, 30, 0.55);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="white"] .adm-bg-option.active span {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-text-input {
   background: rgba(255, 253, 247, 0.795);
@@ -1205,11 +1205,11 @@ html[data-theme="sakinah"] .adm-text-input {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-text-input:focus {
-  border-color: rgba(194, 122, 44, 0.55);
+  border-color: rgba(168, 98, 30, 0.55);
   background: rgba(255, 253, 247, 0.935);
 }
 html[data-theme="sakinah"] .adm-text-input::placeholder {
-  color: rgba(109, 122, 104, 0.68);
+  color: rgba(87, 100, 90, 0.68);
 }
 html[data-theme="sakinah"] .adm-fontsize-btn {
   background: rgba(255, 253, 247, 0.795);
@@ -1221,9 +1221,9 @@ html[data-theme="sakinah"] .adm-fontsize-btn:hover {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-fontsize-btn.active {
-  border-color: rgba(194, 122, 44, 0.55);
-  background: rgba(194, 122, 44, 0.18);
-  color: rgb(150, 95, 30);
+  border-color: rgba(168, 98, 30, 0.55);
+  background: rgba(168, 98, 30, 0.18);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-bg-option {
   border: 2px solid rgba(31, 61, 51, 0.11);
@@ -1232,7 +1232,7 @@ html[data-theme="sakinah"] .adm-bg-option:hover {
   border-color: rgba(31, 61, 51, 0.16);
 }
 html[data-theme="sakinah"] .adm-bg-option.active {
-  border-color: rgba(194, 122, 44, 0.55);
+  border-color: rgba(168, 98, 30, 0.55);
 }
 html[data-theme="sakinah"] .adm-bg-preview-dark {
   background: linear-gradient(135deg, rgb(246, 243, 234) 0%, rgb(246, 243, 234) 100%);
@@ -1247,18 +1247,18 @@ html[data-theme="sakinah"] .adm-bg-option span {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .adm-bg-option.active span {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-bg-section-label {
-  color: rgba(109, 122, 104, 0.75);
+  color: rgba(87, 100, 90, 0.75);
 }
 html[data-theme="sakinah"] .adm-radio-settings-note {
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
   background: rgba(255, 253, 247, 0.69);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .adm-radio-settings-note i {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-radio-btn, html[data-theme="sakinah"] .adm-video-btn {
   border: 1px solid rgba(31, 61, 51, 0.1);
@@ -1266,14 +1266,14 @@ html[data-theme="sakinah"] .adm-radio-btn, html[data-theme="sakinah"] .adm-video
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .adm-radio-btn:hover, html[data-theme="sakinah"] .adm-video-btn:hover {
-  background: rgba(194, 122, 44, 0.15);
-  border-color: rgba(194, 122, 44, 0.55);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.15);
+  border-color: rgba(168, 98, 30, 0.55);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-radio-btn.active, html[data-theme="sakinah"] .adm-video-btn.active {
-  background: rgba(194, 122, 44, 0.2);
-  border-color: rgba(194, 122, 44, 0.55);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.2);
+  border-color: rgba(168, 98, 30, 0.55);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-radio-panel {
   background: rgb(246, 243, 234);
@@ -1282,7 +1282,7 @@ html[data-theme="sakinah"] .adm-radio-panel {
 }
 html[data-theme="sakinah"] .adm-radio-panel-header {
   border-bottom: 1px solid rgba(31, 61, 51, 0.1);
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-radio-panel-close {
   border: 1px solid rgba(31, 61, 51, 0.12);
@@ -1306,7 +1306,7 @@ html[data-theme="sakinah"] .adm-radio-item-name {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-radio-item-desc {
-  color: rgba(109, 122, 104, 0.8);
+  color: rgba(87, 100, 90, 0.8);
 }
 html[data-theme="sakinah"] .adm-radio-item-btn {
   border: 1.5px solid rgba(31, 61, 51, 0.16);
@@ -1314,13 +1314,13 @@ html[data-theme="sakinah"] .adm-radio-item-btn {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-radio-item-btn:hover {
-  background: rgba(194, 122, 44, 0.25);
-  border-color: rgba(194, 122, 44, 0.55);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.25);
+  border-color: rgba(168, 98, 30, 0.55);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-radio-item-btn.playing {
-  background: rgb(194, 122, 44);
-  border-color: rgba(194, 122, 44, 0.55);
+  background: rgb(168, 98, 30);
+  border-color: rgba(168, 98, 30, 0.55);
   color: rgb(255, 255, 255);
   box-shadow: 0 0 14px rgba(31, 61, 51, 0.12);
 }
@@ -1337,27 +1337,27 @@ html[data-theme="sakinah"] .adm-panel-tab:hover {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-panel-tab.adm-panel-tab-active {
-  background: rgba(194, 122, 44, 0.2);
-  border-color: rgba(194, 122, 44, 0.55);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.2);
+  border-color: rgba(168, 98, 30, 0.55);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-muratal-ctrl-label {
-  color: rgba(109, 122, 104, 0.8);
+  color: rgba(87, 100, 90, 0.8);
 }
 html[data-theme="sakinah"] .adm-muratal-repeat-btn {
   border: 1.5px solid rgba(31, 61, 51, 0.15);
   background: rgba(255, 253, 247, 0.76);
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
 }
 html[data-theme="sakinah"] .adm-muratal-repeat-btn:hover {
-  background: rgba(194, 122, 44, 0.2);
-  color: rgb(150, 95, 30);
-  border-color: rgba(194, 122, 44, 0.55);
+  background: rgba(168, 98, 30, 0.2);
+  color: rgb(135, 82, 22);
+  border-color: rgba(168, 98, 30, 0.55);
 }
 html[data-theme="sakinah"] .adm-muratal-repeat-btn.active {
-  background: rgba(194, 122, 44, 0.25);
-  color: rgb(150, 95, 30);
-  border-color: rgba(194, 122, 44, 0.55);
+  background: rgba(168, 98, 30, 0.25);
+  color: rgb(135, 82, 22);
+  border-color: rgba(168, 98, 30, 0.55);
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.105);
 }
 html[data-theme="sakinah"] .adm-muratal-search {
@@ -1366,10 +1366,10 @@ html[data-theme="sakinah"] .adm-muratal-search {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-muratal-search:focus {
-  border-color: rgba(194, 122, 44, 0.55);
+  border-color: rgba(168, 98, 30, 0.55);
 }
 html[data-theme="sakinah"] .adm-muratal-search::placeholder {
-  color: rgba(109, 122, 104, 0.65);
+  color: rgba(87, 100, 90, 0.65);
 }
 html[data-theme="sakinah"] .adm-muratal-item {
   background: rgba(255, 253, 247, 0.69);
@@ -1379,16 +1379,16 @@ html[data-theme="sakinah"] .adm-muratal-item:hover {
   background: rgba(255, 253, 247, 0.795);
 }
 html[data-theme="sakinah"] .adm-muratal-num {
-  color: rgba(150, 95, 30, 0.85);
+  color: rgba(135, 82, 22, 0.85);
 }
 html[data-theme="sakinah"] .adm-muratal-name {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-muratal-meta {
-  color: rgba(109, 122, 104, 0.73);
+  color: rgba(87, 100, 90, 0.73);
 }
 html[data-theme="sakinah"] .adm-muratal-empty {
-  color: rgba(109, 122, 104, 0.73);
+  color: rgba(87, 100, 90, 0.73);
 }
 @media (max-width: 480px) {
   html[data-theme="sakinah"] .adm-radio-panel {
@@ -1428,9 +1428,9 @@ html[data-theme="sakinah"] .adm-center-style-btn:hover {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-center-style-btn.active {
-  border-color: rgba(194, 122, 44, 0.55);
-  background: rgba(194, 122, 44, 0.18);
-  color: rgb(150, 95, 30);
+  border-color: rgba(168, 98, 30, 0.55);
+  background: rgba(168, 98, 30, 0.18);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-center-size-btn {
   background: rgba(255, 253, 247, 0.795);
@@ -1442,9 +1442,9 @@ html[data-theme="sakinah"] .adm-center-size-btn:hover {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-center-size-btn.active {
-  border-color: rgba(194, 122, 44, 0.55);
-  background: rgba(194, 122, 44, 0.18);
-  color: rgb(150, 95, 30);
+  border-color: rgba(168, 98, 30, 0.55);
+  background: rgba(168, 98, 30, 0.18);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-center-style="glass"] .adm-center-display {
   background: rgba(255, 253, 247, 0.92);
@@ -1496,7 +1496,7 @@ html[data-theme="sakinah"] .adm-video-iframe-body {
   background: rgb(246, 243, 234);
 }
 html[data-theme="sakinah"] .adm-video-section-title {
-  color: rgba(150, 95, 30, 0.85);
+  color: rgba(135, 82, 22, 0.85);
 }
 html[data-theme="sakinah"] .adm-video-channel-item {
   background: rgba(255, 253, 247, 0.725);
@@ -1504,7 +1504,7 @@ html[data-theme="sakinah"] .adm-video-channel-item {
 }
 html[data-theme="sakinah"] .adm-video-channel-item:hover {
   background: rgba(255, 253, 247, 0.9);
-  border-color: rgba(194, 122, 44, 0.45);
+  border-color: rgba(168, 98, 30, 0.45);
 }
 html[data-theme="sakinah"] .adm-vc-icon-haramain {
   background: rgba(47, 114, 88, 0.18);
@@ -1512,28 +1512,28 @@ html[data-theme="sakinah"] .adm-vc-icon-haramain {
   color: rgb(36, 88, 69);
 }
 html[data-theme="sakinah"] .adm-vc-icon-kajian {
-  background: rgba(194, 122, 44, 0.15);
-  border: 1px solid rgba(194, 122, 44, 0.35);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.15);
+  border: 1px solid rgba(168, 98, 30, 0.35);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-video-channel-name {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adm-video-channel-desc {
-  color: rgba(109, 122, 104, 0.75);
+  color: rgba(87, 100, 90, 0.75);
 }
 html[data-theme="sakinah"] .adm-video-play-btn {
-  border: 1.5px solid rgba(194, 122, 44, 0.5);
-  background: rgba(194, 122, 44, 0.12);
-  color: rgb(150, 95, 30);
+  border: 1.5px solid rgba(168, 98, 30, 0.5);
+  background: rgba(168, 98, 30, 0.12);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .adm-video-play-btn:hover {
-  background: rgb(194, 122, 44);
+  background: rgb(168, 98, 30);
   color: rgb(255, 255, 255);
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .adm-video-empty {
-  color: rgba(109, 122, 104, 0.7);
+  color: rgba(87, 100, 90, 0.7);
 }
 
 /* ---- alquran.css ---- */
@@ -1666,7 +1666,7 @@ html[data-theme="sakinah"] .close-btn:hover {
   color: rgb(160, 70, 50);
 }
 html[data-theme="sakinah"] .modal-body::-webkit-scrollbar-track {
-  background: rgba(20, 36, 30, 0.165) !important;
+  background: rgba(255, 253, 247, 0.92) !important;
 }
 html[data-theme="sakinah"] .modal-body::-webkit-scrollbar-thumb {
   background: rgb(47, 114, 88) !important;
@@ -1700,7 +1700,7 @@ html[data-theme="sakinah"] .surah-meta {
   background: rgba(255, 253, 247, 0.92);
 }
 html[data-theme="sakinah"] .surah-meta .meta-divider {
-  color: rgba(109, 122, 104, 0.65);
+  color: rgba(87, 100, 90, 0.65);
 }
 html[data-theme="sakinah"] .surah-actions {
   background: rgba(255, 253, 247, 0.92);
@@ -1715,7 +1715,7 @@ html[data-theme="sakinah"] .btn-read-surah:hover, html[data-theme="sakinah"] .bt
   box-shadow: 0 2px 10px rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .surah-grid::-webkit-scrollbar-track {
-  background: rgba(20, 36, 30, 0.165) !important;
+  background: rgba(255, 253, 247, 0.92) !important;
 }
 html[data-theme="sakinah"] .surah-grid::-webkit-scrollbar-thumb {
   background: rgb(47, 114, 88) !important;
@@ -1741,7 +1741,7 @@ html[data-theme="sakinah"] .surah-row-btn:hover, html[data-theme="sakinah"] .sur
   background: rgba(47, 114, 88, 0.15);
 }
 html[data-theme="sakinah"] .surah-list-simple::-webkit-scrollbar-track {
-  background: rgba(20, 36, 30, 0.165) !important;
+  background: rgba(255, 253, 247, 0.92) !important;
 }
 html[data-theme="sakinah"] .surah-list-simple::-webkit-scrollbar-thumb {
   background: rgb(47, 114, 88) !important;
@@ -1778,7 +1778,7 @@ html[data-theme="sakinah"] .btn-open-juz:hover {
   box-shadow: 0 2px 10px rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .juz-grid::-webkit-scrollbar-track {
-  background: rgba(20, 36, 30, 0.165) !important;
+  background: rgba(255, 253, 247, 0.92) !important;
 }
 html[data-theme="sakinah"] .juz-grid::-webkit-scrollbar-thumb {
   background: rgb(47, 114, 88) !important;
@@ -2000,13 +2000,13 @@ html[data-theme="sakinah"] [data-reading-theme="white"] .floating-header {
   box-shadow: 0 1px 8px rgba(31, 61, 51, 0.018) !important;
 }
 html[data-theme="sakinah"] .settings-reset-btn {
-  background: rgba(194, 122, 44, 0.1);
-  border: 1px solid rgba(194, 122, 44, 0.4);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.1);
+  border: 1px solid rgba(168, 98, 30, 0.4);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .settings-reset-btn:hover {
-  background: rgba(194, 122, 44, 0.2);
-  border-color: rgba(194, 122, 44, 0.55);
+  background: rgba(168, 98, 30, 0.2);
+  border-color: rgba(168, 98, 30, 0.55);
   box-shadow: 0 4px 12px rgba(31, 61, 51, 0.06);
 }
 html[data-theme="sakinah"] .danger-btn {
@@ -2038,10 +2038,10 @@ html[data-theme="sakinah"] .level-item:hover {
   background: rgba(47, 114, 88, 0.1);
 }
 html[data-theme="sakinah"] .level-item.level-1 .level-count {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .level-item.level-2 .level-count {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .level-item.level-3 .level-count {
   color: rgb(36, 88, 69);
@@ -2074,12 +2074,12 @@ html[data-theme="sakinah"] .verse-progress-indicator.level-0 {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .verse-progress-indicator.level-1 {
-  border-color: rgba(194, 122, 44, 0.55);
-  color: rgb(150, 95, 30);
+  border-color: rgba(168, 98, 30, 0.55);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .verse-progress-indicator.level-2 {
-  border-color: rgba(47, 114, 88, 0.55);
-  color: rgb(36, 88, 69);
+  border-color: rgba(47, 111, 138, 0.55);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .verse-progress-indicator.level-3 {
   border-color: rgba(47, 114, 88, 0.55);
@@ -2155,12 +2155,12 @@ html[data-theme="sakinah"] .page-input-section {
   border: 1px solid rgba(47, 114, 88, 0.25);
 }
 html[data-theme="sakinah"] .page-jump-input {
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
   border: 1px solid rgba(47, 114, 88, 0.4);
 }
 html[data-theme="sakinah"] .page-jump-input:focus {
   box-shadow: 0 0 15px rgba(31, 61, 51, 0.09);
-  background: rgba(20, 36, 30, 0.22);
+  background: rgba(255, 253, 247, 0.92);
 }
 html[data-theme="sakinah"] .btn-goto-page {
   box-shadow: 0 2px 10px rgba(31, 61, 51, 0.09);
@@ -2254,7 +2254,7 @@ html[data-theme="sakinah"] .verse-ref-badge {
   border: 1px solid rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .verse-action-btn {
-  color: rgba(109, 122, 104, 0.7);
+  color: rgba(87, 100, 90, 0.7);
 }
 html[data-theme="sakinah"] .verse-action-btn:hover {
   background: rgba(47, 114, 88, 0.1);
@@ -2287,7 +2287,7 @@ html[data-theme="sakinah"] .page-separator-info {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .page-separator-divider {
-  color: rgba(109, 122, 104, 0.75);
+  color: rgba(87, 100, 90, 0.75);
 }
 html[data-theme="sakinah"] .page-separator-play {
   background: rgba(47, 114, 88, 0.1);
@@ -2358,7 +2358,7 @@ html[data-theme="sakinah"] .audio-surah-name {
   text-shadow: none;
 }
 html[data-theme="sakinah"] .audio-verse-counter {
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
 }
 html[data-theme="sakinah"] .audio-btn {
   background: rgba(47, 114, 88, 0.1);
@@ -2517,7 +2517,7 @@ html[data-theme="sakinah"] .surah-reading-progress-bar {
   box-shadow: 0 0 8px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .floating-surah-meta {
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
 }
 html[data-theme="sakinah"] .floating-nav-btn {
   border: 1px solid rgba(47, 114, 88, 0.3);
@@ -2542,10 +2542,10 @@ html[data-theme="sakinah"] .floating-page-info {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .page-juz {
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
 }
 html[data-theme="sakinah"] .page-divider {
-  color: rgba(109, 122, 104, 0.65);
+  color: rgba(87, 100, 90, 0.65);
 }
 html[data-theme="sakinah"] .juz-surah-header {
   background: linear-gradient(135deg, rgba(47, 114, 88, 0.1) 0%, rgba(107, 90, 166, 0.1) 100%);
@@ -2616,7 +2616,7 @@ html[data-theme="sakinah"] .surah-name-latin {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .page-navigation {
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
   border: 1px solid rgba(47, 114, 88, 0.2);
 }
 html[data-theme="sakinah"] .page-nav-btn {
@@ -2708,7 +2708,7 @@ html[data-theme="sakinah"] .offline-info li {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .offline-info li i.fa-exclamation-triangle {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .offline-card {
   background: linear-gradient(145deg, rgba(255, 253, 247, 0.92), rgba(255, 253, 247, 0.92));
@@ -2823,9 +2823,9 @@ html[data-theme="sakinah"] .custom-confirm-size {
   background: rgba(47, 114, 88, 0.1);
 }
 html[data-theme="sakinah"] .custom-confirm-warning {
-  background: rgba(194, 122, 44, 0.15);
-  border: 1px solid rgba(194, 122, 44, 0.4);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.15);
+  border: 1px solid rgba(168, 98, 30, 0.4);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .custom-confirm-cancel {
   background: rgba(255, 253, 247, 0.9);
@@ -2881,7 +2881,7 @@ html[data-theme="sakinah"] .audio-player::before {
   background: linear-gradient(90deg,
         transparent,
         rgba(47, 114, 88, 0.6) 30%,
-        rgba(176, 138, 60, 0.5) 55%,
+        rgba(138, 102, 36, 0.5) 55%,
         rgba(47, 114, 88, 0.6) 80%,
         transparent);
 }
@@ -2908,7 +2908,7 @@ html[data-theme="sakinah"] .audio-btn#audioMute.muted {
 }
 html[data-theme="sakinah"] .audio-btn#audioPlayPause, html[data-theme="sakinah"] .audio-btn#dzikirAudioPlayPause {
   background: radial-gradient(circle at 30% 30%, rgb(255, 253, 247), transparent 60%),
-        linear-gradient(135deg, rgba(47, 114, 88, 0.25), rgba(47, 114, 88, 0.18));
+        linear-gradient(135deg, rgba(47, 114, 88, 0.25), rgba(47, 111, 138, 0.18));
   border-color: rgba(47, 114, 88, 0.55);
   box-shadow: 0 4px 18px rgba(31, 61, 51, 0.105),
         inset 0 1px 0 rgba(31, 61, 51, 0.054);
@@ -2916,7 +2916,7 @@ html[data-theme="sakinah"] .audio-btn#audioPlayPause, html[data-theme="sakinah"]
 }
 html[data-theme="sakinah"] .audio-btn#audioPlayPause:hover, html[data-theme="sakinah"] .audio-btn#dzikirAudioPlayPause:hover {
   background: radial-gradient(circle at 30% 30%, rgb(255, 253, 247), transparent 60%),
-        linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.28));
+        linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 111, 138, 0.28));
   box-shadow: 0 6px 24px rgba(31, 61, 51, 0.12),
         inset 0 1px 0 rgba(31, 61, 51, 0.075);
 }
@@ -2933,7 +2933,7 @@ html[data-theme="sakinah"] .audio-progress-bar:hover {
 html[data-theme="sakinah"] .audio-progress-fill {
   background: linear-gradient(90deg,
         var(--primary-cyan),
-        var(--islamic-gold, rgb(176, 138, 60)),
+        var(--islamic-gold, rgb(138, 102, 36)),
         var(--primary-cyan));
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.12);
 }
@@ -2955,25 +2955,25 @@ html[data-theme="sakinah"] .alq-muratal-back:hover {
   background: rgb(255, 253, 247);
 }
 html[data-theme="sakinah"] .alq-muratal-now {
-  background: rgba(194, 122, 44, 0.12);
-  border-bottom: 1px solid rgba(194, 122, 44, 0.3);
+  background: rgba(168, 98, 30, 0.12);
+  border-bottom: 1px solid rgba(168, 98, 30, 0.3);
 }
 html[data-theme="sakinah"] .alq-muratal-now-icon {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .alq-muratal-now-title {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .alq-muratal-now-sub {
-  color: rgba(150, 95, 30, 0.85);
+  color: rgba(135, 82, 22, 0.85);
 }
 html[data-theme="sakinah"] .alq-muratal-ctrl-btn {
-  border: 1.5px solid rgba(194, 122, 44, 0.5);
-  background: rgba(194, 122, 44, 0.15);
-  color: rgb(150, 95, 30);
+  border: 1.5px solid rgba(168, 98, 30, 0.5);
+  background: rgba(168, 98, 30, 0.15);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .alq-muratal-ctrl-btn:hover {
-  background: rgba(194, 122, 44, 0.3);
+  background: rgba(168, 98, 30, 0.3);
 }
 html[data-theme="sakinah"] .alq-muratal-stop-btn {
   border-color: rgba(181, 84, 63, 0.5);
@@ -2987,7 +2987,7 @@ html[data-theme="sakinah"] .alq-muratal-options {
   border-bottom: 1px solid rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .alq-muratal-opt-label {
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
 }
 html[data-theme="sakinah"] .alq-repeat-btn {
   border: 1.5px solid rgba(31, 61, 51, 0.135);
@@ -2995,27 +2995,27 @@ html[data-theme="sakinah"] .alq-repeat-btn {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .alq-repeat-btn:hover {
-  background: rgba(194, 122, 44, 0.15);
-  color: rgb(150, 95, 30);
-  border-color: rgba(194, 122, 44, 0.5);
+  background: rgba(168, 98, 30, 0.15);
+  color: rgb(135, 82, 22);
+  border-color: rgba(168, 98, 30, 0.5);
 }
 html[data-theme="sakinah"] .alq-repeat-btn.active {
-  background: rgba(194, 122, 44, 0.25);
-  color: rgb(150, 95, 30);
-  border-color: rgba(194, 122, 44, 0.55);
+  background: rgba(168, 98, 30, 0.25);
+  color: rgb(135, 82, 22);
+  border-color: rgba(168, 98, 30, 0.55);
 }
 html[data-theme="sakinah"] .alq-muratal-search-wrap .fas {
-  color: rgba(109, 122, 104, 0.7);
+  color: rgba(87, 100, 90, 0.7);
 }
 html[data-theme="sakinah"] .alq-muratal-search {
   border: 1.5px solid rgba(31, 61, 51, 0.12);
   background: rgba(255, 253, 247, 0.76);
 }
 html[data-theme="sakinah"] .alq-muratal-search:focus {
-  border-color: rgba(194, 122, 44, 0.55);
+  border-color: rgba(168, 98, 30, 0.55);
 }
 html[data-theme="sakinah"] .alq-muratal-search::placeholder {
-  color: rgba(109, 122, 104, 0.6);
+  color: rgba(87, 100, 90, 0.6);
 }
 html[data-theme="sakinah"] .alq-muratal-item {
   background: rgba(255, 253, 247, 0.69);
@@ -3026,49 +3026,49 @@ html[data-theme="sakinah"] .alq-muratal-item:hover {
   border-color: rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .alq-muratal-num {
-  color: rgba(150, 95, 30, 0.85);
+  color: rgba(135, 82, 22, 0.85);
 }
 html[data-theme="sakinah"] .alq-muratal-meta {
-  color: rgba(109, 122, 104, 0.73);
+  color: rgba(87, 100, 90, 0.73);
 }
 html[data-theme="sakinah"] .alq-muratal-btn {
   border: 1.5px solid rgba(31, 61, 51, 0.15);
   background: rgba(255, 253, 247, 0.76);
 }
 html[data-theme="sakinah"] .alq-muratal-btn:hover {
-  background: rgba(194, 122, 44, 0.2);
-  border-color: rgba(194, 122, 44, 0.55);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.2);
+  border-color: rgba(168, 98, 30, 0.55);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .alq-muratal-btn.playing {
-  background: rgb(194, 122, 44);
-  border-color: rgba(194, 122, 44, 0.55);
+  background: rgb(168, 98, 30);
+  border-color: rgba(168, 98, 30, 0.55);
   color: rgb(255, 255, 255);
   box-shadow: 0 0 12px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .alquran-streak-card {
-  background: radial-gradient(circle at right, rgba(194, 122, 44, 0.18), transparent 60%),
+  background: radial-gradient(circle at right, rgba(168, 98, 30, 0.18), transparent 60%),
         linear-gradient(135deg, rgba(255, 253, 247, 0.92), rgba(255, 253, 247, 0.92));
-  border: 1px solid rgba(194, 122, 44, 0.5);
+  border: 1px solid rgba(168, 98, 30, 0.5);
   box-shadow: 0 4px 24px rgba(31, 61, 51, 0.054);
 }
 html[data-theme="sakinah"] .alquran-streak-label {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .streak-num {
   font-family: var(--font-orbitron, 'Plus Jakarta Sans'), sans-serif;
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .streak-unit {
-  color: rgba(150, 95, 30, 0.85);
+  color: rgba(135, 82, 22, 0.85);
 }
 html[data-theme="sakinah"] .alquran-streak-longest {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .alquran-streak-flame {
-  background: radial-gradient(circle, rgba(194, 122, 44, 0.4), rgba(181, 84, 63, 0.1));
-  color: rgb(150, 95, 30);
+  background: radial-gradient(circle, rgba(168, 98, 30, 0.4), rgba(181, 84, 63, 0.1));
+  color: rgb(135, 82, 22);
   text-shadow: none;
   animation: sk-streakFlameFlicker 1.6s ease-in-out infinite;
 }
@@ -3092,75 +3092,75 @@ html[data-theme="sakinah"] .cyber-grid {
 /* ---- asmaul.css ---- */
 html[data-theme="sakinah"] .asmaul-header h2 {
   font-family: var(--font-orbitron, 'Plus Jakarta Sans', sans-serif);
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .asmaul-hadits-box {
-  background: linear-gradient(135deg, rgba(176, 138, 60, 0.08), rgba(194, 122, 44, 0.04));
-  border: 1px solid rgba(176, 138, 60, 0.4);
+  background: linear-gradient(135deg, rgba(138, 102, 36, 0.08), rgba(168, 98, 30, 0.04));
+  border: 1px solid rgba(138, 102, 36, 0.4);
 }
 html[data-theme="sakinah"] .asmaul-hadits-arabic {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .asmaul-hadits-source {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .asmaul-hadits-note {
   background: rgba(255, 253, 247, 0.725);
 }
 html[data-theme="sakinah"] .asmaul-hadits-note i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .asmaul-search {
   background: rgba(255, 253, 247, 0.76);
   border: 1px solid rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .asmaul-search:focus {
-  border-color: rgba(176, 138, 60, 0.55);
-  background: rgba(176, 138, 60, 0.05);
+  border-color: rgba(138, 102, 36, 0.55);
+  background: rgba(138, 102, 36, 0.05);
 }
 html[data-theme="sakinah"] .asmaul-card {
   background: rgba(255, 253, 247, 0.69);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .asmaul-card:hover {
-  background: rgba(176, 138, 60, 0.08);
-  border-color: rgba(176, 138, 60, 0.4);
+  background: rgba(138, 102, 36, 0.08);
+  border-color: rgba(138, 102, 36, 0.4);
 }
 html[data-theme="sakinah"] .asmaul-card.memorized {
   background: rgba(47, 114, 88, 0.06);
   border-color: rgba(47, 114, 88, 0.4);
 }
 html[data-theme="sakinah"] .asmaul-card-arabic {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .asmaul-card-latin {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .asmaul-modal-backdrop {
   background: rgba(20, 36, 30, 0.385);
 }
 html[data-theme="sakinah"] .asmaul-modal-content {
   background: rgb(246, 243, 234);
-  border: 1px solid rgba(176, 138, 60, 0.4);
+  border: 1px solid rgba(138, 102, 36, 0.4);
 }
 html[data-theme="sakinah"] .asmaul-modal-close {
   background: rgba(255, 253, 247, 0.9);
 }
 html[data-theme="sakinah"] .asmaul-modal-no {
-  background: rgba(176, 138, 60, 0.15);
-  border: 1px solid rgba(176, 138, 60, 0.5);
-  color: rgb(140, 105, 40);
+  background: rgba(138, 102, 36, 0.15);
+  border: 1px solid rgba(138, 102, 36, 0.5);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .asmaul-modal-arabic {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .asmaul-modal-latin {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .asmaul-modal-dalil {
-  background: rgba(47, 114, 88, 0.1);
-  color: rgb(36, 88, 69);
+  background: rgba(47, 111, 138, 0.1);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .asmaul-modal-desc {
   background: rgba(255, 253, 247, 0.69);
@@ -3172,7 +3172,7 @@ html[data-theme="sakinah"] .asmaul-daily {
 @supports not (background: color-mix(in srgb, red, blue)) {
   html[data-theme="sakinah"] .asmaul-daily {
     background: linear-gradient(135deg, rgba(47, 114, 88, 0.1), rgba(181, 84, 63, 0.08));
-    border: 1px solid rgba(176, 138, 60, 0.55);
+    border: 1px solid rgba(138, 102, 36, 0.55);
   }
 }
 html[data-theme="sakinah"] .asmaul-daily-arabic {
@@ -3182,7 +3182,7 @@ html[data-theme="sakinah"] .asmaul-daily-meaning {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .asmaul-daily-cta {
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
 }
 html[data-theme="sakinah"] .asmaul-daily-cta:hover {
   color: rgb(31, 61, 51);
@@ -3191,7 +3191,7 @@ html[data-theme="sakinah"] .asmaul-themes::-webkit-scrollbar-thumb {
   background: rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .asmaul-theme-chip {
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
   border: 1px solid var(--theme-color, rgba(47, 114, 88, 0.4));
   color: rgb(31, 61, 51);
 }
@@ -3222,7 +3222,7 @@ html[data-theme="sakinah"] body::before {
     radial-gradient(circle at 75% 75%, rgba(181, 84, 63, 0.05) 0%, transparent 50%);
 }
 html[data-theme="sakinah"] ::-webkit-scrollbar-track {
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
 }
 html[data-theme="sakinah"] ::-webkit-scrollbar-thumb {
   background: rgb(47, 114, 88);
@@ -3242,7 +3242,7 @@ html[data-theme="sakinah"] .clear-data-modal {
 }
 html[data-theme="sakinah"] .modal-header {
   border-bottom: 1px solid rgba(47, 114, 88, 0.3) !important;
-  background: rgba(20, 36, 30, 0.165) !important;
+  background: rgba(255, 253, 247, 0.92) !important;
 }
 html[data-theme="sakinah"] .modal-header h3 {
   text-shadow: none !important;
@@ -3318,8 +3318,8 @@ html[data-theme="sakinah"] .dzikir-header .subtitle {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .time-recommendations-section {
-  background: rgba(47, 114, 88, 0.05);
-  border: 1px solid rgba(47, 114, 88, 0.3);
+  background: rgba(47, 111, 138, 0.05);
+  border: 1px solid rgba(47, 111, 138, 0.3);
 }
 html[data-theme="sakinah"] .recommendations-subtitle {
   color: rgb(74, 91, 81);
@@ -3338,7 +3338,7 @@ html[data-theme="sakinah"] .recommendation-card .rec-content p {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .recommendation-card .rec-badge {
-  background: rgba(47, 114, 88, 0.2);
+  background: rgba(47, 111, 138, 0.2);
 }
 html[data-theme="sakinah"] .search-container input {
   background: rgba(47, 114, 88, 0.05);
@@ -3346,14 +3346,14 @@ html[data-theme="sakinah"] .search-container input {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .search-container input::placeholder {
-  color: rgba(109, 122, 104, 0.75);
+  color: rgba(87, 100, 90, 0.75);
 }
 html[data-theme="sakinah"] .search-container input:focus {
   background: rgba(47, 114, 88, 0.08);
   box-shadow: 0 0 20px rgba(31, 61, 51, 0.06);
 }
 html[data-theme="sakinah"] .clear-search {
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
 }
 html[data-theme="sakinah"] .search-results {
   background: rgba(47, 114, 88, 0.03);
@@ -3363,10 +3363,10 @@ html[data-theme="sakinah"] .search-results::-webkit-scrollbar-track {
   background: rgba(255, 253, 247, 0.725);
 }
 html[data-theme="sakinah"] .search-results::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.3), rgba(47, 114, 88, 0.3));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.3), rgba(47, 111, 138, 0.3));
 }
 html[data-theme="sakinah"] .search-results::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 114, 88, 0.5));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 111, 138, 0.5));
 }
 html[data-theme="sakinah"] .search-result-card {
   background: rgba(47, 114, 88, 0.05);
@@ -3380,7 +3380,7 @@ html[data-theme="sakinah"] .search-category-badge {
   background: rgba(47, 114, 88, 0.15);
 }
 html[data-theme="sakinah"] .search-repeat-badge {
-  background: rgba(47, 114, 88, 0.2);
+  background: rgba(47, 111, 138, 0.2);
 }
 html[data-theme="sakinah"] .search-card-title {
   color: rgb(31, 61, 51);
@@ -3395,7 +3395,7 @@ html[data-theme="sakinah"] .search-card-footer {
   border-top: 1px solid rgba(47, 114, 88, 0.2);
 }
 html[data-theme="sakinah"] .search-benefit-tag {
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
 }
 html[data-theme="sakinah"] .filter-tabs::-webkit-scrollbar-thumb {
   background: rgba(47, 114, 88, 0.3);
@@ -3409,8 +3409,8 @@ html[data-theme="sakinah"] .filter-tab:hover {
   background: rgba(47, 114, 88, 0.1);
 }
 html[data-theme="sakinah"] .time-recommendations {
-  background: rgba(47, 114, 88, 0.08);
-  border: 1px solid rgba(47, 114, 88, 0.4);
+  background: rgba(47, 111, 138, 0.08);
+  border: 1px solid rgba(47, 111, 138, 0.4);
 }
 html[data-theme="sakinah"] .recommendation-item {
   background: rgba(47, 114, 88, 0.05);
@@ -3426,7 +3426,7 @@ html[data-theme="sakinah"] .empty-state i {
   color: rgba(36, 88, 69, 0.6);
 }
 html[data-theme="sakinah"] .empty-state p {
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
 }
 html[data-theme="sakinah"] .loading-placeholder p {
   color: rgb(74, 91, 81);
@@ -3457,7 +3457,7 @@ html[data-theme="sakinah"] .category-desc {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .time-rec {
-  color: rgba(36, 88, 69, 0.9);
+  color: rgba(38, 92, 128, 0.9);
 }
 html[data-theme="sakinah"] .doa-count {
   background: rgba(47, 114, 88, 0.1);
@@ -3489,7 +3489,7 @@ html[data-theme="sakinah"] .audio-doa-name {
   text-shadow: none;
 }
 html[data-theme="sakinah"] .audio-playlist-counter {
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
 }
 html[data-theme="sakinah"] .audio-btn {
   background: rgba(47, 114, 88, 0.1);
@@ -3527,7 +3527,7 @@ html[data-theme="sakinah"] .doa-title-text {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .doa-repeat {
-  background: rgba(47, 114, 88, 0.2);
+  background: rgba(47, 111, 138, 0.2);
 }
 html[data-theme="sakinah"] .doa-preview {
   color: rgb(74, 91, 81);
@@ -3539,7 +3539,7 @@ html[data-theme="sakinah"] .doa-arabic {
 }
 html[data-theme="sakinah"] .doa-latin {
   color: rgb(31, 61, 51);
-  background: rgba(47, 114, 88, 0.05);
+  background: rgba(47, 111, 138, 0.05);
 }
 html[data-theme="sakinah"] .doa-translation {
   color: rgb(31, 61, 51);
@@ -3553,8 +3553,8 @@ html[data-theme="sakinah"] .doa-benefit p {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .doa-reference {
-  background: rgba(176, 138, 60, 0.08);
-  border-left: 3px solid rgba(176, 138, 60, 0.55);
+  background: rgba(138, 102, 36, 0.08);
+  border-left: 3px solid rgba(138, 102, 36, 0.55);
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .counter-section {
@@ -3569,10 +3569,10 @@ html[data-theme="sakinah"] .counter-toggle-btn:hover {
   background: rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .counter-restore-btn {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.2), rgba(47, 114, 88, 0.2));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.2), rgba(47, 111, 138, 0.2));
 }
 html[data-theme="sakinah"] .counter-restore-btn:hover {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.3), rgba(47, 114, 88, 0.3));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.3), rgba(47, 111, 138, 0.3));
   box-shadow: 0 0 20px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .counter-ring-bg {
@@ -3620,7 +3620,7 @@ html[data-theme="sakinah"] .nav-btn:hover:not(:disabled) {
 html[data-theme="sakinah"] .nav-btn:disabled {
   background: rgba(255, 253, 247, 0.725) !important;
   border-color: rgba(31, 61, 51, 0.11) !important;
-  color: rgba(109, 122, 104, 0.65) !important;
+  color: rgba(87, 100, 90, 0.65) !important;
 }
 html[data-theme="sakinah"] .toast-notification {
   background: rgba(47, 114, 88, 0.95);
@@ -3642,7 +3642,7 @@ html[data-theme="sakinah"] .dzikir-toast {
 }
 html[data-theme="sakinah"] .dzikir-wheel-section {
   background: radial-gradient(ellipse at right, rgba(47, 114, 88, 0.08), transparent 60%),
-        linear-gradient(135deg, rgba(47, 114, 88, 0.3) 0%, rgba(255, 253, 247, 0.92) 100%);
+        linear-gradient(135deg, rgba(47, 111, 138, 0.3) 0%, rgba(255, 253, 247, 0.92) 100%);
   border: 1px solid rgba(47, 114, 88, 0.3);
   box-shadow: 0 4px 30px rgba(31, 61, 51, 0.055);
 }
@@ -3667,7 +3667,7 @@ html[data-theme="sakinah"] #wheelHand {
 /* ---- fiqh.css ---- */
 html[data-theme="sakinah"] .fiqh-header h2 {
   font-family: var(--font-orbitron, 'Plus Jakarta Sans', sans-serif);
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .fiqh-search {
@@ -3675,53 +3675,53 @@ html[data-theme="sakinah"] .fiqh-search {
   border: 1px solid rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .fiqh-search:focus {
-  border-color: rgba(47, 114, 88, 0.55);
-  background: rgba(47, 114, 88, 0.05);
+  border-color: rgba(47, 111, 138, 0.55);
+  background: rgba(47, 111, 138, 0.05);
 }
 html[data-theme="sakinah"] .fiqh-cat-btn {
   background: rgba(255, 253, 247, 0.725);
   border: 1px solid rgba(31, 61, 51, 0.11);
 }
 html[data-theme="sakinah"] .fiqh-cat-btn.active {
-  background: rgba(47, 114, 88, 0.15);
-  border-color: rgba(47, 114, 88, 0.5);
-  color: var(--cat-color, rgb(36, 88, 69));
+  background: rgba(47, 111, 138, 0.15);
+  border-color: rgba(47, 111, 138, 0.5);
+  color: var(--cat-color, rgb(38, 92, 128));
 }
 html[data-theme="sakinah"] .fiqh-disclaimer {
-  background: rgba(176, 138, 60, 0.07);
-  border: 1px solid rgba(176, 138, 60, 0.35);
+  background: rgba(138, 102, 36, 0.07);
+  border: 1px solid rgba(138, 102, 36, 0.35);
 }
 html[data-theme="sakinah"] .fiqh-disclaimer i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .fiqh-section-header {
   background: linear-gradient(135deg, rgb(107, 90, 166), 0.1), transparent);
-  border-left: 3px solid var(--cat-color, rgba(47, 114, 88, 0.55));
+  border-left: 3px solid var(--cat-color, rgba(47, 111, 138, 0.55));
 }
 html[data-theme="sakinah"] .fiqh-section-header i {
-  color: var(--cat-color, rgb(36, 88, 69));
+  color: var(--cat-color, rgb(38, 92, 128));
 }
 html[data-theme="sakinah"] .fiqh-item {
   background: rgba(255, 253, 247, 0.69);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .fiqh-item.open {
-  border-color: rgba(47, 114, 88, 0.4);
+  border-color: rgba(47, 111, 138, 0.4);
 }
 html[data-theme="sakinah"] .fiqh-question:hover {
   background: rgba(255, 253, 247, 0.655);
 }
 html[data-theme="sakinah"] .fiqh-item.open .fiqh-chevron {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .fiqh-answer-wrap {
   border-top: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .fiqh-dalil {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .fiqh-dalil strong {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .fiqh-catatan {
   background: rgba(47, 114, 88, 0.06);
@@ -3737,8 +3737,8 @@ html[data-theme="sakinah"] .fiqh-tags {
   border-top: 1px solid rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .fiqh-tag {
-  background: rgba(47, 114, 88, 0.1);
-  color: rgb(36, 88, 69);
+  background: rgba(47, 111, 138, 0.1);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .fiqh-stat {
   background: linear-gradient(135deg, rgba(47, 114, 88, 0.06), rgba(181, 84, 63, 0.04));
@@ -3757,7 +3757,7 @@ html[data-theme="sakinah"] .fiqh-stat-lbl {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .fiqh-cat-count {
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .fiqh-cat-btn.active .fiqh-cat-count {
@@ -3774,14 +3774,14 @@ html[data-theme="sakinah"] .floating-prayer-widget {
     inset 0 1px 0 rgba(31, 61, 51, 0.018);
 }
 html[data-theme="sakinah"] .widget-icon {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 114, 88, 0.1));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 111, 138, 0.1));
   border: 1px solid rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .widget-countdown {
   text-shadow: none;
 }
 html[data-theme="sakinah"] .widget-toggle-btn {
-  background: rgba(20, 36, 30, 0.33);
+  background: rgba(255, 253, 247, 0.92);
   border: 1.5px solid rgba(47, 114, 88, 0.4);
 }
 html[data-theme="sakinah"] .widget-toggle-btn:hover {
@@ -3854,7 +3854,7 @@ html[data-theme="sakinah"] .update-btn-secondary:hover {
 
 /* ---- hadith-ticker.css ---- */
 html[data-theme="sakinah"] .hadith-ticker {
-  background: linear-gradient(160deg, rgba(47, 114, 88, 0.06) 0%, rgba(176, 138, 60, 0.04) 100%),
+  background: linear-gradient(160deg, rgba(47, 114, 88, 0.06) 0%, rgba(138, 102, 36, 0.04) 100%),
     rgba(255, 253, 247, 0.92);
   border: 1px solid rgba(47, 114, 88, 0.32);
   box-shadow: 0 12px 36px rgba(31, 61, 51, 0.066),
@@ -3864,7 +3864,7 @@ html[data-theme="sakinah"] .hadith-ticker::before {
   background: linear-gradient(90deg,
     transparent,
     rgba(47, 114, 88, 0.7) 25%,
-    rgba(176, 138, 60, 0.6) 50%,
+    rgba(138, 102, 36, 0.6) 50%,
     rgba(47, 114, 88, 0.7) 75%,
     transparent);
 }
@@ -3886,20 +3886,20 @@ html[data-theme="sakinah"] .hadith-btn:active {
   box-shadow: 0 1px 4px rgba(31, 61, 51, 0.06);
 }
 html[data-theme="sakinah"] .hadith-btn.paused {
-  background: rgba(176, 138, 60, 0.08);
-  border-color: rgba(176, 138, 60, 0.35);
-  color: rgb(140, 105, 40);
+  background: rgba(138, 102, 36, 0.08);
+  border-color: rgba(138, 102, 36, 0.35);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .hadith-btn.paused:hover {
-  background: rgba(176, 138, 60, 0.15);
-  border-color: rgba(176, 138, 60, 0.55);
+  background: rgba(138, 102, 36, 0.15);
+  border-color: rgba(138, 102, 36, 0.55);
   box-shadow: 0 3px 8px rgba(31, 61, 51, 0.075);
 }
 html[data-theme="sakinah"] .hadith-progress {
   border-top: 1px solid rgba(31, 61, 51, 0.11);
 }
 html[data-theme="sakinah"] .progress-bar {
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
   border: 1px solid rgba(47, 114, 88, 0.3);
   box-shadow: inset 0 1px 3px rgba(31, 61, 51, 0.066);
 }
@@ -3968,17 +3968,17 @@ html[data-theme="sakinah"] .hadits-card:hover {
   border-color: rgba(107, 90, 166, 0.4);
 }
 html[data-theme="sakinah"] .hadits-card-cat {
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
   color: var(--cat-color, rgb(91, 74, 150));
 }
 html[data-theme="sakinah"] .hadits-fav-btn.active {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .hadits-card-arabic {
   color: rgb(91, 74, 150);
 }
 html[data-theme="sakinah"] .hadits-card-source {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .hadits-modal-backdrop {
   background: rgba(20, 36, 30, 0.385);
@@ -3992,7 +3992,7 @@ html[data-theme="sakinah"] .hadits-modal-close {
 }
 html[data-theme="sakinah"] .hadits-detail-cat {
   color: var(--cat-color, rgb(91, 74, 150));
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
 }
 html[data-theme="sakinah"] .hadits-detail-arabic {
   color: rgb(91, 74, 150);
@@ -4005,7 +4005,7 @@ html[data-theme="sakinah"] .hadits-meta-item {
   background: rgba(255, 253, 247, 0.69);
 }
 html[data-theme="sakinah"] .hadits-meta-item i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .hadits-detail-faidah {
   background: rgba(47, 114, 88, 0.06);
@@ -4022,9 +4022,9 @@ html[data-theme="sakinah"] .hadits-detail-fav {
   border: 1px solid rgba(31, 61, 51, 0.135);
 }
 html[data-theme="sakinah"] .hadits-detail-fav.active {
-  background: rgba(176, 138, 60, 0.15);
-  border-color: rgba(176, 138, 60, 0.5);
-  color: rgb(140, 105, 40);
+  background: rgba(138, 102, 36, 0.15);
+  border-color: rgba(138, 102, 36, 0.5);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .hadits-daily {
   background: radial-gradient(circle at top right, color-mix(in srgb, var(--cat-color) 20%, transparent), transparent 60%),
@@ -4056,7 +4056,7 @@ html[data-theme="sakinah"] .hadits-daily-cta:hover {
 /* ---- haji.css ---- */
 html[data-theme="sakinah"] .haji-header h2 {
   font-family: var(--font-orbitron, 'Plus Jakarta Sans', sans-serif);
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .haji-tab {
@@ -4064,86 +4064,86 @@ html[data-theme="sakinah"] .haji-tab {
   border: 1px solid rgba(31, 61, 51, 0.11);
 }
 html[data-theme="sakinah"] .haji-tab.active {
-  background: rgba(194, 122, 44, 0.15);
-  border-color: rgba(194, 122, 44, 0.5);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.15);
+  border-color: rgba(168, 98, 30, 0.5);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-intro {
-  background: rgba(47, 114, 88, 0.07);
-  border: 1px solid rgba(47, 114, 88, 0.35);
+  background: rgba(47, 111, 138, 0.07);
+  border: 1px solid rgba(47, 111, 138, 0.35);
 }
 html[data-theme="sakinah"] .haji-intro.warning {
-  background: rgba(176, 138, 60, 0.07);
-  border-color: rgba(176, 138, 60, 0.4);
+  background: rgba(138, 102, 36, 0.07);
+  border-color: rgba(138, 102, 36, 0.4);
 }
 html[data-theme="sakinah"] .haji-intro.warning i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .haji-intro i {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .haji-section-title {
   border-bottom: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .haji-section-title i {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-timeline-item:not(:last-child)::before {
-  background: rgba(194, 122, 44, 0.3);
+  background: rgba(168, 98, 30, 0.3);
 }
 html[data-theme="sakinah"] .haji-timeline-dot {
-  background: rgba(194, 122, 44, 0.15);
-  border: 2px solid rgba(194, 122, 44, 0.55);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.15);
+  border: 2px solid rgba(168, 98, 30, 0.55);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-timeline-hari {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
   font-family: var(--font-orbitron, 'Plus Jakarta Sans', sans-serif);
 }
 html[data-theme="sakinah"] .haji-timeline-amalan li::before {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-miqat-item {
   background: rgba(255, 253, 247, 0.69);
   border: 1px solid rgba(31, 61, 51, 0.1);
-  border-left: 3px solid rgba(194, 122, 44, 0.55);
+  border-left: 3px solid rgba(168, 98, 30, 0.55);
 }
 html[data-theme="sakinah"] .haji-miqat-name i {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-miqat-detail i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .haji-step {
   background: rgba(255, 253, 247, 0.69);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .haji-step-num {
-  background: rgba(194, 122, 44, 0.2);
-  border: 2px solid rgba(194, 122, 44, 0.55);
-  color: rgb(150, 95, 30);
+  background: rgba(168, 98, 30, 0.2);
+  border: 2px solid rgba(168, 98, 30, 0.55);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-step-header i {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-talbiyah-box {
-  background: linear-gradient(135deg, rgba(194, 122, 44, 0.1), rgba(176, 138, 60, 0.05));
-  border: 1px solid rgba(194, 122, 44, 0.4);
+  background: linear-gradient(135deg, rgba(168, 98, 30, 0.1), rgba(138, 102, 36, 0.05));
+  border: 1px solid rgba(168, 98, 30, 0.4);
 }
 html[data-theme="sakinah"] .haji-talbiyah-box h4 {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-talbiyah-arabic {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .haji-talbiyah-terjemah {
   background: rgba(255, 253, 247, 0.69);
 }
 html[data-theme="sakinah"] .haji-leaflet-map {
-  border: 1px solid rgba(194, 122, 44, 0.4);
+  border: 1px solid rgba(168, 98, 30, 0.4);
 }
 html[data-theme="sakinah"] .haji-map {
-  border: 1px solid rgba(194, 122, 44, 0.4);
+  border: 1px solid rgba(168, 98, 30, 0.4);
   background: rgb(246, 243, 234);
 }
 html[data-theme="sakinah"] .haji-location-panel {
@@ -4151,19 +4151,19 @@ html[data-theme="sakinah"] .haji-location-panel {
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .haji-location-placeholder i {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-location-card {
   background: rgba(255, 253, 247, 0.69);
   border: 1px solid rgba(31, 61, 51, 0.1);
-  border-left: 3px solid var(--loc-color, rgba(194, 122, 44, 0.55));
+  border-left: 3px solid var(--loc-color, rgba(168, 98, 30, 0.55));
 }
 html[data-theme="sakinah"] .haji-location-card:hover {
   background: rgba(255, 253, 247, 0.795);
 }
 html[data-theme="sakinah"] .haji-location-icon {
-  background: rgba(194, 122, 44, 0.1);
-  color: var(--loc-color, rgb(150, 95, 30));
+  background: rgba(168, 98, 30, 0.1);
+  color: var(--loc-color, rgb(135, 82, 22));
 }
 html[data-theme="sakinah"] .haji-larangan-item {
   background: rgba(181, 84, 63, 0.05);
@@ -4174,40 +4174,40 @@ html[data-theme="sakinah"] .haji-larangan-num {
   color: rgb(160, 70, 50);
 }
 html[data-theme="sakinah"] .haji-larangan-content span i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .haji-dam-info {
   background: rgba(255, 253, 247, 0.69);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .haji-dam-info h4 i {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-dam-item {
   background: rgba(255, 253, 247, 0.69);
-  border: 1px solid rgba(194, 122, 44, 0.3);
+  border: 1px solid rgba(168, 98, 30, 0.3);
 }
 html[data-theme="sakinah"] .haji-dam-item strong {
-  color: rgb(150, 95, 30);
+  color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-modal-backdrop {
   background: rgba(20, 36, 30, 0.385);
 }
 html[data-theme="sakinah"] .haji-modal-box {
   background: rgb(246, 243, 234);
-  border: 1px solid rgba(194, 122, 44, 0.4);
+  border: 1px solid rgba(168, 98, 30, 0.4);
 }
 html[data-theme="sakinah"] .haji-modal-close {
   background: rgba(255, 253, 247, 0.9);
 }
 html[data-theme="sakinah"] .haji-detail-dalil {
-  background: rgba(176, 138, 60, 0.07);
+  background: rgba(138, 102, 36, 0.07);
 }
 html[data-theme="sakinah"] .haji-detail-dalil i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .haji-detail-dalil strong {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .haji-detail-amalan h4 i {
   color: rgb(36, 88, 69);
@@ -4219,17 +4219,17 @@ html[data-theme="sakinah"] .haji-detail-amalan li i {
   color: rgb(36, 88, 69);
 }
 html[data-theme="sakinah"] .haji-progress-tracker {
-  background: linear-gradient(135deg, rgba(176, 138, 60, 0.06), rgba(47, 114, 88, 0.04));
-  border: 1px solid rgba(176, 138, 60, 0.35);
+  background: linear-gradient(135deg, rgba(138, 102, 36, 0.06), rgba(47, 114, 88, 0.04));
+  border: 1px solid rgba(138, 102, 36, 0.35);
 }
 html[data-theme="sakinah"] .haji-progress-head {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .haji-progress-bar {
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
 }
 html[data-theme="sakinah"] .haji-progress-fill {
-  background: linear-gradient(90deg, rgb(176, 138, 60) 0%, rgb(47, 114, 88) 100%);
+  background: linear-gradient(90deg, rgb(138, 102, 36) 0%, rgb(47, 114, 88) 100%);
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .haji-timeline-check {
@@ -4251,26 +4251,26 @@ html[data-theme="sakinah"] .haji-timeline-item.completed .haji-timeline-dot {
   box-shadow: 0 0 14px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .haji-timeline-item.completed strong {
-  text-decoration-color: rgba(109, 122, 104, 0.65);
+  text-decoration-color: rgba(87, 100, 90, 0.65);
 }
 
 /* ---- home.css ---- */
 html[data-theme="sakinah"] .home-hero::after {
   background: radial-gradient(ellipse at 30% 40%, rgba(47, 114, 88, 0.12), transparent 60%),
-    radial-gradient(ellipse at 70% 50%, rgba(176, 138, 60, 0.1), transparent 65%);
+    radial-gradient(ellipse at 70% 50%, rgba(138, 102, 36, 0.1), transparent 65%);
 }
 html[data-theme="sakinah"] .home-hero::before {
-  color: var(--islamic-gold, rgb(140, 105, 40));
+  color: var(--islamic-gold, rgb(120, 90, 32));
   text-shadow: none;
-  border-top: 1px solid rgba(176, 138, 60, 0.45);
-  border-bottom: 1px solid rgba(176, 138, 60, 0.45);
+  border-top: 1px solid rgba(138, 102, 36, 0.45);
+  border-bottom: 1px solid rgba(138, 102, 36, 0.45);
 }
 html[data-theme="sakinah"] .title-line.glow {
-  background: linear-gradient(135deg, var(--primary-cyan), var(--islamic-gold, rgb(176, 138, 60)), var(--primary-cyan));
+  background: linear-gradient(135deg, var(--primary-cyan), var(--islamic-gold, rgb(138, 102, 36)), var(--primary-cyan));
   filter: drop-shadow(0 0 24px rgba(31, 61, 51, 0.105));
 }
 html[data-theme="sakinah"] .stat-item {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.05), rgba(176, 138, 60, 0.04));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.05), rgba(138, 102, 36, 0.04));
   border: 1px solid rgba(47, 114, 88, 0.28);
 }
 html[data-theme="sakinah"] .stat-item::before {
@@ -4281,7 +4281,7 @@ html[data-theme="sakinah"] .stat-item:hover {
   box-shadow: 0 10px 30px rgba(31, 61, 51, 0.054);
 }
 html[data-theme="sakinah"] .stat-number {
-  background: linear-gradient(135deg, var(--primary-cyan), var(--islamic-gold, rgb(176, 138, 60)));
+  background: linear-gradient(135deg, var(--primary-cyan), var(--islamic-gold, rgb(138, 102, 36)));
   filter: drop-shadow(0 0 12px rgba(31, 61, 51, 0.075));
 }
 html[data-theme="sakinah"] .install-section {
@@ -4511,7 +4511,7 @@ html[data-theme="sakinah"] .app-card {
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .app-card:nth-child(1) {
-  border-image: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 114, 88, 0.3)) 1;
+  border-image: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 111, 138, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(2) {
   border-image: linear-gradient(135deg, rgba(107, 90, 166, 0.5), rgba(47, 114, 88, 0.3)) 1;
@@ -4520,28 +4520,28 @@ html[data-theme="sakinah"] .app-card:nth-child(3) {
   border-image: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 114, 88, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(4) {
-  border-image: linear-gradient(135deg, rgba(176, 138, 60, 0.55), rgba(176, 138, 60, 0.3)) 1;
+  border-image: linear-gradient(135deg, rgba(138, 102, 36, 0.55), rgba(138, 102, 36, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(5) {
-  border-image: linear-gradient(135deg, rgba(181, 84, 63, 0.5), rgba(194, 122, 44, 0.3)) 1;
+  border-image: linear-gradient(135deg, rgba(181, 84, 63, 0.5), rgba(168, 98, 30, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(6) {
   border-image: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 114, 88, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(7) {
-  border-image: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(107, 90, 166, 0.3)) 1;
+  border-image: linear-gradient(135deg, rgba(47, 111, 138, 0.5), rgba(107, 90, 166, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(8) {
-  border-image: linear-gradient(135deg, rgba(194, 122, 44, 0.5), rgba(181, 84, 63, 0.3)) 1;
+  border-image: linear-gradient(135deg, rgba(168, 98, 30, 0.5), rgba(181, 84, 63, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(n) {
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .app-card::after {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.25), rgba(47, 114, 88, 0.1), transparent);
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.25), rgba(47, 111, 138, 0.1), transparent);
 }
 html[data-theme="sakinah"] .app-card:nth-child(1)::after {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 111, 138, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(2)::after {
   background: linear-gradient(135deg, rgba(107, 90, 166, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
@@ -4550,37 +4550,37 @@ html[data-theme="sakinah"] .app-card:nth-child(3)::after {
   background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(4)::after {
-  background: linear-gradient(135deg, rgba(176, 138, 60, 0.5), rgba(176, 138, 60, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(138, 102, 36, 0.5), rgba(138, 102, 36, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(5)::after {
-  background: linear-gradient(135deg, rgba(181, 84, 63, 0.4), rgba(194, 122, 44, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(181, 84, 63, 0.4), rgba(168, 98, 30, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(6)::after {
   background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(7)::after {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(107, 90, 166, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(47, 111, 138, 0.4), rgba(107, 90, 166, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(8)::after {
-  background: linear-gradient(135deg, rgba(194, 122, 44, 0.4), rgba(181, 84, 63, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(168, 98, 30, 0.4), rgba(181, 84, 63, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(9)::after {
   background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(10)::after {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(47, 111, 138, 0.4), rgba(47, 111, 138, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(11)::after {
-  background: linear-gradient(135deg, rgba(176, 138, 60, 0.5), rgba(176, 138, 60, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(138, 102, 36, 0.5), rgba(138, 102, 36, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(12)::after {
   background: linear-gradient(135deg, rgba(107, 90, 166, 0.4), rgba(107, 90, 166, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(13)::after {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(47, 111, 138, 0.4), rgba(47, 111, 138, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(14)::after {
-  background: linear-gradient(135deg, rgba(194, 122, 44, 0.45), rgba(181, 84, 63, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(168, 98, 30, 0.45), rgba(181, 84, 63, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-badge {
   box-shadow: 0 4px 14px rgba(31, 61, 51, 0.077);
@@ -4596,7 +4596,7 @@ html[data-theme="sakinah"] .app-badge.new {
   animation: sk-pulse-new 2s ease-in-out infinite;
 }
 html[data-theme="sakinah"] .app-badge.beta {
-  background: linear-gradient(135deg, rgb(194, 122, 44) 0%, rgb(194, 122, 44) 100%);
+  background: linear-gradient(135deg, rgb(168, 98, 30) 0%, rgb(168, 98, 30) 100%);
   color: rgb(255, 255, 255);
 }
 html[data-theme="sakinah"] .app-badge.soon {
@@ -4650,9 +4650,9 @@ html[data-theme="sakinah"] .app-card:nth-child(3) .app-icon {
   border-color: rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(4) .app-icon {
-  color: rgb(140, 105, 40);
-  background: rgba(176, 138, 60, 0.12);
-  border-color: rgba(176, 138, 60, 0.35);
+  color: rgb(120, 90, 32);
+  background: rgba(138, 102, 36, 0.12);
+  border-color: rgba(138, 102, 36, 0.35);
 }
 html[data-theme="sakinah"] .app-card:nth-child(5) .app-icon {
   color: rgb(160, 70, 50);
@@ -4665,14 +4665,14 @@ html[data-theme="sakinah"] .app-card:nth-child(6) .app-icon {
   border-color: rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(7) .app-icon {
-  color: rgb(36, 88, 69);
-  background: rgba(47, 114, 88, 0.1);
-  border-color: rgba(47, 114, 88, 0.3);
+  color: rgb(38, 92, 128);
+  background: rgba(47, 111, 138, 0.1);
+  border-color: rgba(47, 111, 138, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(8) .app-icon {
-  color: rgb(150, 95, 30);
-  background: rgba(194, 122, 44, 0.1);
-  border-color: rgba(194, 122, 44, 0.3);
+  color: rgb(135, 82, 22);
+  background: rgba(168, 98, 30, 0.1);
+  border-color: rgba(168, 98, 30, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(9) .app-icon {
   color: rgb(36, 88, 69);
@@ -4680,14 +4680,14 @@ html[data-theme="sakinah"] .app-card:nth-child(9) .app-icon {
   border-color: rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(10) .app-icon {
-  color: rgb(36, 88, 69);
-  background: rgba(47, 114, 88, 0.1);
-  border-color: rgba(47, 114, 88, 0.3);
+  color: rgb(38, 92, 128);
+  background: rgba(47, 111, 138, 0.1);
+  border-color: rgba(47, 111, 138, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(11) .app-icon {
-  color: rgb(140, 105, 40);
-  background: rgba(176, 138, 60, 0.1);
-  border-color: rgba(176, 138, 60, 0.3);
+  color: rgb(120, 90, 32);
+  background: rgba(138, 102, 36, 0.1);
+  border-color: rgba(138, 102, 36, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(12) .app-icon {
   color: rgb(91, 74, 150);
@@ -4695,17 +4695,17 @@ html[data-theme="sakinah"] .app-card:nth-child(12) .app-icon {
   border-color: rgba(107, 90, 166, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(13) .app-icon {
-  color: rgb(36, 88, 69);
-  background: rgba(47, 114, 88, 0.1);
-  border-color: rgba(47, 114, 88, 0.3);
+  color: rgb(38, 92, 128);
+  background: rgba(47, 111, 138, 0.1);
+  border-color: rgba(47, 111, 138, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(14) .app-icon {
-  color: rgb(150, 95, 30);
-  background: rgba(194, 122, 44, 0.1);
-  border-color: rgba(194, 122, 44, 0.3);
+  color: rgb(135, 82, 22);
+  background: rgba(168, 98, 30, 0.1);
+  border-color: rgba(168, 98, 30, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(15) .app-icon {
-  color: rgb(109, 122, 104);
+  color: rgb(87, 100, 90);
   background: rgba(236, 233, 220, 0.08);
   border-color: rgba(31, 61, 51, 0.12);
 }
@@ -4714,17 +4714,17 @@ html[data-theme="sakinah"] .app-card:hover .app-icon {
 }
 html[data-theme="sakinah"] .manhaj-badge {
   background: linear-gradient(135deg,
-        rgba(176, 138, 60, 0.06) 0%,
+        rgba(138, 102, 36, 0.06) 0%,
         rgba(47, 114, 88, 0.04) 100%);
-  border: 1px solid rgba(176, 138, 60, 0.4);
+  border: 1px solid rgba(138, 102, 36, 0.4);
   box-shadow: 0 4px 20px rgba(31, 61, 51, 0.03);
 }
 html[data-theme="sakinah"] .manhaj-badge > i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .manhaj-badge-text strong {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
   font-family: var(--font-orbitron, 'Plus Jakarta Sans'), sans-serif;
 }
 html[data-theme="sakinah"] .manhaj-badge-text span {
@@ -4734,23 +4734,23 @@ html[data-theme="sakinah"] .manhaj-badge-text span {
 /* ---- kalender.css ---- */
 html[data-theme="sakinah"] .kalender-header h2 {
   font-family: var(--font-orbitron, 'Plus Jakarta Sans', sans-serif);
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .kalender-today-hijri {
-  background: rgba(47, 114, 88, 0.1);
-  border: 1px solid rgba(47, 114, 88, 0.4);
+  background: rgba(47, 111, 138, 0.1);
+  border: 1px solid rgba(47, 111, 138, 0.4);
 }
 html[data-theme="sakinah"] .kalender-hijri-date {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .kalender-nav-btn {
-  background: rgba(47, 114, 88, 0.1);
-  border: 1px solid rgba(47, 114, 88, 0.4);
-  color: rgb(36, 88, 69);
+  background: rgba(47, 111, 138, 0.1);
+  border: 1px solid rgba(47, 111, 138, 0.4);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .kalender-nav-btn:hover {
-  background: rgba(47, 114, 88, 0.2);
+  background: rgba(47, 111, 138, 0.2);
 }
 html[data-theme="sakinah"] .kalender-grid-wrapper {
   background: rgba(255, 253, 247, 0.655);
@@ -4761,7 +4761,7 @@ html[data-theme="sakinah"] .kalender-weekdays {
   border-bottom: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .kalender-weekday.friday {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .kalender-grid {
   background: rgba(255, 253, 247, 0.69);
@@ -4773,66 +4773,66 @@ html[data-theme="sakinah"] .kalender-cell.empty {
   background: rgba(255, 253, 247, 0.92);
 }
 html[data-theme="sakinah"] .kalender-cell.friday .kalender-cell-masehi {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .kalender-cell.today {
-  background: rgba(47, 114, 88, 0.15) !important;
-  border: 1px solid rgba(47, 114, 88, 0.5);
+  background: rgba(47, 111, 138, 0.15) !important;
+  border: 1px solid rgba(47, 111, 138, 0.5);
 }
 html[data-theme="sakinah"] .kalender-cell.today .kalender-cell-masehi {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .kalender-cell.has-event {
-  background: rgba(20, 36, 30, 0.44);
-  border-top: 2px solid var(--event-color, rgba(176, 138, 60, 0.55));
+  background: rgba(255, 253, 247, 0.92);
+  border-top: 2px solid var(--event-color, rgba(138, 102, 36, 0.55));
 }
 html[data-theme="sakinah"] .kalender-events {
   background: rgba(255, 253, 247, 0.655);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .kalender-events h4 i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .kalender-event-item {
   background: rgba(255, 253, 247, 0.69);
-  border-left: 3px solid var(--event-color, rgba(176, 138, 60, 0.55));
+  border-left: 3px solid var(--event-color, rgba(138, 102, 36, 0.55));
 }
 html[data-theme="sakinah"] .kalender-convert {
   background: rgba(255, 253, 247, 0.655);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .kalender-convert h3 i {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .kalender-convert-input input[type="date"] {
   background: rgba(255, 253, 247, 0.76);
   border: 1px solid rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .kalender-convert-btn {
-  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88));
+  background: linear-gradient(135deg, rgb(47, 111, 138), rgb(47, 111, 138));
   color: rgb(255, 255, 255);
 }
 html[data-theme="sakinah"] .convert-output {
-  background: rgba(47, 114, 88, 0.08);
-  border: 1px solid rgba(47, 114, 88, 0.35);
+  background: rgba(47, 111, 138, 0.08);
+  border: 1px solid rgba(47, 111, 138, 0.35);
 }
 html[data-theme="sakinah"] .convert-hijri i {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .kalender-months-info {
   background: rgba(255, 253, 247, 0.655);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .kalender-months-info h3 i {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .kalender-month-item {
   background: rgba(255, 253, 247, 0.725);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .kalender-month-num {
-  background: rgba(47, 114, 88, 0.2);
-  color: rgb(36, 88, 69);
+  background: rgba(47, 111, 138, 0.2);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .kalender-countdown-section {
   background: linear-gradient(135deg, rgba(47, 114, 88, 0.05), rgba(181, 84, 63, 0.04));
@@ -4860,7 +4860,7 @@ html[data-theme="sakinah"] .kalender-countdown-card:hover {
   box-shadow: 0 6px 22px color-mix(in srgb, var(--event-color, rgba(31, 61, 51, 0.12)) 25%, transparent);
 }
 html[data-theme="sakinah"] .kalender-countdown-card.featured {
-  background: linear-gradient(135deg, rgba(255, 253, 247, 0.92), color-mix(in srgb, var(--event-color, rgb(176, 138, 60)) 10%, transparent));
+  background: linear-gradient(135deg, rgba(255, 253, 247, 0.92), color-mix(in srgb, var(--event-color, rgb(138, 102, 36)) 10%, transparent));
   box-shadow: 0 0 25px color-mix(in srgb, var(--event-color, rgba(31, 61, 51, 0.12)) 20%, transparent);
 }
 html[data-theme="sakinah"] .kalender-cd-days {
@@ -4881,15 +4881,15 @@ html[data-theme="sakinah"] .kalender-months-note {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .haram-badge {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .kalender-month-item.haram {
-  border-color: rgba(176, 138, 60, 0.55) !important;
-  background: rgba(176, 138, 60, 0.05) !important;
+  border-color: rgba(138, 102, 36, 0.55) !important;
+  background: rgba(138, 102, 36, 0.05) !important;
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.045);
 }
 html[data-theme="sakinah"] .kalender-month-haram-star {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
   text-shadow: none;
 }
 
@@ -4954,7 +4954,7 @@ html[data-theme="sakinah"] .adzan-header::after, html[data-theme="sakinah"] .alq
   background: linear-gradient(90deg,
         transparent,
         var(--primary-cyan) 30%,
-        var(--islamic-gold, rgb(176, 138, 60)) 50%,
+        var(--islamic-gold, rgb(138, 102, 36)) 50%,
         var(--primary-cyan) 70%,
         transparent);
   box-shadow: 0 0 12px rgba(31, 61, 51, 0.12);
@@ -4971,10 +4971,10 @@ html[data-theme="sakinah"] ::selection {
   text-shadow: none;
 }
 html[data-theme="sakinah"] *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(47, 114, 88, 0.35), rgba(176, 138, 60, 0.25));
+  background: linear-gradient(180deg, rgba(47, 114, 88, 0.35), rgba(138, 102, 36, 0.25));
 }
 html[data-theme="sakinah"] *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(47, 114, 88, 0.55), rgba(176, 138, 60, 0.4));
+  background: linear-gradient(180deg, rgba(47, 114, 88, 0.55), rgba(138, 102, 36, 0.4));
 }
 
 /* ---- qibla.css ---- */
@@ -5001,7 +5001,7 @@ html[data-theme="sakinah"] .qibla-btn:hover:not(:disabled) {
   box-shadow: 0 6px 30px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .compass-wrapper {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.04), rgba(47, 114, 88, 0.02));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.04), rgba(47, 111, 138, 0.02));
   border: 1px solid rgba(47, 114, 88, 0.25);
   box-shadow: 0 8px 32px rgba(31, 61, 51, 0.066);
 }
@@ -5057,7 +5057,7 @@ html[data-theme="sakinah"] .qibla-degree label {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .location-info {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.04), rgba(47, 114, 88, 0.02));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.04), rgba(47, 111, 138, 0.02));
   border: 1px solid rgba(47, 114, 88, 0.25);
 }
 html[data-theme="sakinah"] .info-item {
@@ -5070,19 +5070,19 @@ html[data-theme="sakinah"] .info-item span {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .qibla-instructions {
-  background: rgba(47, 114, 88, 0.05);
-  border: 1px solid rgba(47, 114, 88, 0.3);
+  background: rgba(47, 111, 138, 0.05);
+  border: 1px solid rgba(47, 111, 138, 0.3);
 }
 html[data-theme="sakinah"] .qibla-instructions li {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .qibla-instructions .note {
-  background: rgba(176, 138, 60, 0.1);
-  border-left: 3px solid rgba(176, 138, 60, 0.55);
+  background: rgba(138, 102, 36, 0.1);
+  border-left: 3px solid rgba(138, 102, 36, 0.55);
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .qibla-instructions .note i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 
 /* ---- settings.css ---- */
@@ -5105,14 +5105,14 @@ html[data-theme="sakinah"] .app-settings-header h3 {
 }
 html[data-theme="sakinah"] .app-settings-close {
   background: rgba(255, 253, 247, 0.83);
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .app-settings-close:hover {
   background: rgba(181, 84, 63, 0.2);
   color: rgb(160, 70, 50);
 }
 html[data-theme="sakinah"] .app-settings-hint {
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
   background: rgba(47, 114, 88, 0.04);
   border-bottom: 1px solid rgba(31, 61, 51, 0.09);
 }
@@ -5131,7 +5131,7 @@ html[data-theme="sakinah"] .settings-app-item.drag-over {
   background: rgba(47, 114, 88, 0.09);
 }
 html[data-theme="sakinah"] .settings-drag-handle {
-  color: rgba(109, 122, 104, 0.65);
+  color: rgba(87, 100, 90, 0.65);
 }
 html[data-theme="sakinah"] .settings-app-item:hover .settings-drag-handle {
   color: rgb(74, 91, 81);
@@ -5145,7 +5145,7 @@ html[data-theme="sakinah"] .settings-app-name {
 html[data-theme="sakinah"] .settings-move-btn {
   background: rgba(255, 253, 247, 0.76);
   border: 1px solid rgba(31, 61, 51, 0.11);
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .settings-move-btn:hover:not(:disabled) {
   background: rgba(47, 114, 88, 0.12);
@@ -5155,7 +5155,7 @@ html[data-theme="sakinah"] .settings-move-btn:hover:not(:disabled) {
 html[data-theme="sakinah"] .app-settings-reset {
   background: rgba(255, 253, 247, 0.725);
   border: 1px solid rgba(31, 61, 51, 0.12);
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .app-settings-reset:hover {
   background: rgba(255, 253, 247, 0.9);
@@ -5272,9 +5272,9 @@ html[data-theme="sakinah"] .sholat-description {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .sholat-ruling {
-  background: linear-gradient(135deg, rgba(176, 138, 60, 0.2), rgba(194, 122, 44, 0.2));
-  border: 1px solid rgba(176, 138, 60, 0.5);
-  color: rgb(140, 105, 40);
+  background: linear-gradient(135deg, rgba(138, 102, 36, 0.2), rgba(168, 98, 30, 0.2));
+  border: 1px solid rgba(138, 102, 36, 0.5);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .sholat-variations-badge {
   background: rgba(107, 90, 166, 0.2);
@@ -5331,16 +5331,16 @@ html[data-theme="sakinah"] .sholat-detail-arabic {
 }
 html[data-theme="sakinah"] .sholat-detail-latin {
   color: rgb(31, 61, 51);
-  background: rgba(47, 114, 88, 0.05);
+  background: rgba(47, 111, 138, 0.05);
 }
 html[data-theme="sakinah"] .sholat-detail-translation {
   color: rgb(31, 61, 51);
   background: rgba(47, 114, 88, 0.03);
 }
 html[data-theme="sakinah"] .sholat-ruling-badge {
-  background: linear-gradient(135deg, rgba(176, 138, 60, 0.2), rgba(194, 122, 44, 0.2));
-  border: 1px solid rgba(176, 138, 60, 0.5);
-  color: rgb(140, 105, 40);
+  background: linear-gradient(135deg, rgba(138, 102, 36, 0.2), rgba(168, 98, 30, 0.2));
+  border: 1px solid rgba(138, 102, 36, 0.5);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .sholat-dalil-card {
   background: rgba(47, 114, 88, 0.03);
@@ -5380,8 +5380,8 @@ html[data-theme="sakinah"] .sholat-tips p, html[data-theme="sakinah"] .sholat-ti
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .sholat-warning {
-  background: rgba(194, 122, 44, 0.08);
-  border-left: 3px solid rgba(194, 122, 44, 0.55);
+  background: rgba(168, 98, 30, 0.08);
+  border-left: 3px solid rgba(168, 98, 30, 0.55);
 }
 html[data-theme="sakinah"] .sholat-warning p, html[data-theme="sakinah"] .sholat-warning ul li {
   color: rgb(31, 61, 51);
@@ -5398,7 +5398,7 @@ html[data-theme="sakinah"] .sholat-benefit p {
 }
 html[data-theme="sakinah"] .sholat-reference {
   background: rgba(181, 84, 63, 0.08);
-  border-left: 3px solid rgba(176, 138, 60, 0.55);
+  border-left: 3px solid rgba(138, 102, 36, 0.55);
 }
 html[data-theme="sakinah"] .sholat-warning p, html[data-theme="sakinah"] .sholat-warning ul li {
   color: rgb(31, 61, 51);
@@ -5414,12 +5414,12 @@ html[data-theme="sakinah"] .sholat-benefit p {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .sholat-reference {
-  background: rgba(176, 138, 60, 0.08);
-  border-left: 3px solid rgba(176, 138, 60, 0.55);
+  background: rgba(138, 102, 36, 0.08);
+  border-left: 3px solid rgba(138, 102, 36, 0.55);
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .empty-state {
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
 }
 html[data-theme="sakinah"] .loading-placeholder p {
   color: rgb(74, 91, 81);
@@ -5572,7 +5572,7 @@ html[data-theme="sakinah"] .peraga-tl-group.active {
 }
 html[data-theme="sakinah"] .peraga-tl-label {
   font-family: var(--font-orbitron, 'Plus Jakarta Sans'), sans-serif;
-  color: rgba(109, 122, 104, 0.8);
+  color: rgba(87, 100, 90, 0.8);
 }
 html[data-theme="sakinah"] .peraga-tl-group.active .peraga-tl-label {
   color: var(--primary-cyan, rgb(36, 88, 69));
@@ -5586,12 +5586,12 @@ html[data-theme="sakinah"] .peraga-dot-p2.done {
   color: rgb(91, 74, 150);
 }
 html[data-theme="sakinah"] .peraga-dot-p3 {
-  border-color: rgba(176, 138, 60, 0.45);
+  border-color: rgba(138, 102, 36, 0.45);
 }
 html[data-theme="sakinah"] .peraga-dot-p3.done {
-  background: rgba(176, 138, 60, 0.18);
-  border-color: rgba(176, 138, 60, 0.55);
-  color: rgb(140, 105, 40);
+  background: rgba(138, 102, 36, 0.18);
+  border-color: rgba(138, 102, 36, 0.55);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .peraga-bacaan-panel {
   background: linear-gradient(135deg,
@@ -5623,20 +5623,20 @@ html[data-theme="sakinah"] .peraga-bacaan-translation {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .peraga-bacaan-tip {
-  background: rgba(176, 138, 60, 0.08);
-  border-left: 3px solid rgba(176, 138, 60, 0.55);
+  background: rgba(138, 102, 36, 0.08);
+  border-left: 3px solid rgba(138, 102, 36, 0.55);
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .peraga-bacaan-tip i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 
 /* ---- sirah-konstelasi.css ---- */
 html[data-theme="sakinah"] .konstelasi-hero {
-  background: radial-gradient(ellipse at 0% 0%, rgba(176, 138, 60, 0.12), transparent 50%),
+  background: radial-gradient(ellipse at 0% 0%, rgba(138, 102, 36, 0.12), transparent 50%),
         radial-gradient(ellipse at 100% 100%, rgba(181, 84, 63, 0.12), transparent 55%),
         linear-gradient(135deg, rgba(255, 253, 247, 0.92), rgb(246, 243, 234));
-  border: 1px solid rgba(176, 138, 60, 0.38);
+  border: 1px solid rgba(138, 102, 36, 0.38);
   box-shadow: 0 14px 50px rgba(31, 61, 51, 0.099);
 }
 html[data-theme="sakinah"] .kons-star {
@@ -5644,9 +5644,9 @@ html[data-theme="sakinah"] .kons-star {
   box-shadow: 0 0 6px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .konstelasi-tag {
-  color: rgb(140, 105, 40);
-  background: rgba(176, 138, 60, 0.12);
-  border: 1px solid rgba(176, 138, 60, 0.45);
+  color: rgb(120, 90, 32);
+  background: rgba(138, 102, 36, 0.12);
+  border: 1px solid rgba(138, 102, 36, 0.45);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .konstelasi-hero-body h3 {
@@ -5655,29 +5655,29 @@ html[data-theme="sakinah"] .konstelasi-hero-body h3 {
   text-shadow: none;
 }
 html[data-theme="sakinah"] .konstelasi-arabic {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .konstelasi-sub {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .kons-stat {
-  background: rgba(176, 138, 60, 0.08);
-  border: 1px solid rgba(176, 138, 60, 0.35);
+  background: rgba(138, 102, 36, 0.08);
+  border: 1px solid rgba(138, 102, 36, 0.35);
 }
 html[data-theme="sakinah"] .kons-stat-num {
   font-family: var(--font-orbitron, 'Plus Jakarta Sans'), sans-serif;
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .kons-stat-lbl {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .kons-core-ring {
-  border: 1px solid rgba(176, 138, 60, 0.5);
+  border: 1px solid rgba(138, 102, 36, 0.5);
 }
 html[data-theme="sakinah"] .kons-core-ring::before {
-  background: rgb(176, 138, 60);
+  background: rgb(138, 102, 36);
   box-shadow: 0 0 12px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .kons-core-ring-2 {
@@ -5695,13 +5695,13 @@ html[data-theme="sakinah"] .kons-core-ring-3::before {
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .kons-core-center {
-  background: radial-gradient(circle at center, rgba(176, 138, 60, 0.18), rgb(246, 243, 234) 70%);
+  background: radial-gradient(circle at center, rgba(138, 102, 36, 0.18), rgb(246, 243, 234) 70%);
   box-shadow: 0 0 28px rgba(31, 61, 51, 0.12),
         inset 0 0 18px rgba(31, 61, 51, 0.045);
-  border: 1px solid rgba(176, 138, 60, 0.55);
+  border: 1px solid rgba(138, 102, 36, 0.55);
 }
 html[data-theme="sakinah"] .kons-core-arabic {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .kons-core-label {
@@ -5730,7 +5730,7 @@ html[data-theme="sakinah"] .orbit-header-text p {
 }
 html[data-theme="sakinah"] .orbit-header-count {
   font-family: var(--font-orbitron, 'Plus Jakarta Sans'), sans-serif;
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
 }
 html[data-theme="sakinah"] .orbit-card {
   background: linear-gradient(160deg,
@@ -5828,14 +5828,14 @@ html[data-theme="sakinah"] .prophet-preview {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .category-badge.category-nabi {
-  background: rgba(176, 138, 60, 0.2);
-  color: rgb(140, 105, 40);
-  border: 1px solid rgba(176, 138, 60, 0.4);
+  background: rgba(138, 102, 36, 0.2);
+  color: rgb(120, 90, 32);
+  border: 1px solid rgba(138, 102, 36, 0.4);
 }
 html[data-theme="sakinah"] .category-badge.category-rasul {
-  background: rgba(176, 138, 60, 0.2);
-  color: rgb(140, 105, 40);
-  border: 1px solid rgba(176, 138, 60, 0.4);
+  background: rgba(138, 102, 36, 0.2);
+  color: rgb(120, 90, 32);
+  border: 1px solid rgba(138, 102, 36, 0.4);
 }
 html[data-theme="sakinah"] .category-badge.category-sahabat {
   background: rgba(47, 114, 88, 0.2);
@@ -5858,9 +5858,9 @@ html[data-theme="sakinah"] .subcategory-badge.asharah_mubasysyarah {
   border: 1px solid rgba(47, 114, 88, 0.4);
 }
 html[data-theme="sakinah"] .subcategory-badge.muhajirin {
-  background: rgba(47, 114, 88, 0.2);
-  color: rgb(36, 88, 69);
-  border: 1px solid rgba(47, 114, 88, 0.4);
+  background: rgba(47, 111, 138, 0.2);
+  color: rgb(38, 92, 128);
+  border: 1px solid rgba(47, 111, 138, 0.4);
 }
 html[data-theme="sakinah"] .subcategory-badge.anshar_aus, html[data-theme="sakinah"] .subcategory-badge.anshar_khazraj {
   background: rgba(107, 90, 166, 0.2);
@@ -5868,9 +5868,9 @@ html[data-theme="sakinah"] .subcategory-badge.anshar_aus, html[data-theme="sakin
   border: 1px solid rgba(107, 90, 166, 0.4);
 }
 html[data-theme="sakinah"] .subcategory-badge.sahabat_terkenal {
-  background: rgba(176, 138, 60, 0.2);
-  color: rgb(140, 105, 40);
-  border: 1px solid rgba(176, 138, 60, 0.4);
+  background: rgba(138, 102, 36, 0.2);
+  color: rgb(120, 90, 32);
+  border: 1px solid rgba(138, 102, 36, 0.4);
 }
 html[data-theme="sakinah"] .category-badge.category-sahabiyat {
   background: rgba(181, 84, 63, 0.2);
@@ -5916,7 +5916,7 @@ html[data-theme="sakinah"] .person-header-detail, html[data-theme="sakinah"] .pr
 html[data-theme="sakinah"] .prophet-detail-hero {
   background: radial-gradient(ellipse at top right, rgba(47, 114, 88, 0.18), transparent 60%),
         radial-gradient(ellipse at bottom left, rgba(181, 84, 63, 0.12), transparent 65%),
-        linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(255, 253, 247, 0.92));
+        linear-gradient(135deg, rgba(47, 111, 138, 0.4), rgba(255, 253, 247, 0.92));
   border: 1px solid rgba(47, 114, 88, 0.35);
   box-shadow: 0 6px 30px rgba(31, 61, 51, 0.066);
 }
@@ -5939,10 +5939,10 @@ html[data-theme="sakinah"] .prophet-detail-hero h2 {
   text-shadow: none;
 }
 html[data-theme="sakinah"] .prophet-hero-title {
-  color: rgba(140, 105, 40, 0.95);
+  color: rgba(120, 90, 32, 0.95);
 }
 html[data-theme="sakinah"] .prophet-hero-period {
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
   border: 1px solid rgba(47, 114, 88, 0.35);
   color: rgb(31, 61, 51);
 }
@@ -5976,18 +5976,18 @@ html[data-theme="sakinah"] .ref-badge {
   border: 1px solid rgba(107, 90, 166, 0.4);
 }
 html[data-theme="sakinah"] .lesson-card {
-  background: rgba(176, 138, 60, 0.05);
-  border: 1px solid rgba(176, 138, 60, 0.3);
+  background: rgba(138, 102, 36, 0.05);
+  border: 1px solid rgba(138, 102, 36, 0.3);
 }
 html[data-theme="sakinah"] .lesson-card:hover {
-  border-color: rgba(176, 138, 60, 0.5);
+  border-color: rgba(138, 102, 36, 0.5);
   box-shadow: 0 4px 12px rgba(31, 61, 51, 0.03);
 }
 html[data-theme="sakinah"] .lesson-card .lesson-icon {
-  background: linear-gradient(135deg, rgba(176, 138, 60, 0.2), rgba(176, 138, 60, 0.1));
+  background: linear-gradient(135deg, rgba(138, 102, 36, 0.2), rgba(138, 102, 36, 0.1));
 }
 html[data-theme="sakinah"] .lesson-card .lesson-icon i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .lesson-card p {
   color: rgb(31, 61, 51);
@@ -6030,7 +6030,7 @@ html[data-theme="sakinah"] .timeline-era-nav::-webkit-scrollbar-thumb {
   background: rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .era-nav-pill {
-  background: rgba(20, 36, 30, 0.165);
+  background: rgba(255, 253, 247, 0.92);
   border: 1px solid var(--era-color, rgba(47, 114, 88, 0.4));
   color: var(--era-color, rgb(74, 91, 81));
 }
@@ -6078,33 +6078,33 @@ html[data-theme="sakinah"] .sirah-timeline::before {
         transparent 0%,
         rgba(47, 114, 88, 0.6) 5%,
         rgba(181, 84, 63, 0.4) 50%,
-        rgba(176, 138, 60, 0.4) 95%,
+        rgba(138, 102, 36, 0.4) 95%,
         transparent 100%);
 }
 html[data-theme="sakinah"] .timeline-era-marker {
   background: linear-gradient(135deg,
-        color-mix(in srgb, var(--era-color, rgb(176, 138, 60)) 12%, transparent) 0%,
+        color-mix(in srgb, var(--era-color, rgb(138, 102, 36)) 12%, transparent) 0%,
         color-mix(in srgb, var(--era-accent, rgb(181, 84, 63)) 8%, transparent) 100%);
-  border: 1px solid var(--era-color, rgba(176, 138, 60, 0.4));
+  border: 1px solid var(--era-color, rgba(138, 102, 36, 0.4));
   box-shadow: 0 0 30px color-mix(in srgb, var(--era-color, rgba(31, 61, 51, 0.12)) 18%, transparent);
 }
 @supports not (background: color-mix(in srgb, red, blue)) {
   html[data-theme="sakinah"] .timeline-era-marker {
-    background: linear-gradient(135deg, rgba(176, 138, 60, 0.08), rgba(181, 84, 63, 0.06));
+    background: linear-gradient(135deg, rgba(138, 102, 36, 0.08), rgba(181, 84, 63, 0.06));
   }
 }
 html[data-theme="sakinah"] .era-marker-dot {
-  background: linear-gradient(135deg, var(--era-color, rgb(176, 138, 60)), var(--era-accent, rgb(181, 84, 63)));
+  background: linear-gradient(135deg, var(--era-color, rgb(138, 102, 36)), var(--era-accent, rgb(181, 84, 63)));
   color: rgb(255, 255, 255);
   box-shadow: 0 0 18px var(--era-color, rgba(31, 61, 51, 0.12));
 }
 html[data-theme="sakinah"] .era-marker-label .era-num {
-  background: color-mix(in srgb, var(--era-color, rgb(176, 138, 60)) 25%, transparent);
+  background: color-mix(in srgb, var(--era-color, rgb(138, 102, 36)) 25%, transparent);
   color: var(--era-color, rgb(255, 255, 255));
 }
 @supports not (background: color-mix(in srgb, red, blue)) {
   html[data-theme="sakinah"] .era-marker-label .era-num {
-    background: rgba(176, 138, 60, 0.2);
+    background: rgba(138, 102, 36, 0.2);
   }
 }
 html[data-theme="sakinah"] .era-marker-label h4 {
@@ -6131,7 +6131,7 @@ html[data-theme="sakinah"] .timeline-item.timeline-right .timeline-item-line {
 }
 html[data-theme="sakinah"] .timeline-card {
   background: linear-gradient(135deg,
-        rgba(47, 114, 88, 0.45) 0%,
+        rgba(47, 111, 138, 0.45) 0%,
         rgba(255, 253, 247, 0.92) 100%);
   border: 1px solid rgba(47, 114, 88, 0.3);
 }
@@ -6139,7 +6139,7 @@ html[data-theme="sakinah"] .timeline-item:hover .timeline-card {
   border-color: var(--era-color, rgba(47, 114, 88, 0.55));
   box-shadow: 0 8px 30px color-mix(in srgb, var(--era-color, rgba(31, 61, 51, 0.12)) 35%, transparent);
   background: linear-gradient(135deg,
-        rgba(47, 114, 88, 0.6) 0%,
+        rgba(47, 111, 138, 0.6) 0%,
         rgba(107, 90, 166, 0.5) 100%);
 }
 @supports not (background: color-mix(in srgb, red, blue)) {
@@ -6164,7 +6164,7 @@ html[data-theme="sakinah"] .timeline-card-as {
   color: rgba(36, 88, 69, 0.85);
 }
 html[data-theme="sakinah"] .timeline-card-title {
-  color: rgba(140, 105, 40, 0.85);
+  color: rgba(120, 90, 32, 0.85);
 }
 html[data-theme="sakinah"] .timeline-card-period {
   background: rgba(47, 114, 88, 0.08);
@@ -6217,7 +6217,7 @@ html[data-theme="sakinah"] .section-description {
   background: rgba(47, 114, 88, 0.05);
 }
 html[data-theme="sakinah"] .radio-card {
-  background: linear-gradient(135deg, rgba(181, 84, 63, 0.1), rgba(194, 122, 44, 0.1));
+  background: linear-gradient(135deg, rgba(181, 84, 63, 0.1), rgba(168, 98, 30, 0.1));
   border: 1px solid rgba(181, 84, 63, 0.4);
 }
 html[data-theme="sakinah"] .radio-card.radio-tarbiyyah {
@@ -6247,14 +6247,14 @@ html[data-theme="sakinah"] .video-card {
   border: 1px solid rgba(107, 90, 166, 0.4);
 }
 html[data-theme="sakinah"] .video-card.video-khalid {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.1), rgba(47, 114, 88, 0.1));
-  border: 1px solid rgba(47, 114, 88, 0.4);
+  background: linear-gradient(135deg, rgba(47, 111, 138, 0.1), rgba(47, 111, 138, 0.1));
+  border: 1px solid rgba(47, 111, 138, 0.4);
 }
 html[data-theme="sakinah"] .video-card.video-khalid .video-logo {
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .video-card.video-khalid .btn-video {
-  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88));
+  background: linear-gradient(135deg, rgb(47, 111, 138), rgb(47, 111, 138));
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .video-card.video-khalid .btn-video:hover {
@@ -6275,16 +6275,16 @@ html[data-theme="sakinah"] .video-card.video-syafiq .btn-video:hover {
   box-shadow: 0 6px 20px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .video-card.video-makkah {
-  background: linear-gradient(135deg, rgba(194, 122, 44, 0.1), rgba(176, 138, 60, 0.1));
-  border: 1px solid rgba(194, 122, 44, 0.4);
+  background: linear-gradient(135deg, rgba(168, 98, 30, 0.1), rgba(138, 102, 36, 0.1));
+  border: 1px solid rgba(168, 98, 30, 0.4);
 }
 html[data-theme="sakinah"] .video-card.video-makkah .video-icon {
-  background: linear-gradient(135deg, rgba(194, 122, 44, 0.3), rgba(176, 138, 60, 0.3));
-  color: rgb(150, 95, 30);
+  background: linear-gradient(135deg, rgba(168, 98, 30, 0.3), rgba(138, 102, 36, 0.3));
+  color: rgb(135, 82, 22);
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .video-card.video-makkah .btn-video {
-  background: linear-gradient(135deg, rgb(194, 122, 44), rgb(176, 138, 60));
+  background: linear-gradient(135deg, rgb(168, 98, 30), rgb(138, 102, 36));
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .video-card.video-makkah .btn-video:hover {
@@ -6328,7 +6328,7 @@ html[data-theme="sakinah"] .status-dot.live {
   animation: sk-pulse-live 1.5s infinite;
 }
 html[data-theme="sakinah"] .status-dot.loading {
-  background: rgb(194, 122, 44);
+  background: rgb(168, 98, 30);
 }
 @keyframes sk-pulse-live {
   0%, 100% {
@@ -6341,7 +6341,7 @@ html[data-theme="sakinah"] .status-dot.loading {
   }
 }
 html[data-theme="sakinah"] .btn-radio {
-  background: linear-gradient(135deg, rgb(181, 84, 63), rgb(194, 122, 44));
+  background: linear-gradient(135deg, rgb(181, 84, 63), rgb(168, 98, 30));
   color: rgb(255, 255, 255);
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.09);
 }
@@ -6537,11 +6537,11 @@ html[data-theme="sakinah"] .video-status .status-dot:not(.live) {
   background: rgb(236, 233, 220);
 }
 html[data-theme="sakinah"] .video-card.video-meds .video-icon, html[data-theme="sakinah"] .video-card.video-wesal .video-icon, html[data-theme="sakinah"] .video-card.video-yufid .video-icon, html[data-theme="sakinah"] .video-card.video-ahsan .video-icon {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.35), rgba(47, 114, 88, 0.25));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.35), rgba(47, 111, 138, 0.25));
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .video-card.video-meds .btn-video, html[data-theme="sakinah"] .video-card.video-wesal .btn-video, html[data-theme="sakinah"] .video-card.video-yufid .btn-video, html[data-theme="sakinah"] .video-card.video-ahsan .btn-video {
-  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88));
+  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 111, 138));
   color: rgb(255, 255, 255);
 }
 
@@ -6598,7 +6598,7 @@ html[data-theme="sakinah"] .tj-session-item.active::before {
 }
 html[data-theme="sakinah"] .tj-session-icon {
   background: rgba(255, 253, 247, 0.76);
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .tj-session-item.active .tj-session-icon {
   color: var(--primary-cyan, rgb(36, 88, 69));
@@ -6634,7 +6634,7 @@ html[data-theme="sakinah"] .tj-header-title {
 html[data-theme="sakinah"] .tj-header-btn {
   border: 1px solid rgba(31, 61, 51, 0.11);
   background: rgba(255, 253, 247, 0.725);
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .tj-header-btn:hover {
   background: rgba(47, 114, 88, 0.12);
@@ -6655,14 +6655,14 @@ html[data-theme="sakinah"] .tj-messages::-webkit-scrollbar-thumb:hover {
   background: rgb(255, 253, 247);
 }
 html[data-theme="sakinah"] .tj-msg.assistant .tj-msg-avatar {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.18), rgba(176, 138, 60, 0.12));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.18), rgba(138, 102, 36, 0.12));
   border: 1px solid rgba(47, 114, 88, 0.35);
   color: var(--primary-cyan, rgb(36, 88, 69));
 }
 html[data-theme="sakinah"] .tj-msg.user .tj-msg-avatar {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.22), rgba(47, 114, 88, 0.12));
-  border: 1px solid rgba(47, 114, 88, 0.4);
-  color: var(--electric-blue, rgb(36, 88, 69));
+  background: linear-gradient(135deg, rgba(47, 111, 138, 0.22), rgba(47, 114, 88, 0.12));
+  border: 1px solid rgba(47, 111, 138, 0.4);
+  color: var(--electric-blue, rgb(38, 92, 128));
 }
 html[data-theme="sakinah"] .tj-msg-bubble {
   color: var(--text-primary, rgb(31, 61, 51));
@@ -6672,7 +6672,7 @@ html[data-theme="sakinah"] .tj-msg.assistant .tj-msg-bubble {
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .tj-msg.user .tj-msg-bubble {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.3), rgba(47, 114, 88, 0.15));
+  background: linear-gradient(135deg, rgba(47, 111, 138, 0.3), rgba(47, 114, 88, 0.15));
   border: 1px solid rgba(47, 114, 88, 0.28);
 }
 html[data-theme="sakinah"] .tj-msg-time {
@@ -6699,32 +6699,32 @@ html[data-theme="sakinah"] .tj-typing-label {
   color: var(--text-muted, rgb(74, 91, 81));
 }
 html[data-theme="sakinah"] .tj-refs {
-  border: 1px solid rgba(176, 138, 60, 0.25);
+  border: 1px solid rgba(138, 102, 36, 0.25);
 }
 html[data-theme="sakinah"] .tj-refs-toggle {
-  background: rgba(176, 138, 60, 0.06);
-  color: var(--islamic-gold, rgb(140, 105, 40));
+  background: rgba(138, 102, 36, 0.06);
+  color: var(--islamic-gold, rgb(120, 90, 32));
 }
 html[data-theme="sakinah"] .tj-refs-toggle:hover {
-  background: rgba(176, 138, 60, 0.12);
+  background: rgba(138, 102, 36, 0.12);
 }
 html[data-theme="sakinah"] .tj-ref-item {
   background: rgba(255, 253, 247, 0.69);
   border: 1px solid rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .tj-ref-item:hover {
-  border-color: rgba(176, 138, 60, 0.35);
+  border-color: rgba(138, 102, 36, 0.35);
 }
 html[data-theme="sakinah"] .tj-ref-title {
   color: var(--text-primary, rgb(31, 61, 51));
 }
 html[data-theme="sakinah"] .tj-ref-snippet {
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .tj-ref-source {
-  background: rgba(176, 138, 60, 0.1);
-  border: 1px solid rgba(176, 138, 60, 0.3);
-  color: var(--islamic-gold, rgb(140, 105, 40));
+  background: rgba(138, 102, 36, 0.1);
+  border: 1px solid rgba(138, 102, 36, 0.3);
+  color: var(--islamic-gold, rgb(120, 90, 32));
 }
 html[data-theme="sakinah"] .tj-input-area {
   background: linear-gradient(180deg, rgba(255, 253, 247, 0.92), rgba(255, 253, 247, 0.92));
@@ -6749,7 +6749,7 @@ html[data-theme="sakinah"] .tj-textarea::-webkit-scrollbar-thumb {
   background: rgba(255, 253, 247, 0.9);
 }
 html[data-theme="sakinah"] .tj-send-btn {
-  background: linear-gradient(135deg, var(--primary-cyan, rgb(47, 114, 88)), var(--electric-blue, rgb(47, 114, 88)));
+  background: linear-gradient(135deg, var(--primary-cyan, rgb(47, 114, 88)), var(--electric-blue, rgb(47, 111, 138)));
   color: var(--darker-bg, rgb(255, 255, 255));
 }
 html[data-theme="sakinah"] .tj-send-btn:hover:not(:disabled) {
@@ -6757,7 +6757,7 @@ html[data-theme="sakinah"] .tj-send-btn:hover:not(:disabled) {
               0 0 40px rgba(31, 61, 51, 0.045);
 }
 html[data-theme="sakinah"] .tj-welcome-icon {
-  background: linear-gradient(135deg, var(--primary-cyan, rgb(47, 114, 88)), var(--islamic-gold, rgb(176, 138, 60)));
+  background: linear-gradient(135deg, var(--primary-cyan, rgb(47, 114, 88)), var(--islamic-gold, rgb(138, 102, 36)));
   filter: drop-shadow(0 0 20px rgba(31, 61, 51, 0.105));
 }
 html[data-theme="sakinah"] .tj-welcome-title {
@@ -6766,12 +6766,12 @@ html[data-theme="sakinah"] .tj-welcome-title {
 }
 html[data-theme="sakinah"] .tj-welcome-desc {
   font-family: var(--font-secondary, 'Plus Jakarta Sans', sans-serif);
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .tj-manhaj-badge {
-  background: rgba(176, 138, 60, 0.08);
-  border: 1px solid rgba(176, 138, 60, 0.35);
-  color: var(--islamic-gold, rgb(140, 105, 40));
+  background: rgba(138, 102, 36, 0.08);
+  border: 1px solid rgba(138, 102, 36, 0.35);
+  color: var(--islamic-gold, rgb(120, 90, 32));
 }
 html[data-theme="sakinah"] .tj-manhaj-badge i {
   filter: drop-shadow(0 0 4px rgba(31, 61, 51, 0.12));
@@ -6779,10 +6779,10 @@ html[data-theme="sakinah"] .tj-manhaj-badge i {
 html[data-theme="sakinah"] .tj-example-chip {
   background: rgba(255, 253, 247, 0.725);
   border: 1px solid rgba(31, 61, 51, 0.11);
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .tj-example-chip i {
-  color: var(--islamic-gold, rgb(140, 105, 40));
+  color: var(--islamic-gold, rgb(120, 90, 32));
 }
 html[data-theme="sakinah"] .tj-example-chip:hover {
   background: rgba(47, 114, 88, 0.08);
@@ -6810,7 +6810,7 @@ html[data-theme="sakinah"] .tj-settings-header h3 {
 html[data-theme="sakinah"] .tj-settings-close {
   border: 1px solid rgba(31, 61, 51, 0.12);
   background: rgba(255, 253, 247, 0.76);
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .tj-settings-close:hover {
   background: rgba(181, 84, 63, 0.15);
@@ -6818,7 +6818,7 @@ html[data-theme="sakinah"] .tj-settings-close:hover {
   color: var(--secondary-pink, rgb(160, 70, 50));
 }
 html[data-theme="sakinah"] .tj-settings-group label {
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .tj-settings-input, html[data-theme="sakinah"] .tj-settings-select {
   border: 1px solid rgba(31, 61, 51, 0.11);
@@ -6852,7 +6852,7 @@ html[data-theme="sakinah"] .tj-settings-btn:hover {
   box-shadow: 0 0 16px rgba(31, 61, 51, 0.06);
 }
 html[data-theme="sakinah"] .tj-settings-btn.primary {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.2), rgba(47, 114, 88, 0.15));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.2), rgba(47, 111, 138, 0.15));
   border-color: rgba(47, 114, 88, 0.55);
 }
 html[data-theme="sakinah"] .tj-settings-btn.primary:hover {
@@ -6861,7 +6861,7 @@ html[data-theme="sakinah"] .tj-settings-btn.primary:hover {
 html[data-theme="sakinah"] .tj-settings-status {
   background: rgba(255, 253, 247, 0.69);
   border: 1px solid rgba(31, 61, 51, 0.09);
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .tj-settings-status.connected {
   border-color: rgba(47, 114, 88, 0.3);
@@ -6885,7 +6885,7 @@ html[data-theme="sakinah"] .tj-status-dot.offline {
   box-shadow: 0 0 8px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .tj-status-dot.loading {
-  background: var(--islamic-gold, rgb(176, 138, 60));
+  background: var(--islamic-gold, rgb(138, 102, 36));
 }
 html[data-theme="sakinah"] .tj-toast {
   background: rgba(255, 253, 247, 0.94);
@@ -6923,8 +6923,8 @@ html[data-theme="sakinah"] .tj-msg-bubble em {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .tj-msg-bubble blockquote {
-  border-left: 3px solid var(--islamic-gold, rgba(176, 138, 60, 0.55));
-  background: rgba(176, 138, 60, 0.06);
+  border-left: 3px solid var(--islamic-gold, rgba(138, 102, 36, 0.55));
+  background: rgba(138, 102, 36, 0.06);
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .tj-msg-bubble hr {
@@ -6936,7 +6936,7 @@ html[data-theme="sakinah"] .tj-msg-bubble code {
   color: var(--primary-cyan, rgb(36, 88, 69));
 }
 html[data-theme="sakinah"] .tj-msg-bubble pre {
-  background: rgba(20, 36, 30, 0.193);
+  background: rgba(255, 253, 247, 0.92);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .tj-msg-bubble pre code {
@@ -6957,7 +6957,7 @@ html[data-theme="sakinah"] .tj-msg-bubble th {
   color: var(--primary-cyan, rgb(36, 88, 69));
 }
 html[data-theme="sakinah"] .tj-msg-bubble td {
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 @media (max-width: 768px) {
   html[data-theme="sakinah"] .tj-sidebar.open {
@@ -6988,15 +6988,15 @@ html[data-theme="sakinah"] .tj-input-hint {
   color: var(--text-muted, rgb(74, 91, 81));
 }
 html[data-theme="sakinah"] .tj-input-hint i {
-  color: var(--islamic-gold, rgb(140, 105, 40));
+  color: var(--islamic-gold, rgb(120, 90, 32));
 }
 html[data-theme="sakinah"] .tj-setup-notice {
-  background: rgba(194, 122, 44, 0.08);
-  border: 1px solid rgba(194, 122, 44, 0.3);
-  color: rgba(140, 105, 40, 0.9);
+  background: rgba(168, 98, 30, 0.08);
+  border: 1px solid rgba(168, 98, 30, 0.3);
+  color: rgba(120, 90, 32, 0.9);
 }
 html[data-theme="sakinah"] .tj-setup-notice i {
-  color: rgba(150, 95, 30, 0.85);
+  color: rgba(135, 82, 22, 0.85);
 }
 html[data-theme="sakinah"] .tj-link-btn {
   color: var(--primary-cyan, rgb(36, 88, 69));
@@ -7018,31 +7018,31 @@ html[data-theme="sakinah"] .tj-settings-hint a {
   color: var(--primary-cyan, rgb(36, 88, 69));
 }
 html[data-theme="sakinah"] .tj-btn-test {
-  border-color: rgba(176, 138, 60, 0.4);
-  background: rgba(176, 138, 60, 0.08);
-  color: var(--islamic-gold, rgb(140, 105, 40));
+  border-color: rgba(138, 102, 36, 0.4);
+  background: rgba(138, 102, 36, 0.08);
+  color: var(--islamic-gold, rgb(120, 90, 32));
 }
 html[data-theme="sakinah"] .tj-btn-test:hover {
-  background: rgba(176, 138, 60, 0.18);
-  border-color: rgba(176, 138, 60, 0.55);
+  background: rgba(138, 102, 36, 0.18);
+  border-color: rgba(138, 102, 36, 0.55);
   box-shadow: 0 0 16px rgba(31, 61, 51, 0.045);
 }
 html[data-theme="sakinah"] .tj-btn-save {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 114, 88, 0.1));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 111, 138, 0.1));
   border-color: rgba(47, 114, 88, 0.5);
 }
 html[data-theme="sakinah"] .tj-btn-save:hover {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.25), rgba(47, 114, 88, 0.18));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.25), rgba(47, 111, 138, 0.18));
   box-shadow: 0 0 20px rgba(31, 61, 51, 0.075);
 }
 html[data-theme="sakinah"] .tj-settings-test-result {
   background: rgba(255, 253, 247, 0.69);
   border: 1px solid rgba(31, 61, 51, 0.09);
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .tj-settings-test-result.testing {
-  color: var(--islamic-gold, rgb(140, 105, 40));
-  border-color: rgba(176, 138, 60, 0.3);
+  color: var(--islamic-gold, rgb(120, 90, 32));
+  border-color: rgba(138, 102, 36, 0.3);
 }
 html[data-theme="sakinah"] .tj-settings-test-result.success {
   color: var(--matrix-green, rgb(36, 88, 69));
@@ -7058,7 +7058,7 @@ html[data-theme="sakinah"] .tj-session-meta {
   color: var(--text-muted, rgb(74, 91, 81));
 }
 html[data-theme="sakinah"] .tj-ref-text {
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .tj-ref-title {
   color: var(--text-primary, rgb(31, 61, 51));
@@ -7076,12 +7076,12 @@ html[data-theme="sakinah"] .tj-modal h4 {
   color: var(--secondary-pink, rgb(160, 70, 50));
 }
 html[data-theme="sakinah"] .tj-modal p {
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
 }
 html[data-theme="sakinah"] .tj-modal-btn {
   border: 1px solid rgba(31, 61, 51, 0.11);
   background: rgba(255, 253, 247, 0.76);
-  color: var(--text-secondary, rgb(109, 122, 104));
+  color: var(--text-secondary, rgb(87, 100, 90));
   font-family: var(--font-secondary, 'Plus Jakarta Sans', sans-serif);
 }
 html[data-theme="sakinah"] .tj-modal-btn:hover {
@@ -7174,7 +7174,7 @@ html[data-theme="sakinah"] .waris-progress-bar::before {
 html[data-theme="sakinah"] .waris-step-circle {
   background: rgba(255, 253, 247, 0.9);
   border: 2px solid rgba(47, 114, 88, 0.4);
-  color: rgba(109, 122, 104, 0.85);
+  color: rgba(87, 100, 90, 0.85);
 }
 html[data-theme="sakinah"] .waris-progress-step.active .waris-step-circle {
   color: rgb(255, 255, 255);
@@ -7317,19 +7317,19 @@ html[data-theme="sakinah"] .waris-btn-reset:hover {
   background: rgba(181, 84, 63, 0.3);
 }
 html[data-theme="sakinah"] .waris-btn-favorite {
-  background: rgba(176, 138, 60, 0.1);
-  color: rgb(140, 105, 40);
-  border: 1px solid rgba(176, 138, 60, 0.4);
+  background: rgba(138, 102, 36, 0.1);
+  color: rgb(120, 90, 32);
+  border: 1px solid rgba(138, 102, 36, 0.4);
 }
 html[data-theme="sakinah"] .waris-btn-favorite:hover {
-  background: rgba(176, 138, 60, 0.2);
+  background: rgba(138, 102, 36, 0.2);
 }
 html[data-theme="sakinah"] .waris-btn-favorite.saved {
-  background: rgba(176, 138, 60, 0.2);
-  border-color: rgba(176, 138, 60, 0.55);
+  background: rgba(138, 102, 36, 0.2);
+  border-color: rgba(138, 102, 36, 0.55);
 }
 html[data-theme="sakinah"] .waris-btn-favorite.saved i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .waris-favorite-card {
   background: rgba(255, 253, 247, 0.725);
@@ -7414,14 +7414,14 @@ html[data-theme="sakinah"] .zakat-tab.active {
   border: 1px solid rgba(47, 114, 88, 0.45);
 }
 html[data-theme="sakinah"] .zakat-info-box {
-  background: rgba(47, 114, 88, 0.07);
-  border: 1px solid rgba(47, 114, 88, 0.35);
+  background: rgba(47, 111, 138, 0.07);
+  border: 1px solid rgba(47, 111, 138, 0.35);
 }
 html[data-theme="sakinah"] .zakat-info-box i {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .zakat-info-box strong {
-  color: rgb(36, 88, 69);
+  color: rgb(38, 92, 128);
 }
 html[data-theme="sakinah"] .zakat-input-group label i {
   color: rgb(36, 88, 69);
@@ -7435,22 +7435,22 @@ html[data-theme="sakinah"] .zakat-input-group input:focus, html[data-theme="saki
   background: rgba(47, 114, 88, 0.05);
 }
 html[data-theme="sakinah"] .zakat-calc-btn {
-  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88));
+  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 111, 138));
   color: rgb(255, 255, 255);
 }
 html[data-theme="sakinah"] .zakat-result {
   background: rgba(255, 253, 247, 0.69);
-  border: 1px solid rgba(176, 138, 60, 0.4);
+  border: 1px solid rgba(138, 102, 36, 0.4);
 }
 html[data-theme="sakinah"] .zakat-result-header {
-  background: rgba(176, 138, 60, 0.1);
-  border-bottom: 1px solid rgba(176, 138, 60, 0.3);
+  background: rgba(138, 102, 36, 0.1);
+  border-bottom: 1px solid rgba(138, 102, 36, 0.3);
 }
 html[data-theme="sakinah"] .zakat-result-header i {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .zakat-result-header h3 {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .zakat-result-grid {
   background: rgba(255, 253, 247, 0.76);
@@ -7465,17 +7465,17 @@ html[data-theme="sakinah"] .zakat-result-item.highlight .value {
   color: rgb(36, 88, 69);
 }
 html[data-theme="sakinah"] .zakat-result-item.highlight-gold {
-  background: rgba(176, 138, 60, 0.08);
+  background: rgba(138, 102, 36, 0.08);
 }
 html[data-theme="sakinah"] .zakat-result-item.highlight-gold .value {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .zakat-note {
   border-top: 1px solid rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .zakat-dalil-box {
-  background: rgba(47, 114, 88, 0.07);
-  border-top: 1px solid rgba(47, 114, 88, 0.3);
+  background: rgba(47, 111, 138, 0.07);
+  border-top: 1px solid rgba(47, 111, 138, 0.3);
 }
 html[data-theme="sakinah"] .zakat-mustahiq {
   background: rgba(255, 253, 247, 0.655);
@@ -7492,24 +7492,24 @@ html[data-theme="sakinah"] .zakat-mustahiq-item i {
   color: rgb(36, 88, 69);
 }
 html[data-theme="sakinah"] .zakat-panel-note {
-  border-top: 1px solid rgba(176, 138, 60, 0.28);
+  border-top: 1px solid rgba(138, 102, 36, 0.28);
 }
 html[data-theme="sakinah"] .zakat-info-box.salafi-note {
-  background: linear-gradient(135deg, rgba(176, 138, 60, 0.08), rgba(47, 114, 88, 0.04));
-  border: 1px solid rgba(176, 138, 60, 0.45);
+  background: linear-gradient(135deg, rgba(138, 102, 36, 0.08), rgba(47, 114, 88, 0.04));
+  border: 1px solid rgba(138, 102, 36, 0.45);
   box-shadow: 0 0 18px rgba(31, 61, 51, 0.03);
 }
 html[data-theme="sakinah"] .zakat-info-box.salafi-note i.fa-info-circle {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .zakat-info-box.salafi-note strong {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .zakat-info-box.salafi-note p {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .zakat-info-box.salafi-note p strong {
-  color: rgb(140, 105, 40);
+  color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .zakat-info-box.salafi-note em {
   color: rgba(36, 88, 69, 0.9);
@@ -7530,7 +7530,7 @@ html[data-theme="sakinah"] .zakat-nisab-fill {
   box-shadow: 0 0 12px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .zakat-nisab-fill.reached {
-  background: linear-gradient(90deg, rgb(176, 138, 60) 0%, rgb(47, 114, 88) 100%);
+  background: linear-gradient(90deg, rgb(138, 102, 36) 0%, rgb(47, 114, 88) 100%);
   box-shadow: 0 0 18px rgba(31, 61, 51, 0.12);
   animation: sk-nisabReachedPulse 1.6s ease-in-out infinite;
 }

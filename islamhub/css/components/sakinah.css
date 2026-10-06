@@ -9,11 +9,11 @@
 .more-app-icon .ic-doa, .settings-app-icon .ic-doa { width: 20px; height: 20px; }
 
 html[data-theme="sakinah"] {
-  --sk-bg: #f6f3ea; --sk-card: #fffdf7; --sk-ink: #1f3d33; --sk-ink2: #4a5b51; --sk-muted: #6d7a68;
+  --sk-bg: #f6f3ea; --sk-card: #fffdf7; --sk-ink: #1f3d33; --sk-ink2: #4a5b51; --sk-muted: #57645a; --sk-goldtext: #8a6a2a;
   --sk-line: #e3e2d3; --sk-green: #245845; --sk-green2: #2f7258; --sk-gold: #b08a3c; --sk-goldbg: #f5ecd6;
   --primary-cyan: #2f7258; --electric-blue: #245845; --matrix-green: #2f7258; --neon-purple: #6b5aa6; --secondary-pink: #b5543f;
   --dark-bg: #f6f3ea; --darker-bg: #efebdf; --surface: #fffdf7; --surface-dark: #fffdf7; --surface-hover: #f3efe2;
-  --text-primary: #1f3d33; --text-secondary: #5d6d60; --text-muted: #8a957f;
+  --text-primary: #1f3d33; --text-secondary: #4f5e54; --text-muted: #55604f;
   --islamic-gold: #b08a3c; --islamic-gold-light: #d8bd7e; --islamic-emerald: #2f7258; --islamic-deep-green: #1f3d33;
   --gradient-primary: linear-gradient(135deg, #245845, #2f7258);
   --gradient-secondary: linear-gradient(135deg, #2f7258, #6b5aa6);
@@ -213,3 +213,40 @@ html[data-theme="sakinah"] .floating-prayer-widget .widget-countdown { font-size
 html[data-theme="sakinah"] .floating-prayer-widget .widget-toggle-btn { width: 18px !important; height: 18px !important; font-size: 8px !important; top: -6px !important; right: -6px !important; }
 html[data-theme="sakinah"] .more-app-icon i, html[data-theme="sakinah"] .more-app-icon .ic-doa,
 html[data-theme="sakinah"] .settings-app-icon i, html[data-theme="sakinah"] .settings-app-icon .ic-doa { color: var(--sk-green) !important; fill: var(--sk-green) !important; text-shadow: none !important; filter: none !important; }
+
+/* ===== Contrast fixes (WCAG AA on cream) ===== */
+html[data-theme="sakinah"] .sk-link,
+html[data-theme="sakinah"] .sk-hadith .hadith-reference { color: var(--sk-goldtext) !important; }
+html[data-theme="sakinah"] .sk-mini small { color: var(--sk-ink2); }
+/* Arabic name sits on a dark green tile. */
+html[data-theme="sakinah"] .prophet-icon .arabic-name,
+html[data-theme="sakinah"] .prophet-icon { color: #f6efd9 !important; -webkit-text-fill-color: #f6efd9 !important; }
+/* Peraga notes were styled for the dark page. */
+html[data-theme="sakinah"] .peraga-sources { color: var(--sk-ink2); }
+html[data-theme="sakinah"] .peraga-sources summary { color: var(--sk-ink); font-weight: 600; }
+html[data-theme="sakinah"] .peraga-sources a { color: var(--sk-green); }
+html[data-theme="sakinah"] .peraga-eyebrow { color: #56633f; }
+/* Small labels inside the light game surfaces. */
+html[data-theme="sakinah"] .mg-adventure .mg-eyebrow,
+html[data-theme="sakinah"] .gk-eyebrow { color: #56603c; }
+html[data-theme="sakinah"] .mg-adventure .mg-control-hint,
+html[data-theme="sakinah"] .mg-adventure .mg-route small,
+html[data-theme="sakinah"] .mg-adventure .mg-save-state,
+html[data-theme="sakinah"] .mg-adventure .mg-counter-label,
+html[data-theme="sakinah"] .mg-adventure .mg-status,
+html[data-theme="sakinah"] .mg-adventure .mg-current-objective span,
+html[data-theme="sakinah"] .mg-adventure .mg-quiz summary span,
+html[data-theme="sakinah"] .mg-adventure .mg-header p { color: #4f5b4a; }
+html[data-theme="sakinah"] .gk-tag { color: #7a5c20; }
+html[data-theme="sakinah"] .gk-stars, html[data-theme="sakinah"] .gk-big-stars { color: #8a6a2a; }
+html[data-theme="sakinah"] .empty-state p, html[data-theme="sakinah"] .empty-state small { color: var(--sk-ink2) !important; }
+html[data-theme="sakinah"] .alquran-streak-info span, html[data-theme="sakinah"] .konstelasi-tag,
+html[data-theme="sakinah"] .konstelasi-arabic, html[data-theme="sakinah"] .sholat-ruling { color: #6b4f18 !important; }
+html[data-theme="sakinah"] .popular-surah-num, html[data-theme="sakinah"] .timeline-intro-tag,
+html[data-theme="sakinah"] .doa-count { color: #1f4f3d !important; }
+html[data-theme="sakinah"] .kons-stat-lbl, html[data-theme="sakinah"] .kons-core-sub,
+html[data-theme="sakinah"] .dzikir-wheel-hint { color: #3c4b42 !important; }
+html[data-theme="sakinah"] .sk-live .sk-mini-lbl { color: #9a3f2b; }
+html[data-theme="sakinah"] .mg-adventure .mg-secondary-controls label { color: #4f5b4a; }
+html[data-theme="sakinah"] .peraga-bacaan-translation { color: #4a5b51 !important; }
+html[data-theme="sakinah"] .sunnah-section .section-description, html[data-theme="sakinah"] .sunnah-prayer-reference { color: #4f5b4a !important; }

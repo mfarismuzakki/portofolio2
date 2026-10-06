@@ -16,15 +16,16 @@ SCOPE = 'html[data-theme="sakinah"]'
 # Already light, hand-tuned components are left alone.
 SKIP = {"arena.css", "manasik-game.css", "simulations.css", "sakinah.css", "sakinah-theme.css", "variables.css"}
 
-INK, INK2, MUTED = (31, 61, 51), (74, 91, 81), (109, 122, 104)
+INK, INK2, MUTED = (31, 61, 51), (74, 91, 81), (87, 100, 90)
 CARD, PAGE = (255, 253, 247), (246, 243, 234)
 ACCENTS = {  # hue family -> (text variant, fill variant)
     "green": ((36, 88, 69), (47, 114, 88)),
     "teal": ((36, 88, 69), (47, 114, 88)),
     "plum": ((91, 74, 150), (107, 90, 166)),
     "red": ((160, 70, 50), (181, 84, 63)),
-    "amber": ((150, 95, 30), (194, 122, 44)),
-    "gold": ((140, 105, 40), (176, 138, 60)),
+    "amber": ((135, 82, 22), (168, 98, 30)),
+    "gold": ((120, 90, 32), (138, 102, 36)),
+    "blue": ((38, 92, 128), (47, 111, 138)),
 }
 COLOR_PROPS = ("color", "background", "background-color", "background-image", "border", "border-color",
                "border-top", "border-bottom", "border-left", "border-right", "border-top-color",
@@ -38,6 +39,7 @@ NAMED = {"white": (255, 255, 255, 1), "black": (0, 0, 0, 1), "cyan": (0, 255, 25
 COLOR_RE = re.compile(r"#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|\b(?:" + "|".join(NAMED) + r")\b")
 # Theme variables that resolve to an accent fill in both themes.
 ACCENT_VARS = re.compile(r"var\(--(primary-cyan|cyan|purple|neon-purple|primary-purple|electric-blue|matrix-green|secondary-pink|pink|accent-pink|islamic-gold|islamic-emerald|gradient-(primary|secondary|accent|gold))\b")
+OVERLAY_SEL = re.compile(r"overlay|backdrop|modal(?!-content|-body|-header)|lightbox", re.I)
 FONT_RE = re.compile(r"['\"]?(Orbitron|Rajdhani)['\"]?", re.I)
 
 
@@ -76,14 +78,16 @@ def family(r, g, b):
         return "amber"
     if 70 <= deg < 160:
         return "green"
-    if 160 <= deg < 215:
+    if 160 <= deg < 195:
         return "teal"
-    if 215 <= deg < 300:
+    if 195 <= deg < 230:
+        return "blue"
+    if 230 <= deg < 300:
         return "plum"
     return "red"
 
 
-def map_color(c, kind):
+def map_color(c, kind, overlay=False):
     """kind: text | bg | border | shadow"""
     r, g, b, a = c
     luma = 0.299 * r + 0.587 * g + 0.114 * b
@@ -112,7 +116,7 @@ def map_color(c, kind):
             return fmt(INK, min(0.14, a * 0.22))
         if kind == "border":
             return fmt(INK, 0.1)
-        if r < 8 and g < 8 and b < 8 and 0.3 <= a < 0.95:  # backdrop overlays
+        if overlay and r < 8 and g < 8 and b < 8 and 0.3 <= a < 0.95:  # modal backdrops
             return fmt((20, 36, 30), a * 0.55)
         return fmt(PAGE if a >= 0.95 else CARD, 1 if a >= 0.95 else max(0.92, a))
     # mid greys
@@ -149,7 +153,7 @@ def accent_bg(decls):
     return False
 
 
-def transform_value(prop, val, rule_accent):
+def transform_value(prop, val, rule_accent, overlay=False):
     if prop == "text-shadow":
         return "none" if COLOR_RE.search(val) else None
     kind = kind_for(prop)
@@ -165,7 +169,7 @@ def transform_value(prop, val, rule_accent):
             luma = 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
             if luma > 200 or luma < 60:  # keep text readable on accent fills
                 return fmt((255, 255, 255), max(c[3], 0.92))
-        return map_color(c, kind)
+        return map_color(c, kind, overlay)
     out = mask_vars(val, lambda v: COLOR_RE.sub(sub, v))
     return out if changed else None
 
@@ -214,7 +218,7 @@ def process_rules(rules, keyframes_colored, out, indent=""):
                 if prop.startswith("--"):
                     new = None  # custom properties handled via :root overrides
                 elif prop in COLOR_PROPS or prop.startswith("border"):
-                    new = transform_value(prop, val, acc)
+                    new = transform_value(prop, val, acc, OVERLAY_SEL.search(sel) is not None)
                 elif prop in ("font-family", "font") and FONT_RE.search(re.sub(r"--[\w-]+", "", val)):
                     new = mask_vars(val, lambda v: FONT_RE.sub("'Plus Jakarta Sans'", v))
                 elif prop in ("animation", "animation-name"):

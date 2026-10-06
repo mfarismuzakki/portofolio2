@@ -1,6 +1,7 @@
 // Beranda Sakinah: kartu sholat, akses cepat, lanjutkan bacaan, arena, live, hadits.
 import islamHubConfig from './config.js';
 import { progress } from './utils/game-kit.js';
+import { syncInlineColors } from './utils/theme-adapter.js';
 
 const PRAYERS = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
 const HIJRI_MONTHS = ['Muharram', 'Safar', 'Rabiul Awal', 'Rabiul Akhir', 'Jumadil Ula', 'Jumadil Akhirah', 'Rajab', "Sya'ban", 'Ramadhan', 'Syawal', "Dzulqa'dah", 'Dzulhijjah'];
@@ -26,6 +27,7 @@ export function currentTheme() {
 
 export function applyTheme(theme) {
     document.documentElement.dataset.theme = theme;
+    syncInlineColors();
     try { localStorage.setItem(THEME_KEY, theme); } catch { /* per-device preference only */ }
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'sakinah' ? '#f6f3ea' : '#00ffff');
     const btn = document.getElementById('skThemeBtn');
