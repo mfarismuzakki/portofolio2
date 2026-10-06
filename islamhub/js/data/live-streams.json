@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-06T01:07Z",
+  "updated": "2026-10-06T09:35Z",
   "channels": [
     {
       "key": "makkah",
@@ -91,7 +91,7 @@
       "name": "Yufid.TV",
       "desc": "Kajian dan ceramah Islam Yufid",
       "channelId": "UCX-4mrOc5r691SzDhHtkOgw",
-      "videoId": "",
+      "videoId": "LkUPHdDWIRM",
       "always": false,
       "icon": "fas fa-play",
       "color": "yufid",
