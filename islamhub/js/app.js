@@ -295,6 +295,9 @@ class IslamHubApp {
                 });
                 
                 console.log('Service Worker registered successfully:', registration.scope);
+
+                // Ask the browser not to evict offline data (granted silently for installed apps).
+                navigator.storage?.persist?.().catch(() => {});
                 
                 // Check for updates every 5 minutes instead of 30 seconds
                 setInterval(() => {
@@ -2100,8 +2103,11 @@ class IslamHubApp {
         const updateLaterBtn = document.getElementById('updateLaterBtn');
         
         if (updateNowBtn) {
-            updateNowBtn.addEventListener('click', async () => {
-                await this.clearAllCache();
+            // The new service worker is already active (skipWaiting); a reload picks up the new
+            // files without wiping offline data. Full clearing stays under "Hapus Data Cache".
+            updateNowBtn.addEventListener('click', () => {
+                this.hideUpdateNotification();
+                location.reload();
             });
         }
         

@@ -21,6 +21,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Build IslamHub offline precache manifest
+        run: python3 islamhub/tools/build_precache.py
+
       - name: Prepare site (exclude large Quran audio)
         run: |
           mkdir -p _site
