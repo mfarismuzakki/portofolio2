@@ -17,6 +17,7 @@ INCLUDE_FILES = ["index.html", "manifest.json", "assets/logo", "assets/icons"]
 EXCLUDE = [
     re.compile(r"^js/data/jadwal/"),          # 66 cities x 1.6 MB: cached when a city is used
     re.compile(r"^js/data/alquran/pages/"),   # Qur'an page text: on demand / "Mode Offline"
+    re.compile(r"^js/data/live-streams\.json$"),  # refreshed every 3 hours; network-first
     re.compile(r"^css/style\.css$"),          # legacy stylesheet, not loaded
     re.compile(r"^assets/icons/.*(_files/|\.html$|source\.png$)"),  # generator leftovers
     re.compile(r"^vendor/fontawesome/webfonts/.*\.ttf$"),  # woff2 is used everywhere we run
