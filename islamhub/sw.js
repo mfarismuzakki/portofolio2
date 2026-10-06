@@ -10,11 +10,12 @@
  */
 importScripts('precache-manifest.js');
 
-const BUILD = '83234dd98cf4';
+const BUILD = '4a00b8f48609';
 const SHELL = `islamhub-shell-${self.__PRECACHE_VERSION || BUILD}`;
 const DATA = 'islamhub-data';                // runtime cache, kept across versions
 const AUDIO = 'islamhub-alquran-audio';      // explicit Qur'an audio downloads only
 const META = '__precache_meta__';
+const QURAN_AUDIO_CDN = 'https://cdn.jsdelivr.net/gh/mfarismuzakki/portofolio2@main/islamhub/assets/audio/alquran/';
 const NET_TIMEOUT = 3500;
 
 const scopeUrl = new URL(self.registration.scope);
@@ -66,6 +67,11 @@ self.addEventListener('fetch', event => {
   const req = event.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  // Qur'an murottal is hosted on jsDelivr; downloaded files are answered from AUDIO.
+  if (url.href.startsWith(QURAN_AUDIO_CDN)) {
+    event.respondWith(audio(req));
+    return;
+  }
   // Only our own files; APIs, YouTube and map tiles go straight to the network.
   if (url.origin !== scopeUrl.origin || !url.pathname.startsWith(scopeUrl.pathname)) return;
 

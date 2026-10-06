@@ -162,10 +162,21 @@ function getSurahsByPage(page) {
     return QURAN_SURAHS.filter(surah => page >= surah.startPage && page <= surah.endPage);
 }
 
+// Murottal Mishary Rashid Alafasy. The 3.3 GB of audio is not part of the Pages deploy
+// (nor the app bundle), so it is served from this repository through jsDelivr, which
+// supports CORS and Range requests. Downloaded files are kept offline by sw.js.
+const QURAN_AUDIO_BASE = 'https://cdn.jsdelivr.net/gh/mfarismuzakki/portofolio2@main/islamhub/assets/audio/alquran';
+
 // Get audio path for page
 function getAudioPathForPage(page) {
     const pageStr = page.toString().padStart(3, '0');
-    return `assets/audio/alquran/Page${pageStr}.mp3`;
+    return `${QURAN_AUDIO_BASE}/Page${pageStr}.mp3`;
+}
+
+// Get audio path for a single verse
+function getAudioPathForVerse(surah, verse) {
+    const s = String(surah).padStart(3, '0');
+    return `${QURAN_AUDIO_BASE}/verses/${s}/${s}_${String(verse).padStart(3, '0')}.mp3`;
 }
 
 // Get page info with complete metadata
@@ -191,6 +202,7 @@ if (typeof module !== 'undefined' && module.exports) {
         getJuzByPage,
         getSurahsByPage,
         getAudioPathForPage,
+        getAudioPathForVerse,
         getPageInfo
     };
 }
@@ -202,5 +214,7 @@ if (typeof window !== 'undefined') {
     window.getJuzByPage = getJuzByPage;
     window.getSurahsByPage = getSurahsByPage;
     window.getAudioPathForPage = getAudioPathForPage;
+    window.getAudioPathForVerse = getAudioPathForVerse;
+    window.QURAN_AUDIO_BASE = QURAN_AUDIO_BASE;
     window.getPageInfo = getPageInfo;
-}
+}

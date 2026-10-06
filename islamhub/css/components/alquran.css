@@ -18,7 +18,17 @@
     font-display: swap;
 }
 
-/* Amiri Quran and Scheherazade New are loaded from Google Fonts in index.html */
+/* Mushaf Standar Indonesia typeface by LPMQ Kemenag (calligrapher H. Isep Misbah),
+   bundled locally so it works offline. */
+@font-face {
+    font-family: 'LPMQ Isep Misbah';
+    src: url('../../vendor/fonts/lpmq-isep-misbah.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Amiri Quran and Scheherazade New are self-hosted in vendor/fonts/fonts.css */
 
 /* Main Container */
 .alquran-container {
@@ -601,6 +611,17 @@
 }
 
 /* Arabic Font Families */
+.arabic-text.lpmq,
+.verse-arabic.lpmq,
+.verse-arabic-inline.lpmq,
+.basmalah-arabic.lpmq {
+    font-family: 'LPMQ Isep Misbah', 'Amiri Quran', serif !important;
+    /* LPMQ glyphs are drawn smaller than Amiri at the same size; keep the user's scale. */
+    font-size: calc(var(--arabic-font-size, 1.2rem) * 1.3) !important;
+    line-height: 2.3;
+    letter-spacing: 0 !important;
+}
+
 .arabic-text.uthmanic,
 .verse-arabic.uthmanic,
 .verse-arabic-inline.uthmanic,
@@ -7614,3 +7635,20 @@ body[data-audio-player-visible="true"] .alquran-container {
         text-shadow: 0 0 28px rgba(255, 60, 0, 1), 0 0 14px rgba(255, 200, 0, 0.6);
     }
 }
+
+/* ===== Mode Offline manager (offline-manager.js) ===== */
+.qo-modal { direction: ltr; text-align: left; }
+.qo-modal .modal-body { display: grid; gap: 16px; align-content: start; max-width: 720px; margin: 0 auto; width: 100%; }
+.qo-intro, .qo-note { font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin: 0; }
+.qo-note i { margin-right: 6px; }
+.qo-card { display: grid; gap: 12px; padding: 20px !important; }
+.qo-card .offline-card-header { margin: 0; }
+.qo-card .offline-card-title p { margin: 2px 0 0; font-size: 13px; color: var(--text-secondary); }
+.qo-label { display: grid; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.qo-audio-status, .qo-total { margin: 0; font-size: 13px; color: var(--text-secondary); }
+.qo-bar { height: 8px; border-radius: 8px; background: rgba(128, 128, 128, 0.2); overflow: hidden; }
+.qo-bar i { display: block; height: 100%; width: 0; background: var(--primary-cyan); border-radius: 8px; transition: width .3s; }
+.qo-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.qo-card button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 16px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+.qo-card button:disabled { opacity: .55; cursor: default; }
+.qo-delete-btn { background: transparent; border: 1px solid rgba(181, 84, 63, .5); color: #c96a55; }

@@ -3082,6 +3082,13 @@ html[data-theme="sakinah"] .alquran-streak-flame {
     text-shadow: none;
   }
 }
+html[data-theme="sakinah"] .qo-bar {
+  background: rgba(236, 233, 220, 0.2);
+}
+html[data-theme="sakinah"] .qo-delete-btn {
+  border: 1px solid rgba(181, 84, 63, 0.55);
+  color: rgb(160, 70, 50);
+}
 
 /* ---- animations.css ---- */
 html[data-theme="sakinah"] .cyber-grid {
