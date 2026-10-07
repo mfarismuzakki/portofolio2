@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-06T15:31Z",
+  "updated": "2026-10-07T06:48Z",
   "channels": [
     {
       "key": "makkah",
@@ -79,11 +79,11 @@
       "name": "Khalid Basalamah Official",
       "desc": "Kajian langsung Ustadz Khalid Basalamah",
       "channelId": "UCJHC3VbFsp7kJ2NxPGltwiw",
-      "videoId": "",
+      "videoId": "ogk_h8gGeZg",
       "always": false,
       "logo": "assets/logo/khalid_tv.jpg",
       "color": "khalid",
-      "live": false
+      "live": true
     },
     {
       "key": "yufid",
