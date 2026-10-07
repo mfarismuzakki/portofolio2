@@ -191,19 +191,19 @@ class StreamingApp {
             </div>`;
     }
 
+    // Every channel plays inside the app: the live broadcast when there is one,
+    // otherwise the channel's uploads playlist (UC… -> UU…).
+    embedUrl(c) {
+        const q = 'autoplay=1&rel=0&playsinline=1';
+        if (c.videoId && (c.live || c.always)) return `https://www.youtube.com/embed/${c.videoId}?${q}`;
+        return `https://www.youtube.com/embed/videoseries?list=UU${c.channelId.slice(2)}&${q}`;
+    }
+
     openLive(key) {
         const c = this.liveChannels.find(x => x.key === key);
         if (!c) return;
-        if (c.videoId && (c.live || c.always)) {
-            this.openVideoStream(`https://www.youtube.com/embed/${c.videoId}?autoplay=1&rel=0&playsinline=1`, c.name, c);
-        } else {
-            // Not live right now: play the channel's uploads playlist (UC… -> UU…) in the app.
-            this.openVideoStream(`https://www.youtube.com/embed/videoseries?list=UU${c.channelId.slice(2)}&autoplay=1&rel=0&playsinline=1`, `${c.name} · terbaru`, c);
-        }
-    }
-
-    openExternal(url) {
-        window.open(url, window.Capacitor?.isNativePlatform?.() ? '_system' : '_blank', 'noopener');
+        const live = c.videoId && (c.live || c.always);
+        this.openVideoStream(this.embedUrl(c), live ? c.name : `${c.name} · terbaru`, c);
     }
 
     render() {
@@ -333,7 +333,7 @@ class StreamingApp {
                     </div>
                     <div class="video-modal-foot">
                         <span>Siaran berhenti atau tidak muncul?</span>
-                        <a id="videoYoutubeLink" href="#" target="_blank" rel="noopener">Buka di YouTube <i class="fas fa-arrow-up-right-from-square"></i></a>
+                        <button type="button" class="video-reload-btn" onclick="window.streamingApp.reloadVideoStream()"><i class="fas fa-rotate-right"></i> Muat ulang</button>
                     </div>
                 </div>
             </div>
@@ -756,14 +756,20 @@ class StreamingApp {
         const modal = document.getElementById('videoModal');
         const iframe = document.getElementById('videoIframe');
         const title = document.getElementById('videoModalTitle');
-        const link = document.getElementById('videoYoutubeLink');
 
         if (modal && iframe && title) {
             title.textContent = name;
             iframe.src = url;
-            if (link) link.href = channel ? `https://www.youtube.com/channel/${channel.channelId}/live` : url.replace('/embed/', '/watch?v=').replace('?', '&');
+            this.currentVideoUrl = url;
             modal.classList.add('show');
         }
+    }
+
+    reloadVideoStream() {
+        const iframe = document.getElementById('videoIframe');
+        if (!iframe || !this.currentVideoUrl) return;
+        iframe.src = '';
+        requestAnimationFrame(() => { iframe.src = this.currentVideoUrl; });
     }
     
     closeVideoStream() {
@@ -777,21 +783,8 @@ class StreamingApp {
     }
     
     openYouTubeChannel(channelId) {
-        const youtubeUrl = `https://www.youtube.com/channel/${channelId}`;
-        
-        // Check if running in Capacitor (native app)
-        if (window.Capacitor && window.Capacitor.isNativePlatform()) {
-            // Try to open in YouTube app first
-            const youtubeAppUrl = `vnd.youtube://channel/${channelId}`;
-            
-            // Open in YouTube app or fallback to browser
-            window.open(youtubeUrl, '_system');
-        } else {
-            // Open in new tab for web
-            window.open(youtubeUrl, '_blank');
-        }
-        
-        console.log('[Streaming] Opening YouTube channel:', channelId);
+        const c = this.liveChannels.find(x => x.channelId === channelId) || { channelId, name: 'Video terbaru' };
+        this.openVideoStream(this.embedUrl(c), c.name, c);
     }
 
     showStreamingPopup(message, type = 'info', callback = null) {

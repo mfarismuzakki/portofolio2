@@ -277,7 +277,7 @@ export default class AlQuranApp {
         const infoSection = document.createElement('div');
         infoSection.className = 'quran-info-simple';
         infoSection.innerHTML = `
-            <p><i class="fas fa-book"></i> <strong>Mushaf:</strong> Madinah (Rasm Utsmani)</p>
+            <p><i class="fas fa-book"></i> <strong>Mushaf:</strong> ${this.settings.mushafScript === 'madinah' ? 'Madinah (Rasm Utsmani)' : 'Standar Indonesia (Kemenag)'}</p>
             <p><i class="fas fa-language"></i> <strong>Terjemahan:</strong> Kemenag RI</p>
             <p><i class="fas fa-book-open"></i> <strong>Tafsir:</strong> Kemenag RI</p>
             <p><i class="fas fa-microphone"></i> <strong>Qari:</strong> Mishary Rashid Alafasy</p>
@@ -2120,9 +2120,40 @@ export default class AlQuranApp {
             const pageData = await response.json();
             return this.settings.mushafScript === 'kemenag' ? await this._withKemenagText(pageData, pageStr) : pageData;
         } catch (error) {
+            // Offline and this page was never opened: the Arabic text still ships with the app.
+            const fallback = await this._kemenagOnlyPage(pageNumber);
+            if (fallback) return fallback;
             console.error(`Error loading page ${pageNumber}:`, error);
             return null;
         }
+    }
+
+    // A page built from the on-device Mushaf Standar Indonesia text alone (no translation or tafsir).
+    async _kemenagOnlyPage(pageNumber) {
+        const pageStr = String(pageNumber).padStart(3, '0');
+        let text = this._kemenagPages.get(pageStr);
+        if (!text) {
+            try {
+                const res = await fetch(`${this.basePath}/js/data/alquran/kemenag/Page${pageStr}.json`);
+                if (!res.ok) return null;
+                text = await res.json();
+                this._kemenagPages.set(pageStr, text);
+            } catch (e) {
+                return null;
+            }
+        }
+        const surahs = new Map();
+        for (const [key, arabic] of Object.entries(text)) {
+            const [s, v] = key.split(':').map(Number);
+            const info = this.QURAN_SURAHS.find(x => x.number === s) || {};
+            if (!surahs.has(s)) surahs.set(s, { number: s, name: info.name, nameArabic: info.nameArabic, revelation: info.revelation, verses: [] });
+            surahs.get(s).verses.push({ number: String(v), arabic, transliteration: '', translation: '', tafsir: '' });
+        }
+        if (!this._offlineTextNoticeShown) {
+            this._offlineTextNoticeShown = true;
+            this._notify('Offline: terjemahan halaman ini belum tersimpan. Teks Arab tetap tampil. Simpan semua teks lewat Mode Offline.', 'info');
+        }
+        return { pageNumber, offlineTextOnly: true, surahs: [...surahs.values()] };
     }
 
     // Mushaf Standar Indonesia (Kemenag/LPMQ) text for the verses on this page.

@@ -3068,11 +3068,11 @@ export default class AdzanApp {
         videoTabHtml += `<div class="adm-video-section-title"><i class="fas fa-kaaba"></i> Live Haramain</div>`;
         liveHaramain.forEach(ch => {
             videoTabHtml += `
-                <div class="adm-video-channel-item" data-url="${ch.url}" data-name="${ch.name}">
+                <div class="adm-video-channel-item" data-url="${ch.url || sa?.embedUrl?.(ch) || ''}" data-name="${ch.name}">
                     <div class="adm-video-channel-icon adm-vc-icon-haramain"><i class="${ch.icon || 'fas fa-mosque'}"></i></div>
                     <div class="adm-video-channel-info">
                         <div class="adm-video-channel-name">${ch.name}</div>
-                        <div class="adm-video-channel-desc">${ch.description || ''}</div>
+                        <div class="adm-video-channel-desc">${ch.description || ch.desc || ''}</div>
                     </div>
                     <button class="adm-video-play-btn"><i class="fas fa-play"></i></button>
                 </div>`;
@@ -3083,11 +3083,11 @@ export default class AdzanApp {
                 ? `<img src="${ch.logo}" class="adm-vc-logo" alt="${ch.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="adm-video-channel-icon adm-vc-icon-kajian" style="display:none"><i class="fas fa-tv"></i></div>`
                 : `<div class="adm-video-channel-icon adm-vc-icon-kajian"><i class="fas fa-tv"></i></div>`;
             videoTabHtml += `
-                <div class="adm-video-channel-item" data-url="${ch.url}" data-name="${ch.name}">
+                <div class="adm-video-channel-item" data-url="${ch.url || sa?.embedUrl?.(ch) || ''}" data-name="${ch.name}">
                     <div class="adm-vc-logo-wrap">${logoHtml}</div>
                     <div class="adm-video-channel-info">
                         <div class="adm-video-channel-name">${ch.name}</div>
-                        <div class="adm-video-channel-desc">${ch.description || ''}</div>
+                        <div class="adm-video-channel-desc">${ch.description || ch.desc || ''}</div>
                     </div>
                     <button class="adm-video-play-btn"><i class="fas fa-play"></i></button>
                 </div>`;

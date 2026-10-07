@@ -250,3 +250,21 @@ html[data-theme="sakinah"] .sk-live .sk-mini-lbl { color: #9a3f2b; }
 html[data-theme="sakinah"] .mg-adventure .mg-secondary-controls label { color: #4f5b4a; }
 html[data-theme="sakinah"] .peraga-bacaan-translation { color: #4a5b51 !important; }
 html[data-theme="sakinah"] .sunnah-section .section-description, html[data-theme="sakinah"] .sunnah-prayer-reference { color: #4f5b4a !important; }
+
+/* SVG ring gradients carry neon stop colours as attributes; CSS stop-color overrides them. */
+html[data-theme="sakinah"] #counterGrad stop:first-child,
+html[data-theme="sakinah"] #adzanRingGrad stop:first-child { stop-color: #2f6b55; }
+html[data-theme="sakinah"] #counterGrad stop:last-child,
+html[data-theme="sakinah"] #adzanRingGrad stop:last-child { stop-color: #b08a3e; }
+
+/* Kalender: bolder dates, readable Hijri sub-dates, a clear "today" */
+html[data-theme="sakinah"] .kalender-cell { background: #fffdf7; }
+html[data-theme="sakinah"] .kalender-cell.empty { background: #efece2; }
+html[data-theme="sakinah"] .kalender-cell-masehi { font-size: 1.12rem; font-weight: 700; color: #1f3d33; }
+html[data-theme="sakinah"] .kalender-cell-hijri { font-size: 0.7rem; font-weight: 600; color: #4a5b51; }
+html[data-theme="sakinah"] .kalender-cell.friday .kalender-cell-masehi { color: #8a6a2a; }
+html[data-theme="sakinah"] .kalender-weekday { font-weight: 700; color: #1f3d33; }
+html[data-theme="sakinah"] .kalender-weekday.friday { color: #8a6a2a; }
+html[data-theme="sakinah"] .kalender-cell.today { background: #1f3d33 !important; border-color: #1f3d33 !important; box-shadow: 0 6px 16px rgba(31, 61, 51, .28); }
+html[data-theme="sakinah"] .kalender-cell.today .kalender-cell-masehi { color: #fff; }
+html[data-theme="sakinah"] .kalender-cell.today .kalender-cell-hijri { color: #e0c27f; }
