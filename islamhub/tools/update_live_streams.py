@@ -22,6 +22,10 @@ def current_live(channel_id):
     req = urllib.request.Request(f"https://www.youtube.com/channel/{channel_id}/live", headers=HEADERS)
     with urllib.request.urlopen(req, timeout=30) as r:
         html = r.read().decode("utf-8", "ignore")
+    # From datacenter IPs YouTube may answer with a consent or bot check page. That says
+    # nothing about the channel, so keep the previous state instead of marking it offline.
+    if "ytInitialData" not in html and "ytInitialPlayerResponse" not in html:
+        raise RuntimeError("no player data (consent or bot check page)")
     canon = re.search(r'<link rel="canonical" href="https://www\.youtube\.com/watch\?v=([\w-]{11})"', html)
     live = '"isLiveNow":true' in html or '"isLive":true' in html
     owner = re.search(r'"channelId":"(UC[\w-]{22})"', html)

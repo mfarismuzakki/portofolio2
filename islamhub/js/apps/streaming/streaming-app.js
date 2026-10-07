@@ -166,14 +166,14 @@ class StreamingApp {
     liveStatus(c) {
         if (c.live) return '<span class="status-dot live"></span><span>Live sekarang</span>';
         if (c.always) return '<span class="status-dot live"></span><span>Siaran 24 jam</span>';
-        return '<span class="status-dot"></span><span>Kajian terjadwal</span>';
+        return '<span class="status-dot"></span><span>Belum live · putar video terbaru</span>';
     }
 
     renderVideoCard(c) {
         const media = c.logo
             ? `<div class="video-logo"><img src="${c.logo}" alt="${c.name}" onerror="this.style.display='none'"></div>`
             : `<div class="video-icon"><i class="${c.icon || 'fas fa-tv'}"></i></div>`;
-        const canEmbed = !!c.videoId && (c.live || c.always);
+        const live = !!c.videoId && (c.live || c.always);
         return `
             <div class="video-card video-${c.color}" data-key="${c.key}">
                 <div class="video-info">
@@ -185,8 +185,8 @@ class StreamingApp {
                     </div>
                 </div>
                 <button class="btn-video" onclick="window.streamingApp.openLive('${c.key}')">
-                    <i class="fas ${canEmbed ? 'fa-play-circle' : 'fa-arrow-up-right-from-square'}"></i>
-                    <span>${canEmbed ? 'Tonton Live' : 'Buka di YouTube'}</span>
+                    <i class="fas ${live ? 'fa-play-circle' : 'fa-list-ul'}"></i>
+                    <span>${live ? 'Tonton Live' : 'Video Terbaru'}</span>
                 </button>
             </div>`;
     }
@@ -197,7 +197,8 @@ class StreamingApp {
         if (c.videoId && (c.live || c.always)) {
             this.openVideoStream(`https://www.youtube.com/embed/${c.videoId}?autoplay=1&rel=0&playsinline=1`, c.name, c);
         } else {
-            this.openExternal(`https://www.youtube.com/channel/${c.channelId}/live`);
+            // Not live right now: play the channel's uploads playlist (UC… -> UU…) in the app.
+            this.openVideoStream(`https://www.youtube.com/embed/videoseries?list=UU${c.channelId.slice(2)}&autoplay=1&rel=0&playsinline=1`, `${c.name} · terbaru`, c);
         }
     }
 
