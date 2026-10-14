@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-13T21:26Z",
+  "updated": "2026-10-14T00:59Z",
   "channels": [
     {
       "key": "makkah",
@@ -95,7 +95,7 @@
       "always": false,
       "icon": "fas fa-play",
       "color": "yufid",
-      "live": true
+      "live": false
     },
     {
       "key": "ahsan",
