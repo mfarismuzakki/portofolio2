@@ -57,16 +57,16 @@ export default class MosqueScene {
         this.canvas=canvas; this.T=window.THREE;
         if(!this.T) throw new Error('Peraga 3D belum dapat dimuat. Periksa koneksi, lalu muat ulang.');
         const T=this.T;
-        this.scene=new T.Scene(); this.scene.background=new T.Color('#e5ddd0'); this.scene.fog=new T.Fog('#e5ddd0',9,24);
+        this.scene=new T.Scene(); this.scene.background=new T.Color('#f5efe3'); this.scene.fog=new T.Fog('#f5efe3',18,48);
         this.camera=new T.PerspectiveCamera(38,1,.1,40);
         const smallScreen=matchMedia('(max-width: 700px)').matches;
         this.renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'low-power'}); this.renderer.setPixelRatio(Math.min(devicePixelRatio,smallScreen?1.5:2));
-        this.renderer.outputEncoding=T.sRGBEncoding; this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.05;this.renderer.shadowMap.enabled=true; this.renderer.shadowMap.type=T.PCFSoftShadowMap;
-        this.scene.add(new T.HemisphereLight(0xfffaf1,0x777365,.65));
-        const sun=new T.DirectionalLight(0xffeed4,.85); sun.position.set(-3,7,-4);sun.castShadow=true;
-        sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-4;sun.shadow.camera.right=4;sun.shadow.camera.top=4;sun.shadow.camera.bottom=-4;sun.shadow.bias=-.0003;this.scene.add(sun);
+        this.renderer.outputEncoding=T.sRGBEncoding; this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.08;this.renderer.shadowMap.enabled=true; this.renderer.shadowMap.type=T.PCFSoftShadowMap;
+        this.scene.add(new T.HemisphereLight(0xfffaf1,0x9caf9f,.82));
+        const sun=new T.DirectionalLight(0xffe6bd,1.15); sun.position.set(-3.5,7,2.5);sun.castShadow=true;
+        sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-4;sun.shadow.camera.right=4;sun.shadow.camera.top=4;sun.shadow.camera.bottom=-4;sun.shadow.camera.near=.5;sun.shadow.camera.far=16;sun.shadow.bias=-.0003;sun.shadow.normalBias=.018;this.scene.add(sun);
         this.renderer.shadowMap.autoUpdate=false;
-        this.mats={cloth:this.mat('#a1ad94'),pants:this.mat('#d1c8b3'),skin:this.mat('#b78464'),trim:this.mat('#b5955e'),wall:this.mat('#e8deca'),green:this.mat('#285b50'),dark:this.mat('#23483f'),cap:this.mat('#f2ebdd')};
+        this.mats={cloth:this.mat('#f6f1e5'),clothShade:this.mat('#e7e3d7'),trouser:this.mat('#dedbd0'),skin:this.mat('#b98262'),skinLight:this.mat('#ca9a79'),beard:this.mat('#382d26'),gold:this.mat('#b08a3e'),goldLight:this.mat('#e0c27f'),wall:this.mat('#e9dcc3'),wallShade:this.mat('#cdbd9c'),carpet:this.mat('#d8e9df'),sage:this.mat('#83a894'),deepGreen:this.mat('#1f4c3d'),mint:this.mat('#dcebe3'),cap:this.mat('#f8f5ea')};
         this.meshes={};this.room();this.figure(); this.angle=2.25;this.pitch=.18;this.radius=4.4;this.rotate=false;
         this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(canvas.parentElement);
         canvas.addEventListener('pointerdown',e=>{this.drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);this.rotate=false;});
@@ -81,72 +81,111 @@ export default class MosqueScene {
     box(x,y,z,material,pos,parent){const m=this.mesh(new this.T.BoxGeometry(x,y,z),material,parent);m.position.set(...pos);return m;}
     arch(x,z,rotation=0){
         const T=this.T,g=new T.Group();g.position.set(x,0,z);g.rotation.y=rotation;this.scene.add(g);
-        this.box(.18,2.3,.20,this.mats.wall,[-.84,1.15,0],g);this.box(.18,2.3,.20,this.mats.wall,[.84,1.15,0],g);
-        const curve=new T.EllipseCurve(0,2.3,.84,.92,0,Math.PI,false,0);
-        const points=curve.getPoints(36).map(p=>new T.Vector3(p.x,p.y,0));
-        this.mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points),40,.1,8,false),this.mats.wall,g);
-        const inner=this.box(1.48,2.7,.08,this.mats.green,[0,1.38,.14],g);
-        for(let j=-3;j<=3;j++)this.box(.018,2.2,.025,this.mats.trim,[j*.18,1.4,.08],g);
-        inner.castShadow=false;
+        const wall=this.mats.wall,shade=this.mats.wallShade,gold=this.mats.goldLight;
+        this.box(.24,2.5,.32,wall,[-.94,1.25,0],g);this.box(.24,2.5,.32,wall,[.94,1.25,0],g);
+        this.box(.34,.12,.42,shade,[-.94,.10,0],g);this.box(.34,.12,.42,shade,[.94,.10,0],g);
+        this.box(.38,.13,.46,gold,[-.94,2.36,0],g);this.box(.38,.13,.46,gold,[.94,2.36,0],g);
+        const curve=new T.EllipseCurve(0,2.32,.94,.98,0,Math.PI,false,0);
+        const points=curve.getPoints(28).map(p=>new T.Vector3(p.x,p.y,0));
+        this.mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points),32,.12,8,false),wall,g);
+    }
+    mihrab(){
+        const T=this.T,g=new T.Group();g.position.set(0,0,-4.915);this.scene.add(g);
+        const niche=new T.Shape();niche.moveTo(-1.18,.34);niche.lineTo(-1.18,2.18);niche.absarc(0,2.18,1.18,Math.PI,0,false);niche.lineTo(1.18,.34);niche.closePath();
+        const back=this.mesh(new T.ShapeGeometry(niche,32),this.mats.deepGreen,g);back.castShadow=false;back.receiveShadow=false;
+        const goldPath=[new T.Vector3(-1.18,.34,.016),new T.Vector3(-1.18,2.18,.016)];
+        new T.EllipseCurve(0,2.18,1.18,1.18,Math.PI,0,false).getPoints(32).forEach(p=>goldPath.push(new T.Vector3(p.x,p.y,.016)));
+        goldPath.push(new T.Vector3(1.18,.34,.016));
+        const outline=this.mesh(new T.TubeGeometry(new T.CatmullRomCurve3(goldPath),48,.026,6,false),this.mats.goldLight,g);outline.castShadow=false;
+        const lineMat=new T.LineBasicMaterial({color:'#b08a3e',transparent:true,opacity:.38});
+        for(let row=0;row<4;row++)for(let col=-2;col<=2;col++){
+            const x=col*.34+(row%2?.17:0),y=.78+row*.32;
+            if(Math.abs(x)+Math.max(0,y-2.18)*.75>1.01)continue;
+            const diamond=new T.BufferGeometry().setFromPoints([new T.Vector3(x,y+.105,.024),new T.Vector3(x+.105,y,.024),new T.Vector3(x,y-.105,.024),new T.Vector3(x-.105,y,.024),new T.Vector3(x,y+.105,.024)]);
+            g.add(new T.Line(diamond,lineMat));
+        }
+        this.box(2.48,.09,.10,this.mats.gold,[0,.31,.01],g);
     }
     room(){
         const T=this.T,m=this.mats;
-        this.box(24,.06,24,this.mat('#d2c8b4'),[0,-.05,0]);
-        this.box(14,4.6,.15,m.wall,[0,2.3,4]);
-        for(let x=-5;x<=5;x+=2)this.arch(x,3.86);
-        this.box(.15,4.6,12,m.wall,[-5,2.3,0]);
-        for(let z=-4;z<=3;z+=2.5)this.arch(-4.86,z,Math.PI/2);
-        for(let x=-4;x<=4;x+=2){this.box(.2,3.8,.2,m.wall,[x,1.9,2.5]);this.box(.38,.12,.38,m.trim,[x,2.9,2.5]);}
-        for(let z=-3;z<5;z+=1.7){this.box(10,.012,1.5,this.mat('#728e7a'),[0,.001,z]);this.box(10,.016,.035,m.trim,[0,.009,z-.72]);}
-        this.box(1.12,.025,2.3,m.green,[0,.021,-.38]);
-        for(const x of [-.51,.51])this.box(.025,.008,2.19,m.trim,[x,.038,-.38]);
-        for(const z of [-1.43,.67])this.box(1.03,.008,.025,m.trim,[0,.038,z]);
-        const marker=new T.Shape();marker.moveTo(-.12,0);marker.lineTo(0,.2);marker.lineTo(.12,0);marker.closePath();
-        const arrow=this.mesh(new T.ShapeGeometry(marker),m.trim);arrow.rotation.x=-Math.PI/2;arrow.position.set(0,.047,-1.26);
-        // Mihrab is on the qibla wall, in front of the worshipper.
-        this.box(10,4.6,.12,m.wall,[0,2.3,-5]); this.arch(0,-4.9,Math.PI);
+        this.box(24,.06,24,m.mint,[0,-.05,0]);
+        this.box(14,4.6,.18,m.wall,[0,2.3,4]);
+        for(const x of [-3.65,-2.25,2.25,3.65])this.arch(x,-4.80);
+        this.box(.18,4.6,12,m.wall,[-5,2.3,0]);
+        for(let z=-3.5;z<=3;z+=2.5)this.arch(-4.82,z,Math.PI/2);
+        for(let z=-3.9;z<4.5;z+=1.72){
+            this.box(9.9,.014,1.48,m.carpet,[0,.005,z]);
+            this.box(9.9,.018,.026,m.sage,[0,.017,z-.70]);
+            this.box(9.9,.008,.012,m.sage,[0,.026,z+.68]);
+        }
+        this.box(1.18,.032,2.36,m.deepGreen,[0,.028,-.38]);
+        for(const x of [-.53,.53])this.box(.03,.012,2.22,m.goldLight,[x,.051,-.38]);
+        for(const z of [-1.46,.70])this.box(1.08,.012,.03,m.goldLight,[0,.051,z]);
+        const matArch=new T.EllipseCurve(0,-.82,.24,.24,0,Math.PI,false,0).getPoints(18).map(p=>new T.Vector3(p.x,.057,p.y));
+        const matMotif=this.mesh(new T.TubeGeometry(new T.CatmullRomCurve3(matArch),24,.014,5,false),m.goldLight);matMotif.position.z=-.52;matMotif.castShadow=false;
+        this.box(10,4.6,.16,m.wall,[0,2.3,-5]);this.mihrab();
     }
     figure(){
         const T=this.T,m=this.mats;
-        const tube=(name,r,material)=>this.meshes[name]=this.mesh(new T.CylinderGeometry(r*.92,r,1,24),material);
-        tube('torso',.24,m.cloth);this.meshes.torso.geometry.scale(1,1,.66);
-        this.meshes.hem=this.mesh(new T.CylinderGeometry(.235,.26,.31,32),m.cloth);this.meshes.hem.scale.z=.68;
-        tube('neck',.057,m.skin);
-        this.meshes.shoulders=this.mesh(new T.SphereGeometry(1,24,20),m.cloth);this.meshes.shoulders.scale.set(.25,.10,.145);
+        const capsule=(top,bottom,material,radial=20)=>{
+            const points=[new T.Vector2(0,-.5),new T.Vector2(bottom*.76,-.5),new T.Vector2(bottom,-.5+bottom*.55),new T.Vector2(bottom,.5-top*.55),new T.Vector2(top*.76,.5),new T.Vector2(0,.5)];
+            return new T.LatheGeometry(points,radial);
+        };
+        const limb=(name,top,bottom,material)=>this.meshes[name]=this.mesh(capsule(top,bottom,material),material);
+        limb('torso',.235,.27,m.cloth,24);this.meshes.torso.scale.z=.72;
+        const robeProfile=[new T.Vector2(0,-.5),new T.Vector2(.305,-.5),new T.Vector2(.295,-.42),new T.Vector2(.235,-.04),new T.Vector2(.245,.20),new T.Vector2(.285,.39),new T.Vector2(.265,.5),new T.Vector2(0,.5)];
+        this.meshes.robe=this.mesh(new T.LatheGeometry(robeProfile,28),m.cloth);this.meshes.robe.scale.z=.80;
+        limb('neck',.062,.065,m.skin,16);
+        this.meshes.shoulders=this.mesh(new T.SphereGeometry(1,24,18),m.cloth);this.meshes.shoulders.scale.set(.295,.12,.18);
         this.head=new T.Group();this.scene.add(this.head);
-        const skull=this.mesh(new T.SphereGeometry(1,32,24),m.skin,this.head);skull.scale.set(.12,.165,.125);
-        const nose=this.mesh(new T.SphereGeometry(.027,16,12),m.skin,this.head);nose.scale.set(.6,1,1);nose.position.set(0,-.012,-.126);
-        for(const side of [-1,1]){const ear=this.mesh(new T.SphereGeometry(1,16,12),m.skin,this.head);ear.scale.set(.018,.035,.024);ear.position.set(side*.12,0,0);}
-        const cap=this.mesh(new T.SphereGeometry(.123,32,16,0,Math.PI*2,0,1.08),m.cap,this.head);cap.position.y=.051;
+        const skull=this.mesh(new T.SphereGeometry(1,28,20),m.skin,this.head);skull.scale.set(.125,.17,.13);
+        const nose=this.mesh(new T.SphereGeometry(.027,14,10),m.skinLight,this.head);nose.scale.set(.55,1,1);nose.position.set(0,-.008,-.13);
+        for(const side of [-1,1]){const ear=this.mesh(new T.SphereGeometry(1,14,10),m.skin,this.head);ear.scale.set(.018,.032,.022);ear.position.set(side*.125,-.004,0);}
+        // Short beard: a shell over the lower jaw (below the mouth line), front and sides only.
+        // phi PI-0.35 .. 2PI+0.35 covers the -Z (face) half plus the cheeks; theta 1.95 .. PI is the jaw.
+        const beard=this.mesh(new T.SphereGeometry(1,28,10,Math.PI-.35,Math.PI+.7,1.95,Math.PI-1.95),m.beard,this.head);
+        beard.scale.set(.133,.178,.139);beard.castShadow=false;
+        const cap=this.mesh(new T.SphereGeometry(.13,28,16,0,Math.PI*2,0,1.12),m.cap,this.head);cap.position.y=.052;
+        for(let i=0;i<3;i++){const rib=this.mesh(new T.TorusGeometry(.113-i*.007,.004,5,22),m.clothShade,this.head);rib.rotation.x=Math.PI/2;rib.position.y=.022+i*.028;}
         for(const s of ['L','R']){
-            tube('thigh'+s,.105,m.pants);tube('shin'+s,.079,m.pants);tube('upper'+s,.075,m.cloth);tube('fore'+s,.061,m.cloth);
-            this.meshes['shoulder'+s]=this.mesh(new T.SphereGeometry(.081,24,18),m.cloth);
-            this.meshes['knee'+s]=this.mesh(new T.SphereGeometry(.102,24,18),m.pants);
-            this.meshes['elbow'+s]=this.mesh(new T.SphereGeometry(.074,24,18),m.cloth);
-            this.meshes['foot'+s]=this.mesh(new T.SphereGeometry(1,20,16),m.skin);
-            for(let i=0;i<5;i++)this.meshes['toe'+s+i]=this.mesh(new T.SphereGeometry(.013,12,10),m.skin);
+            limb('thigh'+s,.095,.085,m.trouser);limb('shin'+s,.064,.058,m.trouser);limb('upper'+s,.078,.112,m.cloth);limb('fore'+s,.058,.079,m.cloth);
+            for(const joint of ['shoulder','knee','elbow']){const anchor=new T.Object3D();anchor.visible=false;this.scene.add(anchor);this.meshes[joint+s]=anchor;}
+            this.meshes['foot'+s]=this.mesh(new T.SphereGeometry(1,18,14),m.skin);
+            for(let i=0;i<5;i++)this.meshes['toe'+s+i]=this.mesh(new T.SphereGeometry(.012,10,8),m.skinLight);
             const hand=new T.Group(); this.scene.add(hand);this.meshes['hand'+s]=hand;
-            const palm=this.mesh(new T.SphereGeometry(1,20,16),m.skin,hand);palm.scale.set(.041,.057,.019);
-            for(let i=0;i<4;i++){const finger=this.mesh(new T.CylinderGeometry(.008,.009,.065-(i===3?.012:0),10),m.skin,hand);finger.position.set((i-1.5)*.021,.068,0);this.meshes['finger'+s+i]=finger;}
-            const thumb=this.mesh(new T.SphereGeometry(1,12,12),m.skin,hand);thumb.scale.set(.013,.032,.017);thumb.position.set(s==='R'?-.046:.046,.005,0);
+            this.meshes['cuff'+s]=this.mesh(new T.CylinderGeometry(.070,.074,.068,16),m.clothShade);
+            const palm=this.mesh(new T.SphereGeometry(1,18,14),m.skin,hand);palm.scale.set(.052,.068,.028);
+            for(let i=0;i<4;i++){const finger=this.mesh(capsule(.010,.011,m.skin,10),m.skin,hand);finger.scale.y=.066-(i===3?.013:0);finger.position.set((i-1.5)*.023,.088,0);this.meshes['finger'+s+i]=finger;}
+            const thumb=this.mesh(capsule(.012,.014,m.skin,10),m.skin,hand);thumb.scale.set(.9,.046,.9);thumb.position.set(s==='R'?-.056:.056,.020,0);thumb.rotation.z=s==='R'?.65:-.65;
         }
     }
     segment(name,a,b){const T=this.T,v=new T.Vector3(...b).sub(new T.Vector3(...a));const m=this.meshes[name];m.position.set(...a).addScaledVector(v,.5);m.scale.y=v.length();m.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),v.normalize());}
     apply(p){
-        this.current=p;this.segment('torso',p.hip,p.chest);this.meshes.hem.position.set(...p.hip);this.meshes.hem.quaternion.copy(this.meshes.torso.quaternion);
+        this.current=p;this.segment('torso',p.hip,p.chest);
+        // Keep the skirt attached to the hips: the torso alone follows the bowed back.
+        // It falls vertically in ruku and follows the thighs only once the worshipper kneels.
+        const kneeling=p.hip[1]<.7;
+        const kneeMid=[0,(p.kneeL[1]+p.kneeR[1])*.5,(p.kneeL[2]+p.kneeR[2])*.5];
+        const bowing=Math.abs(p.chest[1]-p.hip[1])<.08&&p.hip[1]>=.7;
+        const robeBottom=kneeling
+            ? [0,Math.max(.095,kneeMid[1]+.008),kneeMid[2]]
+            : [0,.30,p.hip[2]];
+        const robeTop=p.hip;
+        this.segment('robe',robeBottom,robeTop);
         this.meshes.shoulders.position.set(...p.chest);this.meshes.shoulders.quaternion.copy(this.meshes.torso.quaternion);
         this.segment('neck',p.chest,p.head);
         this.head.position.set(...p.head);this.head.rotation.set(p.tilt,p.turn,0);
         for(const s of ['L','R']){
             this.segment('thigh'+s,p['hip'+s],p['knee'+s]);this.segment('shin'+s,p['knee'+s],p['ankle'+s]);
             this.segment('upper'+s,p['shoulder'+s],p['elbow'+s]);this.segment('fore'+s,p['elbow'+s],p['wrist'+s]);
+            const cuff=this.meshes['cuff'+s],forearm=this.meshes['fore'+s],wrist=p['wrist'+s],cuffAxis=new this.T.Vector3(0,1,0).applyQuaternion(forearm.quaternion);cuff.position.set(...wrist).addScaledVector(cuffAxis,-.034);cuff.quaternion.copy(forearm.quaternion);
             for(const j of ['shoulder','knee','elbow'])this.meshes[j+s].position.set(...p[j+s]);
             const a=p['ankle'+s],b=p['toe'+s],v=new this.T.Vector3(...b).sub(new this.T.Vector3(...a));
             const foot=this.meshes['foot'+s];foot.position.set(...a).addScaledVector(v,.5);foot.scale.set(.065,v.length()*.6,.042);foot.quaternion.setFromUnitVectors(new this.T.Vector3(0,1,0),v.normalize());
             const cross=new this.T.Vector3(v.z,0,-v.x).normalize();
             for(let i=0;i<5;i++)this.meshes['toe'+s+i].position.set(...b).addScaledVector(cross,(i-2)*.023);
             const hand=this.meshes['hand'+s];hand.position.set(...p['wrist'+s]);hand.rotation.set(...p['handEuler'+s]);
-            for(let i=0;i<4;i++){const f=this.meshes['finger'+s+i];f.scale.y=p.hands==='tasyahud'&&s==='R'&&i!==0?.35:1;f.position.y=f.scale.y===1?.068:.040;}
+            for(let i=0;i<4;i++){const f=this.meshes['finger'+s+i],length=(p.hands==='tasyahud'&&s==='R'&&i!==0)?.024:.066-(i===3?.013:0);f.scale.y=length;f.position.y=length>.03?.088:.042;}
         }
         this.renderer.shadowMap.needsUpdate=true;
     }

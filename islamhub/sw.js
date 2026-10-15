@@ -10,7 +10,7 @@
  */
 importScripts('precache-manifest.js');
 
-const BUILD = '5a82d3d0ae46';
+const BUILD = 'cbe1dc045863';
 const SHELL = `islamhub-shell-${self.__PRECACHE_VERSION || BUILD}`;
 const DATA = 'islamhub-data';                // runtime cache, kept across versions
 const AUDIO = 'islamhub-alquran-audio';      // explicit Qur'an audio downloads only

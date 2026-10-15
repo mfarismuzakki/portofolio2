@@ -2112,7 +2112,7 @@ class IslamHubApp {
 
     // Cache Management Methods
     setupCacheManagement() {
-        const APP_VERSION = '1.4.0';
+        const APP_VERSION = '1.4.1';
         const STORAGE_VERSION_KEY = 'islamhub_app_version';
         
         // Check version and show update notification if needed

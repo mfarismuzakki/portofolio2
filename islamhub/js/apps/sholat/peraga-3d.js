@@ -1,4 +1,4 @@
-import MosqueScene from './mosque-scene.js?v=4.0.1';
+import MosqueScene from './mosque-scene.js?v=5.4.0';
 
 const POSES = [
     // ===== RAKA'AT 1 =====
