@@ -185,32 +185,48 @@
                         <p>Perhitungan waris berdasarkan Al-Qur'an dan Sunnah dengan dalil lengkap</p>
                     </div>
 
-                    <!-- Menu Cards -->
+                    <!-- Menu -->
                     <div class="waris-menu-grid">
-                        <div class="waris-menu-card" onclick="window.warisApp.showCalculator()">
-                            <div class="waris-menu-icon">
-                                <i class="fas fa-calculator"></i>
+                        <div class="waris-menu-card waris-menu-primary" role="button" tabindex="0" onclick="window.warisApp.showCalculator()">
+                            <div class="waris-menu-icon"><i class="fas fa-calculator"></i></div>
+                            <div class="waris-menu-text">
+                                <h3>Perhitungan Baru</h3>
+                                <p>Hitung pembagian waris dari data keluarga Anda</p>
                             </div>
-                            <h3>Perhitungan Baru</h3>
-                            <p>Mulai perhitungan waris baru dengan data Anda</p>
+                            <i class="fas fa-chevron-right waris-menu-go" aria-hidden="true"></i>
                         </div>
-
-                        <div class="waris-menu-card" onclick="window.warisApp.showExamples()">
-                            <div class="waris-menu-icon">
-                                <i class="fas fa-file-alt"></i>
+                        <div class="waris-menu-card" role="button" tabindex="0" onclick="window.warisApp.showExamples()">
+                            <div class="waris-menu-icon"><i class="fas fa-book-open"></i></div>
+                            <div class="waris-menu-text">
+                                <h3>Contoh Perhitungan</h3>
+                                <p>Umariyah, 'awl, radd, dan ashabah</p>
                             </div>
-                            <h3>Contoh Perhitungan</h3>
-                            <p>Lihat contoh kasus waris yang umum terjadi</p>
+                            <i class="fas fa-chevron-right waris-menu-go" aria-hidden="true"></i>
                         </div>
-
-                        <div class="waris-menu-card" onclick="window.warisApp.showFavorites()">
-                            <div class="waris-menu-icon">
-                                <i class="fas fa-star"></i>
+                        <div class="waris-menu-card" role="button" tabindex="0" onclick="window.warisApp.showFavorites()">
+                            <div class="waris-menu-icon"><i class="fas fa-star"></i></div>
+                            <div class="waris-menu-text">
+                                <h3>Favorit</h3>
+                                <p>Perhitungan yang Anda simpan</p>
                             </div>
-                            <h3>Favorit</h3>
-                            <p>Simpan dan akses perhitungan favorit</p>
+                            <i class="fas fa-chevron-right waris-menu-go" aria-hidden="true"></i>
                         </div>
                     </div>
+
+                    <!-- How it works -->
+                    <section class="waris-howto" aria-label="Cara kerja">
+                        <h3>Cara kerja</h3>
+                        <ol>
+                            <li><b>1</b><div><strong>Tirkah</strong><span>Harta peninggalan, dikurangi biaya pemakaman, hutang, dan wasiat (maksimal 1/3).</span></div></li>
+                            <li><b>2</b><div><strong>Ahli waris</strong><span>Pilih pasangan, orang tua, dan anak yang masih hidup.</span></div></li>
+                            <li><b>3</b><div><strong>Hasil &amp; dalil</strong><span>Bagian tiap ahli waris dalam pecahan, persen, dan rupiah, lengkap dengan dalilnya.</span></div></li>
+                        </ol>
+                    </section>
+
+                    <figure class="waris-quote">
+                        <p class="waris-quote-ar" lang="ar" dir="rtl">يُوْصِيْكُمُ اللّٰهُ فِيْٓ اَوْلَادِكُمْ لِلذَّكَرِ مِثْلُ حَظِّ الْاُنْثَيَيْنِ</p>
+                        <figcaption>"Allah mensyariatkan (mewajibkan) kepadamu tentang (pembagian warisan untuk) anak-anakmu, (yaitu) bagian seorang anak laki-laki sama dengan bagian dua orang anak perempuan." <cite>QS. An-Nisa: 11</cite></figcaption>
+                    </figure>
                 </div>
 
                 <!-- Favorites Page -->
@@ -386,68 +402,8 @@
 
                         <!-- Step 2: Ahli Waris -->
                         <div id="waris-step2" class="waris-wizard-step">
-                            <!-- Suami/Istri -->
-                            <div class="waris-heirs-section">
-                                <h4><i class="fas fa-ring"></i> Pasangan</h4>
-                                <div class="waris-heir-option">
-                                    <div class="waris-radio-group">
-                                        <input type="radio" id="waris-husband" name="waris-spouse" value="husband">
-                                        <label for="waris-husband">Suami</label>
-                                    </div>
-                                </div>
-                                <div class="waris-heir-option">
-                                    <div class="waris-radio-group">
-                                        <input type="radio" id="waris-wife" name="waris-spouse" value="wife">
-                                        <label for="waris-wife">Istri</label>
-                                    </div>
-                                    <div id="waris-wifeCount" class="waris-count-input">
-                                        <label>Jumlah istri:</label>
-                                        <input type="number" id="waris-wifeNumber" min="1" max="4" value="1">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Orang Tua -->
-                            <div class="waris-heirs-section">
-                                <h4><i class="fas fa-user-friends"></i> Orang Tua</h4>
-                                <div class="waris-heir-option">
-                                    <div class="waris-checkbox-group">
-                                        <input type="checkbox" id="waris-father" name="waris-father">
-                                        <label for="waris-father">Ayah</label>
-                                    </div>
-                                </div>
-                                <div class="waris-heir-option">
-                                    <div class="waris-checkbox-group">
-                                        <input type="checkbox" id="waris-mother" name="waris-mother">
-                                        <label for="waris-mother">Ibu</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Anak -->
-                            <div class="waris-heirs-section">
-                                <h4><i class="fas fa-child"></i> Anak</h4>
-                                <div class="waris-heir-option">
-                                    <div class="waris-checkbox-group">
-                                        <input type="checkbox" id="waris-sons" name="waris-sons">
-                                        <label for="waris-sons">Anak Laki-laki</label>
-                                    </div>
-                                    <div id="waris-sonsCount" class="waris-count-input">
-                                        <label>Jumlah:</label>
-                                        <input type="number" id="waris-sonsNumber" min="1" value="1">
-                                    </div>
-                                </div>
-                                <div class="waris-heir-option">
-                                    <div class="waris-checkbox-group">
-                                        <input type="checkbox" id="waris-daughters" name="waris-daughters">
-                                        <label for="waris-daughters">Anak Perempuan</label>
-                                    </div>
-                                    <div id="waris-daughtersCount" class="waris-count-input">
-                                        <label>Jumlah:</label>
-                                        <input type="number" id="waris-daughtersNumber" min="1" value="1">
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Heir cards are rendered by waris-app.js (renderHeirsForm) -->
+                            <div id="waris-heirs-form"></div>
                         </div>
 
                         <!-- Step 3: Hasil -->
@@ -697,34 +653,19 @@
 
         <!-- Footer -->
         <footer class="app-footer">
-            <div class="footer-content">
-                <div class="footer-section source-section">
-                    <div class="footer-icon-text">
-                        <i class="fas fa-database"></i>
-                        <p>Sumber: Al-Qur'an, Hadist Shahih, dan Kitab Para Ulama</p>
-                    </div>
+            <div class="footer-card">
+                <div class="footer-brand"><span class="footer-mark"><i class="fas fa-mosque"></i></span>IslamHub</div>
+                <p class="footer-source"><i class="fas fa-book-open"></i> Sumber: Al-Qur'an, hadits shahih, dan kitab para ulama</p>
+                <a class="footer-feedback" href="https://forms.gle/4e3mMEaUMsAgJYp6A" target="_blank" rel="noopener">
+                    <span class="footer-feedback-ico"><i class="fas fa-comment-dots"></i></span>
+                    <span class="footer-feedback-text"><strong>Kritik &amp; saran</strong><small>Laporkan kesalahan konten, bug, atau usulan fitur</small></span>
+                    <i class="fas fa-arrow-up-right-from-square"></i>
+                </a>
+                <div class="footer-credit">
+                    <span>&copy; 2026 Muhammad Faris Muzakki &amp; Istri Tercinta</span>
+                    <small>Lulusan Terbaik Jurusan Syariah, Imam Muhammad bin Saud University, 2022</small>
                 </div>
-                
-                                <div class="footer-section">
-                    <div class="footer-icon-text">
-                        <i class="fas fa-comment-dots"></i>
-                        <p><a href="https://forms.gle/4e3mMEaUMsAgJYp6A" target="_blank" rel="noopener" style="color: var(--primary-cyan); text-decoration: none;">Sampaikan melalui formulir kritik &amp; saran</a> untuk kesalahan konten, saran, bug, atau pengembangan fitur.</p>
-                    </div>
-                </div>
-                
-                <div class="footer-section copyright-section">
-                    <div class="footer-icon-text">
-                        <i class="fas fa-copyright"></i>
-                        <p>2026 Muhammad Faris Muzakki & Istri Tercinta (Lulusan Terbaik Imam Muhammad bin Saud University Jurusan Syariah Tahun 2022)</p>
-                    </div>
-                </div>
-                
-                <div class="footer-section version-section">
-                    <div class="footer-icon-text">
-                        <i class="fas fa-info-circle"></i>
-                        <p>Versi 1.2.1</p>
-                    </div>
-                </div>
+                <span class="footer-version">Versi 1.4.0</span>
             </div>
         </footer>
 

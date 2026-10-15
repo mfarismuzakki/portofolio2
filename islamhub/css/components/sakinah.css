@@ -11,7 +11,7 @@
 html[data-theme="sakinah"] {
   --sk-bg: #f6f3ea; --sk-card: #fffdf7; --sk-ink: #1f3d33; --sk-ink2: #4a5b51; --sk-muted: #57645a; --sk-goldtext: #8a6a2a;
   --sk-line: #e3e2d3; --sk-green: #245845; --sk-green2: #2f7258; --sk-gold: #b08a3c; --sk-goldbg: #f5ecd6;
-  --primary-cyan: #2f7258; --electric-blue: #245845; --matrix-green: #2f7258; --neon-purple: #6b5aa6; --secondary-pink: #b5543f;
+  --primary-cyan: #2f7258; --electric-blue: #245845; --matrix-green: #2f7258; --neon-purple: #245845; --secondary-pink: #8a6a2a;
   --dark-bg: #f6f3ea; --darker-bg: #efebdf; --surface: #fffdf7; --surface-dark: #fffdf7; --surface-hover: #f3efe2;
   --text-primary: #1f3d33; --text-secondary: #4f5e54; --text-muted: #55604f;
   --islamic-gold: #b08a3c; --islamic-gold-light: #d8bd7e; --islamic-emerald: #2f7258; --islamic-deep-green: #1f3d33;
@@ -27,7 +27,7 @@ html[data-theme="sakinah"] {
   --font-primary: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-secondary: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-orbitron: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --cyan: #2f7258; --purple: #6b5aa6; --pink: #b5543f; --primary-purple: #6b5aa6; --accent-pink: #b5543f;
+  --cyan: #2f7258; --purple: #245845; --pink: #8a6a2a; --primary-purple: #245845; --accent-pink: #8a6a2a;
   --primary-green: #2f7258; --bg-surface-2: #fffdf7; --card-bg: #fffdf7; --bg-dark: #f6f3ea; --bg-primary: #f6f3ea;
   --font-rajdhani: 'Plus Jakarta Sans', system-ui, sans-serif;
   color-scheme: light;

@@ -187,7 +187,7 @@ export default class AlQuranApp {
         header.innerHTML = `
             <div class="alquran-title">
                 <h1><i class="fas fa-book-quran"></i> Al-Qur'an</h1>
-                <p>Mushaf Digital dengan Audio per Halaman</p>
+                <p>Mushaf Standar Indonesia, terjemah, tafsir, dan murottal</p>
             </div>
         `;
 

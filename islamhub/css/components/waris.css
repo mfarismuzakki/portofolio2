@@ -976,7 +976,8 @@
 
 .waris-chart-seg {
     transition: stroke-width 0.3s ease, opacity 0.3s ease;
-    transform-origin: center;
+    /* the rotate(-90 100 100) attribute already carries its centre; a CSS origin would apply it twice */
+    transform-origin: 0 0;
     animation: warisChartGrow 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 

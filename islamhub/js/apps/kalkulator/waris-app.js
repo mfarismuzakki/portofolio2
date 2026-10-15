@@ -335,87 +335,9 @@ export default class WarisApp {
 
         // Fill heirs
         if (data.heirs) {
-            // Reset all checkboxes and inputs first
-            document.querySelectorAll('.waris-wizard-step input[type="checkbox"]').forEach(cb => cb.checked = false);
-            document.querySelectorAll('.waris-wizard-step input[type="number"]').forEach(inp => inp.value = '');
-            
-            // Spouse
-            if (data.heirs.husband) {
-                const husbandCheckbox = document.getElementById('waris-husband');
-                if (husbandCheckbox) husbandCheckbox.checked = true;
-            }
-            if (data.heirs.wife) {
-                const wifeCheckbox = document.getElementById('waris-wife');
-                if (wifeCheckbox) wifeCheckbox.checked = true;
-                const wifeCount = document.getElementById('waris-wifeCount');
-                if (wifeCount) wifeCount.style.display = 'flex';
-                const wifeNumberInput = document.getElementById('waris-wifeNumber');
-                if (wifeNumberInput) wifeNumberInput.value = data.heirs.wife;
-            }
-
-            // Parents
-            if (data.heirs.father) {
-                const fatherCheckbox = document.getElementById('waris-father');
-                if (fatherCheckbox) fatherCheckbox.checked = true;
-            }
-            if (data.heirs.mother) {
-                const motherCheckbox = document.getElementById('waris-mother');
-                if (motherCheckbox) motherCheckbox.checked = true;
-            }
-
-            // Children
-            if (data.heirs.sons) {
-                const sonsInput = document.getElementById('waris-sons');
-                if (sonsInput) sonsInput.value = data.heirs.sons;
-            }
-            if (data.heirs.daughters) {
-                const daughtersInput = document.getElementById('waris-daughters');
-                if (daughtersInput) daughtersInput.value = data.heirs.daughters;
-            }
-
-            // Grandchildren
-            if (data.heirs.grandsons) {
-                const grandsonsInput = document.getElementById('waris-grandsons');
-                if (grandsonsInput) grandsonsInput.value = data.heirs.grandsons;
-            }
-            if (data.heirs.granddaughters) {
-                const granddaughtersInput = document.getElementById('waris-granddaughters');
-                if (granddaughtersInput) granddaughtersInput.value = data.heirs.granddaughters;
-            }
-
-            // Siblings
-            if (data.heirs.fullBrothers) {
-                const fullBrothersInput = document.getElementById('waris-fullBrothers');
-                if (fullBrothersInput) fullBrothersInput.value = data.heirs.fullBrothers;
-            }
-            if (data.heirs.fullSisters) {
-                const fullSistersInput = document.getElementById('waris-fullSisters');
-                if (fullSistersInput) fullSistersInput.value = data.heirs.fullSisters;
-            }
-            if (data.heirs.paternalBrothers) {
-                const paternalBrothersInput = document.getElementById('waris-paternalBrothers');
-                if (paternalBrothersInput) paternalBrothersInput.value = data.heirs.paternalBrothers;
-            }
-            if (data.heirs.paternalSisters) {
-                const paternalSistersInput = document.getElementById('waris-paternalSisters');
-                if (paternalSistersInput) paternalSistersInput.value = data.heirs.paternalSisters;
-            }
-            if (data.heirs.maternalBrothers) {
-                const maternalBrothersInput = document.getElementById('waris-maternalBrothers');
-                if (maternalBrothersInput) maternalBrothersInput.value = data.heirs.maternalBrothers;
-            }
-            if (data.heirs.maternalSisters) {
-                const maternalSistersInput = document.getElementById('waris-maternalSisters');
-                if (maternalSistersInput) maternalSistersInput.value = data.heirs.maternalSisters;
-            }
-
-            // Uncles
-            if (data.heirs.paternalUncles) {
-                const paternalUnclesInput = document.getElementById('waris-paternalUncles');
-                if (paternalUnclesInput) paternalUnclesInput.value = data.heirs.paternalUncles;
-            }
-            
+            this.heirCounts = { ...data.heirs };
             this.updateHeirsData();
+            this.renderHeirsForm();
         }
     }
 
@@ -537,43 +459,101 @@ export default class WarisApp {
     }
 
     // ===== HEIRS INPUT SETUP =====
+    // Every heir the engine knows, grouped as a family tree reads. max = most people allowed.
+    static HEIR_GROUPS = [
+        { title: 'Pasangan', icon: 'fa-ring', items: [
+            { key: 'husband', label: 'Suami', icon: 'fa-person', max: 1 },
+            { key: 'wife', label: 'Istri', icon: 'fa-person-dress', max: 4 },
+        ] },
+        { title: 'Orang tua, kakek & nenek', icon: 'fa-user-group', items: [
+            { key: 'father', label: 'Ayah', icon: 'fa-person-cane', max: 1 },
+            { key: 'mother', label: 'Ibu', icon: 'fa-person-dress', max: 1 },
+            { key: 'grandfather', label: 'Kakek', hint: 'ayah dari ayah', icon: 'fa-person-cane', max: 1 },
+            { key: 'grandmotherPaternal', label: 'Nenek', hint: 'ibu dari ayah', icon: 'fa-person-dress', max: 1 },
+            { key: 'grandmotherMaternal', label: 'Nenek', hint: 'ibu dari ibu', icon: 'fa-person-dress', max: 1 },
+        ] },
+        { title: 'Anak & cucu', icon: 'fa-children', items: [
+            { key: 'sons', label: 'Anak laki-laki', icon: 'fa-child', max: 30 },
+            { key: 'daughters', label: 'Anak perempuan', icon: 'fa-child-dress', max: 30 },
+            { key: 'grandsons', label: 'Cucu laki-laki', hint: 'dari anak laki-laki', icon: 'fa-child', max: 30 },
+            { key: 'granddaughters', label: 'Cucu perempuan', hint: 'dari anak laki-laki', icon: 'fa-child-dress', max: 30 },
+        ] },
+        { title: 'Saudara', icon: 'fa-people-group', more: true, items: [
+            { key: 'fullBrothers', label: 'Saudara laki-laki', hint: 'kandung', icon: 'fa-person', max: 30 },
+            { key: 'fullSisters', label: 'Saudari', hint: 'kandung', icon: 'fa-person-dress', max: 30 },
+            { key: 'paternalBrothers', label: 'Saudara laki-laki', hint: 'seayah', icon: 'fa-person', max: 30 },
+            { key: 'paternalSisters', label: 'Saudari', hint: 'seayah', icon: 'fa-person-dress', max: 30 },
+            { key: 'maternalBrothers', label: 'Saudara laki-laki', hint: 'seibu', icon: 'fa-person', max: 30 },
+            { key: 'maternalSisters', label: 'Saudari', hint: 'seibu', icon: 'fa-person-dress', max: 30 },
+        ] },
+        { title: 'Keponakan, paman & sepupu', icon: 'fa-sitemap', more: true,
+          note: 'Kerabat laki-laki dari jalur ayah. Mereka asabah: mewarisi sisa bila tidak ada yang lebih dekat.', items: [
+            { key: 'fullNephews', label: 'Keponakan laki-laki', hint: 'anak saudara kandung', icon: 'fa-child', max: 30 },
+            { key: 'paternalNephews', label: 'Keponakan laki-laki', hint: 'anak saudara seayah', icon: 'fa-child', max: 30 },
+            { key: 'fullUncles', label: 'Paman (om)', hint: 'saudara kandung ayah', icon: 'fa-person', max: 30 },
+            { key: 'paternalUncles', label: 'Paman (om)', hint: 'saudara seayah dari ayah', icon: 'fa-person', max: 30 },
+            { key: 'fullCousins', label: 'Sepupu laki-laki', hint: 'anak paman kandung', icon: 'fa-person', max: 30 },
+            { key: 'paternalCousins', label: 'Sepupu laki-laki', hint: 'anak paman seayah', icon: 'fa-person', max: 30 },
+        ] },
+        { title: 'Bibi & paman dari ibu (dzawil arham)', icon: 'fa-user-group', more: true,
+          note: 'Mewarisi hanya jika tidak ada ashabul furudh (selain suami/istri) dan tidak ada asabah.', items: [
+            { key: 'paternalAunts', label: 'Bibi (tante)', hint: 'saudari ayah', icon: 'fa-person-dress', max: 30 },
+            { key: 'maternalAunts', label: 'Bibi (tante)', hint: 'saudari ibu', icon: 'fa-person-dress', max: 30 },
+            { key: 'maternalUncles', label: 'Paman (om)', hint: 'saudara laki-laki ibu', icon: 'fa-person', max: 30 },
+        ] },
+    ];
+
     setupHeirsInputs() {
-        // Spouse selection
-        document.querySelectorAll('input[name="waris-spouse"]').forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                const wifeCount = document.getElementById('waris-wifeCount');
-                if (wifeCount) {
-                    wifeCount.style.display = e.target.value === 'wife' ? 'flex' : 'none';
-                }
-                this.updateHeirsData();
-            });
-        });
+        this.heirCounts = this.heirCounts || {};
+        this.renderHeirsForm();
+    }
 
-        // Children
-        ['sons', 'daughters'].forEach(type => {
-            const checkbox = document.querySelector(`input[name="waris-${type}"]`);
-            const countDiv = document.getElementById(`waris-${type}Count`);
-            const numberInput = document.getElementById(`waris-${type}Number`);
-            
-            if (checkbox && countDiv) {
-                checkbox.addEventListener('change', (e) => {
-                    countDiv.style.display = e.target.checked ? 'flex' : 'none';
-                    this.updateHeirsData();
-                });
-            }
-            
-            if (numberInput) {
-                numberInput.addEventListener('input', () => this.updateHeirsData());
-            }
-        });
+    renderHeirsForm() {
+        const host = document.getElementById('waris-heirs-form');
+        if (!host) return;
+        const counts = this.heirCounts || (this.heirCounts = {});
+        host.innerHTML = WarisApp.HEIR_GROUPS.map((g, gi) => {
+            const picked = g.items.filter(it => counts[it.key] > 0).length;
+            const cards = g.items.map(it => {
+                const n = counts[it.key] || 0;
+                const stepper = n && it.max > 1 ? `
+                        <div class="wh-count">
+                            <button type="button" data-step="${it.key}" data-d="-1" aria-label="Kurangi"><i class="fas fa-minus"></i></button>
+                            <b>${n}</b><span>orang</span>
+                            <button type="button" data-step="${it.key}" data-d="1" aria-label="Tambah"><i class="fas fa-plus"></i></button>
+                        </div>` : '';
+                return `
+                    <div class="wh-card${n ? ' on' : ''}" data-key="${it.key}">
+                        <button type="button" class="wh-toggle" data-toggle="${it.key}" aria-pressed="${n > 0}">
+                            <span class="wh-ico"><i class="fas ${it.icon}"></i></span>
+                            <span class="wh-name">${it.label}${it.hint ? `<small>${it.hint}</small>` : ''}</span>
+                            <span class="wh-check" aria-hidden="true"></span>
+                        </button>${stepper}
+                    </div>`;
+            }).join('');
+            const body = `${g.note ? `<p class="wh-note"><i class="fas fa-circle-info"></i> ${g.note}</p>` : ''}<div class="wh-grid">${cards}</div>`;
+            return g.more
+                ? `<details class="wh-group" data-group="${gi}"${picked ? ' open' : ''}><summary><i class="fas ${g.icon}"></i> ${g.title}${picked ? ` <em>${picked}</em>` : ''}<i class="fas fa-chevron-down wh-caret"></i></summary>${body}</details>`
+                : `<section class="wh-group" data-group="${gi}"><h4><i class="fas ${g.icon}"></i> ${g.title}</h4>${body}</section>`;
+        }).join('');
 
-        // Parents
-        ['father', 'mother'].forEach(heir => {
-            const checkbox = document.querySelector(`input[name="waris-${heir}"]`);
-            if (checkbox) {
-                checkbox.addEventListener('change', () => this.updateHeirsData());
-            }
-        });
+        host.onclick = e => {
+            const t = e.target.closest('[data-toggle], [data-step]');
+            if (!t) return;
+            const key = t.dataset.toggle || t.dataset.step;
+            const item = WarisApp.HEIR_GROUPS.flatMap(g => g.items).find(i => i.key === key);
+            let n = counts[key] || 0;
+            if (t.dataset.toggle) n = n ? 0 : 1;
+            else n = Math.max(1, Math.min(item.max, n + Number(t.dataset.d)));
+            counts[key] = n;
+            // the deceased leaves either a husband or wives, never both
+            if (n && key === 'husband') counts.wife = 0;
+            if (n && key === 'wife') counts.husband = 0;
+            const open = [...host.querySelectorAll('details[open]')].map(d => d.dataset.group);
+            this.updateHeirsData();
+            this.renderHeirsForm();
+            open.forEach(gi => host.querySelector(`details[data-group="${gi}"]`)?.setAttribute('open', ''));
+        };
     }
 
     // ===== FORM VALIDATION & UPDATES =====
@@ -607,36 +587,7 @@ export default class WarisApp {
 
     updateHeirsData() {
         const heirs = {};
-        
-        // Spouse
-        const spouseType = document.querySelector('input[name="waris-spouse"]:checked')?.value;
-        if (spouseType) {
-            if (spouseType === 'husband') {
-                heirs.husband = 1;
-            } else {
-                const wifeCount = parseInt(document.getElementById('waris-wifeNumber').value) || 1;
-                heirs.wife = wifeCount;
-            }
-        }
-        
-        // Parents
-        if (document.querySelector('input[name="waris-father"]')?.checked) {
-            heirs.father = 1;
-        }
-        if (document.querySelector('input[name="waris-mother"]')?.checked) {
-            heirs.mother = 1;
-        }
-        
-        // Children
-        if (document.querySelector('input[name="waris-sons"]')?.checked) {
-            const count = parseInt(document.getElementById('waris-sonsNumber').value) || 1;
-            heirs.sons = count;
-        }
-        if (document.querySelector('input[name="waris-daughters"]')?.checked) {
-            const count = parseInt(document.getElementById('waris-daughtersNumber').value) || 1;
-            heirs.daughters = count;
-        }
-        
+        Object.entries(this.heirCounts || {}).forEach(([k, n]) => { if (n > 0) heirs[k] = n; });
         this.data.heirs = heirs;
     }
 
@@ -777,6 +728,7 @@ export default class WarisApp {
                 amount: s.share.value * netAssets,
                 condition: s.condition
             })),
+            excluded: calc.excluded || [],
             totalPercentage: 0,
             hasAwl: calc.hasAwl,
             hasRadd: calc.hasRadd,
@@ -829,8 +781,9 @@ export default class WarisApp {
             const amountPerPerson = heir.amount / heir.count;
             
             html += `
-                <div class="waris-heir-item">
+                <div class="waris-heir-item" data-heir="${heir.type}">
                     <div class="waris-heir-header">
+                        <span class="waris-heir-avatar" aria-hidden="true"><i class="fas ${this.getHeirIcon(heir.type)}"></i></span>
                         <div class="waris-heir-info">
                             <span class="waris-heir-name">${heirName}</span>
                             <span class="waris-heir-category">${heir.category}</span>
@@ -851,6 +804,19 @@ export default class WarisApp {
         });
 
         html += '</div>';
+
+        // Heirs who receive nothing, and why (hajb)
+        if (results.excluded && results.excluded.length) {
+            html += `<div class="waris-result-card waris-excluded-card"><h4><i class="fas fa-user-slash"></i> Tidak Mendapat Bagian</h4>`;
+            results.excluded.forEach(x => {
+                html += `
+                    <div class="waris-excluded-item">
+                        <span class="waris-heir-avatar muted" aria-hidden="true"><i class="fas ${this.getHeirIcon(x.type)}"></i></span>
+                        <div><strong>${this.getHeirName(x.type)}${x.count > 1 ? ` · ${x.count} orang` : ''}</strong><span>${x.reason}</span></div>
+                    </div>`;
+            });
+            html += '</div>';
+        }
 
         // Catatan kasus khusus ('awl, radd, Umariyyatan)
         if (results.notes && results.notes.length) {
@@ -883,11 +849,10 @@ export default class WarisApp {
     renderShareChart(heirs) {
         if (!heirs || heirs.length === 0) return '';
 
-        const palette = [
-            '#00ffff', '#ff00ff', '#ffd700', '#00ff88',
-            '#ff6b6b', '#a855f7', '#ff8c42', '#4ade80',
-            '#06b6d4', '#f43f5e', '#facc15', '#22d3ee'
-        ];
+        const sakinah = document.documentElement.dataset.theme !== 'classic';
+        const palette = sakinah
+            ? ['#1f3d33', '#b08a3e', '#2f7258', '#c07a4a', '#5e8f7a', '#e0c27f', '#40626a', '#8a6a2a', '#9bb8a8', '#d9a777', '#244d40', '#6f7d6a']
+            : ['#00ffff', '#ff00ff', '#ffd700', '#00ff88', '#ff6b6b', '#a855f7', '#ff8c42', '#4ade80', '#06b6d4', '#f43f5e', '#facc15', '#22d3ee'];
 
         const radius = 80;
         const cx = 100, cy = 100;
@@ -916,7 +881,7 @@ export default class WarisApp {
 
             legend += `
                 <div class="waris-chart-legend-item">
-                    <span class="waris-chart-swatch" style="background:${color}"></span>
+                    <span class="waris-chart-swatch" data-sk-keep style="background:${color}"></span>
                     <span class="waris-chart-legend-label">${heirName}</span>
                     <span class="waris-chart-legend-pct">${heir.percentage.toFixed(2)}%</span>
                 </div>
@@ -940,17 +905,17 @@ export default class WarisApp {
         `;
     }
 
+    getHeirIcon(type) {
+        const item = WarisApp.HEIR_GROUPS.flatMap(g => g.items).find(i => i.key === type);
+        if (item) return item.icon;
+        return type === 'daughters_with_sons' ? 'fa-child-dress' : 'fa-user';
+    }
+
     getHeirName(type) {
-        const names = {
-            husband: 'Suami',
-            wife: 'Istri',
-            father: 'Ayah',
-            mother: 'Ibu',
-            sons: 'Anak Laki-laki',
-            daughters: 'Anak Perempuan',
-            daughters_with_sons: 'Anak Perempuan (dgn saudara laki)'
-        };
-        return names[type] || type;
+        const item = WarisApp.HEIR_GROUPS.flatMap(g => g.items).find(i => i.key === type);
+        if (item) return item.hint ? `${item.label} (${item.hint})` : item.label;
+        // results saved by older versions of the calculator
+        return { daughters_with_sons: 'Anak Perempuan (dgn saudara laki)' }[type] || type;
     }
 
     formatCurrency(amount) {
@@ -975,14 +940,9 @@ export default class WarisApp {
             results: null
         };
 
-        // Reset form inputs
-        document.querySelectorAll('.waris-wizard-step input').forEach(input => {
-            if (input.type === 'checkbox' || input.type === 'radio') {
-                input.checked = false;
-            } else if (input.type === 'number') {
-                input.value = '';
-            }
-        });
+        // Reset heirs
+        this.heirCounts = {};
+        this.renderHeirsForm();
 
         // Reset to step 1
         this.currentStep = 1;

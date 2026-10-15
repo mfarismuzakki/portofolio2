@@ -1,0 +1,156 @@
+/* ===== Sakinah UI: Al-Qur'an hub and reader ===== */
+
+/* Hub order: hero, continue reading, actions, streak, featured surahs, sources */
+html[data-theme="sakinah"] .alquran-container:not(.page-mode):not(.juz-mode) { display: flex; flex-direction: column; }
+html[data-theme="sakinah"] .alquran-container:not(.page-mode):not(.juz-mode) > .alquran-header { order: 0; }
+html[data-theme="sakinah"] .alquran-container:not(.page-mode):not(.juz-mode) > .last-read-card { order: 1; }
+html[data-theme="sakinah"] .alquran-container:not(.page-mode):not(.juz-mode) > .quick-nav { order: 2; }
+html[data-theme="sakinah"] .alquran-container:not(.page-mode):not(.juz-mode) > .alquran-streak-card { order: 3; }
+html[data-theme="sakinah"] .alquran-container:not(.page-mode):not(.juz-mode) > .popular-surahs-section { order: 4; }
+html[data-theme="sakinah"] .alquran-container:not(.page-mode):not(.juz-mode) > .quran-info-simple { order: 5; }
+
+/* Continue reading */
+html[data-theme="sakinah"] .last-read-card {
+  margin: 0 0 16px !important; padding: 16px 16px 14px !important; border-radius: 22px !important;
+  background: var(--ui-card) !important; border: 1px solid rgba(176, 138, 62, .35) !important; box-shadow: var(--ui-shadow) !important;
+}
+html[data-theme="sakinah"] .last-read-header {
+  display: flex !important; align-items: center; gap: 8px; margin: 0 0 4px !important; padding: 0 !important; background: none !important; border: 0 !important;
+  font-size: .72rem !important; font-weight: 800 !important; letter-spacing: .16em; text-transform: uppercase; color: var(--ui-gold-text) !important;
+}
+html[data-theme="sakinah"] .last-read-header :is(i, span) { color: var(--ui-gold-text) !important; font-size: .72rem !important; }
+html[data-theme="sakinah"] .last-read-content {
+  display: grid !important; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  padding: 0 !important; background: none !important; border: 0 !important; cursor: pointer;
+}
+html[data-theme="sakinah"] .last-read-surah h3 {
+  margin: 0 !important; font-family: 'LPMQ Isep Misbah', 'Amiri Quran', serif !important; font-size: 1.9rem !important;
+  line-height: 1.7 !important; color: var(--ui-ink) !important; text-align: left;
+}
+html[data-theme="sakinah"] .last-read-surah p { margin: 0 !important; font-size: .95rem !important; font-weight: 700; color: var(--ui-ink-2) !important; }
+html[data-theme="sakinah"] .last-read-verse { display: flex; align-items: center; gap: 10px; }
+html[data-theme="sakinah"] .last-read-verse .verse-marker {
+  padding: 6px 12px !important; border-radius: 999px !important; background: var(--ui-mint) !important; color: var(--ui-green) !important;
+  font-weight: 800 !important; font-size: .82rem !important; border: 0 !important;
+}
+html[data-theme="sakinah"] .last-read-verse > i {
+  width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--ui-green-deep); color: #f6efd9 !important;
+}
+
+/* Actions as icon tiles */
+html[data-theme="sakinah"] .alquran-container .quick-nav {
+  display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; margin: 0 0 16px !important;
+}
+html[data-theme="sakinah"] .alquran-container .quick-nav .nav-btn {
+  display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 8px !important;
+  min-height: 92px !important; width: auto !important; padding: 12px 6px !important; border-radius: 18px !important;
+  white-space: normal !important;
+  background: var(--ui-card) !important; border: 1px solid var(--ui-line) !important; box-shadow: var(--ui-shadow) !important;
+  color: var(--ui-ink) !important; font-size: .78rem !important; font-weight: 700 !important; line-height: 1.2 !important; text-align: center !important;
+}
+html[data-theme="sakinah"] .alquran-container .quick-nav .nav-btn span { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; }
+html[data-theme="sakinah"] .alquran-container .quick-nav .nav-btn i {
+  width: 42px !important; height: 42px !important; border-radius: 14px !important; display: grid !important; place-items: center; margin: 0 !important;
+  background: var(--ui-mint) !important; color: var(--ui-green) !important; font-size: 1.05rem !important;
+}
+html[data-theme="sakinah"] .alquran-container .quick-nav .nav-btn:active { transform: scale(.97); }
+
+/* Reading streak, compact */
+html[data-theme="sakinah"] .alquran-streak-card {
+  display: flex !important; align-items: center; gap: 12px; margin: 0 0 18px !important; padding: 12px 16px !important; border-radius: 18px !important;
+  background: linear-gradient(90deg, #fbf3e3, #fffdf7) !important; border: 1px solid rgba(176, 138, 62, .3) !important; box-shadow: none !important;
+}
+html[data-theme="sakinah"] .alquran-streak-card .alquran-streak-flame {
+  order: -1; width: 44px !important; height: 44px !important; border-radius: 50% !important; display: grid; place-items: center;
+  background: #f3e2bf !important; color: #b0662e !important; font-size: 1.1rem !important; box-shadow: none !important;
+}
+html[data-theme="sakinah"] .alquran-streak-info { display: flex !important; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+html[data-theme="sakinah"] .alquran-streak-label { flex-basis: 100%; font-size: .68rem !important; letter-spacing: .16em; color: var(--ui-gold-text) !important; }
+html[data-theme="sakinah"] .alquran-streak-count .streak-num { font-size: 1.5rem !important; line-height: 1 !important; color: var(--ui-ink) !important; }
+html[data-theme="sakinah"] .alquran-streak-count .streak-unit { font-size: .9rem !important; color: var(--ui-ink-2) !important; }
+html[data-theme="sakinah"] .alquran-streak-longest { font-size: .78rem !important; color: var(--ui-muted) !important; }
+
+/* Featured surahs */
+html[data-theme="sakinah"] .popular-surahs-header h3 { font-family: 'Fraunces', serif !important; font-size: 1.12rem !important; color: var(--ui-ink) !important; }
+html[data-theme="sakinah"] .popular-surahs-header h3 i { color: var(--ui-gold) !important; }
+html[data-theme="sakinah"] .popular-surahs-header .see-all { color: var(--ui-green) !important; font-weight: 700 !important; }
+html[data-theme="sakinah"] .popular-surah-card {
+  min-width: 132px !important; padding: 12px 14px 14px !important; border-radius: 20px !important;
+  background: var(--ui-card) !important; border: 1px solid var(--ui-line) !important; box-shadow: var(--ui-shadow) !important; text-align: left !important;
+}
+html[data-theme="sakinah"] .popular-surah-num { background: var(--ui-mint) !important; color: var(--ui-green) !important; font-weight: 800 !important; }
+html[data-theme="sakinah"] .popular-surah-arabic {
+  font-family: 'LPMQ Isep Misbah', 'Amiri Quran', serif !important; font-size: 1.75rem !important; line-height: 1.75 !important;
+  text-align: right !important; color: var(--ui-ink) !important;
+}
+html[data-theme="sakinah"] .popular-surah-name {
+  font-size: .95rem !important; font-weight: 800 !important; color: var(--ui-ink) !important;
+  white-space: normal !important; overflow: visible !important; text-overflow: clip !important;
+}
+html[data-theme="sakinah"] .popular-surah-meta { font-size: .78rem !important; color: var(--ui-muted) !important; }
+
+/* Sources */
+html[data-theme="sakinah"] .quran-info-simple {
+  display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px !important;
+  padding: 0 !important; background: none !important; border: 0 !important; box-shadow: none !important;
+}
+html[data-theme="sakinah"] .quran-info-simple p {
+  margin: 0 !important; padding: 10px 12px !important; border-radius: 14px; background: var(--ui-card); border: 1px solid var(--ui-line);
+  font-size: .78rem !important; line-height: 1.35 !important; color: var(--ui-ink-2) !important; display: block !important;
+}
+html[data-theme="sakinah"] .quran-info-simple p strong {
+  display: block; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ui-gold-text) !important;
+}
+html[data-theme="sakinah"] .quran-info-simple p i { display: none !important; }
+
+/* Reader header: two rows so the surah name is always readable on a phone.
+ *   [menu] [surah name / Arabic name]  [home] [settings]
+ *   [Mushaf | Terjemah]                     [Juz . Hal] */
+html[data-theme="sakinah"] .floating-header {
+  display: grid !important;
+  grid-template-columns: 40px minmax(0, 1fr) 40px 40px;
+  grid-template-areas: "menu info home settings" "mode mode page page";
+  align-items: center; gap: 8px !important;
+  padding: 10px 12px !important;
+  border-radius: 0 0 20px 20px;
+}
+html[data-theme="sakinah"] :is(.floating-header-left, .floating-header-center, .floating-header-right) { display: contents !important; }
+html[data-theme="sakinah"] .floating-header #menuToggle { grid-area: menu; }
+html[data-theme="sakinah"] .floating-header #btnBackHome { grid-area: home; }
+html[data-theme="sakinah"] .floating-header #btnSettings { grid-area: settings; }
+html[data-theme="sakinah"] .floating-header .floating-nav-btn { width: 40px !important; height: 40px !important; margin: 0 !important; border-radius: 12px !important; }
+html[data-theme="sakinah"] .floating-surah-info-inline {
+  grid-area: info; display: flex !important; flex-direction: column; justify-content: center; min-width: 0;
+  max-width: none !important; overflow: visible !important; padding: 0 2px !important;
+}
+html[data-theme="sakinah"] .floating-surah-name {
+  max-width: none !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important;
+  font-size: 1.02rem !important; font-weight: 800 !important; line-height: 1.25 !important; color: var(--ui-ink) !important;
+}
+html[data-theme="sakinah"] .floating-surah-meta {
+  max-width: none !important; overflow: visible !important; white-space: nowrap !important;
+  font-family: 'LPMQ Isep Misbah', 'Amiri Quran', serif; font-size: .95rem !important; line-height: 1.5 !important; color: var(--ui-ink-2) !important;
+}
+html[data-theme="sakinah"] .floating-mode-toggle {
+  grid-area: mode; justify-self: start; display: inline-flex !important; gap: 4px; padding: 4px !important;
+  border-radius: 14px !important; background: var(--ui-mint) !important; border: 0 !important;
+}
+html[data-theme="sakinah"] .floating-mode-btn {
+  width: auto !important; height: 34px !important; padding: 0 12px !important; gap: 6px; display: inline-flex !important; align-items: center;
+  border-radius: 10px !important; border: 0 !important; background: transparent !important; color: var(--ui-ink-2) !important;
+  font-size: .8rem !important; font-weight: 700 !important;
+}
+html[data-theme="sakinah"] .floating-mode-btn[data-mode="reading"]::after { content: "Mushaf"; }
+html[data-theme="sakinah"] .floating-mode-btn[data-mode="translation"]::after { content: "Terjemah"; }
+html[data-theme="sakinah"] .floating-mode-btn.active {
+  background: var(--ui-green-deep) !important; color: #f6efd9 !important; box-shadow: 0 4px 10px rgba(31, 61, 51, .2) !important;
+}
+html[data-theme="sakinah"] .floating-page-info {
+  grid-area: page; justify-self: end; display: inline-flex !important; align-items: center; gap: 6px; white-space: nowrap;
+  padding: 6px 12px !important; border-radius: 999px !important; background: var(--ui-card) !important; border: 1px solid var(--ui-line) !important;
+  font-size: .8rem !important; font-weight: 700 !important; color: var(--ui-ink-2) !important;
+}
+
+html[data-theme="sakinah"] .alquran-container .quick-nav .nav-btn::before,
+html[data-theme="sakinah"] .alquran-container .quick-nav .nav-btn::after { display: none !important; }

@@ -1,0 +1,314 @@
+/* ===== Sakinah UI: Kalkulator Waris ===== */
+
+/* ---------- Home ---------- */
+html[data-theme="sakinah"] .waris-menu-grid { display: flex !important; flex-direction: column; gap: 10px !important; margin: 0 0 18px !important; }
+html[data-theme="sakinah"] .waris-menu-card {
+  display: grid !important; grid-template-columns: 52px minmax(0, 1fr) 20px; align-items: center; gap: 14px;
+  min-height: 0 !important; padding: 14px 16px !important; border-radius: 20px !important; text-align: left !important;
+  background: var(--ui-card) !important; border: 1px solid var(--ui-line) !important; box-shadow: var(--ui-shadow) !important;
+  cursor: pointer; transform: none !important;
+}
+html[data-theme="sakinah"] .waris-menu-card::before, html[data-theme="sakinah"] .waris-menu-card::after { display: none !important; }
+html[data-theme="sakinah"] .waris-menu-card:active { transform: scale(.985) !important; }
+html[data-theme="sakinah"] .waris-menu-icon {
+  width: 52px !important; height: 52px !important; margin: 0 !important; border-radius: 16px !important;
+  display: grid !important; place-items: center; background: var(--ui-mint) !important; box-shadow: none !important;
+}
+html[data-theme="sakinah"] .waris-menu-icon i { color: var(--ui-green) !important; font-size: 1.3rem !important; }
+html[data-theme="sakinah"] .waris-menu-primary { background: var(--ui-green-deep) !important; border-color: var(--ui-green-deep) !important; }
+html[data-theme="sakinah"] .waris-menu-primary .waris-menu-icon { background: rgba(246, 239, 217, .12) !important; }
+html[data-theme="sakinah"] .waris-menu-primary .waris-menu-icon i,
+html[data-theme="sakinah"] .waris-menu-primary .waris-menu-go { color: var(--ui-gold-soft) !important; }
+html[data-theme="sakinah"] .waris-menu-text h3 { margin: 0 0 2px !important; font-size: 1.02rem !important; font-weight: 800 !important; color: var(--ui-ink) !important; text-align: left !important; }
+html[data-theme="sakinah"] .waris-menu-text p { margin: 0 !important; font-size: .82rem !important; line-height: 1.4 !important; color: var(--ui-muted) !important; text-align: left !important; }
+html[data-theme="sakinah"] .waris-menu-primary .waris-menu-text h3 { color: #f6efd9 !important; }
+html[data-theme="sakinah"] .waris-menu-primary .waris-menu-text p { color: rgba(246, 239, 217, .78) !important; }
+html[data-theme="sakinah"] .waris-menu-go { color: var(--ui-muted); font-size: .9rem; }
+
+html[data-theme="sakinah"] .waris-howto { margin: 0 0 16px; padding: 16px; border-radius: 20px; background: var(--ui-card); border: 1px solid var(--ui-line); }
+html[data-theme="sakinah"] .waris-howto h3 { margin: 0 0 12px; font-family: 'Fraunces', serif; font-size: 1.08rem; color: var(--ui-ink); }
+html[data-theme="sakinah"] .waris-howto ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; position: relative; }
+html[data-theme="sakinah"] .waris-howto ol::before { content: ""; position: absolute; left: 15px; top: 16px; bottom: 16px; width: 2px; background: repeating-linear-gradient(var(--ui-gold-soft) 0 4px, transparent 4px 8px); }
+html[data-theme="sakinah"] .waris-howto li { display: grid; grid-template-columns: 32px 1fr; gap: 12px; align-items: start; position: relative; }
+html[data-theme="sakinah"] .waris-howto li b { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--ui-green-deep); color: #f6efd9; font-size: .85rem; }
+html[data-theme="sakinah"] .waris-howto li strong { display: block; font-size: .92rem; color: var(--ui-ink); }
+html[data-theme="sakinah"] .waris-howto li span { display: block; font-size: .8rem; line-height: 1.45; color: var(--ui-muted); }
+
+html[data-theme="sakinah"] .waris-quote { margin: 0 0 8px; padding: 18px 16px 16px; border-radius: 20px; background: linear-gradient(180deg, #fbf3e3, #fffdf7); border: 1px solid rgba(176, 138, 62, .3); }
+html[data-theme="sakinah"] .waris-quote-ar { margin: 0 0 8px; padding-top: .3em; font-family: 'LPMQ Isep Misbah', 'Amiri Quran', serif; font-size: 1.55rem; line-height: 2; text-align: right; color: var(--ui-ink); }
+html[data-theme="sakinah"] .waris-quote figcaption { font-size: .82rem; line-height: 1.55; color: var(--ui-ink-2); }
+html[data-theme="sakinah"] .waris-quote cite { display: block; margin-top: 6px; font-style: normal; font-weight: 800; color: var(--ui-gold-text); }
+
+/* ---------- Examples & favourites ---------- */
+html[data-theme="sakinah"] .waris-examples-grid { gap: 12px !important; }
+html[data-theme="sakinah"] .waris-example-card {
+  padding: 16px !important; border-radius: 20px !important; background: var(--ui-card) !important;
+  border: 1px solid var(--ui-line) !important; box-shadow: var(--ui-shadow) !important;
+}
+html[data-theme="sakinah"] .waris-example-card .example-badge { background: #f3e2bf !important; color: #7a5a22 !important; border: 0 !important; font-weight: 800 !important; }
+html[data-theme="sakinah"] .waris-example-card .example-case { background: var(--ui-paper) !important; border: 1px solid var(--ui-line) !important; border-radius: 14px !important; }
+html[data-theme="sakinah"] .waris-example-card .heir-tag { background: var(--ui-mint) !important; color: var(--ui-green) !important; border: 0 !important; border-radius: 999px !important; font-weight: 700 !important; }
+
+/* ---------- Wizard ---------- */
+html[data-theme="sakinah"] .waris-wizard-container {
+  padding: 16px 14px 0 !important; border-radius: 24px !important; background: var(--ui-card) !important;
+  border: 1px solid var(--ui-line) !important; box-shadow: var(--ui-shadow) !important;
+}
+html[data-theme="sakinah"] .waris-progress-bar {
+  display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 0 0 18px !important; padding: 5px !important;
+  border-radius: 16px; background: var(--ui-paper) !important;
+}
+html[data-theme="sakinah"] .waris-progress-bar::before, html[data-theme="sakinah"] .waris-progress-bar::after,
+html[data-theme="sakinah"] .waris-progress-step::before, html[data-theme="sakinah"] .waris-progress-step::after { display: none !important; }
+html[data-theme="sakinah"] .waris-progress-step {
+  display: flex !important; flex-direction: row !important; align-items: center; justify-content: center; gap: 7px;
+  padding: 8px 4px !important; border-radius: 12px; background: transparent !important;
+}
+html[data-theme="sakinah"] .waris-step-circle {
+  width: 24px !important; height: 24px !important; margin: 0 !important; font-size: .75rem !important; font-weight: 800 !important;
+  border-radius: 50% !important; border: 1.5px solid rgba(31, 61, 51, .25) !important; background: transparent !important; color: var(--ui-muted) !important; box-shadow: none !important;
+}
+html[data-theme="sakinah"] .waris-step-label { margin: 0 !important; font-size: .78rem !important; font-weight: 700 !important; color: var(--ui-muted) !important; }
+html[data-theme="sakinah"] .waris-progress-step.active { background: var(--ui-green-deep) !important; box-shadow: 0 6px 14px rgba(31, 61, 51, .2); }
+html[data-theme="sakinah"] .waris-progress-step.active .waris-step-circle { background: var(--ui-gold-soft) !important; border-color: var(--ui-gold-soft) !important; color: var(--ui-green-deep) !important; }
+html[data-theme="sakinah"] .waris-progress-step.active .waris-step-label { color: #f6efd9 !important; }
+html[data-theme="sakinah"] .waris-progress-step.completed .waris-step-circle { background: var(--ui-mint) !important; border-color: var(--ui-mint) !important; color: var(--ui-green) !important; font-size: 0 !important; }
+html[data-theme="sakinah"] .waris-progress-step.completed .waris-step-circle::before { content: "\f00c"; font: 900 .7rem/1 "Font Awesome 6 Free"; }
+html[data-theme="sakinah"] .waris-progress-step.completed .waris-step-label { color: var(--ui-green) !important; }
+
+/* step 1: money fields */
+html[data-theme="sakinah"] .waris-form-group { margin: 0 0 14px !important; }
+html[data-theme="sakinah"] .waris-form-group > label {
+  display: flex !important; align-items: center; gap: 10px; margin: 0 0 8px !important;
+  font-size: .86rem !important; font-weight: 700 !important; color: var(--ui-ink) !important;
+}
+html[data-theme="sakinah"] .waris-form-group > label i {
+  width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; flex: none;
+  background: var(--ui-mint); color: var(--ui-green) !important; font-size: .82rem !important;
+}
+html[data-theme="sakinah"] .waris-input-group { position: relative; display: flex !important; align-items: center; }
+html[data-theme="sakinah"] .waris-input-prefix {
+  position: absolute !important; left: 14px; z-index: 1; padding: 0 !important; background: none !important; border: 0 !important;
+  font-weight: 800 !important; color: var(--ui-gold-text) !important;
+}
+html[data-theme="sakinah"] .waris-input-group input {
+  width: 100%; height: 52px !important; padding: 0 14px 0 46px !important; font-size: 1.12rem !important; font-weight: 700 !important;
+  letter-spacing: .01em; border-radius: 16px !important;
+}
+html[data-theme="sakinah"] .waris-tirkah-summary {
+  margin: 18px 0 6px !important; padding: 16px !important; border-radius: 18px !important;
+  background: var(--ui-paper) !important; border: 1px dashed rgba(31, 61, 51, .22) !important; box-shadow: none !important;
+}
+html[data-theme="sakinah"] .waris-tirkah-summary h4 { margin: 0 0 8px !important; font-size: .74rem !important; letter-spacing: .16em; text-transform: uppercase; color: var(--ui-gold-text) !important; }
+html[data-theme="sakinah"] .waris-tirkah-summary h4 i { display: none; }
+html[data-theme="sakinah"] .waris-summary-row { padding: 8px 0 !important; border: 0 !important; border-bottom: 1px dashed rgba(31, 61, 51, .14) !important; }
+html[data-theme="sakinah"] .waris-summary-label { color: var(--ui-ink-2) !important; font-size: .86rem !important; }
+html[data-theme="sakinah"] .waris-summary-value { color: var(--ui-ink) !important; font-weight: 700 !important; font-size: .9rem !important; }
+html[data-theme="sakinah"] .waris-summary-row:last-child {
+  margin-top: 8px; padding: 12px 14px !important; border: 0 !important; border-radius: 14px; background: var(--ui-green-deep) !important; align-items: center;
+}
+html[data-theme="sakinah"] .waris-summary-row:last-child .waris-summary-label { color: rgba(246, 239, 217, .85) !important; }
+html[data-theme="sakinah"] .waris-summary-row:last-child .waris-summary-label strong { color: rgba(246, 239, 217, .85) !important; font-weight: 700; }
+html[data-theme="sakinah"] .waris-summary-row:last-child .waris-summary-value { color: var(--ui-gold-soft) !important; font-size: 1.15rem !important; font-weight: 800 !important; white-space: nowrap; }
+
+/* step 2: heirs as selectable cards */
+html[data-theme="sakinah"] .waris-heirs-section { margin: 0 0 16px !important; padding: 0 !important; background: none !important; border: 0 !important; box-shadow: none !important; }
+html[data-theme="sakinah"] .waris-heirs-section h4 {
+  margin: 0 0 10px !important; font-size: .74rem !important; letter-spacing: .16em; text-transform: uppercase; color: var(--ui-gold-text) !important;
+}
+html[data-theme="sakinah"] .waris-heirs-section h4 i { color: var(--ui-gold) !important; margin-right: 4px; }
+html[data-theme="sakinah"] .waris-heirs-section { display: grid !important; grid-template-columns: 1fr 1fr; gap: 10px; }
+html[data-theme="sakinah"] .waris-heirs-section h4 { grid-column: 1 / -1; }
+html[data-theme="sakinah"] .waris-heir-option {
+  position: relative; display: flex !important; flex-direction: column; gap: 10px; margin: 0 !important; padding: 0 !important;
+  background: none !important; border: 0 !important; box-shadow: none !important;
+}
+html[data-theme="sakinah"] :is(.waris-radio-group, .waris-checkbox-group) { position: relative; display: block !important; margin: 0 !important; padding: 0 !important; }
+html[data-theme="sakinah"] :is(.waris-radio-group, .waris-checkbox-group) input { position: absolute !important; opacity: 0 !important; pointer-events: none; width: 1px !important; height: 1px !important; }
+html[data-theme="sakinah"] :is(.waris-radio-group, .waris-checkbox-group) label {
+  display: flex !important; flex-direction: column; align-items: flex-start; gap: 10px; margin: 0 !important;
+  min-height: 92px; padding: 14px !important; border-radius: 18px !important; cursor: pointer;
+  background: var(--ui-paper) !important; border: 1.5px solid var(--ui-line) !important;
+  font-size: .92rem !important; font-weight: 800 !important; color: var(--ui-ink) !important;
+  transition: background .15s, border-color .15s, box-shadow .15s;
+}
+html[data-theme="sakinah"] :is(.waris-radio-group, .waris-checkbox-group) label > i {
+  width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--ui-card); color: var(--ui-green) !important; font-size: 1.05rem !important; box-shadow: inset 0 0 0 1px var(--ui-line);
+}
+html[data-theme="sakinah"] :is(.waris-radio-group, .waris-checkbox-group) label::after {
+  content: ""; position: absolute; right: 12px; top: 12px; width: 22px; height: 22px; border-radius: 50%;
+  border: 1.5px solid rgba(31, 61, 51, .25); background: var(--ui-card);
+}
+html[data-theme="sakinah"] :is(.waris-radio-group, .waris-checkbox-group) label::before { display: none !important; }
+html[data-theme="sakinah"] :is(.waris-radio-group, .waris-checkbox-group) input:checked + label {
+  background: #eef5ef !important; border-color: var(--ui-green) !important; box-shadow: 0 6px 16px rgba(47, 107, 85, .14);
+}
+html[data-theme="sakinah"] :is(.waris-radio-group, .waris-checkbox-group) input:checked + label::after {
+  content: "\f00c"; display: grid; place-items: center; border-color: var(--ui-green); background: var(--ui-green); color: #fff;
+  font: 900 .62rem/1 "Font Awesome 6 Free";
+}
+html[data-theme="sakinah"] :is(.waris-radio-group, .waris-checkbox-group) input:checked + label > i { background: var(--ui-green-deep); color: var(--ui-gold-soft) !important; box-shadow: none; }
+html[data-theme="sakinah"] :is(.waris-radio-group, .waris-checkbox-group) input:focus-visible + label { box-shadow: 0 0 0 4px rgba(47, 107, 85, .2); }
+
+html[data-theme="sakinah"] .waris-count-input {
+  align-items: center; justify-content: space-between; gap: 8px; margin: 0 !important; padding: 8px 8px 8px 12px !important;
+  border-radius: 14px; background: var(--ui-card) !important; border: 1px solid var(--ui-line) !important;
+}
+html[data-theme="sakinah"] .waris-count-input > label { margin: 0 !important; font-size: .78rem !important; font-weight: 700; color: var(--ui-muted) !important; }
+html[data-theme="sakinah"] .waris-stepper { display: inline-flex; align-items: center; gap: 4px; }
+html[data-theme="sakinah"] .waris-stepper input {
+  width: 38px !important; height: 34px !important; padding: 0 !important; text-align: center; font-weight: 800 !important; font-size: 1rem !important;
+  border: 0 !important; background: transparent !important; box-shadow: none !important; -moz-appearance: textfield;
+}
+html[data-theme="sakinah"] .waris-stepper input::-webkit-outer-spin-button,
+html[data-theme="sakinah"] .waris-stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+html[data-theme="sakinah"] .waris-step-btn {
+  width: 32px; height: 32px; border-radius: 10px; border: 0; display: grid; place-items: center; cursor: pointer;
+  background: var(--ui-mint); color: var(--ui-green); font-size: .78rem;
+}
+html[data-theme="sakinah"] .waris-step-btn:active { transform: scale(.94); }
+
+/* nav: sticky action bar at the bottom of the card */
+html[data-theme="sakinah"] .waris-wizard-nav {
+  position: static !important; display: flex !important; flex-direction: row !important; flex-wrap: wrap !important; gap: 8px !important;
+  margin: 14px -14px 0 !important; padding: 14px !important; border-radius: 0 0 24px 24px;
+  background: var(--ui-paper) !important; border-top: 1px solid var(--ui-line) !important;
+}
+/* the main action takes the first full row; secondary actions share the row below */
+html[data-theme="sakinah"] .waris-wizard-nav .waris-btn-primary { order: -1; flex: 1 1 100% !important; }
+html[data-theme="sakinah"] .waris-btn {
+  flex: 1 1 40% !important; min-width: 0; width: auto !important; height: 48px !important; margin: 0 !important; padding: 0 14px !important; justify-content: center; align-items: center; gap: 8px;
+  border-radius: 14px !important; font-size: .9rem !important; font-weight: 800 !important; box-shadow: none !important; transform: none !important;
+}
+html[data-theme="sakinah"] .waris-btn::before, html[data-theme="sakinah"] .waris-btn::after { display: none !important; }
+html[data-theme="sakinah"] .waris-btn-primary { background: var(--ui-green-deep) !important; color: #f6efd9 !important; border: 0 !important; }
+html[data-theme="sakinah"] .waris-btn-secondary { background: var(--ui-card) !important; color: var(--ui-ink) !important; border: 1px solid rgba(31, 61, 51, .2) !important; }
+html[data-theme="sakinah"] .waris-btn-favorite { background: #fbf3e3 !important; color: #7a5a22 !important; border: 1px solid rgba(176, 138, 62, .4) !important; }
+html[data-theme="sakinah"] .waris-btn-reset { background: transparent !important; color: #a04632 !important; border: 1px solid rgba(160, 70, 50, .3) !important; }
+
+/* ---------- Results ---------- */
+html[data-theme="sakinah"] .waris-result-card {
+  margin: 0 0 14px !important; padding: 16px !important; border-radius: 20px !important;
+  background: var(--ui-card) !important; border: 1px solid var(--ui-line) !important; box-shadow: none !important;
+}
+html[data-theme="sakinah"] .waris-result-card h4 {
+  display: flex; align-items: center; gap: 8px; margin: 0 0 12px !important; font-size: .74rem !important; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--ui-gold-text) !important;
+}
+html[data-theme="sakinah"] .waris-result-card h4 i { color: var(--ui-gold) !important; }
+html[data-theme="sakinah"] .waris-summary-grid { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px !important; }
+html[data-theme="sakinah"] .waris-summary-item { display: flex !important; flex-direction: column !important; align-items: flex-start !important; gap: 2px; padding: 10px 12px !important; border-radius: 14px !important; background: var(--ui-paper) !important; border: 0 !important; }
+html[data-theme="sakinah"] .waris-summary-item .label { font-size: .72rem !important; color: var(--ui-muted) !important; }
+html[data-theme="sakinah"] .waris-summary-item .value { font-size: .95rem !important; font-weight: 800 !important; color: var(--ui-ink) !important; }
+html[data-theme="sakinah"] .waris-summary-item .value.negative { color: #a04632 !important; }
+html[data-theme="sakinah"] .waris-summary-item.highlight { grid-column: 1 / -1; flex-direction: row !important; justify-content: space-between; align-items: center !important; background: var(--ui-green-deep) !important; }
+html[data-theme="sakinah"] .waris-summary-item:nth-child(3) { grid-column: 1 / -1; }
+html[data-theme="sakinah"] .waris-summary-item.highlight .label { color: rgba(246, 239, 217, .8) !important; }
+html[data-theme="sakinah"] .waris-summary-item.highlight .value { font-size: 1.3rem !important; color: var(--ui-gold-soft) !important; }
+
+html[data-theme="sakinah"] .waris-chart-wrapper { display: flex !important; flex-direction: column !important; align-items: stretch !important; gap: 14px !important; }
+html[data-theme="sakinah"] .waris-chart-svg { width: 168px !important; height: 168px !important; align-self: center; }
+html[data-theme="sakinah"] .waris-chart-center-num { fill: var(--ui-ink) !important; font-weight: 800; font-size: 30px; }
+html[data-theme="sakinah"] .waris-chart-center-lbl { fill: var(--ui-muted) !important; font-size: 10px; letter-spacing: .14em; }
+html[data-theme="sakinah"] .waris-chart-legend { display: grid; gap: 8px; }
+html[data-theme="sakinah"] .waris-chart-legend-item { display: grid !important; grid-template-columns: 12px 1fr auto; align-items: center; gap: 8px; font-size: .82rem; }
+html[data-theme="sakinah"] .waris-chart-swatch { width: 12px !important; height: 12px !important; border-radius: 4px !important; }
+html[data-theme="sakinah"] .waris-chart-legend-label { color: var(--ui-ink-2) !important; }
+html[data-theme="sakinah"] .waris-chart-legend-pct { font-weight: 800; color: var(--ui-ink) !important; }
+
+
+html[data-theme="sakinah"] .waris-heir-item {
+  margin: 0 0 10px !important; padding: 14px !important; border-radius: 18px !important;
+  background: var(--ui-paper) !important; border: 1px solid var(--ui-line) !important; box-shadow: none !important;
+}
+html[data-theme="sakinah"] .waris-heir-header { display: grid !important; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 4px 12px; }
+html[data-theme="sakinah"] .waris-heir-avatar { grid-row: span 2; align-self: start; }
+html[data-theme="sakinah"] .waris-heir-avatar { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: var(--ui-green-deep); color: var(--ui-gold-soft); font-size: 1.1rem; }
+html[data-theme="sakinah"] .waris-heir-name { display: block; font-size: .98rem !important; font-weight: 800 !important; color: var(--ui-ink) !important; }
+html[data-theme="sakinah"] .waris-heir-category { display: inline-block; margin-top: 2px; padding: 2px 8px !important; border-radius: 999px; background: var(--ui-mint) !important; color: var(--ui-green) !important; font-size: .7rem !important; font-weight: 700; border: 0 !important; }
+html[data-theme="sakinah"] .waris-heir-amount { grid-column: 2; display: flex !important; align-items: baseline; gap: 8px; text-align: left !important; }
+html[data-theme="sakinah"] .waris-heir-value { display: block; font-size: 1rem !important; font-weight: 800 !important; color: var(--ui-ink) !important; white-space: nowrap; }
+html[data-theme="sakinah"] .waris-heir-percentage { font-size: .78rem !important; font-weight: 700; color: var(--ui-gold-text) !important; }
+html[data-theme="sakinah"] .waris-heir-details { display: flex !important; flex-wrap: wrap; gap: 6px !important; margin: 12px 0 0 !important; }
+html[data-theme="sakinah"] .waris-heir-details .detail-item {
+  padding: 5px 10px !important; border-radius: 999px !important; background: var(--ui-card) !important; border: 1px solid var(--ui-line) !important;
+  font-size: .76rem !important; font-weight: 700; color: var(--ui-ink-2) !important;
+}
+html[data-theme="sakinah"] .waris-heir-details .detail-item i { color: var(--ui-gold) !important; }
+html[data-theme="sakinah"] .waris-heir-condition {
+  margin: 10px 0 0 !important; padding: 10px 12px !important; border-radius: 12px !important; border: 0 !important; border-left: 3px solid var(--ui-gold-soft) !important;
+  background: #fbf6ea !important; font-size: .8rem !important; line-height: 1.5 !important; color: var(--ui-ink-2) !important;
+}
+html[data-theme="sakinah"] .waris-dalil-card { margin: 0 0 10px !important; padding: 14px !important; border-radius: 16px !important; background: var(--ui-paper) !important; border: 0 !important; }
+html[data-theme="sakinah"] .waris-dalil-card .dalil-arabic { padding-top: .3em; font-family: 'LPMQ Isep Misbah', 'Amiri Quran', 'Amiri', serif !important; font-size: 1.35rem !important; line-height: 2 !important; text-align: right; color: var(--ui-ink) !important; }
+html[data-theme="sakinah"] .waris-dalil-card .dalil-translation { font-size: .84rem !important; line-height: 1.6 !important; color: var(--ui-ink-2) !important; }
+html[data-theme="sakinah"] .waris-dalil-card .dalil-source { font-size: .76rem !important; font-weight: 800 !important; color: var(--ui-gold-text) !important; }
+
+/* ---------- Step 2: heir cards (rendered by renderHeirsForm) ---------- */
+html[data-theme="sakinah"] .wh-group { margin: 0 0 14px; }
+html[data-theme="sakinah"] .wh-group > h4,
+html[data-theme="sakinah"] details.wh-group > summary {
+  display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-size: .74rem; font-weight: 800; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--ui-gold-text);
+}
+html[data-theme="sakinah"] .wh-group > h4 i, html[data-theme="sakinah"] details.wh-group > summary > i:first-child { color: var(--ui-gold); }
+html[data-theme="sakinah"] details.wh-group {
+  padding: 12px 12px 2px; border-radius: 18px; background: var(--ui-paper); border: 1px solid var(--ui-line);
+}
+html[data-theme="sakinah"] details.wh-group:not([open]) { padding-bottom: 12px; }
+html[data-theme="sakinah"] details.wh-group > summary { list-style: none; cursor: pointer; margin: 0; }
+html[data-theme="sakinah"] details.wh-group[open] > summary { margin-bottom: 10px; }
+html[data-theme="sakinah"] details.wh-group > summary::-webkit-details-marker { display: none; }
+html[data-theme="sakinah"] details.wh-group > summary em {
+  font-style: normal; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; display: inline-grid; place-items: center;
+  background: var(--ui-green-deep); color: #f6efd9; letter-spacing: 0; font-size: .7rem;
+}
+html[data-theme="sakinah"] .wh-caret { margin-left: auto; color: var(--ui-muted); transition: transform .2s; }
+html[data-theme="sakinah"] details[open] .wh-caret { transform: rotate(180deg); }
+html[data-theme="sakinah"] .wh-note { margin: 0 0 10px; font-size: .78rem; line-height: 1.45; color: var(--ui-muted); }
+html[data-theme="sakinah"] .wh-note i { color: var(--ui-gold); }
+html[data-theme="sakinah"] .wh-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 10px; }
+html[data-theme="sakinah"] .wh-card {
+  display: flex; flex-direction: column; border-radius: 18px; background: var(--ui-card); border: 1.5px solid var(--ui-line);
+  transition: border-color .15s, box-shadow .15s, background .15s; overflow: hidden;
+}
+html[data-theme="sakinah"] .wh-card.on { border-color: var(--ui-green); background: #eef5ef; box-shadow: 0 6px 16px rgba(47, 107, 85, .14); }
+html[data-theme="sakinah"] .wh-toggle {
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%; min-height: 96px;
+  padding: 12px; border: 0; background: none; text-align: left; cursor: pointer; font: inherit; color: var(--ui-ink);
+}
+html[data-theme="sakinah"] .wh-ico {
+  width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--ui-mint); color: var(--ui-green); font-size: 1rem;
+}
+html[data-theme="sakinah"] .wh-card.on .wh-ico { background: var(--ui-green-deep); color: var(--ui-gold-soft); }
+html[data-theme="sakinah"] .wh-name { font-size: .88rem; font-weight: 800; line-height: 1.25; padding-right: 18px; }
+html[data-theme="sakinah"] .wh-name small { display: block; margin-top: 2px; font-size: .72rem; font-weight: 600; color: var(--ui-muted); }
+html[data-theme="sakinah"] .wh-check {
+  position: absolute; right: 10px; top: 10px; width: 22px; height: 22px; border-radius: 50%;
+  border: 1.5px solid rgba(31, 61, 51, .25); background: var(--ui-card);
+}
+html[data-theme="sakinah"] .wh-card.on .wh-check { border-color: var(--ui-green); background: var(--ui-green); }
+html[data-theme="sakinah"] .wh-card.on .wh-check::after {
+  content: "\f00c"; display: grid; place-items: center; height: 100%; color: #fff; font: 900 .6rem/1 "Font Awesome 6 Free";
+}
+html[data-theme="sakinah"] .wh-count {
+  display: flex; align-items: center; gap: 6px; margin: 0 8px 8px; padding: 4px; border-radius: 12px; background: var(--ui-card);
+}
+html[data-theme="sakinah"] .wh-count b { min-width: 22px; text-align: center; font-size: 1rem; color: var(--ui-ink); }
+html[data-theme="sakinah"] .wh-count span { flex: 1; font-size: .74rem; color: var(--ui-muted); }
+html[data-theme="sakinah"] .wh-count button {
+  width: 30px; height: 30px; border-radius: 9px; border: 0; display: grid; place-items: center; cursor: pointer;
+  background: var(--ui-mint); color: var(--ui-green); font-size: .72rem;
+}
+html[data-theme="sakinah"] .wh-count button:active { transform: scale(.94); }
+
+/* ---------- Results: heirs who receive nothing ---------- */
+html[data-theme="sakinah"] .waris-excluded-item { display: grid; grid-template-columns: 38px 1fr; gap: 10px; align-items: start; padding: 10px 0; border-top: 1px dashed var(--ui-line); }
+html[data-theme="sakinah"] .waris-excluded-item:first-of-type { border-top: 0; padding-top: 0; }
+html[data-theme="sakinah"] .waris-excluded-item strong { display: block; font-size: .9rem; color: var(--ui-ink); }
+html[data-theme="sakinah"] .waris-excluded-item span { display: block; font-size: .78rem; line-height: 1.45; color: var(--ui-muted); }
+html[data-theme="sakinah"] .waris-heir-avatar.muted { width: 38px; height: 38px; border-radius: 12px; background: var(--ui-paper); color: var(--ui-muted); box-shadow: inset 0 0 0 1px var(--ui-line); }
+
+html[data-theme="sakinah"] .waris-summary-item .value { white-space: nowrap; font-size: .9rem !important; }
+html[data-theme="sakinah"] .waris-summary-item.highlight .value { font-size: 1.2rem !important; }

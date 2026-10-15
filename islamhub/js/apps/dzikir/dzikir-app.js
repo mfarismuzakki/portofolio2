@@ -3,6 +3,23 @@
 
 import audioManager from '../../utils/audio-manager.js';
 
+// Category icons: one consistent icon set instead of emoji (which render differently per phone).
+const CATEGORY_ICONS = {
+    dzikir_pagi: 'fa-sun', dzikir_petang: 'fa-cloud-sun', doa_tidur: 'fa-moon', doa_bangun: 'fa-bed',
+    doa_safar: 'fa-suitcase-rolling', doa_makan: 'fa-utensils', istighfar_taubat: 'doa', doa_sholat: 'fa-mosque',
+    tahlil_tahmid: 'fa-star-and-crescent', doa_kafaratul_majlis: 'fa-users', doa_masuk_wc: 'fa-door-open',
+    doa_wudhu: 'fa-hand-holding-droplet', doa_masuk_masjid: 'fa-place-of-worship', doa_kendaraan: 'fa-car',
+    doa_cuaca: 'fa-cloud-rain', doa_rezeki: 'fa-seedling', doa_ilmu: 'fa-book-open', doa_orang_sakit: 'fa-hand-holding-medical',
+    doa_masuk_keluar_rumah: 'fa-house', doa_sholawat_nabi: 'fa-heart', doa_keluarga_anak: 'fa-people-roof',
+    doa_hujan_petir: 'fa-cloud-bolt', waktu_khusus: 'fa-clock',
+};
+const categoryIcon = id => {
+    const ic = CATEGORY_ICONS[id] || 'doa';
+    return ic === 'doa'
+        ? '<svg class="ic-doa" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-doa"/></svg>'
+        : `<i class="fas ${ic}" aria-hidden="true"></i>`;
+};
+
 export default class DzikirApp {
     constructor(globalState, mainApp) {
         this.state = globalState;
@@ -399,7 +416,7 @@ export default class DzikirApp {
                     </button>
                     <div class="category-header">
                         <div class="category-icon">
-                            ${doa.categoryIcon || '📖'}
+                            ${categoryIcon(doa.categoryId)}
                         </div>
                         <h3>${doa.title || 'Doa'}</h3>
                     </div>
@@ -409,7 +426,7 @@ export default class DzikirApp {
                             <i class="fas fa-tag"></i> ${doa.categoryTitle || 'Doa'}
                         </span>
                         <span class="doa-count">
-                            <i class="fas fa-heart" style="color: #ff006e;"></i> Favorit
+                            <i class="fas fa-heart" style="color: #b5543f;"></i> Favorit
                         </span>
                     </div>
                 </div>
@@ -488,7 +505,7 @@ export default class DzikirApp {
             <div class="category-card" data-category="${category.id}">
                 <div class="category-header">
                     <div class="category-icon">
-                        ${category.icon || '📖'}
+                        ${categoryIcon(category.id)}
                     </div>
                     <h3>${category.title}</h3>
                 </div>
@@ -587,7 +604,7 @@ export default class DzikirApp {
                 <div class="search-result-card" data-result-index="${index}">
                     <div class="search-card-header">
                         <div class="search-category-badge">
-                            <span class="category-icon-small">${doa.categoryIcon}</span>
+                            <span class="category-icon-small">${categoryIcon(doa.categoryId)}</span>
                             <span>${doa.categoryTitle}</span>
                         </div>
                         ${doa.repetition > 1 ? `<div class="search-repeat-badge"><i class="fas fa-redo"></i> ${doa.repetition}x</div>` : ''}
@@ -688,7 +705,7 @@ export default class DzikirApp {
         section.style.display = 'block';
         cards.innerHTML = recommendations.map(cat => `
             <div class="recommendation-card" data-category="${cat.id}">
-                <div class="rec-icon">${cat.icon}</div>
+                <div class="rec-icon">${categoryIcon(cat.id)}</div>
                 <div class="rec-content">
                     <h4>${cat.title}</h4>
                     <p>${cat.description}</p>

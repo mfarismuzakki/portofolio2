@@ -8,11 +8,11 @@ const CARD = [255, 253, 247];
 const ACCENTS = {
     green: [[36, 88, 69], [47, 114, 88]],
     teal: [[36, 88, 69], [47, 114, 88]],
-    plum: [[91, 74, 150], [107, 90, 166]],
+    plum: [[52, 82, 90], [64, 98, 106]],
     red: [[160, 70, 50], [181, 84, 63]],
     amber: [[135, 82, 22], [168, 98, 30]],
     gold: [[120, 90, 32], [138, 102, 36]],
-    blue: [[38, 92, 128], [47, 111, 138]]
+    blue: [[40, 88, 102], [52, 104, 118]]
 };
 const COLOR_RE = /#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)/g;
 const NAMED = { white: [255, 255, 255, 1], gold: [255, 215, 0, 1], cyan: [0, 255, 255, 1] };
@@ -49,9 +49,9 @@ function family(r, g, b) {
     return 'red';
 }
 
-function mapColor([r, g, b, a], kind) {
+function mapColor([r, g, b, a], kind, force = null) {
     const luma = 0.299 * r + 0.587 * g + 0.114 * b;
-    const fam = family(r, g, b);
+    const fam = family(r, g, b) && (force || family(r, g, b));
     if (fam) {
         const [text, fill] = ACCENTS[fam];
         if (kind === 'text') return fmt(text, a > 0.4 ? Math.max(a, 0.9) : a + 0.3);
@@ -87,6 +87,8 @@ function kindFor(prop) {
 const touched = new WeakMap(); // element -> style string we wrote
 
 function adapt(el) {
+    // Elements that already use Sakinah colours opt out with data-sk-keep.
+    if (el.hasAttribute('data-sk-keep')) return;
     const current = el.getAttribute('style');
     if (!current || touched.get(el) === current) return;
     const original = current;
@@ -100,7 +102,13 @@ function adapt(el) {
         if (!val || !/#|rgb/i.test(val)) continue;
         if (prop === 'text-shadow') { s.setProperty(prop, 'none', s.getPropertyPriority(prop)); continue; }
         const kind = kindFor(prop);
-        const next = val.replace(COLOR_RE, tok => { const c = parse(tok); return c ? mapColor(c, kind) : tok; });
+        // Same rule as the build step: a gradient across two accent hues collapses to one family.
+        let force = null;
+        if (val.includes('gradient')) {
+            const fams = (val.match(COLOR_RE) || []).map(parse).filter(Boolean).map(c => family(c[0], c[1], c[2])).filter(Boolean);
+            if (new Set(fams).size > 1) force = fams.some(f => f === 'green' || f === 'teal') ? 'green' : fams[0];
+        }
+        const next = val.replace(COLOR_RE, tok => { const c = parse(tok); return c ? mapColor(c, kind, force) : tok; });
         if (next !== val) s.setProperty(prop, next, s.getPropertyPriority(prop));
     }
     touched.set(el, el.getAttribute('style'));

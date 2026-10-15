@@ -66,7 +66,7 @@ html[data-theme="sakinah"] .prayer-time-card {
   border: 1px solid rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .prayer-time-card.next-prayer {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 111, 138, 0.15));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 114, 88, 0.15));
   box-shadow: 0 0 25px rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .prayer-time-card.next-prayer::before {
@@ -371,7 +371,7 @@ html[data-theme="sakinah"] .adm-theme-preview-green {
   background: linear-gradient(180deg, rgb(246, 243, 234) 50%, rgb(47, 114, 88) 100%);
 }
 html[data-theme="sakinah"] .adm-theme-preview-blue {
-  background: linear-gradient(180deg, rgb(246, 243, 234) 50%, rgb(47, 111, 138) 100%);
+  background: linear-gradient(180deg, rgb(246, 243, 234) 50%, rgb(52, 104, 118) 100%);
 }
 html[data-theme="sakinah"] .adm-theme-option span {
   color: rgb(74, 91, 81);
@@ -649,19 +649,19 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="green"] .adm-sett
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-top-bar {
   background: rgb(246, 243, 234);
-  border-bottom: 1px solid rgba(47, 111, 138, 0.25);
+  border-bottom: 1px solid rgba(52, 104, 118, 0.25);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-clock {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-clock-secs {
-  color: rgba(38, 92, 128, 0.85);
+  color: rgba(40, 88, 102, 0.85);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-masjid-name {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-masjid-name i {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-hijri {
   color: rgb(31, 61, 51);
@@ -670,9 +670,9 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-grego
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-close-btn, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-settings-btn, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-video-btn, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-radio-btn {
-  background: rgba(47, 111, 138, 0.08);
-  border-color: rgba(47, 111, 138, 0.35);
-  color: rgba(38, 92, 128, 0.85);
+  background: rgba(52, 104, 118, 0.08);
+  border-color: rgba(52, 104, 118, 0.35);
+  color: rgba(40, 88, 102, 0.85);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-close-btn:hover {
   background: rgba(181, 84, 63, 0.2);
@@ -680,32 +680,32 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-close
   color: rgb(160, 70, 50);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-settings-btn:hover, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-video-btn:hover, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-radio-btn:hover {
-  background: rgba(47, 111, 138, 0.18);
-  color: rgb(38, 92, 128);
+  background: rgba(52, 104, 118, 0.18);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-radio-btn.active, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-video-btn.active {
-  background: rgba(47, 111, 138, 0.2);
-  border-color: rgba(47, 111, 138, 0.55);
-  color: rgb(38, 92, 128);
+  background: rgba(52, 104, 118, 0.2);
+  border-color: rgba(52, 104, 118, 0.55);
+  color: rgb(40, 88, 102);
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.105);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-bottom {
   background: rgb(246, 243, 234);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-col {
-  border-color: rgba(47, 111, 138, 0.2);
+  border-color: rgba(52, 104, 118, 0.2);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-label {
-  color: rgba(38, 92, 128, 0.85);
+  color: rgba(40, 88, 102, 0.85);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-time {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-col.adm-active {
-  background: rgba(47, 111, 138, 0.07);
+  background: rgba(52, 104, 118, 0.07);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-col.adm-next {
-  background: linear-gradient(180deg, rgba(47, 111, 138, 0.9) 0%, rgba(47, 111, 138, 0.85) 100%);
+  background: linear-gradient(180deg, rgba(52, 104, 118, 0.9) 0%, rgba(52, 104, 118, 0.85) 100%);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-prayer-col.adm-next .adm-prayer-label {
   color: rgb(31, 61, 51);
@@ -715,23 +715,23 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-praye
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-ticker-wrap {
   background: rgb(246, 243, 234);
-  border-top-color: rgba(47, 111, 138, 0.2);
+  border-top-color: rgba(52, 104, 118, 0.2);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-ticker-label {
-  color: rgba(38, 92, 128, 0.85);
+  color: rgba(40, 88, 102, 0.85);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-sunnah-card {
-  border-color: rgba(47, 111, 138, 0.4);
+  border-color: rgba(52, 104, 118, 0.4);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-sunnah-icon, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-sunnah-name {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-adzan-alert-box {
-  border-color: rgba(47, 111, 138, 0.55);
+  border-color: rgba(52, 104, 118, 0.55);
   box-shadow: 0 0 60px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-adzan-alert-name {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 @keyframes sk-adm-alert-pulse-blue {
   from {
@@ -745,14 +745,14 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-adzan
   animation: sk-sk-adm-alert-pulse-blue 1s ease infinite alternate;
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-theme-option.active, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-toggle input:checked + .adm-toggle-slider {
-  border-color: rgba(47, 111, 138, 0.55);
-  background: rgb(47, 111, 138);
+  border-color: rgba(52, 104, 118, 0.55);
+  background: rgb(52, 104, 118);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-theme-option.active span {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-settings-header i, html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-settings-row-label i {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 @media (max-width: 480px) {
   html[data-theme="sakinah"] .adm-prayer-col {
@@ -923,7 +923,7 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="green"] .adm-cent
   text-shadow: none;
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="blue"] .adm-center-countdown {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="maroon"] .adm-center-countdown {
@@ -944,11 +944,11 @@ html[data-theme="sakinah"] .adzan-display-mode[data-adm-bg="emerald"] .adm-bg::a
   background: radial-gradient(ellipse at 50% 40%, rgba(47, 114, 88, 0.07) 0%, transparent 55%);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-bg="ramadan"] .adm-bg {
-  background: linear-gradient(160deg, rgb(246, 243, 234) 0%, rgb(107, 90, 166) 45%, rgb(246, 243, 234) 100%);
+  background: linear-gradient(160deg, rgb(246, 243, 234) 0%, rgb(64, 98, 106) 45%, rgb(246, 243, 234) 100%);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-bg="ramadan"] .adm-bg::after {
-  background: radial-gradient(ellipse at 25% 55%, rgba(107, 90, 166, 0.08) 0%, transparent 45%),
-    radial-gradient(ellipse at 75% 30%, rgba(168, 98, 30, 0.07) 0%, transparent 40%);
+  background: radial-gradient(ellipse at 25% 55%, rgba(64, 98, 106, 0.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 75% 30%, rgba(64, 98, 106, 0.07) 0%, transparent 40%);
 }
 html[data-theme="sakinah"] .adzan-display-mode[data-adm-theme="maroon"] .adm-top-bar {
   background: rgb(246, 243, 234);
@@ -1241,7 +1241,7 @@ html[data-theme="sakinah"] .adm-bg-preview-emerald {
   background: linear-gradient(135deg, rgb(246, 243, 234) 0%, rgb(246, 243, 234) 100%);
 }
 html[data-theme="sakinah"] .adm-bg-preview-ramadan {
-  background: linear-gradient(160deg, rgb(246, 243, 234) 0%, rgb(107, 90, 166) 100%);
+  background: linear-gradient(160deg, rgb(246, 243, 234) 0%, rgb(64, 98, 106) 100%);
 }
 html[data-theme="sakinah"] .adm-bg-option span {
   color: rgb(74, 91, 81);
@@ -1618,7 +1618,7 @@ html[data-theme="sakinah"] .action-btn.bookmarked {
   color: rgb(160, 70, 50);
 }
 html[data-theme="sakinah"] .quran-content.memorization-mode {
-  background: rgba(107, 90, 166, 0.05);
+  background: rgba(64, 98, 106, 0.05);
 }
 html[data-theme="sakinah"] .primary-btn:hover {
   box-shadow: 0 5px 20px rgba(31, 61, 51, 0.12);
@@ -2041,7 +2041,7 @@ html[data-theme="sakinah"] .level-item.level-1 .level-count {
   color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .level-item.level-2 .level-count {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .level-item.level-3 .level-count {
   color: rgb(36, 88, 69);
@@ -2054,20 +2054,20 @@ html[data-theme="sakinah"] .progress-tips {
   border: 1px solid rgba(47, 114, 88, 0.2);
 }
 html[data-theme="sakinah"] .quran-content.memorization-mode .verse-item {
-  background: rgba(107, 90, 166, 0.05);
+  background: rgba(64, 98, 106, 0.05);
 }
 html[data-theme="sakinah"] .memorization-mode .arabic-text {
-  background: linear-gradient(135deg, rgba(107, 90, 166, 0.1), rgba(47, 114, 88, 0.05));
-  border: 1px solid rgba(107, 90, 166, 0.3);
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.1), rgba(47, 114, 88, 0.05));
+  border: 1px solid rgba(64, 98, 106, 0.3);
 }
 html[data-theme="sakinah"] .memorization-controls {
-  border-top: 1px solid rgba(107, 90, 166, 0.3);
+  border-top: 1px solid rgba(64, 98, 106, 0.3);
 }
 html[data-theme="sakinah"] .memorization-btn {
-  background: rgba(107, 90, 166, 0.1);
+  background: rgba(64, 98, 106, 0.1);
 }
 html[data-theme="sakinah"] .memorization-btn:hover {
-  background: rgba(107, 90, 166, 0.2);
+  background: rgba(64, 98, 106, 0.2);
 }
 html[data-theme="sakinah"] .verse-progress-indicator.level-0 {
   border-color: rgba(31, 61, 51, 0.12);
@@ -2078,8 +2078,8 @@ html[data-theme="sakinah"] .verse-progress-indicator.level-1 {
   color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .verse-progress-indicator.level-2 {
-  border-color: rgba(47, 111, 138, 0.55);
-  color: rgb(38, 92, 128);
+  border-color: rgba(52, 104, 118, 0.55);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .verse-progress-indicator.level-3 {
   border-color: rgba(47, 114, 88, 0.55);
@@ -2548,7 +2548,7 @@ html[data-theme="sakinah"] .page-divider {
   color: rgba(87, 100, 90, 0.65);
 }
 html[data-theme="sakinah"] .juz-surah-header {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.1) 0%, rgba(107, 90, 166, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.1) 0%, rgba(47, 114, 88, 0.1) 100%);
   border: 1px solid rgba(47, 114, 88, 0.4);
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.03);
 }
@@ -2579,7 +2579,7 @@ html[data-theme="sakinah"] .juz-mode.reading-view .basmalah-arabic {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .page-title-section {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.05) 0%, rgba(107, 90, 166, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.05) 0%, rgba(47, 114, 88, 0.05) 100%);
   border: 1px solid rgba(47, 114, 88, 0.2);
 }
 html[data-theme="sakinah"] .page-number-big {
@@ -2620,12 +2620,12 @@ html[data-theme="sakinah"] .page-navigation {
   border: 1px solid rgba(47, 114, 88, 0.2);
 }
 html[data-theme="sakinah"] .page-nav-btn {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.1) 0%, rgba(107, 90, 166, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.1) 0%, rgba(47, 114, 88, 0.1) 100%);
   border: 1px solid rgba(47, 114, 88, 0.4);
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .page-nav-btn:hover:not([disabled]) {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.2) 0%, rgba(107, 90, 166, 0.2) 100%);
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.2) 0%, rgba(47, 114, 88, 0.2) 100%);
   border-color: rgba(47, 114, 88, 0.55);
   box-shadow: 0 5px 15px rgba(31, 61, 51, 0.06);
 }
@@ -2644,7 +2644,7 @@ html[data-theme="sakinah"] .verse-tafsir-details[open] .verse-tafsir-summary {
   background: rgba(47, 114, 88, 0.15);
 }
 html[data-theme="sakinah"] .verse-tafsir-content {
-  background: rgba(107, 90, 166, 0.05);
+  background: rgba(64, 98, 106, 0.05);
   border: 1px solid rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .verse-tafsir-content p {
@@ -2659,7 +2659,7 @@ html[data-theme="sakinah"] .tafsir-toggle-btn:hover {
   border-color: rgba(47, 114, 88, 0.5);
 }
 html[data-theme="sakinah"] .verse-tafsir-content {
-  background: rgba(107, 90, 166, 0.05);
+  background: rgba(64, 98, 106, 0.05);
 }
 html[data-theme="sakinah"] .verse-tafsir-content p {
   color: rgb(31, 61, 51);
@@ -2673,14 +2673,14 @@ html[data-theme="sakinah"] .offline-status.downloading {
   border: 2px solid rgba(47, 114, 88, 0.4);
 }
 html[data-theme="sakinah"] .offline-status.not-downloaded {
-  background: linear-gradient(135deg, rgba(107, 90, 166, 0.1), rgba(107, 90, 166, 0.05));
-  border: 2px solid rgba(107, 90, 166, 0.4);
+  background: linear-gradient(135deg, rgba(64, 98, 106, 0.1), rgba(64, 98, 106, 0.05));
+  border: 2px solid rgba(64, 98, 106, 0.4);
 }
 html[data-theme="sakinah"] .offline-status.downloaded i {
   color: rgb(36, 88, 69);
 }
 html[data-theme="sakinah"] .offline-status.not-downloaded i {
-  color: rgb(91, 74, 150);
+  color: rgb(52, 82, 90);
 }
 html[data-theme="sakinah"] .offline-status p {
   color: rgb(74, 91, 81);
@@ -2695,7 +2695,7 @@ html[data-theme="sakinah"] .offline-progress-fill {
   background: linear-gradient(90deg, var(--primary-cyan), rgb(47, 114, 88));
 }
 html[data-theme="sakinah"] .offline-info {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.08), rgba(107, 90, 166, 0.05));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.08), rgba(47, 114, 88, 0.05));
   border: 2px solid rgba(47, 114, 88, 0.35);
 }
 html[data-theme="sakinah"] .offline-info::before {
@@ -2881,7 +2881,7 @@ html[data-theme="sakinah"] .audio-player::before {
   background: linear-gradient(90deg,
         transparent,
         rgba(47, 114, 88, 0.6) 30%,
-        rgba(138, 102, 36, 0.5) 55%,
+        rgba(47, 114, 88, 0.5) 55%,
         rgba(47, 114, 88, 0.6) 80%,
         transparent);
 }
@@ -2908,7 +2908,7 @@ html[data-theme="sakinah"] .audio-btn#audioMute.muted {
 }
 html[data-theme="sakinah"] .audio-btn#audioPlayPause, html[data-theme="sakinah"] .audio-btn#dzikirAudioPlayPause {
   background: radial-gradient(circle at 30% 30%, rgb(255, 253, 247), transparent 60%),
-        linear-gradient(135deg, rgba(47, 114, 88, 0.25), rgba(47, 111, 138, 0.18));
+        linear-gradient(135deg, rgba(47, 114, 88, 0.25), rgba(47, 114, 88, 0.18));
   border-color: rgba(47, 114, 88, 0.55);
   box-shadow: 0 4px 18px rgba(31, 61, 51, 0.105),
         inset 0 1px 0 rgba(31, 61, 51, 0.054);
@@ -2916,7 +2916,7 @@ html[data-theme="sakinah"] .audio-btn#audioPlayPause, html[data-theme="sakinah"]
 }
 html[data-theme="sakinah"] .audio-btn#audioPlayPause:hover, html[data-theme="sakinah"] .audio-btn#dzikirAudioPlayPause:hover {
   background: radial-gradient(circle at 30% 30%, rgb(255, 253, 247), transparent 60%),
-        linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 111, 138, 0.28));
+        linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.28));
   box-shadow: 0 6px 24px rgba(31, 61, 51, 0.12),
         inset 0 1px 0 rgba(31, 61, 51, 0.075);
 }
@@ -3067,7 +3067,7 @@ html[data-theme="sakinah"] .alquran-streak-longest {
   color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .alquran-streak-flame {
-  background: radial-gradient(circle, rgba(168, 98, 30, 0.4), rgba(181, 84, 63, 0.1));
+  background: radial-gradient(circle, rgba(168, 98, 30, 0.4), rgba(168, 98, 30, 0.1));
   color: rgb(135, 82, 22);
   text-shadow: none;
   animation: sk-streakFlameFlicker 1.6s ease-in-out infinite;
@@ -3103,7 +3103,7 @@ html[data-theme="sakinah"] .asmaul-header h2 {
   text-shadow: none;
 }
 html[data-theme="sakinah"] .asmaul-hadits-box {
-  background: linear-gradient(135deg, rgba(138, 102, 36, 0.08), rgba(168, 98, 30, 0.04));
+  background: linear-gradient(135deg, rgba(138, 102, 36, 0.08), rgba(138, 102, 36, 0.04));
   border: 1px solid rgba(138, 102, 36, 0.4);
 }
 html[data-theme="sakinah"] .asmaul-hadits-arabic {
@@ -3142,7 +3142,7 @@ html[data-theme="sakinah"] .asmaul-card-arabic {
   color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .asmaul-card-latin {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .asmaul-modal-backdrop {
   background: rgba(20, 36, 30, 0.385);
@@ -3163,11 +3163,11 @@ html[data-theme="sakinah"] .asmaul-modal-arabic {
   color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .asmaul-modal-latin {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .asmaul-modal-dalil {
-  background: rgba(47, 111, 138, 0.1);
-  color: rgb(38, 92, 128);
+  background: rgba(52, 104, 118, 0.1);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .asmaul-modal-desc {
   background: rgba(255, 253, 247, 0.69);
@@ -3178,7 +3178,7 @@ html[data-theme="sakinah"] .asmaul-daily {
 }
 @supports not (background: color-mix(in srgb, red, blue)) {
   html[data-theme="sakinah"] .asmaul-daily {
-    background: linear-gradient(135deg, rgba(47, 114, 88, 0.1), rgba(181, 84, 63, 0.08));
+    background: linear-gradient(135deg, rgba(47, 114, 88, 0.1), rgba(47, 114, 88, 0.08));
     border: 1px solid rgba(138, 102, 36, 0.55);
   }
 }
@@ -3206,7 +3206,7 @@ html[data-theme="sakinah"] .asmaul-theme-chip:hover {
   background: color-mix(in srgb, var(--theme-color, rgb(47, 114, 88)) 18%, transparent);
 }
 html[data-theme="sakinah"] .asmaul-theme-chip.active {
-  background: var(--theme-color, linear-gradient(135deg, rgb(47, 114, 88), rgb(181, 84, 63)));
+  background: var(--theme-color, linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88)));
   color: rgb(255, 255, 255);
 }
 html[data-theme="sakinah"] .asmaul-theme-count {
@@ -3226,7 +3226,7 @@ html[data-theme="sakinah"] .asmaul-card:hover {
 /* ---- base.css ---- */
 html[data-theme="sakinah"] body::before {
   background: radial-gradient(circle at 25% 25%, rgba(47, 114, 88, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(181, 84, 63, 0.05) 0%, transparent 50%);
+    radial-gradient(circle at 75% 75%, rgba(47, 114, 88, 0.05) 0%, transparent 50%);
 }
 html[data-theme="sakinah"] ::-webkit-scrollbar-track {
   background: rgba(255, 253, 247, 0.92);
@@ -3325,8 +3325,8 @@ html[data-theme="sakinah"] .dzikir-header .subtitle {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .time-recommendations-section {
-  background: rgba(47, 111, 138, 0.05);
-  border: 1px solid rgba(47, 111, 138, 0.3);
+  background: rgba(52, 104, 118, 0.05);
+  border: 1px solid rgba(52, 104, 118, 0.3);
 }
 html[data-theme="sakinah"] .recommendations-subtitle {
   color: rgb(74, 91, 81);
@@ -3345,7 +3345,7 @@ html[data-theme="sakinah"] .recommendation-card .rec-content p {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .recommendation-card .rec-badge {
-  background: rgba(47, 111, 138, 0.2);
+  background: rgba(52, 104, 118, 0.2);
 }
 html[data-theme="sakinah"] .search-container input {
   background: rgba(47, 114, 88, 0.05);
@@ -3370,10 +3370,10 @@ html[data-theme="sakinah"] .search-results::-webkit-scrollbar-track {
   background: rgba(255, 253, 247, 0.725);
 }
 html[data-theme="sakinah"] .search-results::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.3), rgba(47, 111, 138, 0.3));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.3), rgba(47, 114, 88, 0.3));
 }
 html[data-theme="sakinah"] .search-results::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 111, 138, 0.5));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 114, 88, 0.5));
 }
 html[data-theme="sakinah"] .search-result-card {
   background: rgba(47, 114, 88, 0.05);
@@ -3387,7 +3387,7 @@ html[data-theme="sakinah"] .search-category-badge {
   background: rgba(47, 114, 88, 0.15);
 }
 html[data-theme="sakinah"] .search-repeat-badge {
-  background: rgba(47, 111, 138, 0.2);
+  background: rgba(52, 104, 118, 0.2);
 }
 html[data-theme="sakinah"] .search-card-title {
   color: rgb(31, 61, 51);
@@ -3416,8 +3416,8 @@ html[data-theme="sakinah"] .filter-tab:hover {
   background: rgba(47, 114, 88, 0.1);
 }
 html[data-theme="sakinah"] .time-recommendations {
-  background: rgba(47, 111, 138, 0.08);
-  border: 1px solid rgba(47, 111, 138, 0.4);
+  background: rgba(52, 104, 118, 0.08);
+  border: 1px solid rgba(52, 104, 118, 0.4);
 }
 html[data-theme="sakinah"] .recommendation-item {
   background: rgba(47, 114, 88, 0.05);
@@ -3464,7 +3464,7 @@ html[data-theme="sakinah"] .category-desc {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .time-rec {
-  color: rgba(38, 92, 128, 0.9);
+  color: rgba(40, 88, 102, 0.9);
 }
 html[data-theme="sakinah"] .doa-count {
   background: rgba(47, 114, 88, 0.1);
@@ -3534,7 +3534,7 @@ html[data-theme="sakinah"] .doa-title-text {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .doa-repeat {
-  background: rgba(47, 111, 138, 0.2);
+  background: rgba(52, 104, 118, 0.2);
 }
 html[data-theme="sakinah"] .doa-preview {
   color: rgb(74, 91, 81);
@@ -3546,7 +3546,7 @@ html[data-theme="sakinah"] .doa-arabic {
 }
 html[data-theme="sakinah"] .doa-latin {
   color: rgb(31, 61, 51);
-  background: rgba(47, 111, 138, 0.05);
+  background: rgba(52, 104, 118, 0.05);
 }
 html[data-theme="sakinah"] .doa-translation {
   color: rgb(31, 61, 51);
@@ -3576,10 +3576,10 @@ html[data-theme="sakinah"] .counter-toggle-btn:hover {
   background: rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .counter-restore-btn {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.2), rgba(47, 111, 138, 0.2));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.2), rgba(47, 114, 88, 0.2));
 }
 html[data-theme="sakinah"] .counter-restore-btn:hover {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.3), rgba(47, 111, 138, 0.3));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.3), rgba(47, 114, 88, 0.3));
   box-shadow: 0 0 20px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .counter-ring-bg {
@@ -3649,7 +3649,7 @@ html[data-theme="sakinah"] .dzikir-toast {
 }
 html[data-theme="sakinah"] .dzikir-wheel-section {
   background: radial-gradient(ellipse at right, rgba(47, 114, 88, 0.08), transparent 60%),
-        linear-gradient(135deg, rgba(47, 111, 138, 0.3) 0%, rgba(255, 253, 247, 0.92) 100%);
+        linear-gradient(135deg, rgba(47, 114, 88, 0.3) 0%, rgba(255, 253, 247, 0.92) 100%);
   border: 1px solid rgba(47, 114, 88, 0.3);
   box-shadow: 0 4px 30px rgba(31, 61, 51, 0.055);
 }
@@ -3674,7 +3674,7 @@ html[data-theme="sakinah"] #wheelHand {
 /* ---- fiqh.css ---- */
 html[data-theme="sakinah"] .fiqh-header h2 {
   font-family: var(--font-orbitron, 'Plus Jakarta Sans', sans-serif);
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .fiqh-search {
@@ -3682,17 +3682,17 @@ html[data-theme="sakinah"] .fiqh-search {
   border: 1px solid rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .fiqh-search:focus {
-  border-color: rgba(47, 111, 138, 0.55);
-  background: rgba(47, 111, 138, 0.05);
+  border-color: rgba(52, 104, 118, 0.55);
+  background: rgba(52, 104, 118, 0.05);
 }
 html[data-theme="sakinah"] .fiqh-cat-btn {
   background: rgba(255, 253, 247, 0.725);
   border: 1px solid rgba(31, 61, 51, 0.11);
 }
 html[data-theme="sakinah"] .fiqh-cat-btn.active {
-  background: rgba(47, 111, 138, 0.15);
-  border-color: rgba(47, 111, 138, 0.5);
-  color: var(--cat-color, rgb(38, 92, 128));
+  background: rgba(52, 104, 118, 0.15);
+  border-color: rgba(52, 104, 118, 0.5);
+  color: var(--cat-color, rgb(40, 88, 102));
 }
 html[data-theme="sakinah"] .fiqh-disclaimer {
   background: rgba(138, 102, 36, 0.07);
@@ -3702,24 +3702,24 @@ html[data-theme="sakinah"] .fiqh-disclaimer i {
   color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .fiqh-section-header {
-  background: linear-gradient(135deg, rgb(107, 90, 166), 0.1), transparent);
-  border-left: 3px solid var(--cat-color, rgba(47, 111, 138, 0.55));
+  background: linear-gradient(135deg, rgb(64, 98, 106), 0.1), transparent);
+  border-left: 3px solid var(--cat-color, rgba(52, 104, 118, 0.55));
 }
 html[data-theme="sakinah"] .fiqh-section-header i {
-  color: var(--cat-color, rgb(38, 92, 128));
+  color: var(--cat-color, rgb(40, 88, 102));
 }
 html[data-theme="sakinah"] .fiqh-item {
   background: rgba(255, 253, 247, 0.69);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .fiqh-item.open {
-  border-color: rgba(47, 111, 138, 0.4);
+  border-color: rgba(52, 104, 118, 0.4);
 }
 html[data-theme="sakinah"] .fiqh-question:hover {
   background: rgba(255, 253, 247, 0.655);
 }
 html[data-theme="sakinah"] .fiqh-item.open .fiqh-chevron {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .fiqh-answer-wrap {
   border-top: 1px solid rgba(31, 61, 51, 0.1);
@@ -3744,11 +3744,11 @@ html[data-theme="sakinah"] .fiqh-tags {
   border-top: 1px solid rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .fiqh-tag {
-  background: rgba(47, 111, 138, 0.1);
-  color: rgb(38, 92, 128);
+  background: rgba(52, 104, 118, 0.1);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .fiqh-stat {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.06), rgba(181, 84, 63, 0.04));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.06), rgba(47, 114, 88, 0.04));
   border: 1px solid rgba(47, 114, 88, 0.28);
 }
 html[data-theme="sakinah"] .fiqh-stat:hover {
@@ -3781,7 +3781,7 @@ html[data-theme="sakinah"] .floating-prayer-widget {
     inset 0 1px 0 rgba(31, 61, 51, 0.018);
 }
 html[data-theme="sakinah"] .widget-icon {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 111, 138, 0.1));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 114, 88, 0.1));
   border: 1px solid rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .widget-countdown {
@@ -3826,15 +3826,15 @@ html[data-theme="sakinah"] .footer-section.copyright-section {
   background: rgba(47, 114, 88, 0.03);
 }
 html[data-theme="sakinah"] .footer-section.version-section {
-  background: rgba(107, 90, 166, 0.05);
-  border-color: rgba(107, 90, 166, 0.3);
+  background: rgba(64, 98, 106, 0.05);
+  border-color: rgba(64, 98, 106, 0.3);
 }
 html[data-theme="sakinah"] .footer-section.version-section:hover {
-  background: rgba(107, 90, 166, 0.08);
-  border-color: rgba(107, 90, 166, 0.4);
+  background: rgba(64, 98, 106, 0.08);
+  border-color: rgba(64, 98, 106, 0.4);
 }
 html[data-theme="sakinah"] .update-content {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(107, 90, 166, 0.15));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 114, 88, 0.15));
   border: 1px solid rgba(47, 114, 88, 0.5);
   box-shadow: 0 10px 40px rgba(31, 61, 51, 0.09);
 }
@@ -3861,7 +3861,7 @@ html[data-theme="sakinah"] .update-btn-secondary:hover {
 
 /* ---- hadith-ticker.css ---- */
 html[data-theme="sakinah"] .hadith-ticker {
-  background: linear-gradient(160deg, rgba(47, 114, 88, 0.06) 0%, rgba(138, 102, 36, 0.04) 100%),
+  background: linear-gradient(160deg, rgba(47, 114, 88, 0.06) 0%, rgba(47, 114, 88, 0.04) 100%),
     rgba(255, 253, 247, 0.92);
   border: 1px solid rgba(47, 114, 88, 0.32);
   box-shadow: 0 12px 36px rgba(31, 61, 51, 0.066),
@@ -3871,7 +3871,7 @@ html[data-theme="sakinah"] .hadith-ticker::before {
   background: linear-gradient(90deg,
     transparent,
     rgba(47, 114, 88, 0.7) 25%,
-    rgba(138, 102, 36, 0.6) 50%,
+    rgba(47, 114, 88, 0.6) 50%,
     rgba(47, 114, 88, 0.7) 75%,
     transparent);
 }
@@ -3928,7 +3928,7 @@ html[data-theme="sakinah"] .progress-fill::after {
 /* ---- hadits.css ---- */
 html[data-theme="sakinah"] .hadits-header h2 {
   font-family: var(--font-orbitron, 'Plus Jakarta Sans', sans-serif);
-  color: rgb(91, 74, 150);
+  color: rgb(52, 82, 90);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .hadits-search {
@@ -3936,35 +3936,35 @@ html[data-theme="sakinah"] .hadits-search {
   border: 1px solid rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .hadits-search:focus {
-  border-color: rgba(107, 90, 166, 0.55);
-  background: rgba(107, 90, 166, 0.05);
+  border-color: rgba(64, 98, 106, 0.55);
+  background: rgba(64, 98, 106, 0.05);
 }
 html[data-theme="sakinah"] .hadits-view-tab {
   background: rgba(255, 253, 247, 0.725);
   border: 1px solid rgba(31, 61, 51, 0.11);
 }
 html[data-theme="sakinah"] .hadits-view-tab.active {
-  background: rgba(107, 90, 166, 0.15);
-  border-color: rgba(107, 90, 166, 0.5);
-  color: rgb(91, 74, 150);
+  background: rgba(64, 98, 106, 0.15);
+  border-color: rgba(64, 98, 106, 0.5);
+  color: rgb(52, 82, 90);
 }
 html[data-theme="sakinah"] .hadits-fav-count {
-  background: rgba(107, 90, 166, 0.3);
+  background: rgba(64, 98, 106, 0.3);
 }
 html[data-theme="sakinah"] .hadits-cat-card {
   background: rgba(255, 253, 247, 0.69);
   border: 1px solid rgba(31, 61, 51, 0.1);
-  border-left: 3px solid var(--cat-color, rgba(107, 90, 166, 0.55));
+  border-left: 3px solid var(--cat-color, rgba(64, 98, 106, 0.55));
 }
 html[data-theme="sakinah"] .hadits-cat-card:hover {
   background: rgba(255, 253, 247, 0.795);
 }
 html[data-theme="sakinah"] .hadits-cat-icon {
   background: rgb(47, 114, 88), 0.1);
-  color: var(--cat-color, rgb(91, 74, 150));
+  color: var(--cat-color, rgb(52, 82, 90));
 }
 html[data-theme="sakinah"] .hadits-back {
-  color: rgb(91, 74, 150);
+  color: rgb(52, 82, 90);
 }
 html[data-theme="sakinah"] .hadits-card {
   background: rgba(255, 253, 247, 0.69);
@@ -3972,17 +3972,17 @@ html[data-theme="sakinah"] .hadits-card {
 }
 html[data-theme="sakinah"] .hadits-card:hover {
   background: rgba(255, 253, 247, 0.795);
-  border-color: rgba(107, 90, 166, 0.4);
+  border-color: rgba(64, 98, 106, 0.4);
 }
 html[data-theme="sakinah"] .hadits-card-cat {
   background: rgba(255, 253, 247, 0.92);
-  color: var(--cat-color, rgb(91, 74, 150));
+  color: var(--cat-color, rgb(52, 82, 90));
 }
 html[data-theme="sakinah"] .hadits-fav-btn.active {
   color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .hadits-card-arabic {
-  color: rgb(91, 74, 150);
+  color: rgb(52, 82, 90);
 }
 html[data-theme="sakinah"] .hadits-card-source {
   color: rgb(120, 90, 32);
@@ -3992,18 +3992,18 @@ html[data-theme="sakinah"] .hadits-modal-backdrop {
 }
 html[data-theme="sakinah"] .hadits-modal-box {
   background: rgb(246, 243, 234);
-  border: 1px solid rgba(107, 90, 166, 0.4);
+  border: 1px solid rgba(64, 98, 106, 0.4);
 }
 html[data-theme="sakinah"] .hadits-modal-close {
   background: rgba(255, 253, 247, 0.9);
 }
 html[data-theme="sakinah"] .hadits-detail-cat {
-  color: var(--cat-color, rgb(91, 74, 150));
+  color: var(--cat-color, rgb(52, 82, 90));
   background: rgba(255, 253, 247, 0.92);
 }
 html[data-theme="sakinah"] .hadits-detail-arabic {
-  color: rgb(91, 74, 150);
-  background: rgba(107, 90, 166, 0.06);
+  color: rgb(52, 82, 90);
+  background: rgba(64, 98, 106, 0.06);
 }
 html[data-theme="sakinah"] .hadits-detail-translation {
   background: rgba(255, 253, 247, 0.69);
@@ -4039,7 +4039,7 @@ html[data-theme="sakinah"] .hadits-daily {
 }
 @supports not (background: color-mix(in srgb, red, blue)) {
   html[data-theme="sakinah"] .hadits-daily {
-    background: linear-gradient(135deg, rgba(47, 114, 88, 0.1), rgba(181, 84, 63, 0.06));
+    background: linear-gradient(135deg, rgba(47, 114, 88, 0.1), rgba(47, 114, 88, 0.06));
     border: 1px solid rgba(47, 114, 88, 0.4);
   }
 }
@@ -4076,8 +4076,8 @@ html[data-theme="sakinah"] .haji-tab.active {
   color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-intro {
-  background: rgba(47, 111, 138, 0.07);
-  border: 1px solid rgba(47, 111, 138, 0.35);
+  background: rgba(52, 104, 118, 0.07);
+  border: 1px solid rgba(52, 104, 118, 0.35);
 }
 html[data-theme="sakinah"] .haji-intro.warning {
   background: rgba(138, 102, 36, 0.07);
@@ -4087,7 +4087,7 @@ html[data-theme="sakinah"] .haji-intro.warning i {
   color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .haji-intro i {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .haji-section-title {
   border-bottom: 1px solid rgba(31, 61, 51, 0.1);
@@ -4134,7 +4134,7 @@ html[data-theme="sakinah"] .haji-step-header i {
   color: rgb(135, 82, 22);
 }
 html[data-theme="sakinah"] .haji-talbiyah-box {
-  background: linear-gradient(135deg, rgba(168, 98, 30, 0.1), rgba(138, 102, 36, 0.05));
+  background: linear-gradient(135deg, rgba(168, 98, 30, 0.1), rgba(168, 98, 30, 0.05));
   border: 1px solid rgba(168, 98, 30, 0.4);
 }
 html[data-theme="sakinah"] .haji-talbiyah-box h4 {
@@ -4226,7 +4226,7 @@ html[data-theme="sakinah"] .haji-detail-amalan li i {
   color: rgb(36, 88, 69);
 }
 html[data-theme="sakinah"] .haji-progress-tracker {
-  background: linear-gradient(135deg, rgba(138, 102, 36, 0.06), rgba(47, 114, 88, 0.04));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.06), rgba(47, 114, 88, 0.04));
   border: 1px solid rgba(138, 102, 36, 0.35);
 }
 html[data-theme="sakinah"] .haji-progress-head {
@@ -4236,7 +4236,7 @@ html[data-theme="sakinah"] .haji-progress-bar {
   background: rgba(255, 253, 247, 0.92);
 }
 html[data-theme="sakinah"] .haji-progress-fill {
-  background: linear-gradient(90deg, rgb(138, 102, 36) 0%, rgb(47, 114, 88) 100%);
+  background: linear-gradient(90deg, rgb(47, 114, 88) 0%, rgb(47, 114, 88) 100%);
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .haji-timeline-check {
@@ -4264,7 +4264,7 @@ html[data-theme="sakinah"] .haji-timeline-item.completed strong {
 /* ---- home.css ---- */
 html[data-theme="sakinah"] .home-hero::after {
   background: radial-gradient(ellipse at 30% 40%, rgba(47, 114, 88, 0.12), transparent 60%),
-    radial-gradient(ellipse at 70% 50%, rgba(138, 102, 36, 0.1), transparent 65%);
+    radial-gradient(ellipse at 70% 50%, rgba(47, 114, 88, 0.1), transparent 65%);
 }
 html[data-theme="sakinah"] .home-hero::before {
   color: var(--islamic-gold, rgb(120, 90, 32));
@@ -4277,7 +4277,7 @@ html[data-theme="sakinah"] .title-line.glow {
   filter: drop-shadow(0 0 24px rgba(31, 61, 51, 0.105));
 }
 html[data-theme="sakinah"] .stat-item {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.05), rgba(138, 102, 36, 0.04));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.05), rgba(47, 114, 88, 0.04));
   border: 1px solid rgba(47, 114, 88, 0.28);
 }
 html[data-theme="sakinah"] .stat-item::before {
@@ -4328,25 +4328,25 @@ html[data-theme="sakinah"] .install-btn i {
 }
 html[data-theme="sakinah"] .install-section .clear-cache-btn {
   background: linear-gradient(135deg, 
-    rgba(107, 90, 166, 0.1) 0%, 
-    rgba(107, 90, 166, 0.08) 100%);
-  border: 2px solid rgba(107, 90, 166, 0.5);
+    rgba(64, 98, 106, 0.1) 0%, 
+    rgba(64, 98, 106, 0.08) 100%);
+  border: 2px solid rgba(64, 98, 106, 0.5);
   box-shadow: 0 4px 20px rgba(31, 61, 51, 0.06),
     0 0 40px rgba(31, 61, 51, 0.045),
     inset 0 0 20px rgba(31, 61, 51, 0.015);
 }
 html[data-theme="sakinah"] .install-section .clear-cache-btn::before {
-  background: rgba(107, 90, 166, 0.3);
+  background: rgba(64, 98, 106, 0.3);
 }
 html[data-theme="sakinah"] .install-section .clear-cache-btn:hover {
   background: linear-gradient(135deg, 
-    rgba(107, 90, 166, 0.2) 0%, 
-    rgba(107, 90, 166, 0.15) 100%);
-  border-color: rgba(107, 90, 166, 0.55);
+    rgba(64, 98, 106, 0.2) 0%, 
+    rgba(64, 98, 106, 0.15) 100%);
+  border-color: rgba(64, 98, 106, 0.55);
   box-shadow: 0 8px 30px rgba(31, 61, 51, 0.12),
     0 0 60px rgba(31, 61, 51, 0.09),
     inset 0 0 30px rgba(31, 61, 51, 0.03);
-  color: rgb(91, 74, 150);
+  color: rgb(52, 82, 90);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .install-section .clear-cache-btn:active {
@@ -4388,23 +4388,23 @@ html[data-theme="sakinah"] .share-app-btn i {
   filter: drop-shadow(0 0 8px rgba(31, 61, 51, 0.12));
 }
 html[data-theme="sakinah"] .cache-info {
-  background: rgba(107, 90, 166, 0.08);
-  border: 1px solid rgba(107, 90, 166, 0.4);
+  background: rgba(64, 98, 106, 0.08);
+  border: 1px solid rgba(64, 98, 106, 0.4);
 }
 html[data-theme="sakinah"] .cache-info i {
-  color: rgb(91, 74, 150);
+  color: rgb(52, 82, 90);
 }
 html[data-theme="sakinah"] .cache-info p {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .cache-info strong {
-  color: rgb(91, 74, 150);
+  color: rgb(52, 82, 90);
 }
 html[data-theme="sakinah"] .download-alquran-card {
   background: linear-gradient(135deg, 
     rgba(47, 114, 88, 0.15) 0%, 
     rgba(47, 114, 88, 0.08) 50%,
-    rgba(107, 90, 166, 0.08) 100%);
+    rgba(47, 114, 88, 0.08) 100%);
   border: 2px solid rgba(47, 114, 88, 0.5);
   box-shadow: 0 8px 32px rgba(31, 61, 51, 0.075),
     0 0 60px rgba(31, 61, 51, 0.045),
@@ -4518,10 +4518,10 @@ html[data-theme="sakinah"] .app-card {
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .app-card:nth-child(1) {
-  border-image: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 111, 138, 0.3)) 1;
+  border-image: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 114, 88, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(2) {
-  border-image: linear-gradient(135deg, rgba(107, 90, 166, 0.5), rgba(47, 114, 88, 0.3)) 1;
+  border-image: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 114, 88, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(3) {
   border-image: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 114, 88, 0.3)) 1;
@@ -4530,28 +4530,28 @@ html[data-theme="sakinah"] .app-card:nth-child(4) {
   border-image: linear-gradient(135deg, rgba(138, 102, 36, 0.55), rgba(138, 102, 36, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(5) {
-  border-image: linear-gradient(135deg, rgba(181, 84, 63, 0.5), rgba(168, 98, 30, 0.3)) 1;
+  border-image: linear-gradient(135deg, rgba(181, 84, 63, 0.5), rgba(181, 84, 63, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(6) {
   border-image: linear-gradient(135deg, rgba(47, 114, 88, 0.5), rgba(47, 114, 88, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(7) {
-  border-image: linear-gradient(135deg, rgba(47, 111, 138, 0.5), rgba(107, 90, 166, 0.3)) 1;
+  border-image: linear-gradient(135deg, rgba(52, 104, 118, 0.5), rgba(52, 104, 118, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(8) {
-  border-image: linear-gradient(135deg, rgba(168, 98, 30, 0.5), rgba(181, 84, 63, 0.3)) 1;
+  border-image: linear-gradient(135deg, rgba(168, 98, 30, 0.5), rgba(168, 98, 30, 0.3)) 1;
 }
 html[data-theme="sakinah"] .app-card:nth-child(n) {
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .app-card::after {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.25), rgba(47, 111, 138, 0.1), transparent);
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.25), rgba(47, 114, 88, 0.1), transparent);
 }
 html[data-theme="sakinah"] .app-card:nth-child(1)::after {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 111, 138, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(2)::after {
-  background: linear-gradient(135deg, rgba(107, 90, 166, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(3)::after {
   background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
@@ -4560,34 +4560,34 @@ html[data-theme="sakinah"] .app-card:nth-child(4)::after {
   background: linear-gradient(135deg, rgba(138, 102, 36, 0.5), rgba(138, 102, 36, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(5)::after {
-  background: linear-gradient(135deg, rgba(181, 84, 63, 0.4), rgba(168, 98, 30, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(181, 84, 63, 0.4), rgba(181, 84, 63, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(6)::after {
   background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(7)::after {
-  background: linear-gradient(135deg, rgba(47, 111, 138, 0.4), rgba(107, 90, 166, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(52, 104, 118, 0.4), rgba(52, 104, 118, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(8)::after {
-  background: linear-gradient(135deg, rgba(168, 98, 30, 0.4), rgba(181, 84, 63, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(168, 98, 30, 0.4), rgba(168, 98, 30, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(9)::after {
   background: linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(47, 114, 88, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(10)::after {
-  background: linear-gradient(135deg, rgba(47, 111, 138, 0.4), rgba(47, 111, 138, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(52, 104, 118, 0.4), rgba(52, 104, 118, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(11)::after {
   background: linear-gradient(135deg, rgba(138, 102, 36, 0.5), rgba(138, 102, 36, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(12)::after {
-  background: linear-gradient(135deg, rgba(107, 90, 166, 0.4), rgba(107, 90, 166, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(64, 98, 106, 0.4), rgba(64, 98, 106, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(13)::after {
-  background: linear-gradient(135deg, rgba(47, 111, 138, 0.4), rgba(47, 111, 138, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(52, 104, 118, 0.4), rgba(52, 104, 118, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-card:nth-child(14)::after {
-  background: linear-gradient(135deg, rgba(168, 98, 30, 0.45), rgba(181, 84, 63, 0.15), transparent 60%);
+  background: linear-gradient(135deg, rgba(168, 98, 30, 0.45), rgba(168, 98, 30, 0.15), transparent 60%);
 }
 html[data-theme="sakinah"] .app-badge {
   box-shadow: 0 4px 14px rgba(31, 61, 51, 0.077);
@@ -4647,9 +4647,9 @@ html[data-theme="sakinah"] .app-card:nth-child(1) .app-icon {
   border-color: rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(2) .app-icon {
-  color: rgb(91, 74, 150);
-  background: rgba(107, 90, 166, 0.1);
-  border-color: rgba(107, 90, 166, 0.3);
+  color: rgb(52, 82, 90);
+  background: rgba(64, 98, 106, 0.1);
+  border-color: rgba(64, 98, 106, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(3) .app-icon {
   color: rgb(36, 88, 69);
@@ -4672,9 +4672,9 @@ html[data-theme="sakinah"] .app-card:nth-child(6) .app-icon {
   border-color: rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(7) .app-icon {
-  color: rgb(38, 92, 128);
-  background: rgba(47, 111, 138, 0.1);
-  border-color: rgba(47, 111, 138, 0.3);
+  color: rgb(40, 88, 102);
+  background: rgba(52, 104, 118, 0.1);
+  border-color: rgba(52, 104, 118, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(8) .app-icon {
   color: rgb(135, 82, 22);
@@ -4687,9 +4687,9 @@ html[data-theme="sakinah"] .app-card:nth-child(9) .app-icon {
   border-color: rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(10) .app-icon {
-  color: rgb(38, 92, 128);
-  background: rgba(47, 111, 138, 0.1);
-  border-color: rgba(47, 111, 138, 0.3);
+  color: rgb(40, 88, 102);
+  background: rgba(52, 104, 118, 0.1);
+  border-color: rgba(52, 104, 118, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(11) .app-icon {
   color: rgb(120, 90, 32);
@@ -4697,14 +4697,14 @@ html[data-theme="sakinah"] .app-card:nth-child(11) .app-icon {
   border-color: rgba(138, 102, 36, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(12) .app-icon {
-  color: rgb(91, 74, 150);
-  background: rgba(107, 90, 166, 0.1);
-  border-color: rgba(107, 90, 166, 0.3);
+  color: rgb(52, 82, 90);
+  background: rgba(64, 98, 106, 0.1);
+  border-color: rgba(64, 98, 106, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(13) .app-icon {
-  color: rgb(38, 92, 128);
-  background: rgba(47, 111, 138, 0.1);
-  border-color: rgba(47, 111, 138, 0.3);
+  color: rgb(40, 88, 102);
+  background: rgba(52, 104, 118, 0.1);
+  border-color: rgba(52, 104, 118, 0.3);
 }
 html[data-theme="sakinah"] .app-card:nth-child(14) .app-icon {
   color: rgb(135, 82, 22);
@@ -4721,7 +4721,7 @@ html[data-theme="sakinah"] .app-card:hover .app-icon {
 }
 html[data-theme="sakinah"] .manhaj-badge {
   background: linear-gradient(135deg,
-        rgba(138, 102, 36, 0.06) 0%,
+        rgba(47, 114, 88, 0.06) 0%,
         rgba(47, 114, 88, 0.04) 100%);
   border: 1px solid rgba(138, 102, 36, 0.4);
   box-shadow: 0 4px 20px rgba(31, 61, 51, 0.03);
@@ -4741,23 +4741,23 @@ html[data-theme="sakinah"] .manhaj-badge-text span {
 /* ---- kalender.css ---- */
 html[data-theme="sakinah"] .kalender-header h2 {
   font-family: var(--font-orbitron, 'Plus Jakarta Sans', sans-serif);
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
   text-shadow: none;
 }
 html[data-theme="sakinah"] .kalender-today-hijri {
-  background: rgba(47, 111, 138, 0.1);
-  border: 1px solid rgba(47, 111, 138, 0.4);
+  background: rgba(52, 104, 118, 0.1);
+  border: 1px solid rgba(52, 104, 118, 0.4);
 }
 html[data-theme="sakinah"] .kalender-hijri-date {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .kalender-nav-btn {
-  background: rgba(47, 111, 138, 0.1);
-  border: 1px solid rgba(47, 111, 138, 0.4);
-  color: rgb(38, 92, 128);
+  background: rgba(52, 104, 118, 0.1);
+  border: 1px solid rgba(52, 104, 118, 0.4);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .kalender-nav-btn:hover {
-  background: rgba(47, 111, 138, 0.2);
+  background: rgba(52, 104, 118, 0.2);
 }
 html[data-theme="sakinah"] .kalender-grid-wrapper {
   background: rgba(255, 253, 247, 0.655);
@@ -4783,11 +4783,11 @@ html[data-theme="sakinah"] .kalender-cell.friday .kalender-cell-masehi {
   color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .kalender-cell.today {
-  background: rgba(47, 111, 138, 0.15) !important;
-  border: 1px solid rgba(47, 111, 138, 0.5);
+  background: rgba(52, 104, 118, 0.15) !important;
+  border: 1px solid rgba(52, 104, 118, 0.5);
 }
 html[data-theme="sakinah"] .kalender-cell.today .kalender-cell-masehi {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .kalender-cell.has-event {
   background: rgba(255, 253, 247, 0.92);
@@ -4809,40 +4809,40 @@ html[data-theme="sakinah"] .kalender-convert {
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .kalender-convert h3 i {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .kalender-convert-input input[type="date"] {
   background: rgba(255, 253, 247, 0.76);
   border: 1px solid rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .kalender-convert-btn {
-  background: linear-gradient(135deg, rgb(47, 111, 138), rgb(47, 111, 138));
+  background: linear-gradient(135deg, rgb(52, 104, 118), rgb(52, 104, 118));
   color: rgb(255, 255, 255);
 }
 html[data-theme="sakinah"] .convert-output {
-  background: rgba(47, 111, 138, 0.08);
-  border: 1px solid rgba(47, 111, 138, 0.35);
+  background: rgba(52, 104, 118, 0.08);
+  border: 1px solid rgba(52, 104, 118, 0.35);
 }
 html[data-theme="sakinah"] .convert-hijri i {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .kalender-months-info {
   background: rgba(255, 253, 247, 0.655);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .kalender-months-info h3 i {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .kalender-month-item {
   background: rgba(255, 253, 247, 0.725);
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .kalender-month-num {
-  background: rgba(47, 111, 138, 0.2);
-  color: rgb(38, 92, 128);
+  background: rgba(52, 104, 118, 0.2);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .kalender-countdown-section {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.05), rgba(181, 84, 63, 0.04));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.05), rgba(47, 114, 88, 0.04));
   border: 1px solid rgba(47, 114, 88, 0.28);
 }
 html[data-theme="sakinah"] .kalender-countdown-header {
@@ -4978,10 +4978,10 @@ html[data-theme="sakinah"] ::selection {
   text-shadow: none;
 }
 html[data-theme="sakinah"] *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(47, 114, 88, 0.35), rgba(138, 102, 36, 0.25));
+  background: linear-gradient(180deg, rgba(47, 114, 88, 0.35), rgba(47, 114, 88, 0.25));
 }
 html[data-theme="sakinah"] *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(47, 114, 88, 0.55), rgba(138, 102, 36, 0.4));
+  background: linear-gradient(180deg, rgba(47, 114, 88, 0.55), rgba(47, 114, 88, 0.4));
 }
 
 /* ---- qibla.css ---- */
@@ -5008,7 +5008,7 @@ html[data-theme="sakinah"] .qibla-btn:hover:not(:disabled) {
   box-shadow: 0 6px 30px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .compass-wrapper {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.04), rgba(47, 111, 138, 0.02));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.04), rgba(47, 114, 88, 0.02));
   border: 1px solid rgba(47, 114, 88, 0.25);
   box-shadow: 0 8px 32px rgba(31, 61, 51, 0.066);
 }
@@ -5064,7 +5064,7 @@ html[data-theme="sakinah"] .qibla-degree label {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .location-info {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.04), rgba(47, 111, 138, 0.02));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.04), rgba(47, 114, 88, 0.02));
   border: 1px solid rgba(47, 114, 88, 0.25);
 }
 html[data-theme="sakinah"] .info-item {
@@ -5077,8 +5077,8 @@ html[data-theme="sakinah"] .info-item span {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .qibla-instructions {
-  background: rgba(47, 111, 138, 0.05);
-  border: 1px solid rgba(47, 111, 138, 0.3);
+  background: rgba(52, 104, 118, 0.05);
+  border: 1px solid rgba(52, 104, 118, 0.3);
 }
 html[data-theme="sakinah"] .qibla-instructions li {
   color: rgb(31, 61, 51);
@@ -5194,7 +5194,7 @@ html[data-theme="sakinah"] .footer-pin-slot.fixed .footer-pin-value {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .footer-pin-select {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.1), rgba(181, 84, 63, 0.05));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.1), rgba(47, 114, 88, 0.05));
   border: 1px solid rgba(47, 114, 88, 0.45);
   color: rgb(31, 61, 51);
 }
@@ -5279,14 +5279,14 @@ html[data-theme="sakinah"] .sholat-description {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .sholat-ruling {
-  background: linear-gradient(135deg, rgba(138, 102, 36, 0.2), rgba(168, 98, 30, 0.2));
+  background: linear-gradient(135deg, rgba(138, 102, 36, 0.2), rgba(138, 102, 36, 0.2));
   border: 1px solid rgba(138, 102, 36, 0.5);
   color: rgb(120, 90, 32);
 }
 html[data-theme="sakinah"] .sholat-variations-badge {
-  background: rgba(107, 90, 166, 0.2);
-  border: 1px solid rgba(107, 90, 166, 0.5);
-  color: rgb(91, 74, 150);
+  background: rgba(64, 98, 106, 0.2);
+  border: 1px solid rgba(64, 98, 106, 0.5);
+  color: rgb(52, 82, 90);
 }
 html[data-theme="sakinah"] .sholat-modal {
   background: rgb(246, 243, 234);
@@ -5338,14 +5338,14 @@ html[data-theme="sakinah"] .sholat-detail-arabic {
 }
 html[data-theme="sakinah"] .sholat-detail-latin {
   color: rgb(31, 61, 51);
-  background: rgba(47, 111, 138, 0.05);
+  background: rgba(52, 104, 118, 0.05);
 }
 html[data-theme="sakinah"] .sholat-detail-translation {
   color: rgb(31, 61, 51);
   background: rgba(47, 114, 88, 0.03);
 }
 html[data-theme="sakinah"] .sholat-ruling-badge {
-  background: linear-gradient(135deg, rgba(138, 102, 36, 0.2), rgba(168, 98, 30, 0.2));
+  background: linear-gradient(135deg, rgba(138, 102, 36, 0.2), rgba(138, 102, 36, 0.2));
   border: 1px solid rgba(138, 102, 36, 0.5);
   color: rgb(120, 90, 32);
 }
@@ -5360,16 +5360,16 @@ html[data-theme="sakinah"] .dalil-translation {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .sholat-variation-card {
-  background: rgba(107, 90, 166, 0.05);
-  border: 1px solid rgba(107, 90, 166, 0.3);
+  background: rgba(64, 98, 106, 0.05);
+  border: 1px solid rgba(64, 98, 106, 0.3);
 }
 html[data-theme="sakinah"] .variation-number {
-  color: rgb(91, 74, 150);
+  color: rgb(52, 82, 90);
 }
 html[data-theme="sakinah"] .variation-frequency {
-  background: rgba(107, 90, 166, 0.2);
-  border: 1px solid rgba(107, 90, 166, 0.4);
-  color: rgb(91, 74, 150);
+  background: rgba(64, 98, 106, 0.2);
+  border: 1px solid rgba(64, 98, 106, 0.4);
+  color: rgb(52, 82, 90);
 }
 html[data-theme="sakinah"] .variation-note {
   background: rgba(47, 114, 88, 0.05);
@@ -5459,7 +5459,7 @@ html[data-theme="sakinah"] .sholat-delete-favorite:hover {
   border-color: rgba(181, 84, 63, 0.55);
 }
 html[data-theme="sakinah"] .sholat-tab-3d {
-  background: linear-gradient(135deg, rgba(181, 84, 63, 0.1), rgba(47, 114, 88, 0.1));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.1), rgba(47, 114, 88, 0.1));
   border-color: rgba(181, 84, 63, 0.5);
 }
 html[data-theme="sakinah"] .sholat-tab-3d::after {
@@ -5468,11 +5468,11 @@ html[data-theme="sakinah"] .sholat-tab-3d::after {
   box-shadow: 0 0 10px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .sholat-tab-3d.active {
-  background: linear-gradient(135deg, rgb(181, 84, 63), rgb(47, 114, 88));
+  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88));
 }
 html[data-theme="sakinah"] .peraga-stage {
   background: radial-gradient(ellipse at top, rgba(47, 114, 88, 0.15), transparent 60%),
-        radial-gradient(ellipse at bottom, rgba(181, 84, 63, 0.1), transparent 70%),
+        radial-gradient(ellipse at bottom, rgba(47, 114, 88, 0.1), transparent 70%),
         linear-gradient(180deg, rgb(246, 243, 234) 0%, rgb(246, 243, 234) 100%);
   border: 1px solid rgba(47, 114, 88, 0.4);
   box-shadow: 0 0 40px rgba(31, 61, 51, 0.06),
@@ -5514,12 +5514,12 @@ html[data-theme="sakinah"] .peraga-ctrl:hover {
   box-shadow: 0 0 15px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .peraga-ctrl-main {
-  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(181, 84, 63));
+  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88));
   color: rgb(255, 255, 255);
   box-shadow: 0 0 25px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .peraga-ctrl-main:hover {
-  background: linear-gradient(135deg, rgb(181, 84, 63), rgb(47, 114, 88));
+  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88));
   color: rgb(255, 255, 255);
   box-shadow: 0 0 35px rgba(31, 61, 51, 0.12);
 }
@@ -5566,7 +5566,7 @@ html[data-theme="sakinah"] .peraga-dot.done {
   color: rgb(36, 88, 69);
 }
 html[data-theme="sakinah"] .peraga-dot.active {
-  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(181, 84, 63));
+  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88));
   color: rgb(255, 255, 255);
   box-shadow: 0 0 15px rgba(31, 61, 51, 0.12);
 }
@@ -5585,12 +5585,12 @@ html[data-theme="sakinah"] .peraga-tl-group.active .peraga-tl-label {
   color: var(--primary-cyan, rgb(36, 88, 69));
 }
 html[data-theme="sakinah"] .peraga-dot-p2 {
-  border-color: rgba(107, 90, 166, 0.45);
+  border-color: rgba(64, 98, 106, 0.45);
 }
 html[data-theme="sakinah"] .peraga-dot-p2.done {
-  background: rgba(107, 90, 166, 0.2);
-  border-color: rgba(107, 90, 166, 0.55);
-  color: rgb(91, 74, 150);
+  background: rgba(64, 98, 106, 0.2);
+  border-color: rgba(64, 98, 106, 0.55);
+  color: rgb(52, 82, 90);
 }
 html[data-theme="sakinah"] .peraga-dot-p3 {
   border-color: rgba(138, 102, 36, 0.45);
@@ -5603,7 +5603,7 @@ html[data-theme="sakinah"] .peraga-dot-p3.done {
 html[data-theme="sakinah"] .peraga-bacaan-panel {
   background: linear-gradient(135deg,
         rgba(47, 114, 88, 0.06) 0%,
-        rgba(181, 84, 63, 0.06) 100%);
+        rgba(47, 114, 88, 0.06) 100%);
   border: 1px solid rgba(47, 114, 88, 0.35);
   box-shadow: 0 4px 20px rgba(31, 61, 51, 0.044);
 }
@@ -5641,7 +5641,7 @@ html[data-theme="sakinah"] .peraga-bacaan-tip i {
 /* ---- sirah-konstelasi.css ---- */
 html[data-theme="sakinah"] .konstelasi-hero {
   background: radial-gradient(ellipse at 0% 0%, rgba(138, 102, 36, 0.12), transparent 50%),
-        radial-gradient(ellipse at 100% 100%, rgba(181, 84, 63, 0.12), transparent 55%),
+        radial-gradient(ellipse at 100% 100%, rgba(138, 102, 36, 0.12), transparent 55%),
         linear-gradient(135deg, rgba(255, 253, 247, 0.92), rgb(246, 243, 234));
   border: 1px solid rgba(138, 102, 36, 0.38);
   box-shadow: 0 14px 50px rgba(31, 61, 51, 0.099);
@@ -5865,14 +5865,14 @@ html[data-theme="sakinah"] .subcategory-badge.asharah_mubasysyarah {
   border: 1px solid rgba(47, 114, 88, 0.4);
 }
 html[data-theme="sakinah"] .subcategory-badge.muhajirin {
-  background: rgba(47, 111, 138, 0.2);
-  color: rgb(38, 92, 128);
-  border: 1px solid rgba(47, 111, 138, 0.4);
+  background: rgba(52, 104, 118, 0.2);
+  color: rgb(40, 88, 102);
+  border: 1px solid rgba(52, 104, 118, 0.4);
 }
 html[data-theme="sakinah"] .subcategory-badge.anshar_aus, html[data-theme="sakinah"] .subcategory-badge.anshar_khazraj {
-  background: rgba(107, 90, 166, 0.2);
-  color: rgb(91, 74, 150);
-  border: 1px solid rgba(107, 90, 166, 0.4);
+  background: rgba(64, 98, 106, 0.2);
+  color: rgb(52, 82, 90);
+  border: 1px solid rgba(64, 98, 106, 0.4);
 }
 html[data-theme="sakinah"] .subcategory-badge.sahabat_terkenal {
   background: rgba(138, 102, 36, 0.2);
@@ -5922,8 +5922,8 @@ html[data-theme="sakinah"] .person-header-detail, html[data-theme="sakinah"] .pr
 }
 html[data-theme="sakinah"] .prophet-detail-hero {
   background: radial-gradient(ellipse at top right, rgba(47, 114, 88, 0.18), transparent 60%),
-        radial-gradient(ellipse at bottom left, rgba(181, 84, 63, 0.12), transparent 65%),
-        linear-gradient(135deg, rgba(47, 111, 138, 0.4), rgba(255, 253, 247, 0.92));
+        radial-gradient(ellipse at bottom left, rgba(47, 114, 88, 0.12), transparent 65%),
+        linear-gradient(135deg, rgba(47, 114, 88, 0.4), rgba(255, 253, 247, 0.92));
   border: 1px solid rgba(47, 114, 88, 0.35);
   box-shadow: 0 6px 30px rgba(31, 61, 51, 0.066);
 }
@@ -5936,7 +5936,7 @@ html[data-theme="sakinah"] .prophet-hero-arabic {
   text-shadow: none;
 }
 html[data-theme="sakinah"] .prophet-hero-badge {
-  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(181, 84, 63));
+  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88));
   color: rgb(255, 255, 255);
   box-shadow: 0 0 15px rgba(31, 61, 51, 0.12);
 }
@@ -5979,8 +5979,8 @@ html[data-theme="sakinah"] .event-year {
   background: rgba(47, 114, 88, 0.1);
 }
 html[data-theme="sakinah"] .ref-badge {
-  background: rgba(107, 90, 166, 0.15);
-  border: 1px solid rgba(107, 90, 166, 0.4);
+  background: rgba(64, 98, 106, 0.15);
+  border: 1px solid rgba(64, 98, 106, 0.4);
 }
 html[data-theme="sakinah"] .lesson-card {
   background: rgba(138, 102, 36, 0.05);
@@ -6000,7 +6000,7 @@ html[data-theme="sakinah"] .lesson-card p {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .references-list li, html[data-theme="sakinah"] .ref-list li {
-  background: rgba(107, 90, 166, 0.1);
+  background: rgba(64, 98, 106, 0.1);
 }
 html[data-theme="sakinah"] .hadits-item, html[data-theme="sakinah"] .hadith-card {
   background: rgba(47, 114, 88, 0.05);
@@ -6010,7 +6010,7 @@ html[data-theme="sakinah"] .hadits-arabic, html[data-theme="sakinah"] .hadith-ar
   border-bottom: 1px solid rgba(47, 114, 88, 0.3);
 }
 html[data-theme="sakinah"] .hadits-source, html[data-theme="sakinah"] .hadith-source {
-  border-top: 1px solid rgba(107, 90, 166, 0.3);
+  border-top: 1px solid rgba(64, 98, 106, 0.3);
 }
 html[data-theme="sakinah"] .toast-notification {
   box-shadow: 0 10px 30px rgba(31, 61, 51, 0.09);
@@ -6018,13 +6018,13 @@ html[data-theme="sakinah"] .toast-notification {
 html[data-theme="sakinah"] .sirah-timeline-intro {
   background: linear-gradient(135deg,
         rgba(47, 114, 88, 0.08) 0%,
-        rgba(181, 84, 63, 0.06) 100%);
+        rgba(47, 114, 88, 0.06) 100%);
   border: 1px solid rgba(47, 114, 88, 0.35);
   box-shadow: 0 4px 30px rgba(31, 61, 51, 0.055);
 }
 html[data-theme="sakinah"] .timeline-intro-bg {
   background-image: radial-gradient(circle at 20% 80%, rgba(47, 114, 88, 0.15), transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(181, 84, 63, 0.12), transparent 50%);
+        radial-gradient(circle at 80% 20%, rgba(47, 114, 88, 0.12), transparent 50%);
 }
 html[data-theme="sakinah"] .timeline-intro-tag {
   background: rgba(47, 114, 88, 0.15);
@@ -6058,7 +6058,7 @@ html[data-theme="sakinah"] .era-nav-pill.current .era-nav-num {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .timeline-intro-icon {
-  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(181, 84, 63));
+  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88));
   color: rgb(255, 255, 255);
   box-shadow: 0 0 20px rgba(31, 61, 51, 0.12);
 }
@@ -6084,24 +6084,24 @@ html[data-theme="sakinah"] .sirah-timeline::before {
   background: linear-gradient(180deg,
         transparent 0%,
         rgba(47, 114, 88, 0.6) 5%,
-        rgba(181, 84, 63, 0.4) 50%,
-        rgba(138, 102, 36, 0.4) 95%,
+        rgba(47, 114, 88, 0.4) 50%,
+        rgba(47, 114, 88, 0.4) 95%,
         transparent 100%);
 }
 html[data-theme="sakinah"] .timeline-era-marker {
   background: linear-gradient(135deg,
         color-mix(in srgb, var(--era-color, rgb(138, 102, 36)) 12%, transparent) 0%,
-        color-mix(in srgb, var(--era-accent, rgb(181, 84, 63)) 8%, transparent) 100%);
+        color-mix(in srgb, var(--era-accent, rgb(138, 102, 36)) 8%, transparent) 100%);
   border: 1px solid var(--era-color, rgba(138, 102, 36, 0.4));
   box-shadow: 0 0 30px color-mix(in srgb, var(--era-color, rgba(31, 61, 51, 0.12)) 18%, transparent);
 }
 @supports not (background: color-mix(in srgb, red, blue)) {
   html[data-theme="sakinah"] .timeline-era-marker {
-    background: linear-gradient(135deg, rgba(138, 102, 36, 0.08), rgba(181, 84, 63, 0.06));
+    background: linear-gradient(135deg, rgba(138, 102, 36, 0.08), rgba(138, 102, 36, 0.06));
   }
 }
 html[data-theme="sakinah"] .era-marker-dot {
-  background: linear-gradient(135deg, var(--era-color, rgb(138, 102, 36)), var(--era-accent, rgb(181, 84, 63)));
+  background: linear-gradient(135deg, var(--era-color, rgb(138, 102, 36)), var(--era-accent, rgb(138, 102, 36)));
   color: rgb(255, 255, 255);
   box-shadow: 0 0 18px var(--era-color, rgba(31, 61, 51, 0.12));
 }
@@ -6122,7 +6122,7 @@ html[data-theme="sakinah"] .era-marker-label p {
   color: rgb(74, 91, 81);
 }
 html[data-theme="sakinah"] .timeline-item-num {
-  background: linear-gradient(135deg, var(--era-color, rgb(47, 114, 88)), var(--era-accent, rgb(181, 84, 63)));
+  background: linear-gradient(135deg, var(--era-color, rgb(47, 114, 88)), var(--era-accent, rgb(47, 114, 88)));
   color: rgb(255, 255, 255);
   font-family: var(--font-orbitron, 'Plus Jakarta Sans'), sans-serif;
   box-shadow: 0 0 12px var(--era-color, rgba(31, 61, 51, 0.12));
@@ -6138,7 +6138,7 @@ html[data-theme="sakinah"] .timeline-item.timeline-right .timeline-item-line {
 }
 html[data-theme="sakinah"] .timeline-card {
   background: linear-gradient(135deg,
-        rgba(47, 111, 138, 0.45) 0%,
+        rgba(52, 104, 118, 0.45) 0%,
         rgba(255, 253, 247, 0.92) 100%);
   border: 1px solid rgba(47, 114, 88, 0.3);
 }
@@ -6146,8 +6146,8 @@ html[data-theme="sakinah"] .timeline-item:hover .timeline-card {
   border-color: var(--era-color, rgba(47, 114, 88, 0.55));
   box-shadow: 0 8px 30px color-mix(in srgb, var(--era-color, rgba(31, 61, 51, 0.12)) 35%, transparent);
   background: linear-gradient(135deg,
-        rgba(47, 111, 138, 0.6) 0%,
-        rgba(107, 90, 166, 0.5) 100%);
+        rgba(52, 104, 118, 0.6) 0%,
+        rgba(52, 104, 118, 0.5) 100%);
 }
 @supports not (background: color-mix(in srgb, red, blue)) {
   html[data-theme="sakinah"] .timeline-item:hover .timeline-card {
@@ -6224,7 +6224,7 @@ html[data-theme="sakinah"] .section-description {
   background: rgba(47, 114, 88, 0.05);
 }
 html[data-theme="sakinah"] .radio-card {
-  background: linear-gradient(135deg, rgba(181, 84, 63, 0.1), rgba(168, 98, 30, 0.1));
+  background: linear-gradient(135deg, rgba(181, 84, 63, 0.1), rgba(181, 84, 63, 0.1));
   border: 1px solid rgba(181, 84, 63, 0.4);
 }
 html[data-theme="sakinah"] .radio-card.radio-tarbiyyah {
@@ -6250,18 +6250,18 @@ html[data-theme="sakinah"] .radio-logo {
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.044);
 }
 html[data-theme="sakinah"] .video-card {
-  background: linear-gradient(135deg, rgba(107, 90, 166, 0.1), rgba(107, 90, 166, 0.1));
-  border: 1px solid rgba(107, 90, 166, 0.4);
+  background: linear-gradient(135deg, rgba(64, 98, 106, 0.1), rgba(64, 98, 106, 0.1));
+  border: 1px solid rgba(64, 98, 106, 0.4);
 }
 html[data-theme="sakinah"] .video-card.video-khalid {
-  background: linear-gradient(135deg, rgba(47, 111, 138, 0.1), rgba(47, 111, 138, 0.1));
-  border: 1px solid rgba(47, 111, 138, 0.4);
+  background: linear-gradient(135deg, rgba(52, 104, 118, 0.1), rgba(52, 104, 118, 0.1));
+  border: 1px solid rgba(52, 104, 118, 0.4);
 }
 html[data-theme="sakinah"] .video-card.video-khalid .video-logo {
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .video-card.video-khalid .btn-video {
-  background: linear-gradient(135deg, rgb(47, 111, 138), rgb(47, 111, 138));
+  background: linear-gradient(135deg, rgb(52, 104, 118), rgb(52, 104, 118));
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .video-card.video-khalid .btn-video:hover {
@@ -6282,16 +6282,16 @@ html[data-theme="sakinah"] .video-card.video-syafiq .btn-video:hover {
   box-shadow: 0 6px 20px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .video-card.video-makkah {
-  background: linear-gradient(135deg, rgba(168, 98, 30, 0.1), rgba(138, 102, 36, 0.1));
+  background: linear-gradient(135deg, rgba(168, 98, 30, 0.1), rgba(168, 98, 30, 0.1));
   border: 1px solid rgba(168, 98, 30, 0.4);
 }
 html[data-theme="sakinah"] .video-card.video-makkah .video-icon {
-  background: linear-gradient(135deg, rgba(168, 98, 30, 0.3), rgba(138, 102, 36, 0.3));
+  background: linear-gradient(135deg, rgba(168, 98, 30, 0.3), rgba(168, 98, 30, 0.3));
   color: rgb(135, 82, 22);
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .video-card.video-makkah .btn-video {
-  background: linear-gradient(135deg, rgb(168, 98, 30), rgb(138, 102, 36));
+  background: linear-gradient(135deg, rgb(168, 98, 30), rgb(168, 98, 30));
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .video-card.video-makkah .btn-video:hover {
@@ -6322,7 +6322,7 @@ html[data-theme="sakinah"] .video-icon {
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .btn-video {
-  background: linear-gradient(135deg, rgb(107, 90, 166), rgb(107, 90, 166));
+  background: linear-gradient(135deg, rgb(64, 98, 106), rgb(64, 98, 106));
   color: rgb(255, 255, 255);
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.09);
 }
@@ -6348,7 +6348,7 @@ html[data-theme="sakinah"] .status-dot.loading {
   }
 }
 html[data-theme="sakinah"] .btn-radio {
-  background: linear-gradient(135deg, rgb(181, 84, 63), rgb(168, 98, 30));
+  background: linear-gradient(135deg, rgb(181, 84, 63), rgb(181, 84, 63));
   color: rgb(255, 255, 255);
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.09);
 }
@@ -6431,7 +6431,7 @@ html[data-theme="sakinah"] .tip-card {
   border: 1px solid rgba(47, 114, 88, 0.4);
 }
 html[data-theme="sakinah"] .coming-soon-card {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.08), rgba(107, 90, 166, 0.08));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.08), rgba(47, 114, 88, 0.08));
   border: 2px dashed rgba(47, 114, 88, 0.4);
 }
 html[data-theme="sakinah"] .coming-soon-icon {
@@ -6469,7 +6469,7 @@ html[data-theme="sakinah"] .video-modal-content {
 }
 html[data-theme="sakinah"] .video-modal-header {
   background: rgb(246, 243, 234);
-  border-bottom: 1px solid rgba(107, 90, 166, 0.55);
+  border-bottom: 1px solid rgba(64, 98, 106, 0.55);
 }
 html[data-theme="sakinah"] .video-modal-close {
   background: rgba(181, 84, 63, 0.1);
@@ -6510,7 +6510,7 @@ html[data-theme="sakinah"] .streaming-filter-btn:hover {
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .streaming-filter-btn.active {
-  background: linear-gradient(135deg, var(--primary-cyan, rgb(47, 114, 88)), rgb(181, 84, 63));
+  background: linear-gradient(135deg, var(--primary-cyan, rgb(47, 114, 88)), rgb(47, 114, 88));
   color: rgb(255, 255, 255);
   box-shadow: 0 4px 15px rgba(31, 61, 51, 0.09);
 }
@@ -6544,11 +6544,11 @@ html[data-theme="sakinah"] .video-status .status-dot:not(.live) {
   background: rgb(236, 233, 220);
 }
 html[data-theme="sakinah"] .video-card.video-meds .video-icon, html[data-theme="sakinah"] .video-card.video-wesal .video-icon, html[data-theme="sakinah"] .video-card.video-yufid .video-icon, html[data-theme="sakinah"] .video-card.video-ahsan .video-icon {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.35), rgba(47, 111, 138, 0.25));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.35), rgba(47, 114, 88, 0.25));
   color: rgb(31, 61, 51);
 }
 html[data-theme="sakinah"] .video-card.video-meds .btn-video, html[data-theme="sakinah"] .video-card.video-wesal .btn-video, html[data-theme="sakinah"] .video-card.video-yufid .btn-video, html[data-theme="sakinah"] .video-card.video-ahsan .btn-video {
-  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 111, 138));
+  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88));
   color: rgb(255, 255, 255);
 }
 
@@ -6662,14 +6662,14 @@ html[data-theme="sakinah"] .tj-messages::-webkit-scrollbar-thumb:hover {
   background: rgb(255, 253, 247);
 }
 html[data-theme="sakinah"] .tj-msg.assistant .tj-msg-avatar {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.18), rgba(138, 102, 36, 0.12));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.18), rgba(47, 114, 88, 0.12));
   border: 1px solid rgba(47, 114, 88, 0.35);
   color: var(--primary-cyan, rgb(36, 88, 69));
 }
 html[data-theme="sakinah"] .tj-msg.user .tj-msg-avatar {
-  background: linear-gradient(135deg, rgba(47, 111, 138, 0.22), rgba(47, 114, 88, 0.12));
-  border: 1px solid rgba(47, 111, 138, 0.4);
-  color: var(--electric-blue, rgb(38, 92, 128));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.22), rgba(47, 114, 88, 0.12));
+  border: 1px solid rgba(52, 104, 118, 0.4);
+  color: var(--electric-blue, rgb(40, 88, 102));
 }
 html[data-theme="sakinah"] .tj-msg-bubble {
   color: var(--text-primary, rgb(31, 61, 51));
@@ -6679,7 +6679,7 @@ html[data-theme="sakinah"] .tj-msg.assistant .tj-msg-bubble {
   border: 1px solid rgba(31, 61, 51, 0.1);
 }
 html[data-theme="sakinah"] .tj-msg.user .tj-msg-bubble {
-  background: linear-gradient(135deg, rgba(47, 111, 138, 0.3), rgba(47, 114, 88, 0.15));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.3), rgba(47, 114, 88, 0.15));
   border: 1px solid rgba(47, 114, 88, 0.28);
 }
 html[data-theme="sakinah"] .tj-msg-time {
@@ -6756,7 +6756,7 @@ html[data-theme="sakinah"] .tj-textarea::-webkit-scrollbar-thumb {
   background: rgba(255, 253, 247, 0.9);
 }
 html[data-theme="sakinah"] .tj-send-btn {
-  background: linear-gradient(135deg, var(--primary-cyan, rgb(47, 114, 88)), var(--electric-blue, rgb(47, 111, 138)));
+  background: linear-gradient(135deg, var(--primary-cyan, rgb(47, 114, 88)), var(--electric-blue, rgb(47, 114, 88)));
   color: var(--darker-bg, rgb(255, 255, 255));
 }
 html[data-theme="sakinah"] .tj-send-btn:hover:not(:disabled) {
@@ -6764,7 +6764,7 @@ html[data-theme="sakinah"] .tj-send-btn:hover:not(:disabled) {
               0 0 40px rgba(31, 61, 51, 0.045);
 }
 html[data-theme="sakinah"] .tj-welcome-icon {
-  background: linear-gradient(135deg, var(--primary-cyan, rgb(47, 114, 88)), var(--islamic-gold, rgb(138, 102, 36)));
+  background: linear-gradient(135deg, var(--primary-cyan, rgb(47, 114, 88)), var(--islamic-gold, rgb(47, 114, 88)));
   filter: drop-shadow(0 0 20px rgba(31, 61, 51, 0.105));
 }
 html[data-theme="sakinah"] .tj-welcome-title {
@@ -6859,7 +6859,7 @@ html[data-theme="sakinah"] .tj-settings-btn:hover {
   box-shadow: 0 0 16px rgba(31, 61, 51, 0.06);
 }
 html[data-theme="sakinah"] .tj-settings-btn.primary {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.2), rgba(47, 111, 138, 0.15));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.2), rgba(47, 114, 88, 0.15));
   border-color: rgba(47, 114, 88, 0.55);
 }
 html[data-theme="sakinah"] .tj-settings-btn.primary:hover {
@@ -7035,11 +7035,11 @@ html[data-theme="sakinah"] .tj-btn-test:hover {
   box-shadow: 0 0 16px rgba(31, 61, 51, 0.045);
 }
 html[data-theme="sakinah"] .tj-btn-save {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 111, 138, 0.1));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.15), rgba(47, 114, 88, 0.1));
   border-color: rgba(47, 114, 88, 0.5);
 }
 html[data-theme="sakinah"] .tj-btn-save:hover {
-  background: linear-gradient(135deg, rgba(47, 114, 88, 0.25), rgba(47, 111, 138, 0.18));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.25), rgba(47, 114, 88, 0.18));
   box-shadow: 0 0 20px rgba(31, 61, 51, 0.075);
 }
 html[data-theme="sakinah"] .tj-settings-test-result {
@@ -7421,14 +7421,14 @@ html[data-theme="sakinah"] .zakat-tab.active {
   border: 1px solid rgba(47, 114, 88, 0.45);
 }
 html[data-theme="sakinah"] .zakat-info-box {
-  background: rgba(47, 111, 138, 0.07);
-  border: 1px solid rgba(47, 111, 138, 0.35);
+  background: rgba(52, 104, 118, 0.07);
+  border: 1px solid rgba(52, 104, 118, 0.35);
 }
 html[data-theme="sakinah"] .zakat-info-box i {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .zakat-info-box strong {
-  color: rgb(38, 92, 128);
+  color: rgb(40, 88, 102);
 }
 html[data-theme="sakinah"] .zakat-input-group label i {
   color: rgb(36, 88, 69);
@@ -7442,7 +7442,7 @@ html[data-theme="sakinah"] .zakat-input-group input:focus, html[data-theme="saki
   background: rgba(47, 114, 88, 0.05);
 }
 html[data-theme="sakinah"] .zakat-calc-btn {
-  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 111, 138));
+  background: linear-gradient(135deg, rgb(47, 114, 88), rgb(47, 114, 88));
   color: rgb(255, 255, 255);
 }
 html[data-theme="sakinah"] .zakat-result {
@@ -7481,8 +7481,8 @@ html[data-theme="sakinah"] .zakat-note {
   border-top: 1px solid rgba(31, 61, 51, 0.09);
 }
 html[data-theme="sakinah"] .zakat-dalil-box {
-  background: rgba(47, 111, 138, 0.07);
-  border-top: 1px solid rgba(47, 111, 138, 0.3);
+  background: rgba(52, 104, 118, 0.07);
+  border-top: 1px solid rgba(52, 104, 118, 0.3);
 }
 html[data-theme="sakinah"] .zakat-mustahiq {
   background: rgba(255, 253, 247, 0.655);
@@ -7502,7 +7502,7 @@ html[data-theme="sakinah"] .zakat-panel-note {
   border-top: 1px solid rgba(138, 102, 36, 0.28);
 }
 html[data-theme="sakinah"] .zakat-info-box.salafi-note {
-  background: linear-gradient(135deg, rgba(138, 102, 36, 0.08), rgba(47, 114, 88, 0.04));
+  background: linear-gradient(135deg, rgba(47, 114, 88, 0.08), rgba(47, 114, 88, 0.04));
   border: 1px solid rgba(138, 102, 36, 0.45);
   box-shadow: 0 0 18px rgba(31, 61, 51, 0.03);
 }
@@ -7537,7 +7537,7 @@ html[data-theme="sakinah"] .zakat-nisab-fill {
   box-shadow: 0 0 12px rgba(31, 61, 51, 0.12);
 }
 html[data-theme="sakinah"] .zakat-nisab-fill.reached {
-  background: linear-gradient(90deg, rgb(138, 102, 36) 0%, rgb(47, 114, 88) 100%);
+  background: linear-gradient(90deg, rgb(47, 114, 88) 0%, rgb(47, 114, 88) 100%);
   box-shadow: 0 0 18px rgba(31, 61, 51, 0.12);
   animation: sk-nisabReachedPulse 1.6s ease-in-out infinite;
 }

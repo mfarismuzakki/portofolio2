@@ -596,6 +596,8 @@ class IslamHubApp {
                 moreAppsList.addEventListener('click', (e) => {
                     const item = e.target.closest('.more-app-item');
                     if (!item) return;
+                    // External links (feedback form) open normally; just close the sheet.
+                    if (item.dataset.link) { moreAppsDropdown.classList.remove('show'); return; }
                     e.preventDefault();
                     e.stopPropagation();
                     const appName = item.dataset.app;
@@ -960,7 +962,15 @@ class IslamHubApp {
                 </div>
                 <i class="fas fa-chevron-right"></i>
             </button>`;
-        }).join('');
+        }).join('') + `
+            <a class="more-app-item more-app-feedback" href="https://forms.gle/4e3mMEaUMsAgJYp6A" target="_blank" rel="noopener" data-link="feedback">
+                <div class="more-app-icon"><i class="fas fa-comment-dots"></i></div>
+                <div class="more-app-info">
+                    <h4>Kritik &amp; Saran</h4>
+                    <p>Laporkan kesalahan konten, bug, atau usulan fitur</p>
+                </div>
+                <i class="fas fa-arrow-up-right-from-square"></i>
+            </a>`;
     }
 
     openSettingsSheet() {
@@ -2089,7 +2099,7 @@ class IslamHubApp {
 
     // Cache Management Methods
     setupCacheManagement() {
-        const APP_VERSION = '1.3.0';
+        const APP_VERSION = '1.4.0';
         const STORAGE_VERSION_KEY = 'islamhub_app_version';
         
         // Check version and show update notification if needed

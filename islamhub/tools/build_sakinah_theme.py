@@ -14,18 +14,20 @@ ROOT = Path(__file__).resolve().parent.parent / "css" / "components"
 OUT = ROOT / "sakinah-theme.css"
 SCOPE = 'html[data-theme="sakinah"]'
 # Already light, hand-tuned components are left alone.
-SKIP = {"arena.css", "manasik-game.css", "simulations.css", "sakinah.css", "sakinah-theme.css", "variables.css"}
+SKIP = {"arena.css", "manasik-game.css", "simulations.css", "sakinah.css", "sakinah-theme.css", "variables.css",
+        "sakinah-ui.css", "sakinah-quran.css", "sakinah-waris.css", "sakinah-hero-art.css"}
 
 INK, INK2, MUTED = (31, 61, 51), (74, 91, 81), (87, 100, 90)
 CARD, PAGE = (255, 253, 247), (246, 243, 234)
 ACCENTS = {  # hue family -> (text variant, fill variant)
     "green": ((36, 88, 69), (47, 114, 88)),
     "teal": ((36, 88, 69), (47, 114, 88)),
-    "plum": ((91, 74, 150), (107, 90, 166)),
+    # Plum and blue were neon purple/blue in the classic theme; Sakinah keeps them as quiet slate teals.
+    "plum": ((52, 82, 90), (64, 98, 106)),
     "red": ((160, 70, 50), (181, 84, 63)),
     "amber": ((135, 82, 22), (168, 98, 30)),
     "gold": ((120, 90, 32), (138, 102, 36)),
-    "blue": ((38, 92, 128), (47, 111, 138)),
+    "blue": ((40, 88, 102), (52, 104, 118)),
 }
 COLOR_PROPS = ("color", "background", "background-color", "background-image", "border", "border-color",
                "border-top", "border-bottom", "border-left", "border-right", "border-top-color",
@@ -87,11 +89,13 @@ def family(r, g, b):
     return "red"
 
 
-def map_color(c, kind, overlay=False):
+def map_color(c, kind, overlay=False, force_family=None):
     """kind: text | bg | border | shadow"""
     r, g, b, a = c
     luma = 0.299 * r + 0.587 * g + 0.114 * b
     fam = family(r, g, b)
+    if fam and force_family:
+        fam = force_family
     if fam:
         text, fill = ACCENTS[fam]
         if kind == "text":
@@ -158,6 +162,14 @@ def transform_value(prop, val, rule_accent, overlay=False):
         return "none" if COLOR_RE.search(val) else None
     kind = kind_for(prop)
     changed = False
+    # A gradient that blends two accent hues (cyan -> purple) reads as the old neon look;
+    # collapse it onto one family: green when present, otherwise the first accent stop.
+    force = None
+    if "gradient" in val:
+        fams = [family(*c[:3]) for c in (parse(m.group(0)) for m in COLOR_RE.finditer(re.sub(r"--[\w-]+", "", val))) if c]
+        fams = [f for f in fams if f]
+        if len(set(fams)) > 1:
+            force = "green" if ("green" in fams or "teal" in fams) else fams[0]
 
     def sub(m):
         nonlocal changed
@@ -169,7 +181,7 @@ def transform_value(prop, val, rule_accent, overlay=False):
             luma = 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
             if luma > 200 or luma < 60:  # keep text readable on accent fills
                 return fmt((255, 255, 255), max(c[3], 0.92))
-        return map_color(c, kind, overlay)
+        return map_color(c, kind, overlay, force)
     out = mask_vars(val, lambda v: COLOR_RE.sub(sub, v))
     return out if changed else None
 

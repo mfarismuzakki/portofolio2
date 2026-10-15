@@ -272,5 +272,14 @@ export const FIQH_DATA = [
         catatan: 'Sholat jenazah sangat dianjurkan dihadiri banyak orang. "Tidak ada seorang Muslim yang meninggal lalu disholatkan oleh 40 orang yang tidak menyekutukan Allah, melainkan Allah terima syafaat mereka untuknya" (HR. Muslim).',
         tags: ['jenazah', 'sholat jenazah', 'memandikan', 'mengkafani', 'menguburkan']
     },
-    ...EXTRA_FIQH
+    // The extra set is written as { title, description, points, dalil }; shape it like the rest.
+    ...EXTRA_FIQH.map(e => e.question ? e : {
+        id: e.id,
+        category: e.category,
+        question: e.title,
+        answer: [e.description, ...(e.points || []).map((p, i) => `${i + 1}. ${p}`)].filter(Boolean).join('\n'),
+        dalil: e.dalil,
+        catatan: e.catatan,
+        tags: e.tags || [e.category, e.title.toLowerCase()]
+    })
 ];
