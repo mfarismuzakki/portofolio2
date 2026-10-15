@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+ <defs><linearGradient id="metal" x1="0" x2="1"><stop stop-color="#b08a3e"/><stop offset=".5" stop-color="#f6efd9"/><stop offset="1" stop-color="#b08a3e"/></linearGradient></defs><ellipse cx="440" cy="309" rx="150" ry="22" fill="#17342b" opacity=".35"/>
+ <path d="M373 298h182l-19-15H392z" fill="url(#metal)"/><path d="M464 149v134m-60 0h120" stroke="url(#metal)" stroke-width="10" stroke-linecap="round"/><circle cx="464" cy="141" r="13" fill="#e0c27f"/><path d="M404 185l-42 70m42-70l42 70m78-70l-42 70m42-70l42 70" stroke="#e0c27f" stroke-width="4"/><path d="M336 254h52q-3 32-26 32t-26-32zm102 0h52q-3 32-26 32t-26-32zm60 0h52q-3 32-26 32t-26-32z" fill="#b08a3e" stroke="#f6efd9" stroke-width="3"/>
+ <g fill="#f6efd9" stroke="#b08a3e" stroke-width="4"><path d="M281 256l51-18 17 47-51 18z"/><path d="M297 244l10 29m9-35l10 29"/></g><path d="M545 269v-47l25-19 25 19v47z" fill="#dfe9e2" stroke="#e0c27f" stroke-width="4"/><path d="M556 269v-25h28v25m-32-47h37" fill="none" stroke="#b08a3e" stroke-width="4"/>
+</svg>

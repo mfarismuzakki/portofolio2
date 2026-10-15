@@ -273,55 +273,40 @@ export default class SirahApp {
                                   prophet.category === 'sahabat' ? 'Sahabat' : 
                                   prophet.category;
             
-            // Ambil kata pertama dari nama Arab saja
-            const arabicFirstWord = prophet.arabicName ? prophet.arabicName.split(' ')[0] : '';
-            const icon = arabicFirstWord
-                ? `<span class="arabic-name">${arabicFirstWord}</span>`
-                : `<span class="latin-initial">${prophet.name.charAt(0)}</span>`;
-            
-            const biography = prophet.biography || '';
-            const preview = biography.length > 150 
-                ? biography.substring(0, 150) + '...' 
-                : biography;
-            
-            // Build badges - only show category badge once, combine with subcategory if exists
-            let badges = '';
-            if (prophet.subcategory) {
-                // If has subcategory, show both category and subcategory
-                const categoryBadge = `<span class="category-badge category-${prophet.category}">${categoryLabel}</span>`;
-                const subcategoryBadge = `<span class="subcategory-badge">${prophet.subcategory.replace(/_/g, ' ')}</span>`;
-                badges = categoryBadge + subcategoryBadge;
-            } else {
-                // If no subcategory, only show category badge once
-                badges = `<span class="category-badge category-${prophet.category}">${categoryLabel}</span>`;
-            }
-            
-            // Delete button for favorite view
-            const deleteBtn = isInFavoriteView 
-                ? `<button class="delete-favorite-btn" onclick="event.stopPropagation(); window.sirahApp.removeFromFavorites('${prophet.id}');" title="Hapus dari favorit">
-                    <i class="fas fa-trash-alt"></i>
-                   </button>` 
+            // Readable labels; the category and subcategory used to repeat each other ("Nabi nabi").
+            const GROUPS = {
+                nabi: 'Nabi', rasul: 'Rasul', khulafa_rasyidin: 'Khulafaur Rasyidin', asharah_mubasysyarah: 'Dijamin surga',
+                muhajirin: 'Muhajirin', anshar_aus: 'Anshar · Aus', anshar_khazraj: 'Anshar · Khazraj', ummul_mukminin: 'Ummul Mukminin',
+                ummahatul_mukminin: 'Ummul Mukminin', panglima: 'Panglima', sahabat_awal: 'Assabiqunal Awwalun', ahlu_bait: 'Ahlul Bait',
+                sahabiyat_muhajirat: 'Muhajirat'
+            };
+            const group = GROUPS[prophet.subcategory] || categoryLabel;
+            const kind = prophet.category === 'nabi' ? (prophet.subcategory === 'rasul' ? 'Rasul' : 'Nabi')
+                : prophet.category === 'sahabiyat' ? 'Sahabiyah' : 'Sahabat';
+            const chips = [kind, group].filter((v, i, a) => v && a.indexOf(v) === i)
+                .map((v, i) => `<span class="sx-chip${i ? '' : ' main'}">${v}</span>`).join('');
+            const period = prophet.period && !/tidak diketahui/i.test(prophet.period) ? prophet.period : '';
+            // Medal shows the first word of the Arabic name; kunyah forms (Abu, Umm, Ibn) keep two words.
+            const arWords = (prophet.arabicName || '').split(' ').filter(Boolean);
+            const arabicShort = arWords.length ? (/^(أبو|أبي|أم|ابن|بنت)$/.test(arWords[0]) ? arWords.slice(0, 2) : arWords.slice(0, 1)).join(' ') : '';
+            const arabicLong = arabicShort.length > 5;
+            const preview = (prophet.biography || '').replace(/\s+/g, ' ').trim();
+
+            const deleteBtn = isInFavoriteView
+                ? `<button class="sx-del" onclick="event.stopPropagation(); window.sirahApp.removeFromFavorites('${prophet.id}');" title="Hapus dari favorit" aria-label="Hapus dari favorit"><i class="fas fa-trash-alt"></i></button>`
                 : '';
-            
+
             return `
-                <div class="prophet-card" data-person-id="${prophet.id}">
-                    ${isFavorite && !isInFavoriteView ? '<i class="fas fa-heart favorite-badge"></i>' : ''}
-                    ${deleteBtn}
-                    <div class="prophet-card-header">
-                        <div class="prophet-icon">${icon}</div>
-                        <div class="prophet-name-section">
-                            <h3 class="prophet-name">${prophet.name}</h3>
-                        </div>
+                <article class="prophet-card sx-card sx-${prophet.category}" data-person-id="${prophet.id}" role="button" tabindex="0">
+                    <div class="sx-medal" aria-hidden="true">${arabicShort ? `<span class="sx-ar${arabicLong ? ' long' : ''}">${arabicShort}</span>` : `<span class="sx-initial">${prophet.name.charAt(0)}</span>`}</div>
+                    <div class="sx-body">
+                        <h3 class="sx-name">${prophet.name}${isFavorite && !isInFavoriteView ? ' <i class="fas fa-heart sx-fav" aria-label="Favorit"></i>' : ''}</h3>
+                        ${prophet.title ? `<p class="sx-title">${prophet.title}</p>` : ''}
+                        <div class="sx-meta">${chips}${period ? `<span class="sx-period"><i class="far fa-clock"></i> ${period}</span>` : ''}</div>
+                        ${preview ? `<p class="sx-preview">${preview}</p>` : ''}
                     </div>
-                    <div class="prophet-details">
-                        ${prophet.title ? `<p class="prophet-title">${prophet.title}</p>` : ''}
-                        ${prophet.period ? `<p class="prophet-period">${prophet.period}</p>` : ''}
-                    </div>
-                    <div class="prophet-badges">
-                        ${badges}
-                    </div>
-                    ${preview ? `<p class="prophet-preview">${preview}</p>` : ''}
-                </div>
+                    ${deleteBtn || '<i class="fas fa-chevron-right sx-go" aria-hidden="true"></i>'}
+                </article>
             `;
         }).join('');
 

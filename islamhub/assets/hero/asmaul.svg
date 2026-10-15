@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+ <defs><radialGradient id="a"><stop stop-color="#f6efd9"/><stop offset=".42" stop-color="#e0c27f"/><stop offset="1" stop-color="#b08a3e" stop-opacity=".15"/></radialGradient></defs><circle cx="445" cy="201" r="142" fill="url(#a)" opacity=".85"/><circle cx="445" cy="201" r="117" fill="#2f6b55" opacity=".82"/>
+ <path d="M445 70l25 76 76-25-43 67 67 43-76 25 25 76-67-43-43 67-25-76-76 25 43-67-67-43 76-25-25-76 67 43z" fill="#e0c27f" stroke="#f6efd9" stroke-width="5"/>
+ <path d="M445 104l18 65 65-18-38 56 56 38-65 18 18 65-56-38-38 56-18-65-65 18 38-56-56-38 65-18-18-65 56 38z" fill="#3f7d66" stroke="#b08a3e" stroke-width="4"/>
+ <path d="M445 139l14 48 48-14-28 42 42 28-48 14 14 48-42-28-28 42-14-48-48 14 28-42-42-28 48-14-14-48 42 28z" fill="#f6efd9"/><circle cx="445" cy="215" r="30" fill="#b08a3e"/><circle cx="445" cy="215" r="14" fill="#f6efd9"/><g fill="#e0c27f"><circle cx="445" cy="84" r="4"/><circle cx="576" cy="215" r="4"/><circle cx="445" cy="346" r="4"/><circle cx="314" cy="215" r="4"/></g>
+</svg>

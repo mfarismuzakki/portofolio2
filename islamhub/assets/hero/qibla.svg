@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+ <defs><radialGradient id="brass"><stop stop-color="#f6efd9"/><stop offset=".55" stop-color="#e0c27f"/><stop offset="1" stop-color="#b08a3e"/></radialGradient></defs><ellipse cx="440" cy="307" rx="153" ry="25" fill="#17342b" opacity=".35"/>
+ <path d="M289 174l181 42 103 102-180 22-104-101z" fill="#c07a4a"/><path d="M310 186l155 36 83 84-155 19-84-84z" fill="#8fb5a3"/><path d="M324 199l137 31 68 69-137 16-68-68z" fill="#2f6b55"/><path d="M329 238l117 26m-70-52l118 106m-10-108l-68 97" stroke="#dfe9e2" stroke-width="3" opacity=".55"/>
+ <circle cx="459" cy="215" r="87" fill="url(#brass)" stroke="#f6efd9" stroke-width="5"/><circle cx="459" cy="215" r="67" fill="#2f6b55" stroke="#b08a3e" stroke-width="5"/><path d="M459 146l14 54 53 15-53 15-14 54-14-54-53-15 53-15z" fill="#f6efd9" stroke="#b08a3e" stroke-width="4"/><path d="M459 159l9 51-9 49-9-49z" fill="#c07a4a"/><g stroke="#e0c27f" stroke-width="4"><path d="M459 136v17m0 124v17m-79-79h17m124 0h17"/><path d="M403 159l12 12m100 88l12 12m0-112l-12 12m-100 88l-12 12"/></g>
+</svg>

@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 INCLUDE_DIRS = ["js", "css", "vendor"]
-INCLUDE_FILES = ["index.html", "manifest.json", "assets/logo", "assets/icons"]
+INCLUDE_FILES = ["index.html", "manifest.json", "assets/logo", "assets/icons", "assets/hero"]
 EXCLUDE = [
     re.compile(r"^js/data/jadwal/"),          # 66 cities x 1.6 MB: cached when a city is used
     re.compile(r"^js/data/alquran/pages(_test)?/"),  # Qur'an page text: on demand / "Mode Offline"

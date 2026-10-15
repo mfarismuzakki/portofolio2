@@ -325,3 +325,58 @@ html[data-theme="sakinah"] #doaModal .navigation-buttons .nav-btn:disabled { opa
 html[data-theme="sakinah"] #doaModal .modal-body { padding-bottom: 190px !important; }
 /* LPMQ is drawn smaller than Amiri at the same size: the du'a text gets the reader's scale. */
 html[data-theme="sakinah"] #doaModal .doa-arabic { font-size: 1.85rem !important; line-height: 2.25 !important; text-align: right; padding: 14px 16px 8px !important; color: var(--ui-ink) !important; }
+
+/* ---------- 12. Kalender hero: Hijri date on one line ---------- */
+html[data-theme="sakinah"] .kalender-header .kalender-today-hijri { max-width: 100%; }
+html[data-theme="sakinah"] .kalender-header .kalender-hijri-date {
+  white-space: nowrap !important; font-family: 'Plus Jakarta Sans', sans-serif !important; font-weight: 800 !important;
+  font-size: 1rem !important; line-height: 1.3 !important; letter-spacing: 0 !important;
+}
+html[data-theme="sakinah"] .kalender-header .kalender-masehi-date { white-space: nowrap; font-size: .8rem !important; }
+
+/* ---------- 13. Sirah people list: one readable row per person ---------- */
+html[data-theme] .prophets-grid:has(> .sx-card) { display: flex !important; flex-direction: column; gap: 10px !important; grid-template-columns: none !important; }
+html[data-theme] .sx-card {
+  position: relative; display: grid !important; grid-template-columns: 58px minmax(0, 1fr) 18px; align-items: start; gap: 14px;
+  padding: 14px 14px 14px 12px !important; border-radius: 20px !important; text-align: left !important; cursor: pointer;
+  min-height: 0 !important; height: auto !important; transform: none !important;
+}
+html[data-theme="sakinah"] .sx-card { background: var(--ui-card) !important; border: 1px solid var(--ui-line) !important; box-shadow: var(--ui-shadow) !important; }
+html[data-theme] .sx-card::before, html[data-theme] .sx-card::after { display: none !important; }
+html[data-theme] .sx-card:active { transform: scale(.99) !important; }
+html[data-theme] .sx-medal {
+  width: 58px; height: 58px; border-radius: 18px; display: grid; place-items: center; overflow: hidden;
+}
+html[data-theme="sakinah"] .sx-medal { background: var(--ui-green-deep); box-shadow: inset 0 0 0 1.5px rgba(224, 194, 127, .45); }
+html[data-theme="sakinah"] .sx-card.sx-sahabat .sx-medal { background: #2f6b55; }
+html[data-theme="sakinah"] .sx-card.sx-sahabiyat .sx-medal { background: #7a5a3a; }
+html[data-theme] .sx-ar {
+  font-family: 'IH Arabic', 'LPMQ Isep Misbah', 'Amiri', serif; font-size: 1.05rem; line-height: 1.5; padding: 0 4px;
+  text-align: center; color: #f6efd9; overflow-wrap: anywhere;
+}
+html[data-theme] .sx-initial { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 700; color: #f6efd9; }
+html[data-theme] .sx-body { min-width: 0; }
+html[data-theme] .sx-name { margin: 2px 0 2px !important; font-size: 1.06rem !important; font-weight: 800 !important; line-height: 1.25 !important; letter-spacing: -.01em; }
+html[data-theme="sakinah"] .sx-name { color: var(--ui-ink) !important; }
+html[data-theme] .sx-fav { font-size: .72rem; color: #b5543f; vertical-align: 2px; }
+html[data-theme] .sx-title { margin: 0 0 8px !important; font-size: .82rem !important; line-height: 1.4 !important; font-style: italic; }
+html[data-theme="sakinah"] .sx-title { color: var(--ui-ink-2) !important; }
+html[data-theme] .sx-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 8px; }
+html[data-theme] .sx-chip { padding: 3px 9px; border-radius: 999px; font-size: .7rem; font-weight: 800; letter-spacing: .02em; }
+html[data-theme="sakinah"] .sx-chip { background: var(--ui-paper); color: var(--ui-ink-2); border: 1px solid var(--ui-line); }
+html[data-theme="sakinah"] .sx-chip.main { background: var(--ui-mint); color: var(--ui-green); border-color: transparent; }
+html[data-theme] .sx-period { font-size: .72rem; font-weight: 600; }
+html[data-theme="sakinah"] .sx-period { color: var(--ui-muted); }
+html[data-theme] .sx-preview {
+  margin: 0 !important; font-size: .86rem !important; line-height: 1.55 !important;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+html[data-theme="sakinah"] .sx-preview { color: var(--ui-ink-2) !important; }
+html[data-theme] .sx-go { align-self: center; font-size: .85rem; }
+html[data-theme="sakinah"] .sx-go { color: var(--ui-muted); }
+html[data-theme] .sx-del { align-self: center; width: 34px; height: 34px; border-radius: 10px; border: 0; cursor: pointer; }
+html[data-theme="sakinah"] .sx-del { background: #f8e9e4; color: #a04632; }
+html[data-theme="classic"] .sx-card { background: rgba(10, 10, 15, .8); border: 1px solid rgba(0, 255, 255, .2); color: #e8f4f8; }
+html[data-theme] .sx-card :is(.sx-name, .sx-title, .sx-preview) { text-align: left !important; }
+html[data-theme] .sx-ar { white-space: nowrap; font-size: 1.15rem; }
+html[data-theme] .sx-ar.long { font-size: .82rem; }

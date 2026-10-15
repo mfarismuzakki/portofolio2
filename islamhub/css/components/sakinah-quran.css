@@ -154,3 +154,13 @@ html[data-theme="sakinah"] .floating-page-info {
 
 html[data-theme="sakinah"] .alquran-container .quick-nav .nav-btn::before,
 html[data-theme="sakinah"] .alquran-container .quick-nav .nav-btn::after { display: none !important; }
+
+/* Translation reads like quran.com: left aligned, no stretched word gaps. */
+html[data-theme] #alquran-app :is(.verse-translation, .verse-item-clean .verse-translation, [data-reading-theme] .verse-item-clean .verse-translation) {
+  text-align: left !important; text-justify: auto; hyphens: manual; word-spacing: .14em !important; letter-spacing: 0 !important;
+}
+/* Narrow phones: the mode toggle and the Juz/Hal pill share the second header row. */
+@media (max-width: 380px) {
+  html[data-theme="sakinah"] .floating-mode-btn { padding: 0 9px !important; font-size: .74rem !important; gap: 4px; }
+  html[data-theme="sakinah"] .floating-page-info { padding: 5px 9px !important; font-size: .72rem !important; }
+}

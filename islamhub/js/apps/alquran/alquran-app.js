@@ -1,5 +1,10 @@
 /* ===== Al-Qur'an App - IslamHub ===== */
 
+// The Kemenag text writes pause marks (waqf: U+06D6..U+06ED, U+0610..U+061A) as a separate
+// "word" after a space. A line could then start with a lone mark, leaving the right edge of
+// the line visibly empty. A no-break space keeps the mark with its word; it looks the same.
+const glueWaqf = text => text.replace(/ (?=[\u0610-\u061A\u06D6-\u06ED])/g, '\u00A0');
+
 export default class AlQuranApp {
     constructor(globalState, mainApp) {
         this.state = globalState;
@@ -2151,7 +2156,7 @@ export default class AlQuranApp {
             const [s, v] = key.split(':').map(Number);
             const info = this.QURAN_SURAHS.find(x => x.number === s) || {};
             if (!surahs.has(s)) surahs.set(s, { number: s, name: info.name, nameArabic: info.nameArabic, revelation: info.revelation, verses: [] });
-            surahs.get(s).verses.push({ number: String(v), arabic, transliteration: '', translation: '', tafsir: '' });
+            surahs.get(s).verses.push({ number: String(v), arabic: glueWaqf(arabic), transliteration: '', translation: '', tafsir: '' });
         }
         if (!this._offlineTextNoticeShown) {
             this._offlineTextNoticeShown = true;
@@ -2178,7 +2183,8 @@ export default class AlQuranApp {
             surahs: pageData.surahs.map(s => ({
                 ...s,
                 verses: s.verses.map(v => {
-                    const t = text[`${Number(s.number)}:${Number(v.number)}`];
+                    const raw = text[`${Number(s.number)}:${Number(v.number)}`];
+                    const t = raw && glueWaqf(raw);
                     return t ? { ...v, arabic: t } : v;
                 })
             }))
