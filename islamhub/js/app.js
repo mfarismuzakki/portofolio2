@@ -665,6 +665,19 @@ class IslamHubApp {
         }
         
         if (this.currentApp === 'sholat' && appName !== 'sholat') window.sholatApp?.peraga3D?.onHide();
+        // A doa opened in Dzikir locks body scrolling (doa-modal-active). Leaving through the
+        // bottom nav never closed it, so every other app stayed unscrollable until a reload.
+        if (appName !== 'dzikir' && document.body.classList.contains('doa-modal-active')) {
+            const modal = document.getElementById('doaModal');
+            if (modal) { modal.classList.remove('active'); modal.style.display = 'none'; }
+            document.body.classList.remove('doa-modal-active');
+            document.querySelectorAll('.counter-restore-btn').forEach(el => el.remove());
+            document.querySelectorAll('body > .counter-section').forEach(el => el.remove());
+        }
+        // Same guard for the other full-screen sheets that set body.style.overflow.
+        if (document.body.style.overflow === 'hidden' && !document.querySelector('.app-settings-sheet.active, #appSettingsSheet.active')) {
+            document.body.style.overflow = '';
+        }
         if (appName === 'sholat' && window.sholatApp?.currentTab === 'peraga') requestAnimationFrame(() => window.sholatApp.peraga3D?.onShow());
 
         // Hide current app

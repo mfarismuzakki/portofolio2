@@ -199,7 +199,8 @@ export default class QuranOfflineManager {
         const label = this.modal.querySelector('.qo-juz').selectedOptions[0].textContent;
         if (!confirm(`Hapus audio ${label} dari perangkat ini?`)) return;
         const cache = await caches.open(AUDIO_CACHE);
-        await Promise.all(sel.map(p => cache.delete(getAudioPathForPage(p))));
+        // older downloads may be stored under another source URL of the same file
+        await Promise.all(sel.flatMap(p => quranAudioCandidates(getAudioPathForPage(p)).map(u => cache.delete(u))));
         await this.refresh();
         this.app._notify?.(`Audio ${label} dihapus dari perangkat.`, 'success');
     }

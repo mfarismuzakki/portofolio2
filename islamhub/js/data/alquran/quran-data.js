@@ -165,7 +165,39 @@ function getSurahsByPage(page) {
 // Murottal Mishary Rashid Alafasy. The 3.3 GB of audio is not part of the Pages deploy
 // (nor the app bundle), so it is served from this repository through jsDelivr, which
 // supports CORS and Range requests. Downloaded files are kept offline by sw.js.
-const QURAN_AUDIO_BASE = 'https://cdn.jsdelivr.net/gh/mfarismuzakki/portofolio2@main/islamhub/assets/audio/alquran';
+// Sources in order of preference. The GitHub Pages site is fastest and serves CORS + Range;
+// jsDelivr sometimes answers 404/503 on a cold file, so it is the second choice, raw GitHub last.
+const QURAN_AUDIO_BASES = [
+    'https://mfarismuzakki.id/islamhub/assets/audio/alquran',
+    'https://cdn.jsdelivr.net/gh/mfarismuzakki/portofolio2@main/islamhub/assets/audio/alquran',
+    'https://raw.githubusercontent.com/mfarismuzakki/portofolio2/main/islamhub/assets/audio/alquran',
+];
+const QURAN_AUDIO_BASE = QURAN_AUDIO_BASES[0];
+
+// Every source URL for one audio file, in preference order (same file path under each base).
+function quranAudioCandidates(url) {
+    const base = QURAN_AUDIO_BASES.find(b => url.startsWith(b));
+    if (!base) return [url];
+    const rest = url.slice(base.length);
+    return QURAN_AUDIO_BASES.map(b => b + rest);
+}
+
+// Load and play `url` on an <audio> element, moving to the next source when one fails.
+// Resolves with the URL that played; rejects only when every source failed.
+async function playQuranAudio(audioEl, url) {
+    let lastErr;
+    for (const src of quranAudioCandidates(url)) {
+        try {
+            audioEl.src = src;
+            await audioEl.play();
+            return src;
+        } catch (err) {
+            if (err && err.name === 'NotAllowedError') throw err; // autoplay blocked, not a source problem
+            lastErr = err;
+        }
+    }
+    throw lastErr || new Error('audio unavailable');
+}
 
 // Get audio path for page
 function getAudioPathForPage(page) {
@@ -216,5 +248,8 @@ if (typeof window !== 'undefined') {
     window.getAudioPathForPage = getAudioPathForPage;
     window.getAudioPathForVerse = getAudioPathForVerse;
     window.QURAN_AUDIO_BASE = QURAN_AUDIO_BASE;
+    window.QURAN_AUDIO_BASES = QURAN_AUDIO_BASES;
+    window.quranAudioCandidates = quranAudioCandidates;
+    window.playQuranAudio = playQuranAudio;
     window.getPageInfo = getPageInfo;
 }

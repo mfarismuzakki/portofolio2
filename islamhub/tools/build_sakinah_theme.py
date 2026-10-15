@@ -15,7 +15,7 @@ OUT = ROOT / "sakinah-theme.css"
 SCOPE = 'html[data-theme="sakinah"]'
 # Already light, hand-tuned components are left alone.
 SKIP = {"arena.css", "manasik-game.css", "simulations.css", "sakinah.css", "sakinah-theme.css", "variables.css",
-        "sakinah-ui.css", "sakinah-quran.css", "sakinah-waris.css", "sakinah-hero-art.css"}
+        "sakinah-ui.css", "sakinah-quran.css", "sakinah-waris.css", "sakinah-hero-art.css", "sakinah-arabic.css"}
 
 INK, INK2, MUTED = (31, 61, 51), (74, 91, 81), (87, 100, 90)
 CARD, PAGE = (255, 253, 247), (246, 243, 234)

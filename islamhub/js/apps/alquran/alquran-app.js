@@ -516,7 +516,8 @@ export default class AlQuranApp {
             this.isPlaying = true; // set immediately to block re-entrant toggleAudio calls during load
 
             const path = typeof getAudioPathForPage === 'function' ? getAudioPathForPage(this.currentPage) : `${this.basePath}/assets/audio/alquran/Page${String(this.currentPage).padStart(3, '0')}.mp3`;
-            const audioObj = new Audio(path);
+            const sources = typeof quranAudioCandidates === 'function' ? quranAudioCandidates(path) : [path];
+            const audioObj = new Audio(sources[0]);
             audioObj.preload = 'metadata';
             this.audio = audioObj;
 
@@ -532,6 +533,9 @@ export default class AlQuranApp {
                     resolve();
                 };
                 const onError = (err) => {
+                    // move on to the next source before giving up
+                    const next = sources[sources.indexOf(audioObj.src) + 1];
+                    if (next) { audioObj.src = next; audioObj.load(); return; }
                     audioObj.removeEventListener('canplay', onCanPlay);
                     audioObj.removeEventListener('error', onError);
                     reject(err);
@@ -4196,6 +4200,12 @@ export default class AlQuranApp {
                 if (audioElement.paused) {
                     // User intentionally trying to play audio
                     this.userRequestedAudio = true;
+                    // The last load failed (no data): reload the verse through the source fallback.
+                    if (this.currentPlayingVerse && (audioElement.error || audioElement.readyState === 0)) {
+                        const { surah, verse } = this.currentPlayingVerse;
+                        this.playVerseAudio(surah, verse);
+                        return;
+                    }
                     audioElement.play().then(() => {
                         playPauseBtn.querySelector('i').className = 'fas fa-pause';
                         this.isPlaying = true;
@@ -4496,8 +4506,6 @@ export default class AlQuranApp {
             const surahInfo = this.QURAN_SURAHS?.find(s => s.number === surahNumber);
             const surahName = surahInfo ? surahInfo.name : `QS ${surahNumber}`;
 
-            // Set audio source
-            audioElement.src = audioSrc;
 
             // Update audio info display
             if (audioInfo) {
@@ -4526,7 +4534,7 @@ export default class AlQuranApp {
             });
 
             try {
-                await audioElement.play();
+                await playQuranAudio(audioElement, audioSrc);
                 this.isPlaying = true;
                 if (playPauseBtn && playPauseBtn.querySelector('i')) {
                     playPauseBtn.querySelector('i').className = 'fas fa-pause';
@@ -4537,8 +4545,10 @@ export default class AlQuranApp {
                 this.isLoadingNewAudio = false;
             } catch (err) {
                 console.error('Error playing verse audio:', err);
-                // Error notification disabled - all audio is available
-                audioPlayer.style.display = 'none';
+                // Keep the player on screen so the user can press play again.
+                if (audioInfo) audioInfo.textContent = `${surahName} - Ayat ${verseNumber} · gagal dimuat, tekan putar lagi`;
+                if (playPauseBtn && playPauseBtn.querySelector('i')) playPauseBtn.querySelector('i').className = 'fas fa-rotate-right';
+                this.isPlaying = false;
                 // Remove highlight on error
                 verseElements.forEach(el => {
                     el.classList.remove('playing-audio');

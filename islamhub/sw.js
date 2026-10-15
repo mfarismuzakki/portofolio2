@@ -15,7 +15,12 @@ const SHELL = `islamhub-shell-${self.__PRECACHE_VERSION || BUILD}`;
 const DATA = 'islamhub-data';                // runtime cache, kept across versions
 const AUDIO = 'islamhub-alquran-audio';      // explicit Qur'an audio downloads only
 const META = '__precache_meta__';
-const QURAN_AUDIO_CDN = 'https://cdn.jsdelivr.net/gh/mfarismuzakki/portofolio2@main/islamhub/assets/audio/alquran/';
+// Qur'an murottal can come from any of these (same files); see QURAN_AUDIO_BASES in quran-data.js.
+const QURAN_AUDIO_BASES = [
+  'https://mfarismuzakki.id/islamhub/assets/audio/alquran/',
+  'https://cdn.jsdelivr.net/gh/mfarismuzakki/portofolio2@main/islamhub/assets/audio/alquran/',
+  'https://raw.githubusercontent.com/mfarismuzakki/portofolio2/main/islamhub/assets/audio/alquran/',
+];
 const NET_TIMEOUT = 3500;
 
 const scopeUrl = new URL(self.registration.scope);
@@ -68,7 +73,7 @@ self.addEventListener('fetch', event => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   // Qur'an murottal is hosted on jsDelivr; downloaded files are answered from AUDIO.
-  if (url.href.startsWith(QURAN_AUDIO_CDN)) {
+  if (QURAN_AUDIO_BASES.some(b => url.href.startsWith(b))) {
     event.respondWith(audio(req));
     return;
   }
@@ -172,6 +177,14 @@ async function audio(req) {
   const quran = key.includes('/assets/audio/alquran/');
   const cache = await caches.open(quran ? AUDIO : DATA);
   let hit = await cache.match(key);
+  if (!hit && quran) {
+    // a download stored under another source URL is the same file
+    const rest = key.split('/assets/audio/alquran/')[1];
+    for (const b of QURAN_AUDIO_BASES) {
+      hit = await cache.match(b + rest);
+      if (hit) break;
+    }
+  }
   if (!hit) {
     if (quran) return fetch(req);
     try {

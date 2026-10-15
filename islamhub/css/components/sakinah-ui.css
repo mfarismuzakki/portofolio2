@@ -242,3 +242,86 @@ html[data-theme="sakinah"] #wheelHandTip { fill: #b08a3e; }
 html[data-theme="sakinah"] #dzikirWheel > circle[r="4"] { fill: #1f3d33; }
 html[data-theme="sakinah"] #wheelSegments path { stroke: rgba(31, 61, 51, .18); }
 html[data-theme="sakinah"] #wheelSegments text { fill: #1f3d33; }
+
+/* ---------- 8. Scrollbars ----------
+ * Legacy rules painted cyan/purple thumbs (scrollbar-color wins over ::-webkit-scrollbar in
+ * current Chrome). One quiet style for every scroller; swipe rows (chips, cards) show none. */
+html[data-theme="sakinah"] *,
+html[data-theme="sakinah"] *::before,
+html[data-theme="sakinah"] *::after { scrollbar-color: rgba(31, 61, 51, .22) transparent !important; scrollbar-width: thin; }
+html[data-theme="sakinah"] ::-webkit-scrollbar-thumb { background: rgba(31, 61, 51, .22) !important; border-radius: 99px; }
+html[data-theme="sakinah"] ::-webkit-scrollbar-track { background: transparent !important; }
+html[data-theme="sakinah"] ::-webkit-scrollbar-button { display: none !important; }
+html[data-theme="sakinah"] :is(.popular-surahs-scroll, .sirah-tabs, .sirah-nav, .asmaul-themes, .hadits-tabs, .haji-tabs, .sholat-tabs,
+  .streaming-filters, .filter-tabs, .fiqh-categories, .dzikir-filters, [class*="-tabs"], [class*="-chips"], [class*="-filter"]) {
+  scrollbar-width: none !important;
+}
+html[data-theme="sakinah"] :is(.popular-surahs-scroll, .sirah-tabs, .sirah-nav, .asmaul-themes, .hadits-tabs, .haji-tabs, .sholat-tabs,
+  .streaming-filters, .filter-tabs, .fiqh-categories, .dzikir-filters, [class*="-tabs"], [class*="-chips"], [class*="-filter"])::-webkit-scrollbar {
+  display: none !important; height: 0 !important;
+}
+
+/* ---------- 9. Sirah: view switcher as a 3 x 2 icon grid (no sideways scrolling) ---------- */
+html[data-theme="sakinah"] #sirahFilterTabs {
+  display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 8px !important;
+  overflow: visible !important; flex-wrap: nowrap; margin: 0 0 18px !important; padding: 0 !important;
+}
+html[data-theme="sakinah"] #sirahFilterTabs .filter-tab {
+  display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  min-width: 0 !important; width: auto !important; height: auto !important; min-height: 72px; margin: 0 !important; padding: 10px 6px !important;
+  border-radius: 16px !important; white-space: normal !important; text-align: center; line-height: 1.2;
+  background: var(--ui-card) !important; border: 1px solid var(--ui-line) !important; box-shadow: none !important;
+  color: var(--ui-ink) !important; font-size: .76rem !important; font-weight: 700 !important; transform: none !important;
+}
+html[data-theme="sakinah"] #sirahFilterTabs .filter-tab::before, html[data-theme="sakinah"] #sirahFilterTabs .filter-tab::after { display: none !important; }
+html[data-theme="sakinah"] #sirahFilterTabs .filter-tab i {
+  width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; margin: 0 !important;
+  background: var(--ui-mint); color: var(--ui-green) !important; font-size: .9rem !important;
+}
+html[data-theme="sakinah"] #sirahFilterTabs .filter-tab.active { background: var(--ui-green-deep) !important; border-color: var(--ui-green-deep) !important; color: #f6efd9 !important; }
+html[data-theme="sakinah"] #sirahFilterTabs .filter-tab.active i { background: rgba(246, 239, 217, .14); color: var(--ui-gold-soft) !important; }
+
+/* ---------- 10. Kalender: compact countdown so the month grid is visible at once ---------- */
+html[data-theme="sakinah"] .kalender-header { min-height: 0 !important; padding-top: 18px !important; padding-bottom: 16px !important; }
+html[data-theme="sakinah"] .kalender-header .kalender-note,
+html[data-theme="sakinah"] .kalender-header .kalender-algo-note,
+html[data-theme="sakinah"] .kalender-header p:not(:first-child) { font-size: .7rem !important; margin-top: 8px !important; }
+html[data-theme="sakinah"] .kalender-countdown-section {
+  margin: 0 0 14px !important; padding: 10px 12px !important; border-radius: 16px !important;
+  background: var(--ui-card) !important; border: 1px solid var(--ui-line) !important; box-shadow: none !important;
+}
+html[data-theme="sakinah"] .kalender-countdown-header { margin: 0 0 8px !important; gap: 6px !important; }
+html[data-theme="sakinah"] .kalender-countdown-header h3 { font-size: .72rem !important; letter-spacing: .14em; text-transform: uppercase; color: var(--ui-gold-text) !important; margin: 0 !important; }
+html[data-theme="sakinah"] .kalender-countdown-header i { font-size: .72rem !important; color: var(--ui-gold) !important; }
+html[data-theme="sakinah"] .kalender-countdown-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 6px !important; }
+html[data-theme="sakinah"] .kalender-countdown-card {
+  display: grid !important; grid-template-columns: auto 1fr; grid-template-areas: "days label" "name name";
+  align-items: baseline; gap: 0 4px; min-height: 0 !important; padding: 8px 9px !important; border-radius: 12px !important; text-align: left !important;
+  background: var(--ui-paper) !important; border: 1px solid var(--ui-line) !important; box-shadow: none !important; transform: none !important;
+}
+html[data-theme="sakinah"] .kalender-countdown-card::before, html[data-theme="sakinah"] .kalender-countdown-card::after { display: none !important; }
+html[data-theme="sakinah"] .kalender-countdown-card.featured { background: var(--ui-green-deep) !important; border-color: var(--ui-green-deep) !important; }
+html[data-theme="sakinah"] .kalender-cd-icon, html[data-theme="sakinah"] .kalender-cd-date { display: none !important; }
+html[data-theme="sakinah"] .kalender-cd-days { grid-area: days; font-size: 1.15rem !important; line-height: 1.1 !important; font-weight: 800 !important; color: var(--ui-ink) !important; margin: 0 !important; }
+html[data-theme="sakinah"] .kalender-cd-label { grid-area: label; font-size: .62rem !important; letter-spacing: 0 !important; text-transform: none !important; color: var(--ui-muted) !important; margin: 0 !important; }
+html[data-theme="sakinah"] .kalender-cd-name { grid-area: name; margin: 2px 0 0 !important; font-size: .72rem !important; font-weight: 700 !important; line-height: 1.25; color: var(--ui-ink-2) !important;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html[data-theme="sakinah"] .kalender-countdown-card.featured :is(.kalender-cd-days) { color: var(--ui-gold-soft) !important; }
+html[data-theme="sakinah"] .kalender-countdown-card.featured :is(.kalender-cd-label, .kalender-cd-name) { color: rgba(246, 239, 217, .85) !important; }
+
+/* ---------- 11. Doa detail: prev/next bar floats above the bottom nav pill ---------- */
+html[data-theme="sakinah"] #doaModal .modal-footer {
+  bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important; left: 12px !important; right: 12px !important;
+  padding: 8px !important; border-radius: 18px !important; border: 1px solid var(--ui-line) !important;
+  background: rgba(255, 253, 247, .96) !important; box-shadow: 0 10px 28px rgba(31, 61, 51, .14) !important;
+}
+html[data-theme="sakinah"] #doaModal .navigation-buttons { gap: 8px !important; }
+html[data-theme="sakinah"] #doaModal .navigation-buttons .nav-btn {
+  height: 44px !important; border-radius: 13px !important; font-weight: 800 !important; font-size: .86rem !important;
+  background: var(--ui-mint) !important; color: var(--ui-green) !important; border: 0 !important; box-shadow: none !important;
+}
+html[data-theme="sakinah"] #doaModal .navigation-buttons .nav-btn#nextDoa { background: var(--ui-green-deep) !important; color: #f6efd9 !important; }
+html[data-theme="sakinah"] #doaModal .navigation-buttons .nav-btn:disabled { opacity: .45; }
+html[data-theme="sakinah"] #doaModal .modal-body { padding-bottom: 190px !important; }
+/* LPMQ is drawn smaller than Amiri at the same size: the du'a text gets the reader's scale. */
+html[data-theme="sakinah"] #doaModal .doa-arabic { font-size: 1.85rem !important; line-height: 2.25 !important; text-align: right; padding: 14px 16px 8px !important; color: var(--ui-ink) !important; }

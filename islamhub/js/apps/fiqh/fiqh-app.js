@@ -40,22 +40,6 @@ export default class FiqhApp {
                 <input type="text" id="fiqhSearch" class="fiqh-search" placeholder="Cari topik, pertanyaan, atau keyword...">
             </div>
 
-            <!-- Stats Hero -->
-            <div class="fiqh-stats">
-                <div class="fiqh-stat">
-                    <span class="fiqh-stat-num">${FIQH_DATA.length}</span>
-                    <span class="fiqh-stat-lbl">Topik</span>
-                </div>
-                <div class="fiqh-stat">
-                    <span class="fiqh-stat-num">${FIQH_CATEGORIES.length}</span>
-                    <span class="fiqh-stat-lbl">Kategori</span>
-                </div>
-                <div class="fiqh-stat">
-                    <span class="fiqh-stat-num">${FIQH_DATA.reduce((s, d) => s + ((d.answer || '').split(/\s+/).length), 0)}+</span>
-                    <span class="fiqh-stat-lbl">Kata Penjelasan</span>
-                </div>
-            </div>
-
             <!-- Kategori -->
             <div class="fiqh-categories" id="fiqhCategories">
                 <button class="fiqh-cat-btn active" data-cat="">
