@@ -51,7 +51,7 @@
                 <div class="spinner-ring"></div>
             </div>
             <h3>IslamHub</h3>
-            <p>Memuat aplikasi...</p>
+            <p data-i18n="common.loading">Memuat aplikasi...</p>
         </div>
     </div>
     
@@ -62,15 +62,15 @@
                 <i class="fas fa-sync-alt"></i>
             </div>
             <div class="update-text">
-                <h4>Versi Baru Tersedia!</h4>
-                <p>Aplikasi telah diperbarui. Bersihkan cache untuk mendapatkan fitur terbaru.</p>
+                <h4 data-i18n="update.title">Versi Baru Tersedia!</h4>
+                <p data-i18n="update.desc">Aplikasi telah diperbarui. Bersihkan cache untuk mendapatkan fitur terbaru.</p>
             </div>
             <div class="update-actions">
                 <button class="update-btn-primary" id="updateNowBtn">
-                    <i class="fas fa-download"></i> Update Sekarang
+                    <i class="fas fa-download"></i> <span data-i18n="update.updateNow">Update Sekarang</span>
                 </button>
                 <button class="update-btn-secondary" id="updateLaterBtn">
-                    <i class="fas fa-times"></i> Nanti
+                    <i class="fas fa-times"></i> <span data-i18n="update.later">Nanti</span>
                 </button>
             </div>
         </div>
@@ -86,28 +86,28 @@
                     <header class="sk-top">
                         <div>
                             <small id="skDate">&nbsp;</small>
-                            <h1 id="skGreeting">Assalamu’alaikum</h1>
+                            <h1 id="skGreeting" data-i18n="home.greeting">Assalamu’alaikum</h1>
                         </div>
-                        <button class="sk-theme-btn" id="skThemeBtn" type="button" aria-label="Ganti tema"><i class="fas fa-moon"></i></button>
+                        <button class="sk-theme-btn" id="skThemeBtn" type="button" aria-label="Ganti tema" data-i18n-attr="aria-label:home.themeToggle"><i class="fas fa-moon"></i></button>
                     </header>
 
                     <div class="sk-grid">
                         <div class="sk-col">
-                            <section class="sk-prayer" id="skPrayer" role="button" tabindex="0" aria-label="Buka jadwal sholat">
+                            <section class="sk-prayer" id="skPrayer" role="button" tabindex="0" aria-label="Buka jadwal sholat" data-i18n-attr="aria-label:home.openPrayer">
                                 <div class="sk-loc"><i class="fas fa-location-dot"></i> <span id="homeCity">Jakarta</span></div>
                                 <div class="sk-next">
-                                    <div><span>Sholat berikutnya</span><b id="homePrayerName">Memuat…</b></div>
-                                    <div class="sk-count"><span>pukul <em id="homePrayerTime">--:--</em> · dalam</span><strong id="homeCountdown">--:--:--</strong></div>
+                                    <div><span data-i18n="home.nextPrayer">Sholat berikutnya</span><b id="homePrayerName">Memuat…</b></div>
+                                    <div class="sk-count"><span id="homePrayerAtPrefix"><span data-i18n="home.atPrefix">pukul</span> <em id="homePrayerTime">--:--</em> · <span data-i18n="home.inPrefix">dalam</span></span><strong id="homeCountdown">--:--:--</strong></div>
                                 </div>
                                 <div class="sk-times" id="skTimes"><span>Subuh<b>--:--</b></span><span>Dzuhur<b>--:--</b></span><span>Ashar<b>--:--</b></span><span>Maghrib<b>--:--</b></span><span>Isya<b>--:--</b></span></div>
                             </section>
 
-                            <div class="sk-sec"><h2>Akses cepat</h2><button class="sk-link" id="skAllApps" type="button">Semua ›</button></div>
+                            <div class="sk-sec"><h2 data-i18n="home.quickAccess">Akses cepat</h2><button class="sk-link" id="skAllApps" type="button">Semua ›</button></div>
                             <div class="sk-quick" id="skQuick"></div>
                         </div>
 
                         <div class="sk-col">
-                            <div class="sk-sec"><h2>Lanjutkan</h2></div>
+                            <div class="sk-sec"><h2 data-i18n="home.continue">Lanjutkan</h2></div>
                             <div id="skContinue"></div>
                             <div class="sk-row">
                                 <button class="sk-mini" id="skArena" data-go="sholat-arena" type="button"></button>
@@ -115,17 +115,17 @@
                             </div>
 
                             <div class="sk-sec">
-                                <h2>Hadits pilihan</h2>
+                                <h2 data-i18n="home.hadithChoice">Hadits pilihan</h2>
                                 <div class="hadith-controls sk-hadith-controls">
-                                    <button class="hadith-btn" id="prevHadith" title="Hadits sebelumnya" aria-label="Hadits sebelumnya"><i class="fas fa-chevron-left"></i></button>
-                                    <button class="hadith-btn" id="playPauseHadith" title="Jeda / putar otomatis" aria-label="Jeda atau putar otomatis"><i class="fas fa-pause"></i></button>
-                                    <button class="hadith-btn" id="nextHadith" title="Hadits berikutnya" aria-label="Hadits berikutnya"><i class="fas fa-chevron-right"></i></button>
+                                    <button class="hadith-btn" id="prevHadith" title="Hadits sebelumnya" aria-label="Hadits sebelumnya" data-i18n-attr="title:home.prevHadith;aria-label:home.prevHadith"><i class="fas fa-chevron-left"></i></button>
+                                    <button class="hadith-btn" id="playPauseHadith" title="Jeda / putar otomatis" aria-label="Jeda atau putar otomatis" data-i18n-attr="title:home.playPauseHadith;aria-label:home.playPauseHadith"><i class="fas fa-pause"></i></button>
+                                    <button class="hadith-btn" id="nextHadith" title="Hadits berikutnya" aria-label="Hadits berikutnya" data-i18n-attr="title:home.nextHadith;aria-label:home.nextHadith"><i class="fas fa-chevron-right"></i></button>
                                 </div>
                             </div>
                             <div class="sk-hadith">
                                 <div class="hadith-content" id="hadithContent">
                                     <div class="hadith-arabic" id="hadithArabic" lang="ar" dir="rtl">…</div>
-                                    <div class="hadith-indonesia" id="hadithIndonesia">Memuat hadits…</div>
+                                    <div class="hadith-indonesia" id="hadithIndonesia" data-i18n="home.loadingHadith">Memuat hadits…</div>
                                     <div class="hadith-reference" id="hadithReference">-</div>
                                 </div>
                                 <div class="sk-hadith-progress"><div class="progress-fill"></div></div>
@@ -135,8 +135,8 @@
                             <div class="manhaj-badge sk-manhaj">
                                 <i class="fas fa-shield-halved"></i>
                                 <div class="manhaj-badge-text">
-                                    <strong>أهل السنة والجماعة</strong>
-                                    <span>Konten dilandaskan pada Al-Qur'an &amp; Sunnah sesuai pemahaman para sahabat <span style="font-family:'Amiri Quran',serif">رضي الله عنهم</span> dan ulama yang mengikutinya.</span>
+                                    <strong data-i18n="home.manhajTitle">أهل السنة والجماعة</strong>
+                                    <span data-i18n-html="home.manhajDesc">Konten dilandaskan pada Al-Qur'an &amp; Sunnah sesuai pemahaman para sahabat <span style="font-family:'Amiri Quran',serif">رضي الله عنهم</span> dan ulama yang mengikutinya.</span>
                                 </div>
                             </div>
 
@@ -144,7 +144,7 @@
                             <div class="clear-data-section" id="clearDataSection" style="display: none;">
                                 <button class="btn-clear-data" id="btnClearData">
                                     <i class="fas fa-trash-alt"></i>
-                                    <span>Hapus Data Cache (Jika Gagal Update)</span>
+                                    <span data-i18n="home.clearCacheBtn">Hapus Data Cache (Jika Gagal Update)</span>
                                 </button>
                             </div>
                         </div>
@@ -156,7 +156,7 @@
             <div id="adzan-app" class="app-component" data-app="adzan">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat aplikasi Adzan...</p>
+                    <p data-i18n="adzan.loading">Memuat aplikasi Adzan...</p>
                 </div>
             </div>
 
@@ -164,7 +164,7 @@
             <div id="dzikir-app" class="app-component" data-app="dzikir">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat aplikasi Dzikir...</p>
+                    <p data-i18n="loader.dzikir">Memuat aplikasi Dzikir...</p>
                 </div>
             </div>
 
@@ -172,7 +172,7 @@
             <div id="alquran-app" class="app-component" data-app="alquran">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat Al-Qur'an Digital...</p>
+                    <p data-i18n="loader.alquran">Memuat Al-Qur'an Digital...</p>
                 </div>
             </div>
 
@@ -181,8 +181,8 @@
                 <!-- Waris Home -->
                 <div id="waris-home" class="waris-home">
                     <div class="waris-header">
-                        <h2><i class="fas fa-balance-scale"></i> Kalkulator Waris Syar'i</h2>
-                        <p>Perhitungan waris berdasarkan Al-Qur'an dan Sunnah dengan dalil lengkap</p>
+                        <h2><i class="fas fa-balance-scale"></i> <span data-i18n="waris.title">Kalkulator Waris Syar'i</span></h2>
+                        <p data-i18n="waris.subtitle">Perhitungan waris berdasarkan Al-Qur'an dan Sunnah dengan dalil lengkap</p>
                     </div>
 
                     <!-- Menu -->
@@ -190,50 +190,50 @@
                         <div class="waris-menu-card waris-menu-primary" role="button" tabindex="0" onclick="window.warisApp.showCalculator()">
                             <div class="waris-menu-icon"><i class="fas fa-calculator"></i></div>
                             <div class="waris-menu-text">
-                                <h3>Perhitungan Baru</h3>
-                                <p>Hitung pembagian waris dari data keluarga Anda</p>
+                                <h3 data-i18n="waris.newCalc">Perhitungan Baru</h3>
+                                <p data-i18n="waris.newCalcDesc">Hitung pembagian waris dari data keluarga Anda</p>
                             </div>
                             <i class="fas fa-chevron-right waris-menu-go" aria-hidden="true"></i>
                         </div>
                         <div class="waris-menu-card" role="button" tabindex="0" onclick="window.warisApp.showExamples()">
                             <div class="waris-menu-icon"><i class="fas fa-book-open"></i></div>
                             <div class="waris-menu-text">
-                                <h3>Contoh Perhitungan</h3>
-                                <p>Umariyah, 'awl, radd, dan ashabah</p>
+                                <h3 data-i18n="waris.examples">Contoh Perhitungan</h3>
+                                <p data-i18n="waris.examplesDesc">Umariyah, 'awl, radd, dan ashabah</p>
                             </div>
                             <i class="fas fa-chevron-right waris-menu-go" aria-hidden="true"></i>
                         </div>
                         <div class="waris-menu-card" role="button" tabindex="0" onclick="window.warisApp.showFavorites()">
                             <div class="waris-menu-icon"><i class="fas fa-star"></i></div>
                             <div class="waris-menu-text">
-                                <h3>Favorit</h3>
-                                <p>Perhitungan yang Anda simpan</p>
+                                <h3 data-i18n="waris.favorites">Favorit</h3>
+                                <p data-i18n="waris.favoritesDesc">Perhitungan yang Anda simpan</p>
                             </div>
                             <i class="fas fa-chevron-right waris-menu-go" aria-hidden="true"></i>
                         </div>
                     </div>
 
                     <!-- How it works -->
-                    <section class="waris-howto" aria-label="Cara kerja">
-                        <h3>Cara kerja</h3>
+                    <section class="waris-howto" aria-label="Cara kerja" data-i18n-attr="aria-label:waris.howtoTitle">
+                        <h3 data-i18n="waris.howtoTitle">Cara kerja</h3>
                         <ol>
-                            <li><b>1</b><div><strong>Tirkah</strong><span>Harta peninggalan, dikurangi biaya pemakaman, hutang, dan wasiat (maksimal 1/3).</span></div></li>
-                            <li><b>2</b><div><strong>Ahli waris</strong><span>Pilih pasangan, orang tua, dan anak yang masih hidup.</span></div></li>
-                            <li><b>3</b><div><strong>Hasil &amp; dalil</strong><span>Bagian tiap ahli waris dalam pecahan, persen, dan rupiah, lengkap dengan dalilnya.</span></div></li>
+                            <li><b>1</b><div><strong data-i18n="waris.howto1Title">Tirkah</strong><span data-i18n="waris.howto1Desc">Harta peninggalan, dikurangi biaya pemakaman, hutang, dan wasiat (maksimal 1/3).</span></div></li>
+                            <li><b>2</b><div><strong data-i18n="waris.howto2Title">Ahli waris</strong><span data-i18n="waris.howto2Desc">Pilih pasangan, orang tua, dan anak yang masih hidup.</span></div></li>
+                            <li><b>3</b><div><strong data-i18n="waris.howto3Title">Hasil &amp; dalil</strong><span data-i18n="waris.howto3Desc">Bagian tiap ahli waris dalam pecahan, persen, dan rupiah, lengkap dengan dalilnya.</span></div></li>
                         </ol>
                     </section>
 
                     <figure class="waris-quote">
                         <p class="waris-quote-ar" lang="ar" dir="rtl">يُوْصِيْكُمُ اللّٰهُ فِيْٓ اَوْلَادِكُمْ لِلذَّكَرِ مِثْلُ حَظِّ الْاُنْثَيَيْنِ</p>
-                        <figcaption>"Allah mensyariatkan (mewajibkan) kepadamu tentang (pembagian warisan untuk) anak-anakmu, (yaitu) bagian seorang anak laki-laki sama dengan bagian dua orang anak perempuan." <cite>QS. An-Nisa: 11</cite></figcaption>
+                        <figcaption><span data-i18n="waris.quoteCaption">"Allah mensyariatkan (mewajibkan) kepadamu tentang (pembagian warisan untuk) anak-anakmu, (yaitu) bagian seorang anak laki-laki sama dengan bagian dua orang anak perempuan."</span> <cite data-i18n="waris.quoteCite">QS. An-Nisa: 11</cite></figcaption>
                     </figure>
                 </div>
 
                 <!-- Favorites Page -->
                 <div id="waris-favorites" class="waris-favorites" style="display: none;">
                     <div class="waris-header">
-                        <h2><i class="fas fa-star"></i> Perhitungan Favorit</h2>
-                        <p>Akses cepat ke perhitungan yang telah Anda simpan</p>
+                        <h2><i class="fas fa-star"></i> <span data-i18n="waris.favoritesTitle">Perhitungan Favorit</span></h2>
+                        <p data-i18n="waris.favoritesSubtitle">Akses cepat ke perhitungan yang telah Anda simpan</p>
                     </div>
 
                     <div id="waris-favorites-list" class="waris-favorites-list">
@@ -244,75 +244,75 @@
                 <!-- Examples Page -->
                 <div id="waris-examples" class="waris-examples" style="display: none;">
                     <div class="waris-header">
-                        <h2><i class="fas fa-file-alt"></i> Contoh Perhitungan Waris</h2>
-                        <p>Pilih salah satu contoh kasus untuk melihat perhitungannya</p>
+                        <h2><i class="fas fa-file-alt"></i> <span data-i18n="waris.examplesTitle">Contoh Perhitungan Waris</span></h2>
+                        <p data-i18n="waris.examplesSubtitle">Pilih salah satu contoh kasus untuk melihat perhitungannya</p>
                     </div>
 
                     <div class="waris-examples-grid">
                         <div class="waris-example-card" data-example="umariyah">
-                            <div class="example-badge">Kasus Klasik</div>
-                            <h3>Masalah Umariyah</h3>
+                            <div class="example-badge" data-i18n="waris.classicCase">Kasus Klasik</div>
+                            <h3 data-i18n="waris.umariyahTitle">Masalah Umariyah</h3>
                             <div class="example-case">
-                                <p><strong>Kasus:</strong> Suami + Ibu + Ayah</p>
-                                <p><strong>Harta:</strong> Rp 120.000.000</p>
+                                <p><strong data-i18n="waris.case">Kasus:</strong> Suami + Ibu + Ayah</p>
+                                <p><strong data-i18n="waris.estate">Harta:</strong> Rp 120.000.000</p>
                             </div>
                             <div class="example-heirs">
-                                <span class="heir-tag"><i class="fas fa-male"></i> Suami</span>
-                                <span class="heir-tag"><i class="fas fa-female"></i> Ibu</span>
-                                <span class="heir-tag"><i class="fas fa-male"></i> Ayah</span>
+                                <span class="heir-tag"><i class="fas fa-male"></i> <span data-i18n="waris.heirHusband">Suami</span></span>
+                                <span class="heir-tag"><i class="fas fa-female"></i> <span data-i18n="waris.heirMother">Ibu</span></span>
+                                <span class="heir-tag"><i class="fas fa-male"></i> <span data-i18n="waris.heirFather">Ayah</span></span>
                             </div>
                             <button class="waris-btn waris-btn-primary" onclick="window.warisApp.loadExample('umariyah')">
-                                <i class="fas fa-eye"></i> Lihat Perhitungan
+                                <i class="fas fa-eye"></i> <span data-i18n="waris.viewCalc">Lihat Perhitungan</span>
                             </button>
                         </div>
 
                         <div class="waris-example-card" data-example="awl">
                             <div class="example-badge">Awl</div>
-                            <h3>Kasus Awl (Pengurangan)</h3>
+                            <h3 data-i18n="waris.awlTitle">Kasus Awl (Pengurangan)</h3>
                             <div class="example-case">
-                                <p><strong>Kasus:</strong> Suami + 2 Anak Perempuan + Ibu</p>
-                                <p><strong>Harta:</strong> Rp 100.000.000</p>
+                                <p><strong data-i18n="waris.case">Kasus:</strong> Suami + 2 Anak Perempuan + Ibu</p>
+                                <p><strong data-i18n="waris.estate">Harta:</strong> Rp 100.000.000</p>
                             </div>
                             <div class="example-heirs">
-                                <span class="heir-tag"><i class="fas fa-male"></i> Suami</span>
-                                <span class="heir-tag"><i class="fas fa-female"></i> 2 Putri</span>
-                                <span class="heir-tag"><i class="fas fa-female"></i> Ibu</span>
+                                <span class="heir-tag"><i class="fas fa-male"></i> <span data-i18n="waris.heirHusband">Suami</span></span>
+                                <span class="heir-tag"><i class="fas fa-female"></i> <span data-i18n="waris.heirDaughters">2 Putri</span></span>
+                                <span class="heir-tag"><i class="fas fa-female"></i> <span data-i18n="waris.heirMother">Ibu</span></span>
                             </div>
                             <button class="waris-btn waris-btn-primary" onclick="window.warisApp.loadExample('awl')">
-                                <i class="fas fa-eye"></i> Lihat Perhitungan
+                                <i class="fas fa-eye"></i> <span data-i18n="waris.viewCalc">Lihat Perhitungan</span>
                             </button>
                         </div>
 
                         <div class="waris-example-card" data-example="radd">
                             <div class="example-badge">Radd</div>
-                            <h3>Kasus Radd (Pengembalian)</h3>
+                            <h3 data-i18n="waris.raddTitle">Kasus Radd (Pengembalian)</h3>
                             <div class="example-case">
-                                <p><strong>Kasus:</strong> Istri + 1 Anak Perempuan</p>
-                                <p><strong>Harta:</strong> Rp 90.000.000</p>
+                                <p><strong data-i18n="waris.case">Kasus:</strong> Istri + 1 Anak Perempuan</p>
+                                <p><strong data-i18n="waris.estate">Harta:</strong> Rp 90.000.000</p>
                             </div>
                             <div class="example-heirs">
-                                <span class="heir-tag"><i class="fas fa-female"></i> Istri</span>
-                                <span class="heir-tag"><i class="fas fa-female"></i> Putri</span>
+                                <span class="heir-tag"><i class="fas fa-female"></i> <span data-i18n="waris.heirWife">Istri</span></span>
+                                <span class="heir-tag"><i class="fas fa-female"></i> <span data-i18n="waris.heirDaughter">Putri</span></span>
                             </div>
                             <button class="waris-btn waris-btn-primary" onclick="window.warisApp.loadExample('radd')">
-                                <i class="fas fa-eye"></i> Lihat Perhitungan
+                                <i class="fas fa-eye"></i> <span data-i18n="waris.viewCalc">Lihat Perhitungan</span>
                             </button>
                         </div>
 
                         <div class="waris-example-card" data-example="asabah">
                             <div class="example-badge">Asabah</div>
-                            <h3>Kasus Asabah (Sisa)</h3>
+                            <h3 data-i18n="waris.asabahTitle">Kasus Asabah (Sisa)</h3>
                             <div class="example-case">
-                                <p><strong>Kasus:</strong> Istri + 2 Anak Laki + 1 Anak Perempuan</p>
-                                <p><strong>Harta:</strong> Rp 200.000.000</p>
+                                <p><strong data-i18n="waris.case">Kasus:</strong> Istri + 2 Anak Laki + 1 Anak Perempuan</p>
+                                <p><strong data-i18n="waris.estate">Harta:</strong> Rp 200.000.000</p>
                             </div>
                             <div class="example-heirs">
-                                <span class="heir-tag"><i class="fas fa-female"></i> Istri</span>
-                                <span class="heir-tag"><i class="fas fa-male"></i> 2 Putra</span>
-                                <span class="heir-tag"><i class="fas fa-female"></i> Putri</span>
+                                <span class="heir-tag"><i class="fas fa-female"></i> <span data-i18n="waris.heirWife">Istri</span></span>
+                                <span class="heir-tag"><i class="fas fa-male"></i> <span data-i18n="waris.heirSons">2 Putra</span></span>
+                                <span class="heir-tag"><i class="fas fa-female"></i> <span data-i18n="waris.heirDaughter">Putri</span></span>
                             </div>
                             <button class="waris-btn waris-btn-primary" onclick="window.warisApp.loadExample('asabah')">
-                                <i class="fas fa-eye"></i> Lihat Perhitungan
+                                <i class="fas fa-eye"></i> <span data-i18n="waris.viewCalc">Lihat Perhitungan</span>
                             </button>
                         </div>
                     </div>
@@ -321,7 +321,7 @@
                 <!-- Calculator Page -->
                 <div id="waris-calculator" class="waris-calculator" style="display: none;">
                     <div class="waris-header">
-                        <h2><i class="fas fa-calculator"></i> Perhitungan Waris</h2>
+                        <h2><i class="fas fa-calculator"></i> <span data-i18n="waris.calcHeaderTitle">Perhitungan Waris</span></h2>
                     </div>
 
                 <!-- Wizard Container -->
@@ -330,15 +330,15 @@
                     <div class="waris-progress-bar">
                         <div class="waris-progress-step active">
                             <div class="waris-step-circle">1</div>
-                            <span class="waris-step-label">Tirkah</span>
+                            <span class="waris-step-label" data-i18n="waris.step1Title">Tirkah</span>
                         </div>
                         <div class="waris-progress-step">
                             <div class="waris-step-circle">2</div>
-                            <span class="waris-step-label">Ahli Waris</span>
+                            <span class="waris-step-label" data-i18n="waris.step2Title">Ahli Waris</span>
                         </div>
                         <div class="waris-progress-step">
                             <div class="waris-step-circle">3</div>
-                            <span class="waris-step-label">Hasil</span>
+                            <span class="waris-step-label" data-i18n="waris.step3Title">Hasil</span>
                         </div>
                     </div>
 
@@ -347,7 +347,7 @@
                         <!-- Step 1: Tirkah (Harta yang Ditinggalkan) -->
                         <div id="waris-step1" class="waris-wizard-step active">
                             <div class="waris-form-group">
-                                <label><i class="fas fa-coins"></i> Total Harta yang Ditinggalkan</label>
+                                <label><i class="fas fa-coins"></i> <span data-i18n="waris.totalAssets">Total Harta yang Ditinggalkan</span></label>
                                 <div class="waris-input-group">
                                     <span class="waris-input-prefix">Rp</span>
                                     <input type="text" id="waris-totalAssets" placeholder="0" inputmode="numeric">
@@ -355,7 +355,7 @@
                             </div>
 
                             <div class="waris-form-group">
-                                <label><i class="fas fa-hand-holding-heart"></i> Biaya Pemakaman</label>
+                                <label><i class="fas fa-hand-holding-heart"></i> <span data-i18n="waris.funeralCosts">Biaya Pemakaman</span></label>
                                 <div class="waris-input-group">
                                     <span class="waris-input-prefix">Rp</span>
                                     <input type="text" id="waris-funeralCosts" placeholder="0" inputmode="numeric">
@@ -363,7 +363,7 @@
                             </div>
 
                             <div class="waris-form-group">
-                                <label><i class="fas fa-file-invoice-dollar"></i> Hutang yang Harus Dibayar</label>
+                                <label><i class="fas fa-file-invoice-dollar"></i> <span data-i18n="waris.debts">Hutang yang Harus Dibayar</span></label>
                                 <div class="waris-input-group">
                                     <span class="waris-input-prefix">Rp</span>
                                     <input type="text" id="waris-debts" placeholder="0" inputmode="numeric">
@@ -371,7 +371,7 @@
                             </div>
 
                             <div class="waris-form-group">
-                                <label><i class="fas fa-scroll"></i> Wasiat (maksimal 1/3 harta bersih)</label>
+                                <label><i class="fas fa-scroll"></i> <span data-i18n="waris.wasiat">Wasiat (maksimal 1/3 harta bersih)</span></label>
                                 <div class="waris-input-group">
                                     <span class="waris-input-prefix">Rp</span>
                                     <input type="text" id="waris-wasiat" placeholder="0" inputmode="numeric">
@@ -380,21 +380,21 @@
 
                             <!-- Summary -->
                             <div class="waris-tirkah-summary">
-                                <h4><i class="fas fa-calculator"></i> Ringkasan</h4>
+                                <h4><i class="fas fa-calculator"></i> <span data-i18n="waris.summary">Ringkasan</span></h4>
                                 <div class="waris-summary-row">
-                                    <span class="waris-summary-label">Total Harta</span>
+                                    <span class="waris-summary-label" data-i18n="waris.summaryAssets">Total Harta</span>
                                     <span class="waris-summary-value" id="waris-summaryAssets">Rp 0</span>
                                 </div>
                                 <div class="waris-summary-row">
-                                    <span class="waris-summary-label">Biaya & Hutang</span>
+                                    <span class="waris-summary-label" data-i18n="waris.summaryDeductions">Biaya & Hutang</span>
                                     <span class="waris-summary-value" id="waris-summaryDeductions">Rp 0</span>
                                 </div>
                                 <div class="waris-summary-row">
-                                    <span class="waris-summary-label">Wasiat</span>
+                                    <span class="waris-summary-label" data-i18n="waris.summaryWasiat">Wasiat</span>
                                     <span class="waris-summary-value" id="waris-summaryWasiat">Rp 0</span>
                                 </div>
                                 <div class="waris-summary-row">
-                                    <span class="waris-summary-label"><strong>Harta yang Dibagi</strong></span>
+                                    <span class="waris-summary-label"><strong data-i18n="waris.summaryNet">Harta yang Dibagi</strong></span>
                                     <span class="waris-summary-value" id="waris-summaryNet">Rp 0</span>
                                 </div>
                             </div>
@@ -417,25 +417,25 @@
                     <!-- Navigation Buttons -->
                     <div class="waris-wizard-nav">
                         <button id="waris-backToHomeBtn" class="waris-btn waris-btn-secondary" style="display: none;">
-                            <i class="fas fa-home"></i> Halaman Utama
+                            <i class="fas fa-home"></i> <span data-i18n="waris.btnHome">Halaman Utama</span>
                         </button>
                         <button id="waris-prevBtn" class="waris-btn waris-btn-secondary" style="display: none;">
-                            <i class="fas fa-arrow-left"></i> Kembali
+                            <i class="fas fa-arrow-left"></i> <span data-i18n="waris.btnBack">Kembali</span>
                         </button>
                         <button id="waris-nextBtn" class="waris-btn waris-btn-primary">
-                            Lanjut <i class="fas fa-arrow-right"></i>
+                            <span data-i18n="waris.btnNext">Lanjut</span> <i class="fas fa-arrow-right"></i>
                         </button>
                         <button id="waris-calculateBtn" class="waris-btn waris-btn-primary" style="display: none;">
-                            <i class="fas fa-calculator"></i> Hitung Waris
+                            <i class="fas fa-calculator"></i> <span data-i18n="waris.btnCalculate">Hitung Waris</span>
                         </button>
                         <button id="waris-homeBtn" class="waris-btn waris-btn-secondary" style="display: none;">
-                            <i class="fas fa-home"></i> Halaman Utama
+                            <i class="fas fa-home"></i> <span data-i18n="waris.btnHome">Halaman Utama</span>
                         </button>
                         <button id="waris-favoriteBtn" class="waris-btn waris-btn-favorite" style="display: none;">
-                            <i class="far fa-star"></i> Simpan ke Favorit
+                            <i class="far fa-star"></i> <span data-i18n="waris.btnSaveFavorite">Simpan ke Favorit</span>
                         </button>
                         <button id="waris-resetBtn" class="waris-btn waris-btn-reset" style="display: none;">
-                            <i class="fas fa-redo"></i> Hitung Ulang
+                            <i class="fas fa-redo"></i> <span data-i18n="waris.btnRecalculate">Hitung Ulang</span>
                         </button>
                     </div>
                 </div>
@@ -446,7 +446,7 @@
             <div id="qibla-app" class="app-component" data-app="qibla">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat aplikasi Qibla...</p>
+                    <p data-i18n="loader.qibla">Memuat aplikasi Qibla...</p>
                 </div>
             </div>
 
@@ -455,13 +455,13 @@
                 <div class="sholat-container">
                     <!-- Header -->
                     <div class="sholat-header">
-                        <h2><i class="fas fa-kaaba"></i> Tata Cara Sholat</h2>
-                        <p>Panduan lengkap rukun, bacaan, dan sunnah sholat berdasarkan Al-Quran & Hadits</p>
+                        <h2><i class="fas fa-kaaba"></i> <span data-i18n="sholat.title">Tata Cara Sholat</span></h2>
+                        <p data-i18n="sholat.subtitle">Panduan lengkap rukun, bacaan, dan sunnah sholat berdasarkan Al-Quran & Hadits</p>
                     </div>
 
                     <!-- Search -->
                     <div class="sholat-search">
-                        <input type="text" id="sholatSearchInput" placeholder="Cari rukun, bacaan, atau sunnah sholat...">
+                        <input type="text" id="sholatSearchInput" placeholder="Cari rukun, bacaan, atau sunnah sholat..." data-i18n-attr="placeholder:sholat.searchPlaceholder">
                         <i class="fas fa-search"></i>
                         <button class="clear-search" id="sholatClearSearch">×</button>
                     </div>
@@ -469,40 +469,40 @@
                     <!-- Tabs -->
                     <div class="sholat-tabs">
                         <button class="sholat-tab active sholat-tab-3d" data-tab="peraga">
-                            <i class="fas fa-cube"></i> Peraga 3D
+                            <i class="fas fa-cube"></i> <span data-i18n="sholat.tabPeraga">Peraga 3D</span>
                         </button>
                         <button class="sholat-tab sholat-tab-game" data-tab="arena">
-                            <i class="fas fa-gamepad"></i> Arena Game
+                            <i class="fas fa-gamepad"></i> <span data-i18n="sholat.tabArena">Arena Game</span>
                         </button>
                         <button class="sholat-tab" data-tab="rukun">
-                            <i class="fas fa-check-circle"></i> Rukun Sholat
+                            <i class="fas fa-check-circle"></i> <span data-i18n="sholat.tabRukun">Rukun Sholat</span>
                         </button>
                         <button class="sholat-tab" data-tab="syarat">
-                            <i class="fas fa-list-check"></i> Syarat Sholat
+                            <i class="fas fa-list-check"></i> <span data-i18n="sholat.tabSyarat">Syarat Sholat</span>
                         </button>
                         <button class="sholat-tab" data-tab="bacaan">
-                            <i class="fas fa-book-open"></i> Bacaan Sholat
+                            <i class="fas fa-book-open"></i> <span data-i18n="sholat.tabBacaan">Bacaan Sholat</span>
                         </button>
                         <button class="sholat-tab" data-tab="sunnah">
-                            <i class="fas fa-star"></i> Sunnah Sholat
+                            <i class="fas fa-star"></i> <span data-i18n="sholat.tabSunnah">Sunnah Sholat</span>
                         </button>
                         <button class="sholat-tab" data-tab="favorit">
-                            <i class="fas fa-heart"></i> Favorit
+                            <i class="fas fa-heart"></i> <span data-i18n="sholat.tabFavorit">Favorit</span>
                         </button>
                     </div>
 
                     <!-- 3D Peraga Viewer -->
                     <div class="sholat-peraga" id="sholatPeraga" style="display: none;">
-                        <div class="peraga-intro"><div><span class="peraga-eyebrow">BELAJAR DENGAN TENANG</span><h3>Sholat, langkah demi langkah.</h3><p>Contoh sholat dua rakaat. Amati posisi tubuh, pelajari bacaan, lalu lanjutkan saat siap.</p></div><span class="peraga-mode">17 langkah · 3D interaktif</span></div>
+                        <div class="peraga-intro"><div><span class="peraga-eyebrow" data-i18n="sholat.peragaEyebrow">BELAJAR DENGAN TENANG</span><h3 data-i18n="sholat.peragaTitle">Sholat, langkah demi langkah.</h3><p data-i18n="sholat.peragaSubtitle">Contoh sholat dua rakaat. Amati posisi tubuh, pelajari bacaan, lalu lanjutkan saat siap.</p></div><span class="peraga-mode" data-i18n="sholat.peragaMode">17 langkah · 3D interaktif</span></div>
                         <div class="peraga-overlay-top"><span class="peraga-step-badge"><span id="peragaStepNum">1</span> / <span id="peragaStepTotal">17</span></span><h4 id="peragaPoseName" aria-live="polite">Takbiratul Ihram</h4></div>
                         <div class="peraga-viewer">
                             <div class="peraga-stage">
                                 <canvas id="peragaCanvas" role="img" aria-label="Peraga sholat di dalam masjid"></canvas>
-                                <span class="peraga-scene-label">ARAH KIBLAT SESUAI SAJADAH</span>
-                                <div id="peragaSceneStatus" class="peraga-scene-status" role="status" hidden><p></p><button id="peragaRecoverBtn">Pulihkan tampilan</button></div>
+                                <span class="peraga-scene-label" data-i18n="sholat.sceneLabel">ARAH KIBLAT SESUAI SAJADAH</span>
+                                <div id="peragaSceneStatus" class="peraga-scene-status" role="status" hidden><p></p><button id="peragaRecoverBtn" data-i18n="sholat.recoverScene">Pulihkan tampilan</button></div>
                             </div>
-                            <div class="peraga-overlay-controls"><button id="peragaPrevBtn" aria-label="Langkah sebelumnya">← Kembali</button><button id="peragaPlayBtn">▶ Putar</button><button id="peragaNextBtn" aria-label="Langkah berikutnya">Lanjut →</button></div>
-                            <div class="peraga-toolbar"><div class="peraga-views" aria-label="Sudut pandang"><button data-prayer-view="3.14159" aria-pressed="false">Depan</button><button data-prayer-view="1.5708" aria-pressed="false">Samping</button><button data-prayer-view="2.25" aria-pressed="true">Perspektif</button></div><div class="peraga-camera-tools"><button id="peragaResetBtn" aria-label="Ulang dari awal" title="Ulang dari awal">↺</button><button id="peragaRotateBtn" aria-label="Putar kamera otomatis" title="Putar kamera otomatis" aria-pressed="false">⟳</button></div></div>
+                            <div class="peraga-overlay-controls"><button id="peragaPrevBtn" aria-label="Langkah sebelumnya" data-i18n="sholat.stepPrev">← Kembali</button><button id="peragaPlayBtn" data-i18n="sholat.stepPlay">▶ Putar</button><button id="peragaNextBtn" aria-label="Langkah berikutnya" data-i18n="sholat.stepNext">Lanjut →</button></div>
+                            <div class="peraga-toolbar"><div class="peraga-views" aria-label="Sudut pandang" data-i18n-attr="aria-label:sholat.viewsLabel"><button data-prayer-view="3.14159" aria-pressed="false" data-i18n="sholat.viewFront">Depan</button><button data-prayer-view="1.5708" aria-pressed="false" data-i18n="sholat.viewSide">Samping</button><button data-prayer-view="2.25" aria-pressed="true" data-i18n="sholat.viewPerspective">Perspektif</button></div><div class="peraga-camera-tools"><button id="peragaResetBtn" aria-label="Ulang dari awal" title="Ulang dari awal" data-i18n-attr="aria-label:sholat.resetCamera;title:sholat.resetCamera">↺</button><button id="peragaRotateBtn" aria-label="Putar kamera otomatis" title="Putar kamera otomatis" data-i18n-attr="aria-label:sholat.autoRotate;title:sholat.autoRotate" aria-pressed="false">⟳</button></div></div>
                         </div>
                         <!-- Progress Timeline -->
                         <div class="peraga-timeline" id="peragaTimeline"></div>
@@ -520,7 +520,7 @@
                         </div>
                     </div>
 
-                    <details class="peraga-sources"><summary>Rujukan gerakan & catatan belajar</summary><p>Rujukan umum peragaan dua rakaat: risalah Syaikh Ibnu Baz, <a href="https://risala.prh.gov.sa/as/contents/106?translated=true" target="_blank" rel="noopener">Kaifiyyatu Shalatin Nabi ﷺ</a>: tangan kanan di atas kiri, rukuk dengan punggung rata, sujud pada tujuh anggota, serta iftirasy pada sholat dua rakaat. Tawarruk digunakan pada tasyahud terakhir sholat tiga atau empat rakaat dalam pendapat ini.</p><p>I’tidal pada peraga ini memakai irsal: kedua tangan diturunkan di samping badan, berbeda dari pilihan bersedekap dalam risalah Ibnu Baz. Perbedaan dalam duduk, posisi tangan setelah rukuk, dan cara turun sujud dibahas ulama. Animasi adalah ilustrasi posisi, bukan patokan durasi sholat. Tuma’ninah tetap diperlukan. Cocokkan praktik dengan bimbingan pengajar.</p></details>
+                    <details class="peraga-sources"><summary data-i18n="sholat.sourcesSummary">Rujukan gerakan & catatan belajar</summary><p>Rujukan umum peragaan dua rakaat: risalah Syaikh Ibnu Baz, <a href="https://risala.prh.gov.sa/as/contents/106?translated=true" target="_blank" rel="noopener">Kaifiyyatu Shalatin Nabi ﷺ</a>: tangan kanan di atas kiri, rukuk dengan punggung rata, sujud pada tujuh anggota, serta iftirasy pada sholat dua rakaat. Tawarruk digunakan pada tasyahud terakhir sholat tiga atau empat rakaat dalam pendapat ini.</p><p>I’tidal pada peraga ini memakai irsal: kedua tangan diturunkan di samping badan, berbeda dari pilihan bersedekap dalam risalah Ibnu Baz. Perbedaan dalam duduk, posisi tangan setelah rukuk, dan cara turun sujud dibahas ulama. Animasi adalah ilustrasi posisi, bukan patokan durasi sholat. Tuma’ninah tetap diperlukan. Cocokkan praktik dengan bimbingan pengajar.</p></details>
 
                     <!-- Arena Game -->
                     <div class="sholat-arena-host" id="sholatArena" style="display: none;"></div>
@@ -546,13 +546,13 @@
                                 <button class="sholat-modal-back" onclick="window.sholatApp.closeModal()">
                                     <i class="fas fa-arrow-left"></i>
                                 </button>
-                                <h2 id="sholatModalTitle">Detail</h2>
+                                <h2 id="sholatModalTitle" data-i18n="sholat.detail">Detail</h2>
                             </div>
                             <div class="sholat-modal-actions">
-                                <button class="sholat-copy-btn" id="sholatCopyBtn" onclick="window.sholatApp.copyContent()" title="Salin teks">
+                                <button class="sholat-copy-btn" id="sholatCopyBtn" onclick="window.sholatApp.copyContent()" title="Salin teks" data-i18n-attr="title:sholat.copyText">
                                     <i class="fas fa-copy"></i>
                                 </button>
-                                <button class="sholat-favorite-btn" id="sholatFavoriteBtn" onclick="window.sholatApp.toggleFavorite()" title="Tambah ke favorit">
+                                <button class="sholat-favorite-btn" id="sholatFavoriteBtn" onclick="window.sholatApp.toggleFavorite()" title="Tambah ke favorit" data-i18n-attr="title:common.addToFavorites">
                                     <i class="far fa-heart"></i>
                                 </button>
                             </div>
@@ -568,7 +568,7 @@
             <div id="sirah-app" class="app-component" data-app="sirah">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat aplikasi Sirah Nabi...</p>
+                    <p data-i18n="loader.sirah">Memuat aplikasi Sirah Nabi...</p>
                 </div>
             </div>
 
@@ -576,7 +576,7 @@
             <div id="streaming-app" class="app-component" data-app="streaming">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat aplikasi Streaming...</p>
+                    <p data-i18n="loader.streaming">Memuat aplikasi Streaming...</p>
                 </div>
             </div>
 
@@ -584,7 +584,7 @@
             <div id="zakat-app" class="app-component" data-app="zakat">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat Kalkulator Zakat...</p>
+                    <p data-i18n="loader.zakat">Memuat Kalkulator Zakat...</p>
                 </div>
             </div>
 
@@ -592,7 +592,7 @@
             <div id="kalender-app" class="app-component" data-app="kalender">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat Kalender Hijriyah...</p>
+                    <p data-i18n="loader.kalender">Memuat Kalender Hijriyah...</p>
                 </div>
             </div>
 
@@ -600,7 +600,7 @@
             <div id="asmaul-app" class="app-component" data-app="asmaul">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat Asmaul Husna...</p>
+                    <p data-i18n="loader.asmaul">Memuat Asmaul Husna...</p>
                 </div>
             </div>
 
@@ -608,7 +608,7 @@
             <div id="hadits-app" class="app-component" data-app="hadits">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat Hadits Browser...</p>
+                    <p data-i18n="loader.hadits">Memuat Hadits Browser...</p>
                 </div>
             </div>
 
@@ -616,7 +616,7 @@
             <div id="fiqh-app" class="app-component" data-app="fiqh">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat Fiqh Praktis...</p>
+                    <p data-i18n="loader.fiqh">Memuat Fiqh Praktis...</p>
                 </div>
             </div>
 
@@ -624,7 +624,7 @@
             <div id="haji-app" class="app-component" data-app="haji">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat panduan Haji & Umrah...</p>
+                    <p data-i18n="loader.haji">Memuat panduan Haji & Umrah...</p>
                 </div>
             </div>
 
@@ -632,7 +632,7 @@
             <div id="tanyajawab-app" class="app-component" data-app="tanyajawab">
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 40px; margin-bottom: 20px;"></i>
-                    <p>Memuat Tanya Jawab Islam...</p>
+                    <p data-i18n="loader.tanyajawab">Memuat Tanya Jawab Islam...</p>
                 </div>
             </div>
         </main>
@@ -655,17 +655,17 @@
         <footer class="app-footer">
             <div class="footer-card">
                 <div class="footer-brand"><span class="footer-mark"><i class="fas fa-mosque"></i></span>IslamHub</div>
-                <p class="footer-source"><i class="fas fa-book-open"></i> Sumber: Al-Qur'an, hadits shahih, dan kitab para ulama</p>
+                <p class="footer-source"><i class="fas fa-book-open"></i> <span data-i18n="footer.source">Sumber: Al-Qur'an, hadits shahih, dan kitab para ulama</span></p>
                 <a class="footer-feedback" href="https://forms.gle/4e3mMEaUMsAgJYp6A" target="_blank" rel="noopener">
                     <span class="footer-feedback-ico"><i class="fas fa-comment-dots"></i></span>
-                    <span class="footer-feedback-text"><strong>Kritik &amp; saran</strong><small>Laporkan kesalahan konten, bug, atau usulan fitur</small></span>
+                    <span class="footer-feedback-text"><strong data-i18n="footer.feedback">Kritik &amp; saran</strong><small data-i18n="footer.feedbackDesc">Laporkan kesalahan konten, bug, atau usulan fitur</small></span>
                     <i class="fas fa-arrow-up-right-from-square"></i>
                 </a>
                 <div class="footer-credit">
-                    <span>&copy; 2026 Muhammad Faris Muzakki &amp; Istri Tercinta</span>
-                    <small>Lulusan Terbaik Jurusan Syariah, Imam Muhammad bin Saud University, 2022</small>
+                    <span data-i18n="footer.credit">&copy; 2026 Muhammad Faris Muzakki &amp; Istri Tercinta</span>
+                    <small data-i18n="footer.creditSub">Lulusan Terbaik Jurusan Syariah, Imam Muhammad bin Saud University, 2022</small>
                 </div>
-                <span class="footer-version">Versi 1.4.2</span>
+                <span class="footer-version" data-i18n="footer.version">Versi 1.4.2</span>
             </div>
         </footer>
 
@@ -675,22 +675,22 @@
         <!-- Global Audio Player (single persistent player for ALL audio – quran, dzikir, radio) -->
         <div class="audio-player" id="quranAudioPlayer" style="display:none">
             <div class="audio-info" id="audioInfo">
-                <span class="audio-surah-name" id="audioSurahName">Audio</span>
+                <span class="audio-surah-name" id="audioSurahName" data-i18n="audio.title">Audio</span>
                 <span class="audio-verse-counter" id="audioVerseCounter" style="display: none;"></span>
                 <!-- Live signal indicator: shown in radio mode, hidden in quran mode -->
-                <span class="status-dot" id="audioSignalDot" style="display:none" title="Status sinyal"></span>
+                <span class="status-dot" id="audioSignalDot" style="display:none" title="Status sinyal" data-i18n-attr="title:audio.signalStatus"></span>
             </div>
             <div class="audio-controls">
-                <button class="audio-btn audio-nav-btn" id="audioPrevVerse" title="Sebelumnya"><i class="fas fa-step-backward"></i></button>
+                <button class="audio-btn audio-nav-btn" id="audioPrevVerse" title="Sebelumnya" data-i18n-attr="title:audio.prev"><i class="fas fa-step-backward"></i></button>
                 <button class="audio-btn" id="audioPlayPause"><i class="fas fa-play"></i></button>
-                <button class="audio-btn audio-nav-btn" id="audioNextVerse" title="Selanjutnya"><i class="fas fa-step-forward"></i></button>
+                <button class="audio-btn audio-nav-btn" id="audioNextVerse" title="Selanjutnya" data-i18n-attr="title:audio.next"><i class="fas fa-step-forward"></i></button>
                 <div class="audio-progress" style="display: none;">
                     <div class="audio-progress-bar"><div class="audio-progress-fill" id="audioProgressFill"></div></div>
                     <div class="audio-time"><span id="audioCurrentTime">0:00</span><span id="audioDuration">0:00</span></div>
                 </div>
                 <!-- Mute button (visible in radio mode only) -->
-                <button class="audio-btn" id="audioMute" style="display:none" title="Mute"><i class="fas fa-volume-up"></i></button>
-                <button class="audio-btn audio-close-btn" id="audioClose" title="Tutup"><i class="fas fa-times"></i></button>
+                <button class="audio-btn" id="audioMute" style="display:none" title="Mute" data-i18n-attr="title:audio.mute"><i class="fas fa-volume-up"></i></button>
+                <button class="audio-btn audio-close-btn" id="audioClose" title="Tutup" data-i18n-attr="title:audio.close"><i class="fas fa-times"></i></button>
             </div>
             <audio id="quranAudioElement" preload="metadata"></audio>
             <!-- Persistent radio audio element (survives page/app switches) -->
@@ -701,23 +701,23 @@
         <nav class="bottom-navigation" id="bottomNavigation">
             <button class="bottom-nav-item active" data-app="home">
                 <i class="fas fa-home"></i>
-                <span>Beranda</span>
+                <span data-i18n="nav.home">Beranda</span>
             </button>
             <button class="bottom-nav-item" data-app="adzan">
                 <i class="fas fa-mosque"></i>
-                <span>Adzan</span>
+                <span data-i18n="nav.adzan">Adzan</span>
             </button>
             <button class="bottom-nav-item" data-app="alquran">
                 <i class="fas fa-book-quran"></i>
-                <span>Al-Qur'an</span>
+                <span data-i18n="nav.alquran">Al-Qur'an</span>
             </button>
             <button class="bottom-nav-item" data-app="streaming">
                 <i class="fas fa-broadcast-tower"></i>
-                <span>Kajian</span>
+                <span data-i18n="nav.streaming">Kajian</span>
             </button>
             <button class="bottom-nav-item" id="moreAppsBtn">
                 <i class="fas fa-th"></i>
-                <span>Lainnya</span>
+                <span data-i18n="nav.more">Lainnya</span>
             </button>
         </nav>
 
@@ -726,9 +726,9 @@
         <!-- More Apps Dropdown -->
         <div class="more-apps-dropdown" id="moreAppsDropdown">
             <div class="more-apps-header">
-                <h3><i class="fas fa-th"></i> Aplikasi Lainnya</h3>
+                <h3><i class="fas fa-th"></i> <span data-i18n="nav.moreApps">Aplikasi Lainnya</span></h3>
                 <div class="more-apps-header-actions">
-                    <button class="arrange-apps-btn" id="arrangeAppsBtn" title="Atur urutan aplikasi">
+                    <button class="arrange-apps-btn" id="arrangeAppsBtn" title="Atur urutan aplikasi" data-i18n-attr="title:nav.arrangeApps">
                         <i class="fas fa-grip-lines"></i>
                     </button>
                     <button class="close-dropdown" id="closeDropdown">
@@ -748,19 +748,19 @@
         <div class="app-settings-box">
             <div class="app-settings-header">
                 <div class="app-settings-handle-bar"></div>
-                <h3><i class="fas fa-sliders"></i> Pengaturan Tampilan</h3>
+                <h3><i class="fas fa-sliders"></i> <span data-i18n="settings.title">Pengaturan Tampilan</span></h3>
                 <button class="app-settings-close" id="appSettingsClose"><i class="fas fa-times"></i></button>
             </div>
             <p class="app-settings-hint">
                 <i class="fas fa-info-circle"></i>
-                Seret atau gunakan tombol ↑↓ untuk mengatur urutan menu "Lainnya". Perubahan disimpan otomatis.
+                <span data-i18n="settings.hint">Seret atau gunakan tombol ↑↓ untuk mengatur urutan menu "Lainnya". Perubahan disimpan otomatis.</span>
             </p>
             <div class="app-settings-list" id="appSettingsList">
                 <!-- Rendered dynamically by JS -->
             </div>
             <div class="app-settings-footer">
                 <button class="app-settings-reset" id="resetAppOrder">
-                    <i class="fas fa-undo"></i> Reset ke Default
+                    <i class="fas fa-undo"></i> <span data-i18n="settings.resetOrder">Reset ke Default</span>
                 </button>
             </div>
         </div>
@@ -787,11 +787,15 @@
             if (window.islamHub) return;
             var box = document.querySelector('#loadingOverlay .loading-content');
             if (!box) return;
+            var lang = 'id';
+            try { lang = localStorage.getItem('islamhub_lang') || 'id'; } catch (e) {}
             var offline = navigator.onLine === false;
-            box.innerHTML = '<h3>IslamHub</h3><p>' + (offline
-                ? 'Sedang offline dan aplikasi belum tersimpan lengkap di perangkat ini. Buka sekali saat ada internet agar bisa dipakai offline.'
-                : 'Memuat lebih lama dari biasanya. Periksa koneksi lalu coba lagi.') +
-                '</p><button type="button" onclick="location.reload()" style="margin-top:14px;padding:10px 18px;border-radius:12px;border:0;background:#245845;color:#fff;font-weight:700">Coba lagi</button>';
+            var msg = lang === 'en'
+                ? (offline ? 'You are offline and the app is not fully cached on this device yet. Open once while online to enable offline use.' : 'Loading is taking longer than usual. Check connection and try again.')
+                : (offline ? 'Sedang offline dan aplikasi belum tersimpan lengkap di perangkat ini. Buka sekali saat ada internet agar bisa dipakai offline.' : 'Memuat lebih lama dari biasanya. Periksa koneksi lalu coba lagi.');
+            var retryText = lang === 'en' ? 'Retry' : 'Coba lagi';
+            box.innerHTML = '<h3>IslamHub</h3><p>' + msg +
+                '</p><button type="button" onclick="location.reload()" style="margin-top:14px;padding:10px 18px;border-radius:12px;border:0;background:#245845;color:#fff;font-weight:700">' + retryText + '</button>';
         }, 12000);
     </script>
 
@@ -799,21 +803,21 @@
     <div class="modal-overlay" id="clearDataModal">
         <div class="modal-content clear-data-modal">
             <div class="modal-header">
-                <h3><i class="fas fa-trash-alt"></i> Hapus Data Cache</h3>
+                <h3><i class="fas fa-trash-alt"></i> <span data-i18n="clearData.title">Hapus Data Cache</span></h3>
                 <button class="modal-close" id="closeClearDataModal">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p class="modal-description">Pilih data yang ingin dihapus. Data audio Al-Quran tidak akan dihapus secara default.</p>
+                <p class="modal-description" data-i18n="clearData.description">Pilih data yang ingin dihapus. Data audio Al-Quran tidak akan dihapus secara default.</p>
                 
                 <div class="clear-data-options">
                     <label class="checkbox-option">
                         <input type="checkbox" id="clearCache" checked>
                         <span class="checkbox-label">
                             <i class="fas fa-database"></i>
-                            <strong>Cache Aplikasi</strong>
-                            <small>File CSS, JS, dan gambar yang di-cache</small>
+                            <strong data-i18n="clearData.cacheApp">Cache Aplikasi</strong>
+                            <small data-i18n="clearData.cacheAppDesc">File CSS, JS, dan gambar yang di-cache</small>
                         </span>
                     </label>
                     
@@ -821,8 +825,8 @@
                         <input type="checkbox" id="clearLocalStorage" checked>
                         <span class="checkbox-label">
                             <i class="fas fa-save"></i>
-                            <strong>Data Lokal</strong>
-                            <small>Pengaturan, bookmark, dan history</small>
+                            <strong data-i18n="clearData.localStorage">Data Lokal</strong>
+                            <small data-i18n="clearData.localStorageDesc">Pengaturan, bookmark, dan history</small>
                         </span>
                     </label>
                     
@@ -830,8 +834,8 @@
                         <input type="checkbox" id="clearIndexedDB">
                         <span class="checkbox-label">
                             <i class="fas fa-book-quran"></i>
-                            <strong>Data Al-Quran</strong>
-                            <small>Verses, translations (tidak termasuk audio)</small>
+                            <strong data-i18n="clearData.quranData">Data Al-Quran</strong>
+                            <small data-i18n="clearData.quranDataDesc">Verses, translations (tidak termasuk audio)</small>
                         </span>
                     </label>
                     
@@ -839,15 +843,15 @@
                         <input type="checkbox" id="clearAudio">
                         <span class="checkbox-label">
                             <i class="fas fa-volume-up"></i>
-                            <strong>Audio Al-Quran</strong>
-                            <small>⚠️ File audio yang sudah didownload (ukuran besar)</small>
+                            <strong data-i18n="clearData.audio">Audio Al-Quran</strong>
+                            <small data-i18n="clearData.audioDesc">⚠️ File audio yang sudah didownload (ukuran besar)</small>
                         </span>
                     </label>
                 </div>
                 
                 <div class="modal-actions">
                     <button class="btn-danger" id="confirmClearData">
-                        <i class="fas fa-trash-alt"></i> Hapus Data
+                        <i class="fas fa-trash-alt"></i> <span data-i18n="clearData.btnConfirm">Hapus Data</span>
                     </button>
                 </div>
             </div>
