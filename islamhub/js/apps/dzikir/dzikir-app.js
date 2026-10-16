@@ -2,6 +2,7 @@
 /* Simplified version from dzikir_doa with core features */
 
 import audioManager from '../../utils/audio-manager.js';
+import { t, locale, getLang } from '../../i18n/index.js';
 
 // Category icons: one consistent icon set instead of emoji (which render differently per phone).
 const CATEGORY_ICONS = {
@@ -52,14 +53,14 @@ export default class DzikirApp {
         // 8 time slots covering 24 hours. Each spans 3h (45° in the SVG circle).
         // startHour is when the slot begins; filter is the dzikir filter category.
         const slots = [
-            { id: 'subuh',   label: 'Subuh',   icon: '🌅', startHour: 4,  filter: 'pagi',   color: '#7dd3fc' },
-            { id: 'pagi',    label: 'Pagi',    icon: '☀️', startHour: 7,  filter: 'pagi',   color: '#fbbf24' },
-            { id: 'dhuha',   label: 'Dhuha',   icon: '🌞', startHour: 10, filter: 'harian', color: '#fcd34d' },
-            { id: 'dzuhur',  label: 'Dzuhur',  icon: '🌤️', startHour: 12, filter: 'harian', color: '#fde047' },
-            { id: 'ashar',   label: 'Ashar',   icon: '🌇', startHour: 15, filter: 'sore',   color: '#fb923c' },
-            { id: 'maghrib', label: 'Maghrib', icon: '🌆', startHour: 18, filter: 'sore',   color: '#f97316' },
-            { id: 'isya',    label: 'Isya',    icon: '🌃', startHour: 19, filter: 'khusus', color: '#a78bfa' },
-            { id: 'tidur',   label: 'Tidur',   icon: '🌙', startHour: 22, filter: 'khusus', color: '#6366f1' },
+            { id: 'subuh',   label: t('dzikir.slotSubuh'),   icon: '🌅', startHour: 4,  filter: 'pagi',   color: '#7dd3fc' },
+            { id: 'pagi',    label: t('dzikir.slotPagi'),    icon: '☀️', startHour: 7,  filter: 'pagi',   color: '#fbbf24' },
+            { id: 'dhuha',   label: t('dzikir.slotDhuha'),   icon: '🌞', startHour: 10, filter: 'harian', color: '#fcd34d' },
+            { id: 'dzuhur',  label: t('dzikir.slotDzuhur'),  icon: '🌤️', startHour: 12, filter: 'harian', color: '#fde047' },
+            { id: 'ashar',   label: t('dzikir.slotAshar'),   icon: '🌇', startHour: 15, filter: 'sore',   color: '#fb923c' },
+            { id: 'maghrib', label: t('dzikir.slotMaghrib'), icon: '🌆', startHour: 18, filter: 'sore',   color: '#f97316' },
+            { id: 'isya',    label: t('dzikir.slotIsya'),    icon: '🌃', startHour: 19, filter: 'khusus', color: '#a78bfa' },
+            { id: 'tidur',   label: t('dzikir.slotTidur'),   icon: '🌙', startHour: 22, filter: 'khusus', color: '#6366f1' },
         ];
 
         const segGroup = document.getElementById('wheelSegments');
@@ -178,7 +179,7 @@ export default class DzikirApp {
         const lblEl = document.getElementById('wheelNowLabel');
         if (timeEl) timeEl.textContent =
             String(hh).padStart(2, '0') + ':' + String(mm).padStart(2, '0');
-        if (lblEl) lblEl.textContent = `Waktu ${currentSlot.label}`;
+        if (lblEl) lblEl.textContent = t('dzikir.wheelTimeSlot', { slot: currentSlot.label });
 
         document.querySelectorAll('.wheel-slot').forEach(el => {
             el.classList.toggle('current', el.dataset.slot === currentSlot.id);
@@ -199,16 +200,16 @@ export default class DzikirApp {
         this.container.innerHTML = `
             <div class="dzikir-container">
                 <div class="dzikir-header">
-                    <h2><svg class="ic-doa" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-doa"/></svg> Dzikir & Doa Harian</h2>
-                    <p class="subtitle">Kumpulan dzikir dan doa dari Al-Quran dan Hadist Shahih</p>
+                    <h2><svg class="ic-doa" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-doa"/></svg> ${t('dzikir.title')}</h2>
+                    <p class="subtitle">${t('dzikir.subtitle')}</p>
                 </div>
 
                 <!-- Daily Cycle Wheel -->
                 <div class="dzikir-wheel-section">
                     <div class="dzikir-wheel-info">
                         <span class="dzikir-wheel-now-time" id="wheelNowTime">--:--</span>
-                        <span class="dzikir-wheel-now-label" id="wheelNowLabel">Memuat...</span>
-                        <p class="dzikir-wheel-hint">Klik segmen untuk dzikir di waktu tersebut</p>
+                        <span class="dzikir-wheel-now-label" id="wheelNowLabel">${t('common.loadingData')}</span>
+                        <p class="dzikir-wheel-hint">${t('dzikir.wheelHint')}</p>
                     </div>
                     <div class="dzikir-wheel-container">
                         <svg class="dzikir-wheel" id="dzikirWheel" viewBox="-100 -100 200 200" aria-hidden="true">
@@ -234,8 +235,8 @@ export default class DzikirApp {
                 <!-- Time-based Recommendations -->
                 <div class="time-recommendations-section" id="timeRecommendationsSection" style="display: none;">
                     <div class="recommendations-header">
-                        <h3><i class="fas fa-clock"></i> Rekomendasi Doa Saat Ini</h3>
-                        <p class="recommendations-subtitle">Doa yang dianjurkan sesuai waktu</p>
+                        <h3><i class="fas fa-clock"></i> ${t('dzikir.recCurrentTitle')}</h3>
+                        <p class="recommendations-subtitle">${t('dzikir.recCurrentSubtitle')}</p>
                     </div>
                     <div class="recommendations-cards" id="recommendationsCards">
                         <!-- Dynamic recommendation cards -->
@@ -245,7 +246,7 @@ export default class DzikirApp {
                 <!-- Search Bar -->
                 <div class="search-container">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Cari dzikir atau doa..." />
+                    <input type="text" id="searchInput" placeholder="${t('dzikir.searchPlaceholder')}" />
                     <button class="clear-search" id="clearSearch" style="display: none;">
                         <i class="fas fa-times-circle"></i>
                     </button>
@@ -259,22 +260,22 @@ export default class DzikirApp {
                 <!-- Filter Tabs -->
                 <div class="filter-tabs">
                     <button class="filter-tab active" data-filter="semua">
-                        <i class="fas fa-th-large"></i> Semua
+                        <i class="fas fa-th-large"></i> ${t('common.all')}
                     </button>
                     <button class="filter-tab" data-filter="pagi">
-                        <i class="fas fa-sun"></i> Pagi
+                        <i class="fas fa-sun"></i> ${t('dzikir.tabMorning')}
                     </button>
                     <button class="filter-tab" data-filter="sore">
-                        <i class="fas fa-sunset"></i> Sore
+                        <i class="fas fa-sunset"></i> ${t('dzikir.tabEvening')}
                     </button>
                     <button class="filter-tab" data-filter="harian">
-                        <i class="fas fa-calendar-day"></i> Harian
+                        <i class="fas fa-calendar-day"></i> ${t('dzikir.tabDaily')}
                     </button>
                     <button class="filter-tab" data-filter="khusus">
-                        <i class="fas fa-star"></i> Waktu Khusus
+                        <i class="fas fa-star"></i> ${t('dzikir.tabSpecial')}
                     </button>
                     <button class="filter-tab" data-filter="favorit">
-                        <i class="fas fa-heart"></i> Favorit
+                        <i class="fas fa-heart"></i> ${t('common.favorite')}
                     </button>
                 </div>
 
@@ -282,7 +283,7 @@ export default class DzikirApp {
                 <div class="time-recommendations" id="timeRecommendations" style="display: none;">
                     <div class="recommendation-header">
                         <i class="fas fa-clock"></i>
-                        <span>Rekomendasi Saat Ini</span>
+                        <span>${t('dzikir.recCurrentTitle')}</span>
                     </div>
                     <div class="recommendation-list" id="recommendationList"></div>
                 </div>
@@ -291,7 +292,7 @@ export default class DzikirApp {
                 <div class="categories-grid" id="categoriesGrid">
                     <div class="loading-placeholder">
                         <i class="fas fa-spinner fa-spin"></i>
-                        <p>Memuat dzikir...</p>
+                        <p>${t('dzikir.loading')}</p>
                     </div>
                 </div>
 
@@ -303,15 +304,15 @@ export default class DzikirApp {
                             <button class="modal-back" id="doaBack">
                                 <i class="fas fa-arrow-left"></i>
                             </button>
-                            <h3 id="doaTitle">Judul Doa</h3>
+                            <h3 id="doaTitle">${t('dzikir.doaTitleDefault')}</h3>
                             <div class="modal-actions">
-                                <button class="action-btn" id="doaCopy">
+                                <button class="action-btn" id="doaCopy" title="${t('common.copy')}">
                                     <i class="fas fa-copy"></i>
                                 </button>
-                                <button class="action-btn" id="doaAudio" title="Putar Audio">
+                                <button class="action-btn" id="doaAudio" title="${t('dzikir.playAudio')}">
                                     <i class="fas fa-volume-up"></i>
                                 </button>
-                                <button class="action-btn" id="doaFavorite">
+                                <button class="action-btn" id="doaFavorite" title="${t('common.favorite')}">
                                     <i class="far fa-heart"></i>
                                 </button>
                             </div>
@@ -323,17 +324,17 @@ export default class DzikirApp {
                         <!-- Audio Player (dzikir-scoped IDs to avoid collision with global player) -->
                         <div class="audio-player" id="dzikirAudioPlayer" style="display: none;">
                             <div class="audio-info" id="dzikirAudioInfo">
-                                <span class="audio-doa-name" id="dzikirAudioDoaName">Memuat audio...</span>
+                                <span class="audio-doa-name" id="dzikirAudioDoaName">${t('dzikir.audioLoading')}</span>
                                 <span class="audio-playlist-counter" id="dzikirAudioPlaylistCounter" style="display: none;"></span>
                             </div>
                             <div class="audio-controls">
-                                <button class="audio-btn audio-nav-btn" id="dzikirAudioPrev" style="display: none;" title="Audio Sebelumnya">
+                                <button class="audio-btn audio-nav-btn" id="dzikirAudioPrev" style="display: none;" title="${t('dzikir.audioPrev')}">
                                     <i class="fas fa-step-backward"></i>
                                 </button>
                                 <button class="audio-btn" id="dzikirAudioPlayPause">
                                     <i class="fas fa-play"></i>
                                 </button>
-                                <button class="audio-btn audio-nav-btn" id="dzikirAudioNext" style="display: none;" title="Audio Selanjutnya">
+                                <button class="audio-btn audio-nav-btn" id="dzikirAudioNext" style="display: none;" title="${t('dzikir.audioNext')}">
                                     <i class="fas fa-step-forward"></i>
                                 </button>
                                 <div class="audio-progress">
@@ -345,7 +346,7 @@ export default class DzikirApp {
                                         <span id="dzikirAudioDuration">0:00</span>
                                     </div>
                                 </div>
-                                <button class="audio-btn audio-close-btn" id="dzikirAudioClose" title="Tutup">
+                                <button class="audio-btn audio-close-btn" id="dzikirAudioClose" title="${t('common.close')}">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
@@ -355,10 +356,10 @@ export default class DzikirApp {
                         <div class="modal-footer">
                             <div class="navigation-buttons">
                                 <button class="nav-btn" id="prevDoa" disabled>
-                                    <i class="fas fa-chevron-left"></i> Sebelumnya
+                                    <i class="fas fa-chevron-left"></i> ${t('dzikir.previous')}
                                 </button>
                                 <button class="nav-btn" id="nextDoa">
-                                    Selanjutnya <i class="fas fa-chevron-right"></i>
+                                    ${t('dzikir.next')} <i class="fas fa-chevron-right"></i>
                                 </button>
                             </div>
                         </div>
@@ -383,7 +384,7 @@ export default class DzikirApp {
             this.renderCategories();
         } catch (error) {
             console.error('Failed to load dzikir data:', error);
-            this.showError('Gagal memuat data dzikir');
+            this.showError(t('dzikir.loadError'));
         }
     }
 
@@ -399,7 +400,7 @@ export default class DzikirApp {
                 grid.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-heart"></i>
-                        <p>Belum ada doa favorit</p>
+                        <p>${t('dzikir.emptyFavorites')}</p>
                     </div>
                 `;
                 return;
@@ -407,26 +408,26 @@ export default class DzikirApp {
 
             // Render favorites as individual doa cards
             grid.innerHTML = this.favorites.map(doa => {
-                const description = doa.translation || doa.latin || 'Doa favorit';
+                const description = doa.translation || doa.latin || t('dzikir.doaFavorite');
                 const displayDesc = description.length > 100 ? description.substring(0, 100) + '...' : description;
                 return `
                 <div class="category-card favorite-card" data-favorite-doa="${doa.id}">
-                    <button class="favorite-delete-btn" data-doa-id="${doa.id}" title="Hapus dari favorit">
+                    <button class="favorite-delete-btn" data-doa-id="${doa.id}" title="${t('common.removeFromFavorites')}">
                         <i class="fas fa-trash"></i>
                     </button>
                     <div class="category-header">
                         <div class="category-icon">
                             ${categoryIcon(doa.categoryId)}
                         </div>
-                        <h3>${doa.title || 'Doa'}</h3>
+                        <h3>${doa.title || t('dzikir.doa')}</h3>
                     </div>
                     <p class="category-description">${displayDesc}</p>
                     <div class="category-footer">
                         <span class="category-badge">
-                            <i class="fas fa-tag"></i> ${doa.categoryTitle || 'Doa'}
+                            <i class="fas fa-tag"></i> ${doa.categoryTitle || t('dzikir.doa')}
                         </span>
                         <span class="doa-count">
-                            <i class="fas fa-heart" style="color: #b5543f;"></i> Favorit
+                            <i class="fas fa-heart" style="color: #b5543f;"></i> ${t('common.favorite')}
                         </span>
                     </div>
                 </div>
@@ -477,7 +478,7 @@ export default class DzikirApp {
                             // If still no category found, just show the doa with minimal category
                             this.currentCategory = {
                                 id: 'favorit',
-                                title: 'Doa Favorit',
+                                title: t('dzikir.doaFavorite'),
                                 icon: 'fas fa-heart',
                                 doa: [favDoa]
                             };
@@ -495,7 +496,7 @@ export default class DzikirApp {
             grid.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-search"></i>
-                    <p>Tidak ada kategori ditemukan</p>
+                    <p>${t('dzikir.emptyCategories')}</p>
                 </div>
             `;
             return;
@@ -517,7 +518,7 @@ export default class DzikirApp {
                         </span>
                     ` : ''}
                     <span class="doa-count">
-                        <i class="fas fa-book-open"></i> ${category.doa.length} Doa
+                        <i class="fas fa-book-open"></i> ${category.doa.length} ${t('dzikir.doaCount')}
                     </span>
                 </div>
             </div>
@@ -595,8 +596,8 @@ export default class DzikirApp {
             searchResults.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-icon"><i class="fas fa-search"></i></div>
-                    <h3>Tidak ditemukan</h3>
-                    <p>Tidak ada dzikir atau doa yang cocok dengan pencarian "${query}"</p>
+                    <h3>${t('dzikir.notFound')}</h3>
+                    <p>${t('dzikir.notFoundDesc', { query })}</p>
                 </div>
             `;
         } else {
@@ -613,7 +614,7 @@ export default class DzikirApp {
                     <div class="search-card-arabic">${doa.arabic.split('\n')[0]}...</div>
                     <div class="search-card-translation">${doa.translation.length > 150 ? doa.translation.substring(0, 150) + '...' : doa.translation}</div>
                     <div class="search-card-footer">
-                        <span class="search-benefit-tag"><i class="fas fa-gift"></i> Keutamaan</span>
+                        <span class="search-benefit-tag"><i class="fas fa-gift"></i> ${t('dzikir.benefit')}</span>
                         <span class="search-arrow"><i class="fas fa-chevron-right"></i></span>
                     </div>
                 </div>
@@ -832,30 +833,30 @@ export default class DzikirApp {
 
         content.innerHTML = `
             <div class="doa-section">
-                <h4><i class="fas fa-book"></i> Arab</h4>
+                <h4><i class="fas fa-book"></i> ${t('dzikir.arabic')}</h4>
                 <div class="doa-arabic">${doa.arabic.replace(/\n/g, '<br>')}</div>
             </div>
 
             <div class="doa-section">
-                <h4><i class="fas fa-language"></i> Latin</h4>
+                <h4><i class="fas fa-language"></i> ${t('dzikir.transliteration')}</h4>
                 <div class="doa-latin">${doa.latin.replace(/\n/g, '<br>')}</div>
             </div>
 
             <div class="doa-section">
-                <h4><i class="fas fa-comment-dots"></i> Terjemahan</h4>
+                <h4><i class="fas fa-comment-dots"></i> ${t('dzikir.translation')}</h4>
                 <div class="doa-translation">${doa.translation}</div>
             </div>
 
             ${doa.benefit ? `
                 <div class="doa-section">
-                    <h4><i class="fas fa-gift"></i> Keutamaan</h4>
+                    <h4><i class="fas fa-gift"></i> ${t('dzikir.benefit')}</h4>
                     <div class="doa-benefit"><p>${doa.benefit}</p></div>
                 </div>
             ` : ''}
 
             ${doa.hadistText ? `
                 <div class="doa-section hadist-section">
-                    <h4><i class="fas fa-scroll"></i> Penjelasan Dalil</h4>
+                    <h4><i class="fas fa-scroll"></i> ${t('dzikir.explanation')}</h4>
                     <div class="doa-hadist-text">
                         <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
                         <p>${doa.hadistText}</p>
@@ -865,14 +866,14 @@ export default class DzikirApp {
 
             ${doa.reference ? `
                 <div class="doa-section">
-                    <h4><i class="fas fa-bookmark"></i> Referensi</h4>
+                    <h4><i class="fas fa-bookmark"></i> ${t('dzikir.reference')}</h4>
                     <div class="doa-reference">${doa.reference}</div>
                 </div>
             ` : ''}
 
             ${doa.repetition > 1 ? `
                 <div class="counter-section">
-                    <h4><i class="fas fa-redo"></i> Pengulangan ${doa.repetition}x</h4>
+                    <h4><i class="fas fa-redo"></i> ${t('dzikir.repetition', { n: doa.repetition })}</h4>
                     <div class="counter-container">
                         <div class="counter-ring-wrapper">
                             <svg class="counter-ring" viewBox="0 0 200 200" aria-hidden="true">
@@ -897,13 +898,13 @@ export default class DzikirApp {
                             </div>
                         </div>
                         <div class="counter-controls">
-                            <button class="counter-btn" id="counterMinus" aria-label="Kurangi">
+                            <button class="counter-btn" id="counterMinus" aria-label="${t('dzikir.decrease')}">
                                 <i class="fas fa-minus"></i>
                             </button>
-                            <button class="counter-btn primary" id="counterPlus" aria-label="Tambah">
+                            <button class="counter-btn primary" id="counterPlus" aria-label="${t('dzikir.increase')}">
                                 <i class="fas fa-plus"></i>
                             </button>
-                            <button class="counter-btn" id="counterReset" aria-label="Reset">
+                            <button class="counter-btn" id="counterReset" aria-label="${t('common.reset')}">
                                 <i class="fas fa-redo"></i>
                             </button>
                         </div>
@@ -1030,7 +1031,7 @@ export default class DzikirApp {
         const toggleBtn = document.createElement('button');
         toggleBtn.className = 'counter-toggle-btn';
         toggleBtn.innerHTML = '<i class=\"fas fa-eye-slash\"></i>';
-        toggleBtn.title = 'Sembunyikan counter';
+        toggleBtn.title = t('dzikir.hideCounter');
         
         toggleBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1051,7 +1052,7 @@ export default class DzikirApp {
         const restoreBtn = document.createElement('button');
         restoreBtn.className = 'counter-restore-btn';
         restoreBtn.innerHTML = '<i class=\"fas fa-redo\"></i>';
-        restoreBtn.title = 'Tampilkan counter';
+        restoreBtn.title = t('dzikir.showCounter');
         
         // Only show restore button when doa modal is active
         const modal = document.getElementById('doaModal');
@@ -1171,7 +1172,7 @@ export default class DzikirApp {
         
         if (index > -1) {
             this.favorites.splice(index, 1);
-            this.showToast(`${this.currentDoa.title} dihapus dari favorit`);
+            this.showToast(t('dzikir.removedFromFav', { title: this.currentDoa.title }));
         } else {
             // Save complete doa data with category info
             this.favorites.push({
@@ -1180,7 +1181,7 @@ export default class DzikirApp {
                 categoryTitle: this.currentCategory.title,
                 categoryIcon: this.currentCategory.icon
             });
-            this.showToast(`${this.currentDoa.title} ditambahkan ke favorit`);
+            this.showToast(t('dzikir.addedToFav', { title: this.currentDoa.title }));
         }
 
         this.saveFavorites();
@@ -1191,10 +1192,10 @@ export default class DzikirApp {
         const index = this.favorites.findIndex(f => f.id === doaId);
         
         if (index > -1) {
-            const doaTitle = this.favorites[index].title || 'Doa';
+            const doaTitle = this.favorites[index].title || t('dzikir.doa');
             this.favorites.splice(index, 1);
             this.saveFavorites();
-            this.showToast(`${doaTitle} dihapus dari favorit`);
+            this.showToast(t('dzikir.removedFromFav', { title: doaTitle }));
             
             // Refresh favorites display
             this.renderCategories();
@@ -1207,8 +1208,8 @@ export default class DzikirApp {
         if (index > -1) {
             this.favorites.splice(index, 1);
             btnElement.innerHTML = '<i class="far fa-heart"></i>';
-            btnElement.title = 'Tambah ke favorit';
-            this.showToast(`${doa.title} dihapus dari favorit`);
+            btnElement.title = t('common.addToFavorites');
+            this.showToast(t('dzikir.removedFromFav', { title: doa.title }));
         } else {
             // Save complete doa data with category info
             this.favorites.push({
@@ -1218,8 +1219,8 @@ export default class DzikirApp {
                 categoryIcon: category.icon
             });
             btnElement.innerHTML = '<i class="fas fa-heart"></i>';
-            btnElement.title = 'Hapus dari favorit';
-            this.showToast(`${doa.title} ditambahkan ke favorit`);
+            btnElement.title = t('common.removeFromFavorites');
+            this.showToast(t('dzikir.addedToFav', { title: doa.title }));
         }
 
         this.saveFavorites();
@@ -1241,37 +1242,37 @@ export default class DzikirApp {
         if (!this.currentDoa) return;
 
         let text = `${this.currentDoa.title}\n\n`;
-        text += `Arab:\n${this.currentDoa.arabic}\n\n`;
-        text += `Latin:\n${this.currentDoa.latin}\n\n`;
-        text += `Terjemahan:\n${this.currentDoa.translation}\n\n`;
+        text += `${t('dzikir.arabic')}:\n${this.currentDoa.arabic}\n\n`;
+        text += `${t('dzikir.transliteration')}:\n${this.currentDoa.latin}\n\n`;
+        text += `${t('dzikir.translation')}:\n${this.currentDoa.translation}\n\n`;
         
         // Add repetition if exists
         if (this.currentDoa.repetition && this.currentDoa.repetition > 1) {
-            text += `Dibaca: ${this.currentDoa.repetition}x\n\n`;
+            text += `${t('dzikir.readCount', { n: this.currentDoa.repetition })}\n\n`;
         }
         
         // Add benefit if exists
         if (this.currentDoa.benefit) {
-            text += `Keutamaan:\n${this.currentDoa.benefit}\n\n`;
+            text += `${t('dzikir.benefit')}:\n${this.currentDoa.benefit}\n\n`;
         }
         
         // Add reference if exists
         if (this.currentDoa.reference) {
-            text += `Referensi:\n${this.currentDoa.reference}\n\n`;
+            text += `${t('dzikir.reference')}:\n${this.currentDoa.reference}\n\n`;
         }
         
         // Add hadith text if exists
         if (this.currentDoa.hadistText) {
-            text += `Hadits:\n${this.currentDoa.hadistText}\n\n`;
+            text += `${t('dzikir.copyHadith')}\n${this.currentDoa.hadistText}\n\n`;
         }
         
-        text += `---\nSumber: IslamHub - Dzikir & Doa Harian`;
+        text += `---\n${t('dzikir.copySource')}`;
 
         try {
             await navigator.clipboard.writeText(text);
-            this.showToast('Doa berhasil disalin!');
+            this.showToast(t('dzikir.copied'));
         } catch (error) {
-            this.showToast('Gagal menyalin doa');
+            this.showToast(t('dzikir.copyFailed'));
         }
     }
 
@@ -1424,11 +1425,11 @@ export default class DzikirApp {
                                 playPauseBtn.querySelector('i').className = 'fas fa-pause';
                             }
                         } else {
-                            this.showToast('Audio belum tersedia untuk doa ini');
+                            this.showToast(t('dzikir.audioNotAvailable'));
                         }
                     }).catch(error => {
                         console.error('Failed to load audio:', error);
-                        this.showToast('Gagal memuat audio');
+                        this.showToast(t('dzikir.audioFailed'));
                     });
                 }
             });
@@ -1537,7 +1538,7 @@ export default class DzikirApp {
             if (prevBtn) prevBtn.style.display = 'none';
             if (nextBtn) nextBtn.style.display = 'none';
             if (playlistCounter) playlistCounter.style.display = 'none';
-            this.showToast('Selesai memutar semua dzikir');
+            this.showToast(t('dzikir.audioFinishedAll'));
             return;
         }
         
@@ -1639,7 +1640,7 @@ export default class DzikirApp {
                 <div class="error-placeholder">
                     <i class="fas fa-exclamation-circle"></i>
                     <p>${message}</p>
-                    <button onclick="location.reload()" class="btn-retry">Coba Lagi</button>
+                    <button onclick="location.reload()" class="btn-retry">${t('common.retry')}</button>
                 </div>
             `;
         }
