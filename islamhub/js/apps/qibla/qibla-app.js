@@ -1,5 +1,6 @@
 /* ===== Qibla Finder App - IslamHub ===== */
 /* Find qibla direction using GPS and device compass */
+import { t } from '../../i18n/index.js';
 
 export default class QiblaApp {
     constructor(globalState, mainApp) {
@@ -40,25 +41,25 @@ export default class QiblaApp {
         this.container.innerHTML = `
             <div class="qibla-container">
                 <div class="qibla-header">
-                    <h2><i class="fas fa-compass"></i> Pencari Arah Kiblat</h2>
-                    <p class="subtitle">Temukan arah kiblat dengan presisi tinggi</p>
+                    <h2><i class="fas fa-compass"></i> ${t('qibla.title')}</h2>
+                    <p class="subtitle">${t('qibla.subtitle')}</p>
                 </div>
 
                 <!-- Status Card -->
                 <div class="qibla-status">
                     <div class="status-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span id="locationStatus">Tekan tombol untuk mendapatkan lokasi</span>
+                        <span id="locationStatus">${t('qibla.pressToLocate')}</span>
                     </div>
                     <div class="status-item">
                         <i class="fas fa-satellite-dish"></i>
-                        <span id="compassStatus">Kompas siap</span>
+                        <span id="compassStatus">${this.isTracking ? t('qibla.compassActive') : t('qibla.compassReady')}</span>
                     </div>
                 </div>
 
                 <button id="getLocationBtn" class="qibla-btn">
                     <i class="fas fa-crosshairs"></i>
-                    <span>Dapatkan Lokasi</span>
+                    <span>${t('qibla.getLocation')}</span>
                 </button>
 
                 <!-- Compass -->
@@ -85,17 +86,17 @@ export default class QiblaApp {
                     <!-- Alignment Banner -->
                     <div class="qibla-alignment-banner" id="qiblaAlignmentBanner">
                         <i class="fas fa-check-circle"></i>
-                        <span>MENGHADAP KIBLAT</span>
+                        <span>${t('qibla.facingQibla')}</span>
                     </div>
 
                     <div class="qibla-info">
                         <div class="qibla-degree">
                             <span id="qiblaDirection">---°</span>
-                            <label>Arah Kiblat</label>
+                            <label>${t('qibla.qiblaDirection')}</label>
                         </div>
                         <div class="qibla-degree">
                             <span id="currentHeading">---°</span>
-                            <label>Arah HP</label>
+                            <label>${t('qibla.phoneHeading')}</label>
                         </div>
                     </div>
                 </div>
@@ -106,28 +107,28 @@ export default class QiblaApp {
                         <div class="info-item">
                             <i class="fas fa-city"></i>
                             <div>
-                                <label>Lokasi</label>
-                                <span id="cityName">Menentukan...</span>
+                                <label>${t('qibla.locationLabel')}</label>
+                                <span id="cityName">${t('qibla.determining')}</span>
                             </div>
                         </div>
                         <div class="info-item">
                             <i class="fas fa-location-dot"></i>
                             <div>
-                                <label>Koordinat</label>
+                                <label>${t('qibla.coordinates')}</label>
                                 <span id="coordinates">---</span>
                             </div>
                         </div>
                         <div class="info-item">
                             <i class="fas fa-ruler"></i>
                             <div>
-                                <label>Jarak ke Kakbah</label>
+                                <label>${t('qibla.distanceToKaaba')}</label>
                                 <span id="distance">---</span>
                             </div>
                         </div>
                         <div class="info-item">
                             <i class="fas fa-compass"></i>
                             <div>
-                                <label>Arah</label>
+                                <label>${t('qibla.direction')}</label>
                                 <span id="direction">---</span>
                             </div>
                         </div>
@@ -136,16 +137,16 @@ export default class QiblaApp {
 
                 <!-- Instructions -->
                 <div class="qibla-instructions">
-                    <h3><i class="fas fa-info-circle"></i> Cara Penggunaan</h3>
+                    <h3><i class="fas fa-info-circle"></i> ${t('qibla.instructionsTitle')}</h3>
                     <ol>
-                        <li>Tekan tombol "Dapatkan Lokasi" untuk mengaktifkan GPS</li>
-                        <li>Izinkan akses lokasi dan kompas pada browser</li>
-                        <li>Pegang HP tegak dan putar sampai jarum menunjuk lurus ke atas</li>
-                        <li>Arah yang ditunjuk jarum adalah arah kiblat</li>
+                        <li>${t('qibla.step1')}</li>
+                        <li>${t('qibla.step2')}</li>
+                        <li>${t('qibla.step3')}</li>
+                        <li>${t('qibla.step4')}</li>
                     </ol>
                     <div class="note">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <span>Pastikan HP tidak dekat dengan benda magnetik untuk akurasi maksimal</span>
+                        <span>${t('qibla.note')}</span>
                     </div>
                 </div>
             </div>
@@ -153,6 +154,7 @@ export default class QiblaApp {
 
         // Create degree marks
         this.createDegreeMarks();
+        this.setupEventListeners();
     }
 
     createDegreeMarks() {
@@ -177,12 +179,12 @@ export default class QiblaApp {
 
     checkPermissions() {
         if (!navigator.geolocation) {
-            this.showError('Geolocation tidak didukung');
+            this.showError(t('qibla.geoNotSupported'));
             return;
         }
 
         if (!window.DeviceOrientationEvent) {
-            this.showError('Kompas tidak didukung');
+            this.showError(t('qibla.compassNotSupported'));
             return;
         }
     }
@@ -192,8 +194,8 @@ export default class QiblaApp {
         const statusEl = document.getElementById('locationStatus');
 
         btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mendapatkan lokasi...';
-        statusEl.textContent = 'Mendapatkan lokasi GPS...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + t('qibla.gettingLocation');
+        statusEl.textContent = t('qibla.gettingGps');
 
         try {
             const position = await new Promise((resolve, reject) => {
@@ -219,14 +221,14 @@ export default class QiblaApp {
             // Start compass
             await this.startCompass();
 
-            btn.innerHTML = '<i class="fas fa-check"></i> Lokasi Ditemukan';
-            statusEl.textContent = `Lokasi: ${this.userLat.toFixed(4)}°, ${this.userLon.toFixed(4)}°`;
+            btn.innerHTML = '<i class="fas fa-check"></i> ' + t('qibla.locationFound');
+            statusEl.textContent = t('qibla.locationPrefix', { lat: this.userLat.toFixed(4), lon: this.userLon.toFixed(4) });
 
         } catch (error) {
             console.error('Geolocation error:', error);
-            this.showError('Gagal mendapatkan lokasi: ' + error.message);
+            this.showError(t('qibla.locationFailed', { error: error.message }));
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-crosshairs"></i> Coba Lagi';
+            btn.innerHTML = '<i class="fas fa-crosshairs"></i> ' + t('qibla.tryAgain');
         }
     }
 
@@ -288,14 +290,8 @@ export default class QiblaApp {
     }
 
     getDirectionText(degree) {
-        const directions = [
-            'Utara', 'Utara Timur Laut', 'Timur Laut', 'Timur Timur Laut',
-            'Timur', 'Timur Tenggara', 'Tenggara', 'Selatan Tenggara',
-            'Selatan', 'Selatan Barat Daya', 'Barat Daya', 'Barat Barat Daya',
-            'Barat', 'Barat Barat Laut', 'Barat Laut', 'Utara Barat Laut'
-        ];
         const index = Math.round(degree / 22.5) % 16;
-        return directions[index];
+        return t(`qibla.dir.${index}`);
     }
 
     async startCompass() {
@@ -306,12 +302,12 @@ export default class QiblaApp {
             try {
                 const permission = await DeviceOrientationEvent.requestPermission();
                 if (permission !== 'granted') {
-                    this.showError('Izin kompas ditolak');
+                    this.showError(t('qibla.compassPermissionDenied'));
                     return;
                 }
             } catch (error) {
                 console.error('Permission error:', error);
-                this.showError('Gagal meminta izin kompas');
+                this.showError(t('qibla.compassPermissionFailed'));
                 return;
             }
         }
@@ -326,7 +322,7 @@ export default class QiblaApp {
         window.addEventListener('deviceorientation', orientationHandler, true);
 
         this.isTracking = true;
-        compassStatus.textContent = 'Kompas aktif';
+        compassStatus.textContent = t('qibla.compassActive');
     }
 
     handleOrientation(event) {

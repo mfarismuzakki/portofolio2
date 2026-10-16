@@ -1,5 +1,6 @@
 // Hadits Browser — Jelajahi hadits shahih dari berbagai kitab
 import { HADITS_COLLECTION, HADITS_CATEGORIES } from '../../data/hadits/hadits-data.js';
+import { t } from '../../i18n/index.js';
 
 const catIcon = c => c?.icon === 'doa' ? '<svg class="ic-doa" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-doa"/></svg>' : `<i class="fas ${c?.icon || 'fa-scroll'}"></i>`;
 
@@ -16,7 +17,6 @@ export default class HaditsApp {
 
     async init() {
         this.render();
-        this.setupEvents();
     }
 
     loadFavorites() {
@@ -45,14 +45,14 @@ export default class HaditsApp {
         this.container.innerHTML = `
         <div class="hadits-container">
             <div class="hadits-header">
-                <h2><i class="fas fa-scroll"></i> Hadits Browser</h2>
-                <p class="hadits-subtitle">Koleksi hadits pilihan dari Kutubut Tis\'ah</p>
+                <h2><i class="fas fa-scroll"></i> ${t('hadits.title')}</h2>
+                <p class="hadits-subtitle">${t('hadits.subtitle')}</p>
             </div>
 
             <!-- Hadits Hari Ini -->
             <div class="hadits-daily" style="--cat-color:${dailyColor}" data-id="${daily.id}">
                 <div class="hadits-daily-tag">
-                    <i class="fas fa-sun"></i> HADITS HARI INI
+                    <i class="fas fa-sun"></i> ${t('hadits.dailyTag')}
                 </div>
                 <div class="hadits-daily-cat">
                     ${catIcon(dailyCat)} ${dailyCat?.label || daily.category}
@@ -61,21 +61,21 @@ export default class HaditsApp {
                 ${daily.arabic ? `<p class="hadits-daily-arabic">${daily.arabic}</p>` : ''}
                 ${daily.translation ? `<p class="hadits-daily-trans">"${this.truncate(daily.translation, 220)}"</p>` : ''}
                 ${daily.source ? `<p class="hadits-daily-source"><i class="fas fa-book"></i> ${daily.source}</p>` : ''}
-                <button class="hadits-daily-cta">Baca Lengkap <i class="fas fa-arrow-right"></i></button>
+                <button class="hadits-daily-cta">${t('hadits.readMore')} <i class="fas fa-arrow-right"></i></button>
             </div>
 
             <!-- Search bar -->
             <div class="hadits-search-wrap">
                 <i class="fas fa-search"></i>
-                <input type="text" id="haditsSearch" class="hadits-search" placeholder="Cari hadits, kata kunci, atau perawi...">
+                <input type="text" id="haditsSearch" class="hadits-search" placeholder="${t('hadits.searchPlaceholder')}">
                 <button class="hadits-clear-search" id="haditsSearchClear" style="display:none"><i class="fas fa-times"></i></button>
             </div>
 
             <!-- View tabs -->
             <div class="hadits-view-tabs">
-                <button class="hadits-view-tab active" data-view="home"><i class="fas fa-th"></i> Kategori</button>
-                <button class="hadits-view-tab" data-view="all"><i class="fas fa-list"></i> Semua</button>
-                <button class="hadits-view-tab" data-view="favorites"><i class="fas fa-bookmark"></i> Favorit <span class="hadits-fav-count">${this.favorites.size}</span></button>
+                <button class="hadits-view-tab active" data-view="home"><i class="fas fa-th"></i> ${t('hadits.tabCategories')}</button>
+                <button class="hadits-view-tab" data-view="all"><i class="fas fa-list"></i> ${t('hadits.tabAll')}</button>
+                <button class="hadits-view-tab" data-view="favorites"><i class="fas fa-bookmark"></i> ${t('hadits.tabFavorites')} <span class="hadits-fav-count">${this.favorites.size}</span></button>
             </div>
 
             <!-- Content -->
@@ -89,6 +89,8 @@ export default class HaditsApp {
                 <div class="hadits-modal-box" id="haditsModalBox"></div>
             </div>
         </div>`;
+
+        this.setupEvents();
     }
 
     renderHome() {
@@ -101,7 +103,7 @@ export default class HaditsApp {
                     <div class="hadits-cat-icon">${catIcon(cat)}</div>
                     <div class="hadits-cat-info">
                         <strong>${cat.label}</strong>
-                        <span>${count} hadits</span>
+                        <span>${t('hadits.haditsCount', { count })}</span>
                     </div>
                     <i class="fas fa-chevron-right hadits-cat-arrow"></i>
                 </div>`;
@@ -111,7 +113,7 @@ export default class HaditsApp {
 
     renderList(hadits, title = '') {
         if (hadits.length === 0) {
-            return `<div class="hadits-empty"><i class="fas fa-scroll"></i><p>Tidak ada hadits ditemukan</p></div>`;
+            return `<div class="hadits-empty"><i class="fas fa-scroll"></i><p>${t('hadits.noResults')}</p></div>`;
         }
         return `
         ${title ? `<div class="hadits-list-title"><i class="fas fa-arrow-left hadits-back" id="haditsBack"></i> ${title}</div>` : ''}
@@ -154,20 +156,20 @@ export default class HaditsApp {
             <div class="hadits-detail-meta">
                 <div class="hadits-meta-item">
                     <i class="fas fa-user"></i>
-                    <div><strong>Perawi</strong><span>${h.narrator}</span></div>
+                    <div><strong>${t('hadits.narrator')}</strong><span>${h.narrator}</span></div>
                 </div>
                 <div class="hadits-meta-item">
                     <i class="fas fa-book"></i>
-                    <div><strong>Sumber</strong><span>${h.source}</span></div>
+                    <div><strong>${t('hadits.source')}</strong><span>${h.source}</span></div>
                 </div>
             </div>
             <div class="hadits-detail-faidah">
                 <i class="fas fa-lightbulb"></i>
-                <div><strong>Faidah</strong><p>${h.faidah}</p></div>
+                <div><strong>${t('hadits.faidah')}</strong><p>${h.faidah}</p></div>
             </div>
             <button class="hadits-detail-fav${isFav ? ' active' : ''}" data-id="${h.id}">
                 <i class="fas${isFav ? '' : ' far'} fa-bookmark"></i>
-                ${isFav ? 'Hapus dari Favorit' : 'Simpan ke Favorit'}
+                ${isFav ? t('hadits.removeFromFav') : t('hadits.saveToFav')}
             </button>
         </div>`;
     }
@@ -203,7 +205,7 @@ export default class HaditsApp {
                         h.source.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
                         h.narrator.toLowerCase().includes(this.searchQuery.toLowerCase())
                     );
-                    if (content) content.innerHTML = this.renderList(results, `Hasil: "${this.searchQuery}"`);
+                    if (content) content.innerHTML = this.renderList(results, t('hadits.searchResults', { query: this.searchQuery }));
                     this.bindListEvents();
                 } else {
                     this.showView('home');
@@ -298,10 +300,10 @@ export default class HaditsApp {
         if (view === 'home') {
             content.innerHTML = this.renderHome();
         } else if (view === 'all') {
-            content.innerHTML = this.renderList(HADITS_COLLECTION, 'Semua Hadits');
+            content.innerHTML = this.renderList(HADITS_COLLECTION, t('hadits.allHadits'));
         } else if (view === 'favorites') {
             const favs = HADITS_COLLECTION.filter(h => this.favorites.has(h.id));
-            content.innerHTML = this.renderList(favs, 'Favorit Saya');
+            content.innerHTML = this.renderList(favs, t('hadits.myFavorites'));
         }
         this.bindListEvents();
     }

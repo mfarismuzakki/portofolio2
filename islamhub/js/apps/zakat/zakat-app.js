@@ -1,4 +1,5 @@
 // Kalkulator Zakat — Zakat Maal, Fitrah, dan Profesi
+import { t } from '../../i18n/index.js';
 
 export default class ZakatApp {
     constructor(globalState, mainApp) {
@@ -14,21 +15,19 @@ export default class ZakatApp {
 
     async init() {
         this.render();
-        this.setupEvents();
-        this.switchTab('maal');
     }
 
     render() {
         this.container.innerHTML = `
         <div class="zakat-container">
             <div class="zakat-header">
-                <h2><i class="fas fa-hand-holding-heart"></i> Kalkulator Zakat</h2>
-                <p class="zakat-subtitle">Hitung zakat maal, fitrah, dan profesi sesuai syariat Islam</p>
+                <h2><i class="fas fa-hand-holding-heart"></i> ${t('zakat.title')}</h2>
+                <p class="zakat-subtitle">${t('zakat.subtitle')}</p>
             </div>
 
             <div class="zakat-tabs">
-                <button class="zakat-tab active" data-tab="maal"><i class="fas fa-coins"></i> Zakat Maal</button>
-                <button class="zakat-tab" data-tab="fitrah"><i class="fas fa-wheat-awn"></i> Zakat Fitrah</button>
+                <button class="zakat-tab active" data-tab="maal"><i class="fas fa-coins"></i> ${t('zakat.tabMaal')}</button>
+                <button class="zakat-tab" data-tab="fitrah"><i class="fas fa-wheat-awn"></i> ${t('zakat.tabFitrah')}</button>
             </div>
 
             <!-- ZAKAT MAAL -->
@@ -36,65 +35,65 @@ export default class ZakatApp {
                 <div class="zakat-info-box">
                     <i class="fas fa-info-circle"></i>
                     <div>
-                        <strong>Nisab Zakat Maal</strong>
-                        <p>Setara 85 gram emas (≈ Rp <span id="nisabRupiah">0</span>). Jika total harta mencapai nisab dan sudah dimiliki 1 tahun Hijriyah (haul), wajib zakat <strong>2,5%</strong>.</p>
+                        <strong>${t('zakat.nisabMaalTitle')}</strong>
+                        <p>${t('zakat.nisabMaalDesc', { amount: '<span id="nisabRupiah">0</span>' })}</p>
                     </div>
                 </div>
 
                 <div class="zakat-form">
                     <div class="zakat-input-group">
-                        <label><i class="fas fa-coins"></i> Emas (gram)</label>
+                        <label><i class="fas fa-coins"></i> ${t('zakat.gold')}</label>
                         <input type="number" id="inputEmas" placeholder="0" min="0">
-                        <span class="zakat-hint">Termasuk perhiasan yang disimpan</span>
+                        <span class="zakat-hint">${t('zakat.goldHint')}</span>
                     </div>
                     <div class="zakat-input-group">
-                        <label><i class="fas fa-ring"></i> Perak (gram)</label>
+                        <label><i class="fas fa-ring"></i> ${t('zakat.silver')}</label>
                         <input type="number" id="inputPerak" placeholder="0" min="0">
-                        <span class="zakat-hint">Nisab perak = 595 gram</span>
+                        <span class="zakat-hint">${t('zakat.silverHint')}</span>
                     </div>
                     <div class="zakat-input-group">
-                        <label><i class="fas fa-piggy-bank"></i> Tabungan / Deposito (Rp)</label>
+                        <label><i class="fas fa-piggy-bank"></i> ${t('zakat.savings')}</label>
                         <input type="number" id="inputTabungan" placeholder="0" min="0">
                     </div>
                     <div class="zakat-input-group">
-                        <label><i class="fas fa-chart-line"></i> Saham / Investasi (Rp)</label>
+                        <label><i class="fas fa-chart-line"></i> ${t('zakat.investment')}</label>
                         <input type="number" id="inputInvestasi" placeholder="0" min="0">
                     </div>
                     <div class="zakat-input-group">
-                        <label><i class="fas fa-store"></i> Harta Dagang (Rp)</label>
+                        <label><i class="fas fa-store"></i> ${t('zakat.trade')}</label>
                         <input type="number" id="inputDagang" placeholder="0" min="0">
-                        <span class="zakat-hint">Nilai stok barang dagangan</span>
+                        <span class="zakat-hint">${t('zakat.tradeHint')}</span>
                     </div>
                     <div class="zakat-input-group">
-                        <label><i class="fas fa-money-bill"></i> Piutang yang diharapkan kembali (Rp)</label>
+                        <label><i class="fas fa-money-bill"></i> ${t('zakat.receivables')}</label>
                         <input type="number" id="inputPiutang" placeholder="0" min="0">
                     </div>
                     <div class="zakat-input-group">
-                        <label><i class="fas fa-tag"></i> Harga Emas Saat Ini (Rp/gram)</label>
+                        <label><i class="fas fa-tag"></i> ${t('zakat.goldPrice')}</label>
                         <input type="number" id="inputHargaEmas" value="${this.hargaEmas}" min="0">
-                        <span class="zakat-hint">Sesuaikan dengan harga emas terkini</span>
+                        <span class="zakat-hint">${t('zakat.goldPriceHint')}</span>
                     </div>
 
                     <button class="zakat-calc-btn" id="btnHitungMaal">
-                        <i class="fas fa-calculator"></i> Hitung Zakat Maal
+                        <i class="fas fa-calculator"></i> ${t('zakat.btnCalcMaal')}
                     </button>
                 </div>
 
                 <div class="zakat-result" id="resultMaal" style="display:none">
                     <div class="zakat-result-header">
                         <i class="fas fa-check-circle"></i>
-                        <h3>Hasil Perhitungan</h3>
+                        <h3>${t('zakat.calcResult')}</h3>
                     </div>
 
                     <!-- Nisab progress bar -->
                     <div class="zakat-nisab-progress">
                         <div class="zakat-nisab-progress-header">
-                            <span><i class="fas fa-bullseye"></i> Progress menuju Nisab</span>
+                            <span><i class="fas fa-bullseye"></i> ${t('zakat.progressToNisab')}</span>
                             <span class="zakat-nisab-pct" id="nisabPercent">0%</span>
                         </div>
                         <div class="zakat-nisab-bar">
                             <div class="zakat-nisab-fill" id="nisabFill"></div>
-                            <div class="zakat-nisab-marker"><span>Nisab</span></div>
+                            <div class="zakat-nisab-marker"><span>${t('zakat.nisabMarker')}</span></div>
                         </div>
                     </div>
 
@@ -103,19 +102,19 @@ export default class ZakatApp {
 
                     <div class="zakat-result-grid">
                         <div class="zakat-result-item">
-                            <span class="label">Total Harta</span>
+                            <span class="label">${t('zakat.totalWealth')}</span>
                             <span class="value" id="totalHarta">Rp 0</span>
                         </div>
                         <div class="zakat-result-item">
-                            <span class="label">Nisab</span>
+                            <span class="label">${t('zakat.nisab')}</span>
                             <span class="value" id="nisabAmount">Rp 0</span>
                         </div>
                         <div class="zakat-result-item highlight">
-                            <span class="label">Status</span>
+                            <span class="label">${t('zakat.status')}</span>
                             <span class="value" id="statusMaal">-</span>
                         </div>
                         <div class="zakat-result-item highlight-gold">
-                            <span class="label">Zakat yang Wajib (2,5%)</span>
+                            <span class="label">${t('zakat.obligatoryZakat')}</span>
                             <span class="value" id="zakatMaalAmount">Rp 0</span>
                         </div>
                     </div>
@@ -128,56 +127,56 @@ export default class ZakatApp {
                 <div class="zakat-info-box">
                     <i class="fas fa-info-circle"></i>
                     <div>
-                        <strong>Zakat Fitrah</strong>
-                        <p>Wajib bagi setiap Muslim yang mampu. Besarnya <strong>1 sha\' (± 2,5 kg)</strong> makanan pokok per jiwa. Dibayarkan sebelum sholat Idul Fitri.</p>
+                        <strong>${t('zakat.fitrahTitle')}</strong>
+                        <p>${t('zakat.fitrahDesc')}</p>
                     </div>
                 </div>
 
                 <div class="zakat-form">
                     <div class="zakat-input-group">
-                        <label><i class="fas fa-users"></i> Jumlah Jiwa (termasuk diri sendiri)</label>
+                        <label><i class="fas fa-users"></i> ${t('zakat.soulsCount')}</label>
                         <input type="number" id="inputJiwa" value="1" min="1">
-                        <span class="zakat-hint">Tanggungan yang wajib dibayarkan zakatsnya</span>
+                        <span class="zakat-hint">${t('zakat.soulsHint')}</span>
                     </div>
                     <div class="zakat-input-group">
-                        <label><i class="fas fa-wheat-awn"></i> Jenis Pembayaran</label>
+                        <label><i class="fas fa-wheat-awn"></i> ${t('zakat.paymentType')}</label>
                         <select id="inputJenisFitrah" class="zakat-select">
-                            <option value="beras">Beras</option>
-                            <option value="uang">Uang (dikonversi ke beras)</option>
+                            <option value="beras">${t('zakat.rice')}</option>
+                            <option value="uang">${t('zakat.moneyConverted')}</option>
                         </select>
                     </div>
                     <div class="zakat-input-group" id="groupHargaBeras">
-                        <label><i class="fas fa-tag"></i> Harga Beras (Rp/kg)</label>
+                        <label><i class="fas fa-tag"></i> ${t('zakat.ricePrice')}</label>
                         <input type="number" id="inputHargaBeras" value="${this.hargaBeras}" min="0">
-                        <span class="zakat-hint">Beras kualitas yang biasa dikonsumsi</span>
+                        <span class="zakat-hint">${t('zakat.ricePriceHint')}</span>
                     </div>
 
                     <button class="zakat-calc-btn" id="btnHitungFitrah">
-                        <i class="fas fa-calculator"></i> Hitung Zakat Fitrah
+                        <i class="fas fa-calculator"></i> ${t('zakat.btnCalcFitrah')}
                     </button>
                 </div>
 
                 <div class="zakat-result" id="resultFitrah" style="display:none">
                     <div class="zakat-result-header">
                         <i class="fas fa-check-circle"></i>
-                        <h3>Hasil Perhitungan</h3>
+                        <h3>${t('zakat.calcResult')}</h3>
                     </div>
                     <div class="zakat-result-grid">
                         <div class="zakat-result-item">
-                            <span class="label">Jumlah Jiwa</span>
+                            <span class="label">${t('zakat.soulsLabel')}</span>
                             <span class="value" id="totalJiwa">0 orang</span>
                         </div>
                         <div class="zakat-result-item highlight-gold">
-                            <span class="label">Total Beras</span>
+                            <span class="label">${t('zakat.totalRice')}</span>
                             <span class="value" id="totalBeras">0 kg</span>
                         </div>
                         <div class="zakat-result-item highlight">
-                            <span class="label">Atau Uang</span>
+                            <span class="label">${t('zakat.orMoney')}</span>
                             <span class="value" id="totalUangFitrah">Rp 0</span>
                         </div>
                     </div>
                     <div class="zakat-dalil-box">
-                        <p><strong>Dalil:</strong> "Rasulullah ﷺ mewajibkan zakat fitrah satu sha\' kurma atau satu sha\' gandum atas setiap Muslim, merdeka maupun hamba, laki-laki maupun perempuan, kecil maupun besar." (HR. Bukhari & Muslim)</p>
+                        <p>${t('zakat.fitrahDalil')}</p>
                     </div>
                 </div>
             </div>
@@ -187,26 +186,10 @@ export default class ZakatApp {
                 <div class="zakat-info-box salafi-note">
                     <i class="fas fa-info-circle"></i>
                     <div>
-                        <strong>Mengenai "Zakat Profesi/Penghasilan"</strong>
-                        <p>
-                            Mayoritas ulama Ahlus Sunnah berpaham salaf — di antaranya
-                            <strong>Syaikh 'Abdul 'Aziz bin Baz</strong>,
-                            <strong>Syaikh Muhammad bin Shalih al-'Utsaimin</strong>,
-                            <strong>Syaikh al-Albani</strong>,
-                            <strong>Syaikh Shalih al-Fauzan</strong>, dan
-                            <strong>Al-Lajnah ad-Da'imah</strong> (Komite Tetap Riset Ilmiah
-                            &amp; Fatwa Kerajaan Arab Saudi) — tidak mengenal istilah
-                            "zakat profesi". Penghasilan/gaji termasuk dalam zakat <em>maal</em>
-                            (zakat harta), yang dizakati setelah <strong>tersimpan sampai
-                            haul (1 tahun Hijriyah)</strong> dan mencapai <strong>nisab</strong>
-                            (85 gram emas). Cukup masukkan saldo tabungan / gaji yang
-                            tersisa di akhir tahun ke kalkulator <em>Zakat Maal</em> di atas.
-                        </p>
+                        <strong>${t('zakat.salafiNoteTitle')}</strong>
+                        <p>${t('zakat.salafiNoteDesc')}</p>
                         <p style="margin-top:8px; font-size:0.85rem; opacity:0.85;">
-                            <i class="fas fa-book-open"></i> Rujukan:
-                            <em>Fatawa Lajnah Da'imah</em> Jilid 9 hal. 281,
-                            <em>Majmu' Fatawa Ibn Baz</em> 14/134,
-                            <em>Asy-Syarhul Mumti'</em> karya Syaikh al-'Utsaimin Jilid 6.
+                            ${t('zakat.salafiNoteRef')}
                         </p>
                     </div>
                 </div>
@@ -214,25 +197,28 @@ export default class ZakatApp {
 
             <!-- Keterangan Golongan Penerima -->
             <div class="zakat-mustahiq">
-                <h3><i class="fas fa-users"></i> 8 Golongan Penerima Zakat</h3>
+                <h3><i class="fas fa-users"></i> ${t('zakat.mustahiqTitle')}</h3>
                 <div class="zakat-mustahiq-grid">
                     ${this.renderMustahiq()}
                 </div>
                 <p class="zakat-dalil">QS. At-Taubah: 60</p>
             </div>
         </div>`;
+
+        this.setupEvents();
+        this.switchTab(this.currentTab || 'maal');
     }
 
     renderMustahiq() {
         const golongan = [
-            { icon: 'fa-person-cane', label: 'Fakir', desc: 'Tidak memiliki harta sama sekali' },
-            { icon: 'fa-hand-holding', label: 'Miskin', desc: 'Berpenghasilan tapi tidak cukup' },
-            { icon: 'fa-user-tie', label: 'Amil', desc: 'Pengelola zakat' },
-            { icon: 'fa-handshake', label: 'Muallaf', desc: 'Orang yang baru masuk Islam' },
-            { icon: 'fa-link-slash', label: 'Riqab', desc: 'Memerdekakan budak' },
-            { icon: 'fa-weight-hanging', label: 'Gharim', desc: 'Terlilit utang halal' },
-            { icon: 'fa-road', label: 'Fi Sabilillah', desc: 'Di jalan Allah' },
-            { icon: 'fa-suitcase', label: 'Ibnu Sabil', desc: 'Musafir kehabisan bekal' },
+            { icon: 'fa-person-cane', label: t('zakat.mustahiqFakir'), desc: t('zakat.mustahiqFakirDesc') },
+            { icon: 'fa-hand-holding', label: t('zakat.mustahiqMiskin'), desc: t('zakat.mustahiqMiskinDesc') },
+            { icon: 'fa-user-tie', label: t('zakat.mustahiqAmil'), desc: t('zakat.mustahiqAmilDesc') },
+            { icon: 'fa-handshake', label: t('zakat.mustahiqMuallaf'), desc: t('zakat.mustahiqMuallafDesc') },
+            { icon: 'fa-link-slash', label: t('zakat.mustahiqRiqab'), desc: t('zakat.mustahiqRiqabDesc') },
+            { icon: 'fa-weight-hanging', label: t('zakat.mustahiqGharim'), desc: t('zakat.mustahiqGharimDesc') },
+            { icon: 'fa-road', label: t('zakat.mustahiqFiSabilillah'), desc: t('zakat.mustahiqFiSabilillahDesc') },
+            { icon: 'fa-suitcase', label: t('zakat.mustahiqIbnuSabil'), desc: t('zakat.mustahiqIbnuSabilDesc') },
         ];
         return golongan.map(g => `
             <div class="zakat-mustahiq-item">
@@ -295,12 +281,12 @@ export default class ZakatApp {
 
         document.getElementById('totalHarta').textContent = 'Rp ' + this.formatRupiah(total);
         document.getElementById('nisabAmount').textContent = 'Rp ' + this.formatRupiah(nisab);
-        document.getElementById('statusMaal').textContent = wajib ? '✅ WAJIB ZAKAT' : '❌ Belum Mencapai Nisab';
+        document.getElementById('statusMaal').textContent = wajib ? t('zakat.statusObligatory') : t('zakat.statusNotReached');
         document.getElementById('statusMaal').style.color = wajib ? '#00ff88' : '#ff6b6b';
         document.getElementById('zakatMaalAmount').textContent = 'Rp ' + this.formatRupiah(zakat);
         document.getElementById('noteMaal').textContent = wajib
-            ? `Alhamdulillah, harta Anda mencapai nisab. Segera tunaikan zakat sebesar Rp ${this.formatRupiah(zakat)} kepada 8 golongan yang berhak menerimanya.`
-            : `Total harta Anda belum mencapai nisab (Rp ${this.formatRupiah(nisab)}). Belum wajib zakat, namun sangat dianjurkan bersedekah.`;
+            ? t('zakat.noteObligatory', { amount: this.formatRupiah(zakat) })
+            : t('zakat.noteNotReached', { amount: this.formatRupiah(nisab) });
 
         // Update nisab progress bar
         const pct = nisab > 0 ? Math.min(100, (total / nisab) * 100) : 0;
@@ -324,12 +310,12 @@ export default class ZakatApp {
         if (!el) return;
         const total = parts.total || 1;
         const segments = [
-            { id: 'emas',      label: 'Emas',       value: parts.emas,      color: '#ffd700', icon: 'fas fa-coins' },
-            { id: 'perak',     label: 'Perak',      value: parts.perak,     color: '#c0c0c0', icon: 'fas fa-ring' },
-            { id: 'tabungan',  label: 'Tabungan',   value: parts.tabungan,  color: '#00d4ff', icon: 'fas fa-piggy-bank' },
-            { id: 'investasi', label: 'Investasi',  value: parts.investasi, color: '#a78bfa', icon: 'fas fa-chart-line' },
-            { id: 'dagang',    label: 'Dagang',     value: parts.dagang,    color: '#ff8c42', icon: 'fas fa-store' },
-            { id: 'piutang',   label: 'Piutang',    value: parts.piutang,   color: '#34d399', icon: 'fas fa-money-bill' },
+            { id: 'emas',      label: t('zakat.segGold'),        value: parts.emas,      color: '#ffd700', icon: 'fas fa-coins' },
+            { id: 'perak',     label: t('zakat.segSilver'),      value: parts.perak,     color: '#c0c0c0', icon: 'fas fa-ring' },
+            { id: 'tabungan',  label: t('zakat.segSavings'),     value: parts.tabungan,  color: '#00d4ff', icon: 'fas fa-piggy-bank' },
+            { id: 'investasi', label: t('zakat.segInvestment'),  value: parts.investasi, color: '#a78bfa', icon: 'fas fa-chart-line' },
+            { id: 'dagang',    label: t('zakat.segTrade'),       value: parts.dagang,    color: '#ff8c42', icon: 'fas fa-store' },
+            { id: 'piutang',   label: t('zakat.segReceivables'), value: parts.piutang,   color: '#34d399', icon: 'fas fa-money-bill' },
         ].filter(s => s.value > 0);
 
         if (segments.length === 0) {
@@ -367,14 +353,14 @@ export default class ZakatApp {
         });
 
         el.innerHTML = `
-            <h4><i class="fas fa-chart-pie"></i> Komposisi Harta</h4>
+            <h4><i class="fas fa-chart-pie"></i> ${t('zakat.compositionTitle')}</h4>
             <div class="zakat-donut-wrap">
                 <svg class="zakat-donut-svg" viewBox="0 0 200 200">
                     ${svgSegments}
                     <text x="100" y="92" text-anchor="middle" class="zakat-donut-center-num">
                         ${segments.length}
                     </text>
-                    <text x="100" y="112" text-anchor="middle" class="zakat-donut-center-lbl">JENIS HARTA</text>
+                    <text x="100" y="112" text-anchor="middle" class="zakat-donut-center-lbl">${t('zakat.assetTypes')}</text>
                 </svg>
                 <div class="zakat-donut-legend">${legend}</div>
             </div>
@@ -389,7 +375,7 @@ export default class ZakatApp {
         const totalBeras = jiwa * sha;
         const totalUang  = totalBeras * hargaBeras;
 
-        document.getElementById('totalJiwa').textContent   = jiwa + ' orang';
+        document.getElementById('totalJiwa').textContent   = t('zakat.peopleCount', { count: jiwa });
         document.getElementById('totalBeras').textContent  = totalBeras + ' kg';
         document.getElementById('totalUangFitrah').textContent = 'Rp ' + this.formatRupiah(totalUang);
         document.getElementById('resultFitrah').style.display = 'block';
