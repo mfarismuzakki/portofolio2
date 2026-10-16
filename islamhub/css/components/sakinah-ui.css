@@ -380,3 +380,18 @@ html[data-theme="classic"] .sx-card { background: rgba(10, 10, 15, .8); border: 
 html[data-theme] .sx-card :is(.sx-name, .sx-title, .sx-preview) { text-align: left !important; }
 html[data-theme] .sx-ar { white-space: nowrap; font-size: 1.15rem; }
 html[data-theme] .sx-ar.long { font-size: .82rem; }
+
+/* ---------- 14. Kalender hero: small medallion top-right, date box full width ---------- */
+html[data-theme="sakinah"] .kalender-header { padding-right: 22px !important; }
+html[data-theme="sakinah"] .kalender-header :is(h1, h2) { padding-right: 70px !important; }
+html[data-theme="sakinah"] .kalender-header :is(h1, h2) > :is(i, svg) {
+  top: 18px !important; right: 18px !important; transform: none !important;
+  width: 56px !important; height: 56px !important; font-size: 22px !important;
+}
+html[data-theme="sakinah"] .kalender-header .kalender-today-hijri { display: flex !important; width: 100%; box-sizing: border-box; }
+html[data-theme="sakinah"] .kalender-header .kalender-hijri-date { white-space: normal !important; overflow-wrap: anywhere; }
+@media (max-width: 400px) {
+  html[data-theme="sakinah"] .kalender-countdown-card { grid-template-columns: 1fr; grid-template-areas: "days" "label" "name"; }
+  html[data-theme="sakinah"] .kalender-cd-label { white-space: nowrap; }
+  html[data-theme="sakinah"] .kalender-countdown-header h3 { letter-spacing: .08em; }
+}
