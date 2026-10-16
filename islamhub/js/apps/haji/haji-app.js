@@ -1,6 +1,7 @@
 import ManasikGame from './manasik-adventure.js?v=2.1.0';
 // Peta Perjalanan Haji & Umrah — Panduan Visual Manasik
 import { HAJI_LOCATIONS, MANASIK_HAJI, MANASIK_UMRAH, LARANGAN_IHRAM, HAJI_MIQAT } from '../../data/haji/haji-data.js';
+import { t } from '../../i18n/index.js';
 
 export default class HajiApp {
     constructor(globalState, mainApp) {
@@ -49,7 +50,7 @@ export default class HajiApp {
         const fill = document.getElementById('hajiProgressFill');
         const txt  = document.getElementById('hajiProgressText');
         if (fill) fill.style.width = pct + '%';
-        if (txt)  txt.textContent = `${done} / ${total} amalan selesai`;
+        if (txt)  txt.textContent = t('haji.progress.doneText', { done, total });
     }
 
     async init() {
@@ -62,18 +63,18 @@ export default class HajiApp {
         this.container.innerHTML = `
         <div class="haji-container">
             <div class="haji-header">
-                <h2><i class="fas fa-kaaba"></i> Haji & Umrah</h2>
-                <p class="haji-subtitle">Panduan visual perjalanan suci menuju Baitullah</p>
+                <h2><i class="fas fa-kaaba"></i> ${t('haji.header.title')}</h2>
+                <p class="haji-subtitle">${t('haji.header.subtitle')}</p>
             </div>
 
             <!-- Tabs -->
             <div class="haji-tabs">
-                <button class="haji-tab active" data-tab="game"><i class="fas fa-gamepad"></i> Game Manasik</button>
-                <button class="haji-tab" data-tab="arena"><i class="fas fa-trophy"></i> Arena Game</button>
-                <button class="haji-tab" data-tab="haji"><i class="fas fa-kaaba"></i> Manasik Haji</button>
-                <button class="haji-tab" data-tab="umrah"><i class="fas fa-rotate"></i> Manasik Umrah</button>
-                <button class="haji-tab" data-tab="peta"><i class="fas fa-map-marked-alt"></i> Peta Lokasi</button>
-                <button class="haji-tab" data-tab="ihram"><i class="fas fa-ban"></i> Larangan Ihram</button>
+                <button class="haji-tab active" data-tab="game"><i class="fas fa-gamepad"></i> ${t('haji.tabGame')}</button>
+                <button class="haji-tab" data-tab="arena"><i class="fas fa-trophy"></i> ${t('haji.tabArena')}</button>
+                <button class="haji-tab" data-tab="haji"><i class="fas fa-kaaba"></i> ${t('haji.tabHaji')}</button>
+                <button class="haji-tab" data-tab="umrah"><i class="fas fa-rotate"></i> ${t('haji.tabUmrah')}</button>
+                <button class="haji-tab" data-tab="peta"><i class="fas fa-map-marked-alt"></i> ${t('haji.tabPeta')}</button>
+                <button class="haji-tab" data-tab="ihram"><i class="fas fa-ban"></i> ${t('haji.tabIhram')}</button>
             </div>
 
             <div class="haji-panel" id="panel-game"><div id="manasikGame"></div></div>
@@ -86,13 +87,13 @@ export default class HajiApp {
                     <p>Haji wajib bagi Muslim yang <strong>mampu secara fisik dan finansial</strong>, sekali seumur hidup. "Dan bagi Allah atas manusia adalah kewajiban haji ke Baitullah bagi yang mampu..." (QS. Ali Imran: 97)</p>
                 </div>
 
-                <h3 class="haji-section-title"><i class="fas fa-calendar-alt"></i> Urutan Manasik Haji (Hari per Hari)</h3>
+                <h3 class="haji-section-title"><i class="fas fa-calendar-alt"></i> ${t('haji.section.hajiTimeline')}</h3>
 
                 <!-- Checklist progress -->
                 <div class="haji-progress-tracker">
                     <div class="haji-progress-head">
-                        <span><i class="fas fa-check-double"></i> Progress Anda</span>
-                        <span id="hajiProgressText">0 / ${MANASIK_HAJI.length} amalan selesai</span>
+                        <span><i class="fas fa-check-double"></i> ${t('haji.progress.title')}</span>
+                        <span id="hajiProgressText">${t('haji.progress.doneText', { done: 0, total: MANASIK_HAJI.length })}</span>
                     </div>
                     <div class="haji-progress-bar">
                         <div class="haji-progress-fill" id="hajiProgressFill"></div>
@@ -111,7 +112,7 @@ export default class HajiApp {
                             <div class="haji-timeline-header">
                                 <span class="haji-timeline-hari">${m.hari}</span>
                                 <strong>${m.nama}</strong>
-                                <button class="haji-timeline-check" data-step-toggle="${i}" aria-label="Tandai selesai">
+                                <button class="haji-timeline-check" data-step-toggle="${i}" aria-label="${t('haji.markDone')}">
                                     <i class="fas fa-check"></i>
                                 </button>
                             </div>
@@ -123,7 +124,7 @@ export default class HajiApp {
                     }).join('')}
                 </div>
 
-                <h3 class="haji-section-title"><i class="fas fa-sign-in-alt"></i> Miqat — Batas Mulai Ihram</h3>
+                <h3 class="haji-section-title"><i class="fas fa-sign-in-alt"></i> ${t('haji.section.miqat')}</h3>
                 <div class="haji-miqat-list">
                     ${HAJI_MIQAT.map(m => `
                     <div class="haji-miqat-item">
@@ -144,7 +145,7 @@ export default class HajiApp {
                     <p>Pelajari urutan umrah: ihram dari miqat, tawaf, sa’i, lalu mencukur atau memendekkan rambut. <em>"Umrah ke umrah berikutnya adalah penghapus dosa di antara keduanya"</em> (HR. Bukhari & Muslim). <a href="https://binbaz.org.sa/fatwas/11982/صفة-العمرة" target="_blank" rel="noopener">Rujukan tata cara umrah</a>.</p>
                 </div>
 
-                <h3 class="haji-section-title"><i class="fas fa-list-ol"></i> Rukun Umrah (Urutan)</h3>
+                <h3 class="haji-section-title"><i class="fas fa-list-ol"></i> ${t('haji.section.umrahSteps')}</h3>
                 <div class="haji-steps">
                     ${MANASIK_UMRAH.map(s => `
                     <div class="haji-step">
@@ -160,7 +161,7 @@ export default class HajiApp {
                 </div>
 
                 <div class="haji-talbiyah-box">
-                    <h4><i class="fas fa-microphone"></i> Bacaan Talbiyah</h4>
+                    <h4><i class="fas fa-microphone"></i> ${t('haji.section.talbiyah')}</h4>
                     <div class="haji-talbiyah-arabic">لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ</div>
                     <div class="haji-talbiyah-latin">Labbaikallahumma labbaik, labbaika lā syarīka laka labbaik, innal-hamda wan-ni'mata laka wal-mulk, lā syarīka lak.</div>
                     <div class="haji-talbiyah-terjemah">"Aku penuhi panggilan-Mu ya Allah, aku penuhi panggilan-Mu. Tidak ada sekutu bagi-Mu, aku penuhi panggilan-Mu. Sesungguhnya segala puji, nikmat, dan kekuasaan adalah milik-Mu, tidak ada sekutu bagi-Mu."</div>
@@ -178,7 +179,7 @@ export default class HajiApp {
                 <div id="hajiLeafletMap" class="haji-leaflet-map"></div>
 
                 <!-- Location List -->
-                <h3 class="haji-section-title" style="margin-top:20px"><i class="fas fa-list"></i> Daftar Lokasi Suci</h3>
+                <h3 class="haji-section-title" style="margin-top:20px"><i class="fas fa-list"></i> ${t('haji.section.locations')}</h3>
                 <div class="haji-location-list">
                     ${HAJI_LOCATIONS.map(loc => `
                     <div class="haji-location-card" data-id="${loc.id}" style="--loc-color:${loc.color}">
@@ -199,7 +200,7 @@ export default class HajiApp {
                     <p>Larangan ihram berlaku sejak niat ihram hingga tahalul. Melanggar larangan berakibat <strong>dam (denda)</strong> berupa menyembelih hewan atau berpuasa.</p>
                 </div>
 
-                <h3 class="haji-section-title"><i class="fas fa-ban"></i> Larangan Saat Ihram</h3>
+                <h3 class="haji-section-title"><i class="fas fa-ban"></i> ${t('haji.section.ihramProhibitions')}</h3>
                 <div class="haji-larangan-list">
                     ${LARANGAN_IHRAM.map((l, i) => `
                     <div class="haji-larangan-item">
@@ -212,19 +213,19 @@ export default class HajiApp {
                 </div>
 
                 <div class="haji-dam-info">
-                    <h4><i class="fas fa-gavel"></i> Ketentuan Dam (Denda)</h4>
+                    <h4><i class="fas fa-gavel"></i> ${t('haji.section.damRules')}</h4>
                     <div class="haji-dam-grid">
                         <div class="haji-dam-item">
-                            <strong>Melanggar larangan ringan</strong>
-                            <p>Dam pilihan: menyembelih kambing, atau bersedekah kepada 6 orang miskin, atau puasa 3 hari (QS. Al-Baqarah: 196)</p>
+                            <strong>${t('haji.dam.light')}</strong>
+                            <p>${t('haji.dam.lightDesc')}</p>
                         </div>
                         <div class="haji-dam-item">
-                            <strong>Jima\' sebelum tahalul pertama</strong>
-                            <p>Haji tetap sah tapi wajib menyembelih unta/sapi. Wajib qadha (ulangi haji) di tahun berikutnya.</p>
+                            <strong>${t('haji.dam.major')}</strong>
+                            <p>${t('haji.dam.majorDesc')}</p>
                         </div>
                         <div class="haji-dam-item">
-                            <strong>Berburu/membunuh hewan</strong>
-                            <p>Dam sesuai nilai hewan yang dibunuh: menyembelih hewan senilai, atau bersedekah makanan, atau puasa.</p>
+                            <strong>${t('haji.dam.hunting')}</strong>
+                            <p>${t('haji.dam.huntingDesc')}</p>
                         </div>
                     </div>
                 </div>
@@ -247,10 +248,10 @@ export default class HajiApp {
             <p class="haji-detail-desc">${loc.desc}</p>
             <div class="haji-detail-dalil">
                 <i class="fas fa-book-open"></i>
-                <div><strong>Dalil</strong><p>${loc.dalil}</p></div>
+                <div><strong>${t('haji.modal.dalil')}</strong><p>${loc.dalil}</p></div>
             </div>
             <div class="haji-detail-amalan">
-                <h4><i class="fas fa-list-check"></i> Amalan di Sini</h4>
+                <h4><i class="fas fa-list-check"></i> ${t('haji.modal.deedsHere')}</h4>
                 <ul>
                     ${loc.amalan.map(a => `<li><i class="fas fa-check"></i> ${a}</li>`).join('')}
                 </ul>
@@ -296,7 +297,7 @@ export default class HajiApp {
             this.arena ||= createHajiArena(host);
         } catch (err) {
             console.error('Gagal memuat Arena Manasik:', err);
-            host.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Gagal memuat Arena Game</p></div>';
+            host.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>${t('haji.errorArena')}</p></div>`;
         }
     }
 

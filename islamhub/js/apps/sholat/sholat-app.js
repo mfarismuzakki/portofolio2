@@ -1,5 +1,6 @@
 // ===== Tata Cara Sholat IslamHub =====
 // Panduan lengkap rukun, syarat, bacaan, dan sunnah sholat
+import { t } from '../../i18n/index.js';
 
 export default class SholatApp {
     constructor(state, mainApp) {
@@ -13,6 +14,10 @@ export default class SholatApp {
         this.currentFilter = 'all';
         this.currentItem = null; // For modal
         this.peraga3D = null;
+    }
+
+    render() {
+        this.displayContent();
     }
 
     async init() {
@@ -50,7 +55,7 @@ export default class SholatApp {
             });
         } catch (error) {
             console.error('Failed to load sholat data:', error);
-            this.showError('Gagal memuat data sholat');
+            this.showError(t('sholat.errorLoadData'));
         }
     }
 
@@ -175,7 +180,7 @@ export default class SholatApp {
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-search"></i>
-                    <p>Tidak ada hasil ditemukan</p>
+                    <p>${t('sholat.noResults')}</p>
                 </div>
             `;
             return;
@@ -217,22 +222,22 @@ export default class SholatApp {
                 <h3 class="sholat-title">${item.name}</h3>
                 ${arabicPreview ? `<p class="sholat-arabic">${arabicPreview}</p>` : ''}
                 ${latinPreview ? `<p class="sholat-latin">${latinPreview}</p>` : ''}
-                <p class="sholat-description">${this.truncate(item.description || translation || 'Klik untuk melihat detail lengkap', 100)}</p>
+                <p class="sholat-description">${this.truncate(item.description || translation || t('sholat.clickDetail'), 100)}</p>
                 ${item.ruling ? `<div class="sholat-ruling">${item.ruling}</div>` : ''}
-                ${item.variations ? `<div class="sholat-variations-badge"><i class="fas fa-list"></i> ${item.variations.length} Variasi</div>` : ''}
+                ${item.variations ? `<div class="sholat-variations-badge"><i class="fas fa-list"></i> ${t('sholat.variationsCount', { n: item.variations.length })}</div>` : ''}
             </div>
         `;
     }
 
     getCategoryLabel(item) {
         if (this.currentTab === 'rukun' || this.currentTab === 'syarat') {
-            return item.category === 'rukun' ? 'Rukun' : 'Syarat';
+            return item.category === 'rukun' ? t('sholat.catRukun') : t('sholat.catSyarat');
         } else if (this.currentTab === 'bacaan') {
-            return item.type === 'wajib' ? 'Wajib' : 'Sunnah';
+            return item.type === 'wajib' ? t('sholat.catWajib') : t('sholat.catSunnah');
         } else if (this.currentTab === 'sunnah') {
-            if (item.type === 'qabliyah') return 'Qabliyah';
-            if (item.type === 'ba\'diyah') return 'Ba\'diyah';
-            if (item.type === 'mutlak') return 'Mutlak';
+            if (item.type === 'qabliyah') return t('sholat.catQabliyah');
+            if (item.type === 'ba\'diyah') return t('sholat.catBadiyah');
+            if (item.type === 'mutlak') return t('sholat.catMutlak');
         }
         return '';
     }
@@ -249,18 +254,18 @@ export default class SholatApp {
             <div class="sholat-detail-content">
                 ${item.position ? `
                     <div class="sholat-detail-section">
-                        <h4><i class="fas fa-map-marker-alt"></i> Posisi</h4>
+                        <h4><i class="fas fa-map-marker-alt"></i> ${t('sholat.modal.position')}</h4>
                         <p><strong>${item.position}</strong></p>
                     </div>
                 ` : ''}
                 
                 ${item.variations && item.variations.length > 0 ? `
                     <div class="sholat-detail-section">
-                        <h4><i class="fas fa-list"></i> Variasi Bacaan</h4>
+                        <h4><i class="fas fa-list"></i> ${t('sholat.modal.readingVariations')}</h4>
                         ${item.variations.map((v, idx) => `
                             <div class="sholat-variation-card" style="margin-bottom: 1.5rem;">
                                 <div class="variation-header">
-                                    <span class="variation-number">Variasi ${v.number || idx + 1}</span>
+                                    <span class="variation-number">${t('sholat.modal.variationNum', { n: v.number || idx + 1 })}</span>
                                     ${v.frequency ? `<span class="variation-frequency">${v.frequency}</span>` : ''}
                                 </div>
                                 ${v.arabic ? `<p class="sholat-detail-arabic">${v.arabic}</p>` : ''}
@@ -273,21 +278,21 @@ export default class SholatApp {
                 ` : `
                     ${item.arabic ? `
                         <div class="sholat-detail-section">
-                            <h4><i class="fas fa-language"></i> Bahasa Arab</h4>
+                            <h4><i class="fas fa-language"></i> ${t('sholat.modal.arabic')}</h4>
                             <p class="sholat-detail-arabic">${item.arabic}</p>
                         </div>
                     ` : ''}
                     
                     ${item.latin ? `
                         <div class="sholat-detail-section">
-                            <h4><i class="fas fa-spell-check"></i> Latin</h4>
+                            <h4><i class="fas fa-spell-check"></i> ${t('sholat.modal.latin')}</h4>
                             <p class="sholat-detail-latin">${item.latin}</p>
                         </div>
                     ` : ''}
                     
                     ${item.translation ? `
                         <div class="sholat-detail-section">
-                            <h4><i class="fas fa-quote-right"></i> Arti</h4>
+                            <h4><i class="fas fa-quote-right"></i> ${t('sholat.modal.meaning')}</h4>
                             <p class="sholat-detail-translation">${item.translation}</p>
                         </div>
                     ` : ''}
@@ -295,21 +300,21 @@ export default class SholatApp {
                 
                 ${item.description ? `
                     <div class="sholat-detail-section">
-                        <h4><i class="fas fa-info-circle"></i> Penjelasan</h4>
+                        <h4><i class="fas fa-info-circle"></i> ${t('sholat.modal.explanation')}</h4>
                         <p>${item.description}</p>
                     </div>
                 ` : ''}
                 
                 ${item.ruling ? `
                     <div class="sholat-detail-section">
-                        <h4><i class="fas fa-gavel"></i> Hukum</h4>
+                        <h4><i class="fas fa-gavel"></i> ${t('sholat.modal.ruling')}</h4>
                         <div class="sholat-ruling-badge">${item.ruling}</div>
                     </div>
                 ` : ''}
                 
                 ${item.dalil && item.dalil.length > 0 ? `
                     <div class="sholat-detail-section">
-                        <h4><i class="fas fa-book"></i> Dalil</h4>
+                        <h4><i class="fas fa-book"></i> ${t('sholat.modal.dalil')}</h4>
                         ${item.dalil.map(d => `
                             <div class="sholat-dalil-card">
                                 <div class="dalil-source">${d.source} - ${d.reference}</div>
@@ -322,35 +327,35 @@ export default class SholatApp {
                 
                 ${item.tips ? `
                     <div class="sholat-detail-section sholat-tips">
-                        <h4><i class="fas fa-lightbulb"></i> Tips</h4>
+                        <h4><i class="fas fa-lightbulb"></i> ${t('sholat.modal.tips')}</h4>
                         <p>${item.tips}</p>
                     </div>
                 ` : ''}
                 
                 ${item.commonMistakes ? `
                     <div class="sholat-detail-section sholat-warning">
-                        <h4><i class="fas fa-exclamation-triangle"></i> Kesalahan Umum</h4>
+                        <h4><i class="fas fa-exclamation-triangle"></i> ${t('sholat.modal.commonMistakes')}</h4>
                         <p>${item.commonMistakes}</p>
                     </div>
                 ` : ''}
                 
                 ${item.timing ? `
                     <div class="sholat-detail-section">
-                        <h4><i class="fas fa-clock"></i> Waktu</h4>
+                        <h4><i class="fas fa-clock"></i> ${t('sholat.modal.timing')}</h4>
                         <p>${item.timing}</p>
                     </div>
                 ` : ''}
                 
                 ${item.rakaat ? `
                     <div class="sholat-detail-section">
-                        <h4><i class="fas fa-sort-numeric-up"></i> Jumlah Rakaat</h4>
-                        <p>${item.rakaat} Rakaat</p>
+                        <h4><i class="fas fa-sort-numeric-up"></i> ${t('sholat.modal.rakaatCount')}</h4>
+                        <p>${t('sholat.modal.rakaat', { n: item.rakaat })}</p>
                     </div>
                 ` : ''}
                 
                 ${item.bacaan_sunnah && item.bacaan_sunnah.length > 0 ? `
                     <div class="sholat-detail-section">
-                        <h4><i class="fas fa-book-reader"></i> Bacaan yang Disunnahkan</h4>
+                        <h4><i class="fas fa-book-reader"></i> ${t('sholat.modal.sunnahReadings')}</h4>
                         <ul>
                             ${item.bacaan_sunnah.map(b => `<li>${b}</li>`).join('')}
                         </ul>
@@ -382,28 +387,28 @@ export default class SholatApp {
         // Handle variations or single content
         if (this.currentItem.variations && this.currentItem.variations.length > 0) {
             this.currentItem.variations.forEach((variation, index) => {
-                textContent += `Variasi ${index + 1}:\n`;
+                textContent += `${t('sholat.copy.variationNum', { n: index + 1 })}\n`;
                 if (variation.arabic) textContent += `${variation.arabic}\n`;
                 if (variation.latin) textContent += `${variation.latin}\n`;
-                if (variation.translation) textContent += `Artinya: ${variation.translation}\n`;
+                if (variation.translation) textContent += `${t('sholat.copy.meaning')} ${variation.translation}\n`;
                 textContent += '\n';
             });
         } else {
             if (this.currentItem.arabic) textContent += `${this.currentItem.arabic}\n`;
             if (this.currentItem.latin) textContent += `${this.currentItem.latin}\n`;
-            if (this.currentItem.translation) textContent += `Artinya: ${this.currentItem.translation}\n`;
+            if (this.currentItem.translation) textContent += `${t('sholat.copy.meaning')} ${this.currentItem.translation}\n`;
         }
         
         if (this.currentItem.description) {
-            textContent += `\nKeterangan:\n${this.currentItem.description}\n`;
+            textContent += `\n${t('sholat.copy.desc')}\n${this.currentItem.description}\n`;
         }
         
         if (this.currentItem.dalil) {
-            textContent += `\nDalil:\n${this.currentItem.dalil}\n`;
+            textContent += `\n${t('sholat.copy.dalil')}\n${this.currentItem.dalil}\n`;
         }
         
         if (this.currentItem.tips && Array.isArray(this.currentItem.tips) && this.currentItem.tips.length > 0) {
-            textContent += `\nTips:\n`;
+            textContent += `\n${t('sholat.copy.tips')}\n`;
             this.currentItem.tips.forEach((tip, index) => {
                 textContent += `${index + 1}. ${tip}\n`;
             });
@@ -414,13 +419,13 @@ export default class SholatApp {
             this.showCopySuccess();
         }).catch(err => {
             console.error('Failed to copy:', err);
-            this.showToast('Gagal menyalin teks');
+            this.showToast(t('sholat.copyFailed'));
         });
     }
 
     showCopySuccess() {
         // Show toast first
-        this.showToast('Teks berhasil disalin!');
+        this.showToast(t('sholat.copied'));
         
         const copyBtn = document.getElementById('sholatCopyBtn');
         if (copyBtn) {
@@ -460,7 +465,7 @@ export default class SholatApp {
         if (index > -1) {
             // Remove from favorites
             favorites.splice(index, 1);
-            message = 'Dihapus dari favorit';
+            message = t('sholat.removedFav');
         } else {
             // Add to favorites
             favorites.push({
@@ -469,7 +474,7 @@ export default class SholatApp {
                 tab: this.currentTab,
                 timestamp: Date.now()
             });
-            message = 'Ditambahkan ke favorit';
+            message = t('sholat.addedFav');
         }
         
         this.saveFavorites(favorites);
@@ -490,7 +495,7 @@ export default class SholatApp {
         let favorites = this.getFavorites();
         favorites = favorites.filter(fav => fav.id !== itemId);
         this.saveFavorites(favorites);
-        this.showToast('Dihapus dari favorit');
+        this.showToast(t('sholat.removedFav'));
         this.displayContent();
     }
 
@@ -539,8 +544,8 @@ export default class SholatApp {
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="far fa-heart"></i>
-                    <p>Belum ada favorit</p>
-                    <small>Klik ikon hati untuk menambahkan ke favorit</small>
+                    <p>${t('sholat.emptyFav')}</p>
+                    <small>${t('sholat.emptyFavHint')}</small>
                 </div>
             `;
             return;
@@ -559,7 +564,7 @@ export default class SholatApp {
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="far fa-heart"></i>
-                    <p>Belum ada favorit</p>
+                    <p>${t('sholat.emptyFav')}</p>
                 </div>
             `;
             return;
@@ -597,13 +602,13 @@ export default class SholatApp {
         
         return `
             <div class="sholat-card sholat-favorite-card" data-item-id="${item.id}">
-                <button class="sholat-delete-favorite" onclick="window.sholatApp.removeFavorite('${item.id}', event)" title="Hapus dari favorit">
+                <button class="sholat-delete-favorite" onclick="window.sholatApp.removeFavorite('${item.id}', event)" title="${t('sholat.deleteFav')}">
                     <i class="fas fa-trash"></i>
                 </button>
                 <h3 class="sholat-title">${item.name}</h3>
                 ${arabicPreview ? `<p class="sholat-arabic">${arabicPreview}</p>` : ''}
                 ${latinPreview ? `<p class="sholat-latin">${latinPreview}</p>` : ''}
-                <p class="sholat-description">${this.truncate(item.description || translation || 'Klik untuk melihat detail lengkap', 100)}</p>
+                <p class="sholat-description">${this.truncate(item.description || translation || t('sholat.clickDetail'), 100)}</p>
                 ${item.ruling ? `<div class="sholat-ruling">${item.ruling}</div>` : ''}
             </div>
         `;
@@ -624,7 +629,7 @@ export default class SholatApp {
             this.arena ||= createSholatArena(host);
         } catch (err) {
             console.error('Gagal memuat Arena Sholat:', err);
-            host.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Gagal memuat Arena Game</p></div>`;
+            host.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>${t('sholat.errorArena')}</p></div>`;
         }
     }
 
@@ -644,7 +649,7 @@ export default class SholatApp {
                     panel.innerHTML = `
                         <div class="empty-state">
                             <i class="fas fa-exclamation-circle"></i>
-                            <p>Gagal memuat Peraga 3D</p>
+                            <p>${t('sholat.errorPeraga')}</p>
                             <small>${err.message || ''}</small>
                         </div>
                     `;
@@ -664,7 +669,7 @@ export default class SholatApp {
             container.innerHTML = `
                 <div class="loading-placeholder">
                     <i class="fas fa-spinner fa-spin"></i>
-                    <p>Memuat data sholat...</p>
+                    <p>${t('sholat.loading')}</p>
                 </div>
             `;
         }

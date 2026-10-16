@@ -1,6 +1,7 @@
 import { UMRAH, HAJI, SOURCES } from './manasik-game.js';
 import ManasikScene, { ringPoint, locationFor } from './manasik-scene.js';
 import { progress, starsFor, blip, vibrate } from '../../utils/game-kit.js';
+import { t } from '../../i18n/index.js';
 
 const STORAGE = 'islamhub_manasik_game_v2';
 const clamp = (value, max) => Number.isInteger(value) ? Math.max(0, Math.min(value, max)) : 0;
@@ -53,29 +54,29 @@ export default class ManasikGame {
         this.root.className = 'manasik-game mg-adventure';
         this.root.innerHTML = `
             <header class="mg-header">
-                <div><span class="mg-eyebrow">ISLAMHUB · JELAJAH MANASIK</span>
-                <h3>Langkah kecil. Perjalanan bermakna.</h3>
-                <p>Ikuti jejak perjalanan suci. Cukup tekan mulai, kami pandu langkahmu.</p></div>
+                <div><span class="mg-eyebrow">${t('haji.adv.eyebrow')}</span>
+                <h3>${t('haji.adv.title')}</h3>
+                <p>${t('haji.adv.subtitle')}</p></div>
                 <div class="mg-modes" aria-label="Pilih perjalanan">
-                    <button data-mode="umrah" aria-pressed="true">Umrah <small>5 tahap</small></button>
-                    <button data-mode="haji" aria-pressed="false">Haji tamattu <small>15 tahap</small></button>
+                    <button data-mode="umrah" aria-pressed="true">${t('haji.mode.umrahTitle')} <small>${t('haji.mode.umrahSteps')}</small></button>
+                    <button data-mode="haji" aria-pressed="false">${t('haji.mode.hajiTitle')} <small>${t('haji.mode.hajiSteps')}</small></button>
                 </div>
             </header>
             <div class="mg-layout">
                 <div class="mg-playfield">
                     <div class="mg-world">
                         <canvas width="1080" height="900" tabindex="0" aria-label="Dunia manasik tampak atas"></canvas>
-                        <div class="mg-hud"><span class="mg-location"></span><span class="mg-score" hidden></span><span class="mg-live">SIAP MENJELAJAH</span></div>
-                        <div class="mg-aim" hidden><p>Lontar saat jarum di zona hijau. Kerikil yang meleset tidak dihitung.</p><div class="mg-aim-track"><span class="mg-aim-zone"></span><span class="mg-aim-needle"></span></div><button data-aim-throw>🤲 Lontar (Enter)</button></div>
+                        <div class="mg-hud"><span class="mg-location"></span><span class="mg-score" hidden></span><span class="mg-live">${t('haji.adv.readyToExplore')}</span></div>
+                        <div class="mg-aim" hidden><p>${t('haji.adv.aimHint')}</p><div class="mg-aim-track"><span class="mg-aim-zone"></span><span class="mg-aim-needle"></span></div><button data-aim-throw>${t('haji.adv.throwBtn')}</button></div>
                         <div class="mg-aim mg-qte" hidden><p class="mg-qte-text"></p><button data-qte></button></div>
-                        <div class="mg-world-caption"><span class="mg-scene-tip"></span><small>Ilustrasi lokasi · bukan skala geografis</small></div>
-                        <div class="mg-finish" hidden><span>✦</span><h4>Perjalanan belajar selesai</h4><p></p><button data-again>Jelajahi lagi</button></div>
+                        <div class="mg-world-caption"><span class="mg-scene-tip"></span><small>${t('haji.adv.mapNote')}</small></div>
+                        <div class="mg-finish" hidden><span>✦</span><h4>${t('haji.adv.finishTitle')}</h4><p></p><button data-again>${t('haji.adv.exploreAgain')}</button></div>
                     </div>
                     <div class="mg-controls">
                         <div class="mg-current-objective"><span></span><strong></strong></div>
-                        <div class="mg-primary-controls"><button data-auto class="mg-primary">▶ Mulai tur otomatis</button><button data-walk>Jalan sendiri</button></div>
-                        <div class="mg-secondary-controls"><label>Kecepatan <select data-speed aria-label="Kecepatan simulasi"><option value="1">1× Santai</option><option value="2">2× Cepat</option><option value="3">3× Ringkas</option></select></label><button data-pause disabled>Ⅱ Jeda</button><button data-sound aria-pressed="false" title="Bacakan petunjuk jika suara perangkat tersedia">Bacakan: mati</button><button data-challenge class="mg-challenge" aria-pressed="false" title="Lontaran dengan bidikan, aksi cepat saat tawaf dan sa’i, dan kuis wajib untuk lanjut">🎯 Tantangan: mati</button></div>
-                        <p class="mg-control-hint">Klik tujuan emas atau tekan Enter untuk berjalan. Tahan panah / WASD untuk mengikuti jalur. Aktifkan Tantangan untuk mengumpulkan poin.</p>
+                        <div class="mg-primary-controls"><button data-auto class="mg-primary">${t('haji.adv.startAutoTour')}</button><button data-walk>${t('haji.adv.walkSelf')}</button></div>
+                        <div class="mg-secondary-controls"><label>${t('haji.adv.speed')} <select data-speed aria-label="${t('haji.adv.speed')}"><option value="1">${t('haji.adv.speed1')}</option><option value="2">${t('haji.adv.speed2')}</option><option value="3">${t('haji.adv.speed3')}</option></select></label><button data-pause disabled>${t('haji.adv.pauseBtn')}</button><button data-sound aria-pressed="false" title="${t('haji.adv.soundTitle')}">${t('haji.adv.soundOff')}</button><button data-challenge class="mg-challenge" aria-pressed="false" title="${t('haji.adv.challengeTitle')}">${t('haji.adv.challengeOff')}</button></div>
+                        <p class="mg-control-hint">${t('haji.adv.controlHint')}</p>
                     </div>
                 </div>
                 <section class="mg-mission" aria-label="Panduan tahap aktif">
@@ -85,13 +86,13 @@ export default class ManasikGame {
                     <div class="mg-counter"><span class="mg-count"></span><span class="mg-counter-label"></span></div>
                     <div class="mg-tokens" aria-label="Progres tahap"></div>
                     <div class="mg-feedback" role="status" aria-live="polite"></div>
-                    <button class="mg-action" hidden>Lanjut tahap →</button>
-                    <details class="mg-quiz"><summary>Uji pemahaman <span>opsional</span></summary><div class="mg-choices"></div><p class="mg-quiz-result" role="status"></p></details>
-                    <a class="mg-source" target="_blank" rel="noopener">Baca rujukan manasik ↗</a>
+                    <button class="mg-action" hidden>${t('haji.adv.nextStage')}</button>
+                    <details class="mg-quiz"><summary>${t('haji.adv.quizTitle')} <span>${t('haji.adv.quizOptional')}</span></summary><div class="mg-choices"></div><p class="mg-quiz-result" role="status"></p></details>
+                    <a class="mg-source" target="_blank" rel="noopener">${t('haji.adv.readReference')}</a>
                 </section>
             </div>
-            <section class="mg-journey"><div class="mg-journey-heading"><div><span class="mg-eyebrow">PETA PERJALANAN</span><h4>Setiap tempat, sebuah pelajaran.</h4></div><span class="mg-save-state">Tersimpan di perangkat</span></div><div class="mg-route" aria-label="Tahapan perjalanan"></div></section>
-            <footer class="mg-footer"><span>Simulasi belajar, bukan catatan pelaksanaan ibadah. Haji menggunakan contoh jalur tamattu dan nafar awal.</span><button data-restart>Ulang dari awal</button><div class="mg-reset-confirm" hidden>Hapus progres perjalanan ini? <button data-confirm-reset>Ya, ulangi</button><button data-cancel-reset>Batal</button></div></footer>`;
+            <section class="mg-journey"><div class="mg-journey-heading"><div><span class="mg-eyebrow">${t('haji.adv.routeEyebrow')}</span><h4>${t('haji.adv.routeTitle')}</h4></div><span class="mg-save-state">${t('haji.adv.savedOnDevice')}</span></div><div class="mg-route" aria-label="Tahapan perjalanan"></div></section>
+            <footer class="mg-footer"><span>${t('haji.adv.footerNote')}</span><button data-restart>${t('haji.adv.restartBtn')}</button><div class="mg-reset-confirm" hidden>${t('haji.adv.resetConfirm')} <button data-confirm-reset>${t('haji.adv.yesReset')}</button><button data-cancel-reset>${t('haji.adv.cancelReset')}</button></div></footer>`;
         this.canvas = this.q('canvas');
     }
 
@@ -350,7 +351,7 @@ export default class ManasikGame {
         this.q('.mg-score').textContent = `★ ${this.points} poin`;
         const ch = this.q('[data-challenge]');
         ch.setAttribute('aria-pressed', String(this.challenge));
-        ch.textContent = `🎯 Tantangan: ${this.challenge ? 'aktif' : 'mati'}`;
+        ch.textContent = this.challenge ? t('haji.adv.challengeOn') : t('haji.adv.challengeOff');
         if (this.challenge && this.ready && !this.complete && !this.quizAnswers.includes(this.step)) this.q('.mg-action').textContent = 'Jawab kuis untuk lanjut ↓';
         this.canvas.setAttribute('aria-label', `${m.title}. ${feedback} Enter untuk berjalan; spasi untuk jeda.`);
     }
@@ -468,7 +469,7 @@ export default class ManasikGame {
         }
         this.narration = !this.narration;
         this.q('[data-sound]').setAttribute('aria-pressed', String(this.narration));
-        this.q('[data-sound]').textContent = `Bacakan: ${this.narration ? 'aktif' : 'mati'}`;
+        this.q('[data-sound]').textContent = this.narration ? t('haji.adv.soundOn') : t('haji.adv.soundOff');
         if (this.narration) this.speak(); else this.cancelSpeech();
     }
     speak() {

@@ -1,4 +1,5 @@
 // Lightweight illustrated 2.5D world. No remote models, textures, or WebGL required.
+import { t } from '../../i18n/index.js';
 export const ringPoint = angle => ({ x: 360 + Math.cos(angle) * 184, y: 322 + Math.sin(angle) * 165 });
 export function locationFor(mission) {
     if (mission.type === 'tawaf' || mission.place.includes('Maqam')) return 'Masjidil Haram';
@@ -75,7 +76,7 @@ export default class ManasikScene {
         this.ellipse(12, -8 + stride, 3, 5, '#b78a63');
         this.ellipse(Math.cos(heading) * 2, -29 + Math.sin(phase) * 0.5, 7, 8, '#c19369');
         this.ellipse(Math.cos(heading) * 2 - 2, -32, 5, 4, '#775c42');
-        if (player) { this.rect(-23, -59, 46, 19, '#234c3e', 7); this.label('KAMU', 0, -46, 9, '#fff9df'); }
+        if (player) { this.rect(-23, -59, 46, 19, '#234c3e', 7); this.label(t('haji.scene.you'), 0, -46, 9, '#fff9df'); }
         c.restore();
     }
     arcade() {
@@ -160,7 +161,7 @@ export default class ManasikScene {
             }
             this.mountain(141, 303, 0.75); this.mountain(579, 303, 0.75);
             this.label('SHAFA', 143, 396, 13); this.label('MARWAH', 578, 396, 13);
-            this.label('AREA PENANDA HIJAU', 360, 464, 10);
+            this.label(t('haji.scene.greenMarkers'), 360, 464, 10);
             this.tree(52, 486); this.tree(656, 487);
         } else if (m.type === 'rami') {
             this.rect(88, 193, 555, 275, '#bfc2ad', 26);
@@ -182,8 +183,8 @@ export default class ManasikScene {
             if (location === 'Arafah') {
                 this.mountain(480, 248, 1.9); this.mountain(289, 224, 1.1);
                 this.rect(484, 117, 6, 17, '#efeada', 1);
-                this.label('PADANG ARAFAH', 445, 290, 16);
-                this.label('Wukuf di Arafah · tidak harus mendaki bukit', 376, 532, 12);
+                this.label(t('haji.scene.arafahPlain'), 445, 290, 16);
+                this.label(t('haji.scene.arafahNote'), 376, 532, 12);
             } else if (location === 'Mina' || night) {
                 for (let i = 0; i < 10; i++) {
                     const x = 122 + (i % 5) * 108, y = 155 + Math.floor(i / 5) * 100;
@@ -214,7 +215,7 @@ export default class ManasikScene {
         // Quiet compass-like motif provides orientation without claiming geographic accuracy.
         this.ellipse(662, 529, 23, 23, '#fdf9e5aa', '#b9c2a7');
         this.poly([[662, 513], [657, 532], [662, 529], [667, 532]], '#57735d');
-        this.label('JELAJAH', 662, 569, 8);
+        this.label(t('haji.scene.explore'), 662, 569, 8);
     }
 
     cacheBackground(m) {
