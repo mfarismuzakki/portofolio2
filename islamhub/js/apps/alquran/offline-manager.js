@@ -1,10 +1,6 @@
 // Mode Offline for the Qur'an app: what is really stored on this device, and downloads
 // that can be resumed. Status is read from Cache Storage, never from a saved flag.
-//
-//  - Text: the 604 page files (translation + tafsir) and the Mushaf Standar Indonesia text.
-//    Both are cached by sw.js when fetched; "Simpan semua teks" fetches every page once.
-//  - Audio: page murottal (Mishary Alafasy) from jsDelivr, stored in 'islamhub-alquran-audio'
-//    per juz, because the full set is ~1.6 GB.
+import { t, getLang } from '../../i18n/index.js';
 
 const AUDIO_CACHE = 'islamhub-alquran-audio';
 const DATA_CACHE = 'islamhub-data';
@@ -57,35 +53,35 @@ export default class QuranOfflineManager {
         modal.innerHTML = `
             <div class="modal-content modal-content-fullscreen qo-modal">
                 <div class="modal-header">
-                    <h2><i class="fas fa-cloud-arrow-down"></i> Mode Offline</h2>
-                    <button class="modal-close" data-close aria-label="Tutup"><i class="fas fa-times"></i></button>
+                    <h2><i class="fas fa-cloud-arrow-down"></i> ${t('alquran.offline.title')}</h2>
+                    <button class="modal-close" data-close aria-label="${t('common.close')}"><i class="fas fa-times"></i></button>
                 </div>
                 <div class="modal-body modal-body-fullscreen">
-                    <p class="qo-intro">Simpan Al-Qur'an di perangkat ini agar bisa dibaca dan didengar tanpa internet. Status di bawah dibaca langsung dari penyimpanan perangkat.</p>
+                    <p class="qo-intro">${t('alquran.offline.intro')}</p>
                     <section class="offline-card qo-card" data-qo="text">
                         <div class="offline-card-header"><i class="fas fa-book-quran offline-card-icon"></i>
-                            <div class="offline-card-title"><h4>Teks, terjemahan & tafsir</h4><p class="qo-text-status">Memeriksa…</p></div></div>
+                            <div class="offline-card-title"><h4>${t('alquran.offline.textTitle')}</h4><p class="qo-text-status">${t('alquran.offline.checking')}</p></div></div>
                         <div class="qo-bar"><i></i></div>
-                        <button class="btn-primary qo-text-btn" type="button"><i class="fas fa-download"></i> Simpan semua teks (±16 MB)</button>
+                        <button class="btn-primary qo-text-btn" type="button"><i class="fas fa-download"></i> ${t('alquran.offline.saveAllText')}</button>
                     </section>
                     <section class="offline-card qo-card" data-qo="audio">
                         <div class="offline-card-header"><i class="fas fa-headphones offline-card-icon"></i>
-                            <div class="offline-card-title"><h4>Audio murottal per halaman</h4><p>Mishary Rashid Alafasy · ±${Math.round(AVG_PAGE_MB * 20)} MB per juz</p></div></div>
-                        <label class="qo-label">Pilih juz
+                            <div class="offline-card-title"><h4>${t('alquran.offline.audioTitle')}</h4><p>${t('alquran.offline.audioDesc', { mb: Math.round(AVG_PAGE_MB * 20) })}</p></div></div>
+                        <label class="qo-label">${t('alquran.offline.chooseJuz')}
                             <select class="font-select qo-juz">
-                                ${Array.from({ length: 30 }, (_, i) => `<option value="${i + 1}">Juz ${i + 1}</option>`).join('')}
-                                <option value="all">Semua juz (±${mb(AVG_PAGE_MB * PAGES)})</option>
+                                ${Array.from({ length: 30 }, (_, i) => `<option value="${i + 1}">${t('alquran.juz', { n: i + 1 })}</option>`).join('')}
+                                <option value="all">${t('alquran.offline.allJuz', { size: mb(AVG_PAGE_MB * PAGES) })}</option>
                             </select>
                         </label>
-                        <p class="qo-audio-status">Memeriksa…</p>
+                        <p class="qo-audio-status">${t('alquran.offline.checking')}</p>
                         <div class="qo-bar"><i></i></div>
                         <div class="qo-actions">
-                            <button class="btn-primary qo-audio-btn" type="button"><i class="fas fa-download"></i> Unduh</button>
-                            <button class="btn-secondary qo-delete-btn" type="button"><i class="fas fa-trash-alt"></i> Hapus</button>
+                            <button class="btn-primary qo-audio-btn" type="button"><i class="fas fa-download"></i> ${t('alquran.offline.download')}</button>
+                            <button class="btn-secondary qo-delete-btn" type="button"><i class="fas fa-trash-alt"></i> ${t('common.delete')}</button>
                         </div>
                         <p class="qo-total"></p>
                     </section>
-                    <p class="qo-note"><i class="fas fa-circle-info"></i> Unduhan bisa dilanjutkan: file yang sudah tersimpan dilewati. Hapus Data Cache di Beranda tidak menghapus audio kecuali dipilih.</p>
+                    <p class="qo-note"><i class="fas fa-circle-info"></i> ${t('alquran.offline.note')}</p>
                 </div>
             </div>`;
         document.body.appendChild(modal);
@@ -118,23 +114,24 @@ export default class QuranOfflineManager {
         if (!this.modal?.isConnected) return;
         const q = sel => this.modal.querySelector(sel);
         const { pages, kemenag } = await cachedTextPages();
-        q('.qo-text-status').textContent = `${pages} / ${PAGES} halaman tersimpan · teks Standar Indonesia ${kemenag ? 'tersedia' : 'belum tersimpan'}`;
+        const kemenagStatus = kemenag ? t('alquran.offline.kemenagAvailable') : t('alquran.offline.kemenagNotSaved');
+        q('.qo-text-status').textContent = t('alquran.offline.textStatus', { pages, total: PAGES, kemenag: kemenagStatus });
         q('[data-qo="text"] .qo-bar i').style.width = `${pages / PAGES * 100}%`;
-        if (!this.busy) q('.qo-text-btn').innerHTML = pages >= PAGES ? '<i class="fas fa-check"></i> Semua teks tersimpan' : '<i class="fas fa-download"></i> Simpan semua teks (±16 MB)';
+        if (!this.busy) q('.qo-text-btn').innerHTML = pages >= PAGES ? `<i class="fas fa-check"></i> ${t('alquran.offline.allTextSaved')}` : `<i class="fas fa-download"></i> ${t('alquran.offline.saveAllText')}`;
         q('.qo-text-btn').disabled = !this.busy && pages >= PAGES;
 
         const have = await cachedAudioPages();
         const sel = this.selected();
         const got = sel.filter(p => have.has(p)).length;
-        q('.qo-audio-status').textContent = `${got} / ${sel.length} halaman tersimpan · sisa ±${mb((sel.length - got) * AVG_PAGE_MB)}`;
+        q('.qo-audio-status').textContent = t('alquran.offline.audioStatus', { got, total: sel.length, rem: mb((sel.length - got) * AVG_PAGE_MB) });
         q('[data-qo="audio"] .qo-bar i').style.width = `${sel.length ? got / sel.length * 100 : 0}%`;
-        if (!this.busy) q('.qo-audio-btn').innerHTML = got >= sel.length ? '<i class="fas fa-check"></i> Sudah tersimpan' : `<i class="fas fa-download"></i> Unduh ${got ? 'sisanya' : ''}`;
+        if (!this.busy) q('.qo-audio-btn').innerHTML = got >= sel.length ? `<i class="fas fa-check"></i> ${t('alquran.offline.alreadySaved')}` : `<i class="fas fa-download"></i> ${got ? t('alquran.offline.downloadRemaining') : t('alquran.offline.download')}`;
         q('.qo-audio-btn').disabled = !this.busy && got >= sel.length;
         q('.qo-delete-btn').disabled = this.busy || got === 0;
-        let total = `Audio tersimpan: ${have.size} halaman (±${mb(have.size * AVG_PAGE_MB)}).`;
+        let total = t('alquran.offline.total', { count: have.size, size: mb(have.size * AVG_PAGE_MB) });
         try {
             const est = await navigator.storage?.estimate?.();
-            if (est?.quota) total += ` Ruang tersedia untuk aplikasi: ±${mb((est.quota - est.usage) / 1048576)}.`;
+            if (est?.quota) total += t('alquran.offline.spaceAvail', { size: mb((est.quota - est.usage) / 1048576) });
         } catch (e) { /* estimate unsupported */ }
         q('.qo-total').textContent = total;
     }
@@ -146,7 +143,10 @@ export default class QuranOfflineManager {
         let done = 0, failed = 0;
         const queue = [...items];
         const btn = this.modal.querySelector(button);
-        const update = () => { btn.innerHTML = `<i class="fas fa-stop"></i> Hentikan (${done}/${items.length}${failed ? `, ${failed} gagal` : ''})`; };
+        const update = () => {
+            const failedStr = failed ? `, ${failed} ` + (getLang() === 'en' ? 'failed' : 'gagal') : '';
+            btn.innerHTML = `<i class="fas fa-stop"></i> ${t('alquran.offline.stopBtn', { done, total: items.length, failed: failedStr })}`;
+        };
         update();
         const worker = async () => {
             while (queue.length && !signal.aborted) {
@@ -161,9 +161,9 @@ export default class QuranOfflineManager {
         const stopped = signal.aborted;
         this.abort = null;
         await this.refresh();
-        const msg = stopped ? `${label} dihentikan. ${done} berhasil disimpan, bisa dilanjutkan kapan saja.`
-            : failed ? `${label}: ${done} berhasil, ${failed} gagal. Periksa koneksi lalu tekan unduh lagi untuk melanjutkan.`
-            : `${label} selesai: ${done} file tersimpan.`;
+        const msg = stopped ? t('alquran.offline.stopped', { label, done })
+            : failed ? t('alquran.offline.failed', { label, done, failed })
+            : t('alquran.offline.done', { label, done });
         this.app._notify?.(msg, failed && !stopped ? 'warning' : 'success');
     }
 
@@ -179,7 +179,7 @@ export default class QuranOfflineManager {
             await cache.put(url, res);
             // Also warm the Indonesian text for the page (served from the shell when installed).
             fetch(new URL(`${base}/js/data/alquran/kemenag/Page${pad(p)}.json`, location.href).href, { signal }).catch(() => {});
-        }, '.qo-text-btn', 'Simpan teks');
+        }, '.qo-text-btn', t('alquran.offline.saveTextLabel'));
     }
 
     async downloadAudio() {
@@ -191,17 +191,17 @@ export default class QuranOfflineManager {
             const res = await fetch(url, { mode: 'cors', signal });
             if (!res.ok) throw new Error(res.status);
             await cache.put(url, res);
-        }, '.qo-audio-btn', 'Unduh audio');
+        }, '.qo-audio-btn', t('alquran.offline.downloadAudioLabel'));
     }
 
     async deleteAudio() {
         const sel = this.selected();
         const label = this.modal.querySelector('.qo-juz').selectedOptions[0].textContent;
-        if (!confirm(`Hapus audio ${label} dari perangkat ini?`)) return;
+        if (!confirm(t('alquran.offline.confirmDeleteAudio', { label }))) return;
         const cache = await caches.open(AUDIO_CACHE);
         // older downloads may be stored under another source URL of the same file
         await Promise.all(sel.flatMap(p => quranAudioCandidates(getAudioPathForPage(p)).map(u => cache.delete(u))));
         await this.refresh();
-        this.app._notify?.(`Audio ${label} dihapus dari perangkat.`, 'success');
+        this.app._notify?.(t('alquran.offline.audioDeleted', { label }), 'success');
     }
 }
