@@ -2,9 +2,12 @@
 import islamHubConfig from './config.js';
 import { progress } from './utils/game-kit.js';
 import { syncInlineColors } from './utils/theme-adapter.js';
+import { t, locale, getLang } from './i18n/index.js';
+import { formatPrayerName } from './app.js';
 
 const PRAYERS = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
 const HIJRI_MONTHS = ['Muharram', 'Safar', 'Rabiul Awal', 'Rabiul Akhir', 'Jumadil Ula', 'Jumadil Akhirah', 'Rajab', "Sya'ban", 'Ramadhan', 'Syawal', "Dzulqa'dah", 'Dzulhijjah'];
+const HIJRI_MONTHS_EN = ['Muharram', 'Safar', 'Rabi\' al-Awwal', 'Rabi\' al-Thani', 'Jumada al-Ula', 'Jumada al-Akhirah', 'Rajab', "Sha'ban", 'Ramadan', 'Shawwal', "Dhu al-Qa'dah", 'Dhu al-Hijjah'];
 const THEME_KEY = 'islamhub_theme';
 
 // Quick access: eight most-used apps. Icons are Font Awesome except the custom du'a icon.
@@ -33,25 +36,33 @@ export function applyTheme(theme) {
     const btn = document.getElementById('skThemeBtn');
     if (btn) {
         btn.innerHTML = theme === 'sakinah' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-        btn.title = theme === 'sakinah' ? 'Ganti ke tema Klasik (gelap)' : 'Ganti ke tema Sakinah (terang)';
+        btn.title = theme === 'sakinah' ? t('home.themeToClassic') : t('home.themeToSakinah');
         btn.setAttribute('aria-label', btn.title);
     }
 }
 
 function hijriText() {
-    // Prefer the Adzan app's (possibly corrected) Hijri date so both screens agree.
-    const fromAdzan = document.querySelector('#currentDate .hijri-corrected')?.textContent
-        || document.getElementById('currentDate')?.textContent?.split('•')[1];
-    if (fromAdzan && /\d/.test(fromAdzan)) return fromAdzan.trim().replace(/\s*H$/, '') + ' H';
+    const isEn = getLang() === 'en';
+    if (!isEn) {
+        // Prefer the Adzan app's (possibly corrected) Hijri date so both screens agree.
+        const fromAdzan = document.querySelector('#currentDate .hijri-corrected')?.textContent
+            || document.getElementById('currentDate')?.textContent?.split('•')[1];
+        if (fromAdzan && /\d/.test(fromAdzan)) return fromAdzan.trim().replace(/\s*H$/, '') + ' H';
+    }
     try {
         const d = islamHubConfig.getAdjustedDate();
         const parts = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'numeric', year: 'numeric' }).formatToParts(d);
         const get = t => Number(parts.find(p => p.type === t)?.value);
-        return `${get('day')} ${HIJRI_MONTHS[get('month') - 1]} ${get('year')} H`;
+        const months = isEn ? HIJRI_MONTHS_EN : HIJRI_MONTHS;
+        const suffix = isEn ? 'AH' : 'H';
+        return `${get('day')} ${months[get('month') - 1]} ${get('year')} ${suffix}`;
     } catch { return ''; }
 }
 
 function gregorianText() {
+    if (getLang() === 'en') {
+        return new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+    }
     const s = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
     return s.replace(/^Minggu/, 'Ahad');
 }
@@ -99,17 +110,20 @@ export default class SakinahHome {
         if (el) el.textContent = [gregorianText(), hijriText()].filter(Boolean).join(' · ');
         const hour = new Date().getHours();
         const greet = document.getElementById('skGreeting');
-        if (greet) greet.textContent = 'Assalamu’alaikum';
+        if (greet) greet.textContent = t('home.greeting');
         this.root.querySelector('.sk-home')?.setAttribute('data-daypart', hour < 11 ? 'pagi' : hour < 15 ? 'siang' : hour < 18 ? 'sore' : 'malam');
     }
 
     renderQuick() {
         const box = document.getElementById('skQuick');
         if (!box) return;
-        box.innerHTML = QUICK.map(q => `<button class="sk-q" data-go="${q.id}" data-tone="${q.tone}">
-            <span class="sk-q-ic">${q.svg ? doaIcon() : `<i class="fas ${q.icon}"></i>`}</span><span>${q.label}</span></button>`).join('');
+        box.innerHTML = QUICK.map(q => {
+            const label = t('home.quick.' + q.id) || q.label;
+            return `<button class="sk-q" data-go="${q.id}" data-tone="${q.tone}">
+                <span class="sk-q-ic">${q.svg ? doaIcon() : `<i class="fas ${q.icon}"></i>`}</span><span>${label}</span></button>`;
+        }).join('');
         const all = document.getElementById('skAllApps');
-        if (all) all.textContent = `Semua ${this.apps.length} ›`;
+        if (all) all.textContent = t('home.allApps', { count: this.apps.length });
     }
 
     renderContinue() {
@@ -124,16 +138,18 @@ export default class SakinahHome {
             const name = info?.name_latin || info?.englishName || info?.name || `Surah ${last.surah}`;
             const pct = total ? Math.min(100, Math.round(last.verse / total * 100)) : 0;
             const when = last.timestamp ? new Date(last.timestamp) : null;
-            const whenText = when ? when.toLocaleString('id-ID', { weekday: 'long', hour: '2-digit', minute: '2-digit' }) : '';
+            const whenText = when ? when.toLocaleString(locale(), { weekday: 'long', hour: '2-digit', minute: '2-digit' }) : '';
+            const title = t('home.lastRead', { name, verse: last.verse });
+            const sub = whenText ? t('home.lastReadAt', { time: whenText }) : t('home.continueLast');
             box.innerHTML = `<button class="sk-cont" data-resume="1">
                 <span class="sk-cont-ic"><i class="fas fa-book-open"></i></span>
-                <span class="sk-cont-body"><strong>QS. ${name} · ayat ${last.verse}</strong><small>${whenText ? `Terakhir dibaca ${whenText}` : 'Lanjutkan bacaan terakhir'}</small>
+                <span class="sk-cont-body"><strong>${title}</strong><small>${sub}</small>
                 ${total ? `<span class="sk-bar"><i style="width:${pct}%"></i></span>` : ''}</span>
                 <span class="sk-go"><i class="fas fa-play"></i></span></button>`;
         } else {
             box.innerHTML = `<button class="sk-cont" data-go="alquran">
                 <span class="sk-cont-ic"><i class="fas fa-book-open"></i></span>
-                <span class="sk-cont-body"><strong>Mulai tilawah hari ini</strong><small>Posisi bacaan terakhir akan tersimpan di sini</small></span>
+                <span class="sk-cont-body"><strong>${t('home.startToday')}</strong><small>${t('home.startTodayDesc')}</small></span>
                 <span class="sk-go"><i class="fas fa-play"></i></span></button>`;
         }
     }
@@ -143,9 +159,19 @@ export default class SakinahHome {
         if (!el) return;
         const p = progress.get(), l = progress.level(p.xp);
         const best = Object.entries(p.best).sort((a, b) => b[1].stars - a[1].stars || b[1].score - a[1].score)[0];
-        const names = { 'sholat-urut': 'Susun Gerakan', 'sholat-pose': 'Tebak Gerakan 3D', 'sholat-bacaan': 'Cocokkan Bacaan', 'sholat-fakta': 'Benar atau Salah', 'haji-jumrah': 'Lontar Jumrah', 'haji-hari': 'Hari Manasik', 'haji-ihram': 'Boleh atau Dilarang', 'haji-kuis': 'Kuis Manasik' };
-        el.innerHTML = `<span class="sk-mini-lbl">Arena Game</span><b>Level ${l.level}</b>
-            <small>${best ? `${'★'.repeat(best[1].stars)}${'☆'.repeat(3 - best[1].stars)} ${names[best[0]] || 'Manasik'}` : 'Main & kumpulkan bintang'}</small>`;
+        const names = {
+            'sholat-urut': t('games.sholatUrut'),
+            'sholat-pose': t('games.sholatPose'),
+            'sholat-bacaan': t('games.sholatBacaan'),
+            'sholat-fakta': t('games.sholatFakta'),
+            'haji-jumrah': t('games.hajiJumrah'),
+            'haji-hari': t('games.hajiHari'),
+            'haji-ihram': t('games.hajiIhram'),
+            'haji-kuis': t('games.hajiKuis')
+        };
+        const bestText = best ? `${'★'.repeat(best[1].stars)}${'☆'.repeat(3 - best[1].stars)} ${names[best[0]] || t('app.haji.name')}` : t('home.playCollectStars');
+        el.innerHTML = `<span class="sk-mini-lbl">${t('home.arenaGame')}</span><b>${t('home.level', { level: l.level })}</b>
+            <small>${bestText}</small>`;
     }
 
     async loadLive() {
@@ -156,9 +182,10 @@ export default class SakinahHome {
             const data = await res.json();
             const pick = data.channels.find(c => c.group === 'kajian' && c.live) || data.channels.find(c => c.live) || data.channels[0];
             const count = data.channels.filter(c => c.live).length;
-            el.innerHTML = `<span class="sk-mini-lbl"><span class="sk-dot"></span>${count ? `${count} live` : 'Kajian'}</span><b>${pick.name}</b><small>${pick.desc}</small>`;
+            const tag = count ? t('home.liveTag', { count }) : t('nav.streaming');
+            el.innerHTML = `<span class="sk-mini-lbl"><span class="sk-dot"></span>${tag}</span><b>${pick.name}</b><small>${pick.desc}</small>`;
         } catch {
-            el.innerHTML = '<span class="sk-mini-lbl"><span class="sk-dot"></span>Live</span><b>Kajian & Haramain</b><small>Radio dan video kajian</small>';
+            el.innerHTML = `<span class="sk-mini-lbl"><span class="sk-dot"></span>Live</span><b>${t('home.liveStreams')}</b><small>${t('home.liveStreamsDesc')}</small>`;
         }
     }
 
@@ -166,7 +193,7 @@ export default class SakinahHome {
     renderTimes(times, nextName) {
         const box = document.getElementById('skTimes');
         if (!box || !times) return;
-        box.innerHTML = PRAYERS.filter(n => times[n]).map(n => `<span class="${n === nextName ? 'on' : ''}">${n}<b>${times[n]}</b></span>`).join('');
+        box.innerHTML = PRAYERS.filter(n => times[n]).map(n => `<span class="${n === nextName ? 'on' : ''}">${formatPrayerName(n)}<b>${times[n]}</b></span>`).join('');
     }
 
     async resumeQuran() {
