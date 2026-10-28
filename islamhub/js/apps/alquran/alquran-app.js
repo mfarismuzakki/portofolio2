@@ -1,4 +1,5 @@
 /* ===== Al-Qur'an App - IslamHub ===== */
+import { t, locale, getLang } from '../../i18n/index.js';
 
 // The Kemenag text writes pause marks (waqf: U+06D6..U+06ED, U+0610..U+061A) as a separate
 // "word" after a space. A line could then start with a lone mark, leaving the right edge of
@@ -192,7 +193,7 @@ export default class AlQuranApp {
         header.innerHTML = `
             <div class="alquran-title">
                 <h1><i class="fas fa-book-quran"></i> Al-Qur'an</h1>
-                <p>Mushaf Standar Indonesia, terjemah, tafsir, dan murottal</p>
+                <p>${t('alquran.subtitle')}</p>
             </div>
         `;
 
@@ -200,12 +201,12 @@ export default class AlQuranApp {
         const quickNav = document.createElement('div');
         quickNav.className = 'quick-nav';
         quickNav.innerHTML = `
-            <button class="nav-btn" data-action="surahList"><i class="fas fa-list"></i><span>Daftar Surat</span></button>
-            <button class="nav-btn" data-action="pageList"><i class="fas fa-file"></i><span>Buka Halaman</span></button>
-            <button class="nav-btn" data-action="muratal"><i class="fas fa-headphones"></i><span>Muratal</span></button>
-            <button class="nav-btn" data-action="bookmarks"><i class="fas fa-heart"></i><span>Tersimpan</span></button>
-            <button class="nav-btn" data-action="offline"><i class="fas fa-download"></i><span>Mode Offline</span></button>
-            <button class="nav-btn" data-action="settings"><i class="fas fa-cog"></i><span>Pengaturan</span></button>
+            <button class="nav-btn" data-action="surahList"><i class="fas fa-list"></i><span>${t('alquran.nav.surahList')}</span></button>
+            <button class="nav-btn" data-action="pageList"><i class="fas fa-file"></i><span>${t('alquran.nav.pageList')}</span></button>
+            <button class="nav-btn" data-action="muratal"><i class="fas fa-headphones"></i><span>${t('alquran.nav.muratal')}</span></button>
+            <button class="nav-btn" data-action="bookmarks"><i class="fas fa-heart"></i><span>${t('alquran.nav.bookmarks')}</span></button>
+            <button class="nav-btn" data-action="offline"><i class="fas fa-download"></i><span>${t('alquran.offline.title')}</span></button>
+            <button class="nav-btn" data-action="settings"><i class="fas fa-cog"></i><span>${t('alquran.settings.title')}</span></button>
         `;
 
         // Reading Streak widget
@@ -213,12 +214,12 @@ export default class AlQuranApp {
         const streakHTML = `
             <div class="alquran-streak-card">
                 <div class="alquran-streak-info">
-                    <span class="alquran-streak-label">Streak Membaca</span>
+                    <span class="alquran-streak-label">${t('alquran.streak.label')}</span>
                     <div class="alquran-streak-count">
                         <span class="streak-num">${streak.count}</span>
-                        <span class="streak-unit">hari</span>
+                        <span class="streak-unit">${t('alquran.streak.days')}</span>
                     </div>
-                    ${streak.longest > 0 ? `<span class="alquran-streak-longest"><i class="fas fa-trophy"></i> Terpanjang: ${streak.longest} hari</span>` : ''}
+                    ${streak.longest > 0 ? `<span class="alquran-streak-longest"><i class="fas fa-trophy"></i> ${t('alquran.streak.longest', { n: streak.longest })}</span>` : ''}
                 </div>
                 <div class="alquran-streak-flame">
                     <i class="fas fa-fire"></i>
@@ -238,15 +239,15 @@ export default class AlQuranApp {
                     <div class="last-read-card">
                         <div class="last-read-header">
                             <i class="fas fa-book-reader"></i>
-                            <span>Lanjutkan Bacaan</span>
+                            <span>${t('alquran.lastRead.title')}</span>
                         </div>
                         <div class="last-read-content" data-action="resumeReading" data-surah="${lastRead.surah}" data-verse="${lastRead.verse}">
                             <div class="last-read-surah">
                                 <h3>${surahInfo.nameArabic}</h3>
-                                <p>${surahInfo.name} • ${surahInfo.verses} ayat</p>
+                                <p>${surahInfo.name} • ${t('alquran.versesCount', { n: surahInfo.verses })}</p>
                             </div>
                             <div class="last-read-verse">
-                                <span class="verse-marker">Ayat ${lastRead.verse}</span>
+                                <span class="verse-marker">${t('alquran.verseNumber', { n: lastRead.verse })}</span>
                                 <i class="fas fa-chevron-right"></i>
                             </div>
                         </div>
@@ -265,15 +266,15 @@ export default class AlQuranApp {
                     <span class="popular-surah-num">${s.number}</span>
                     <div class="popular-surah-arabic">${s.nameArabic}</div>
                     <div class="popular-surah-name">${s.name}</div>
-                    <div class="popular-surah-meta">${s.verses} ayat</div>
+                    <div class="popular-surah-meta">${t('alquran.versesCount', { n: s.verses })}</div>
                 </div>
             `).join('');
         const popularSection = document.createElement('div');
         popularSection.className = 'popular-surahs-section';
         popularSection.innerHTML = `
             <div class="popular-surahs-header">
-                <h3><i class="fas fa-star"></i> Surah Pilihan</h3>
-                <button class="see-all" data-action="surahList">Lihat Semua <i class="fas fa-chevron-right"></i></button>
+                <h3><i class="fas fa-star"></i> ${t('alquran.popular.title')}</h3>
+                <button class="see-all" data-action="surahList">${t('alquran.popular.seeAll')} <i class="fas fa-chevron-right"></i></button>
             </div>
             <div class="popular-surahs-scroll">${popularCards}</div>
         `;
@@ -282,10 +283,10 @@ export default class AlQuranApp {
         const infoSection = document.createElement('div');
         infoSection.className = 'quran-info-simple';
         infoSection.innerHTML = `
-            <p><i class="fas fa-book"></i> <strong>Mushaf:</strong> ${this.settings.mushafScript === 'madinah' ? 'Madinah (Rasm Utsmani)' : 'Standar Indonesia (Kemenag)'}</p>
-            <p><i class="fas fa-language"></i> <strong>Terjemahan:</strong> Kemenag RI</p>
-            <p><i class="fas fa-book-open"></i> <strong>Tafsir:</strong> Kemenag RI</p>
-            <p><i class="fas fa-microphone"></i> <strong>Qari:</strong> Mishary Rashid Alafasy</p>
+            <p><i class="fas fa-book"></i> <strong>${t('alquran.info.mushaf')}</strong> ${this.settings.mushafScript === 'madinah' ? t('alquran.info.mushafMadinah') : t('alquran.info.mushafKemenag')}</p>
+            <p><i class="fas fa-language"></i> <strong>${t('alquran.info.translation')}</strong> ${t('alquran.info.translationKemenag')}</p>
+            <p><i class="fas fa-book-open"></i> <strong>${t('alquran.info.tafsir')}</strong> ${t('alquran.info.tafsirKemenag')}</p>
+            <p><i class="fas fa-microphone"></i> <strong>${t('alquran.info.qari')}</strong> Mishary Rashid Alafasy</p>
         `;
 
         // Assemble
@@ -561,17 +562,17 @@ export default class AlQuranApp {
 
             await audioObj.play();
             // this.isPlaying is already true
-            if (audioToggle) audioToggle.innerHTML = '<i class="fas fa-pause"></i><span>Jeda</span>';
+            if (audioToggle) audioToggle.innerHTML = `<i class="fas fa-pause"></i><span>${t('common.pause')}</span>`;
             const pagePlayBtnFresh = this.container?.querySelector('[data-play-page]');
-            if (pagePlayBtnFresh) pagePlayBtnFresh.innerHTML = '<i class="fas fa-pause"></i> Jeda Audio';
+            if (pagePlayBtnFresh) pagePlayBtnFresh.innerHTML = `<i class="fas fa-pause"></i> ${t('common.pause')}`;
             const progress = document.getElementById('alqAudioProgress'); if (progress) progress.style.display = 'block';
         } catch (err) {
             console.error('Audio error', err);
             this.isPlaying = false;
             // Error notification disabled - all audio is available
-            const audioToggle = document.getElementById('alqAudioToggle'); if (audioToggle) audioToggle.innerHTML = '<i class="fas fa-play"></i><span>Putar Audio</span>';
+            const audioToggle = document.getElementById('alqAudioToggle'); if (audioToggle) audioToggle.innerHTML = `<i class="fas fa-play"></i><span>${t('alquran.playAudio')}</span>`;
             const pagePlayBtnErr = this.container?.querySelector('[data-play-page]');
-            if (pagePlayBtnErr) pagePlayBtnErr.innerHTML = '<i class="fas fa-play"></i> Putar Audio';
+            if (pagePlayBtnErr) pagePlayBtnErr.innerHTML = `<i class="fas fa-play"></i> ${t('alquran.playAudio')}`;
         } finally {
             this._isStartingAudio = false;
         }
@@ -580,9 +581,9 @@ export default class AlQuranApp {
     pauseAudio() {
         if (this.audio && this.isPlaying) {
             this.audio.pause(); this.isPlaying = false;
-            const audioToggle = document.getElementById('alqAudioToggle'); if (audioToggle) audioToggle.innerHTML = '<i class="fas fa-play"></i><span>Putar Audio</span>';
+            const audioToggle = document.getElementById('alqAudioToggle'); if (audioToggle) audioToggle.innerHTML = `<i class="fas fa-play"></i><span>${t('alquran.playAudio')}</span>`;
             const pagePlayBtn = this.container?.querySelector('[data-play-page]');
-            if (pagePlayBtn) pagePlayBtn.innerHTML = '<i class="fas fa-play"></i> Putar Audio';
+            if (pagePlayBtn) pagePlayBtn.innerHTML = `<i class="fas fa-play"></i> ${t('alquran.playAudio')}`;
         }
     }
 
@@ -640,9 +641,9 @@ export default class AlQuranApp {
 
     _onAudioEnded() {
         this.isPlaying = false;
-        const audioToggle = document.getElementById('alqAudioToggle'); if (audioToggle) audioToggle.innerHTML = '<i class="fas fa-play"></i><span>Putar Audio</span>';
+        const audioToggle = document.getElementById('alqAudioToggle'); if (audioToggle) audioToggle.innerHTML = `<i class="fas fa-play"></i><span>${t('alquran.playAudio')}</span>`;
         const pagePlayBtn = this.container?.querySelector('[data-play-page]');
-        if (pagePlayBtn) pagePlayBtn.innerHTML = '<i class="fas fa-play"></i> Putar Audio';
+        if (pagePlayBtn) pagePlayBtn.innerHTML = `<i class="fas fa-play"></i> ${t('alquran.playAudio')}`;
         if (this.settings.autoPlayNext && this.currentPage < this.totalPages) {
             setTimeout(async () => {
                 this.currentPage++;
@@ -677,7 +678,7 @@ export default class AlQuranApp {
                        || this.QURAN_SURAHS.find(s => pageNum >= s.startPage && pageNum <= s.endPage);
 
             if (!surah) {
-                this._notify('Halaman tidak ditemukan', 'error');
+                this._notify(t('alquran.notify.failedLoadPage'), 'error');
                 return;
             }
 
@@ -703,7 +704,7 @@ export default class AlQuranApp {
 
         } catch (error) {
             console.error('[openPage] Error:', error);
-            this._notify('Gagal membuka halaman: ' + error.message, 'error');
+            this._notify(t('alquran.notify.failedLoadPage') + ': ' + error.message, 'error');
         }
     }
 
@@ -730,7 +731,7 @@ export default class AlQuranApp {
             // Load page data
             const pageData = await this.loadPageData(this.currentPage);
             if (!pageData) {
-                this._notify('Gagal memuat halaman', 'error');
+                this._notify(t('alquran.notify.failedLoadPage'), 'error');
                 return;
             }
 
@@ -751,17 +752,17 @@ export default class AlQuranApp {
             sidebar.id = 'quranSidebar';
             sidebar.innerHTML = `
             <div class="sidebar-header">
-                <h3>Navigasi</h3>
+                <h3>${t('alquran.sidebar.nav')}</h3>
                 <button class="sidebar-close" id="closeSidebar"><i class="fas fa-times"></i></button>
             </div>
             <div class="sidebar-tabs">
-                <button class="sidebar-tab active" data-tab="surah">Surat</button>
-                <button class="sidebar-tab" data-tab="juz">Juz</button>
-                <button class="sidebar-tab" data-tab="page">Halaman</button>
+                <button class="sidebar-tab active" data-tab="surah">${t('alquran.sidebar.surah')}</button>
+                <button class="sidebar-tab" data-tab="juz">${t('alquran.sidebar.juz')}</button>
+                <button class="sidebar-tab" data-tab="page">${t('alquran.sidebar.page')}</button>
             </div>
             <div class="sidebar-content">
                 <div class="sidebar-search">
-                    <input type="text" placeholder="Cari surat..." id="sidebarSearch">
+                    <input type="text" placeholder="${t('alquran.sidebar.searchSurah')}" id="sidebarSearch">
                 </div>
                 <div class="sidebar-list" id="sidebarList">
                     <!-- Dynamic content -->
@@ -783,26 +784,26 @@ export default class AlQuranApp {
                 <button class="floating-nav-btn" id="btnBackHome" title="Home"><i class="fas fa-home"></i></button>
                 <div class="floating-surah-info-inline">
                     <span class="floating-surah-name">${surahNames}</span>
-                    <span class="floating-surah-meta">Halaman ${this.currentPage}</span>
+                    <span class="floating-surah-meta">${t('alquran.pageTitle', { n: this.currentPage })}</span>
                 </div>
             </div>
             <div class="floating-header-center">
                 <div class="floating-mode-toggle">
-                    <button class="floating-mode-btn ${this.viewMode === 'reading' ? 'active' : ''}" data-mode="reading" title="Mode Baca">
+                    <button class="floating-mode-btn ${this.viewMode === 'reading' ? 'active' : ''}" data-mode="reading" title="${t('alquran.mode.reading')}">
                         <i class="fas fa-book"></i>
                     </button>
-                    <button class="floating-mode-btn ${this.viewMode === 'translation' ? 'active' : ''}" data-mode="translation" title="Mode Terjemahan">
+                    <button class="floating-mode-btn ${this.viewMode === 'translation' ? 'active' : ''}" data-mode="translation" title="${t('alquran.mode.translation')}">
                         <i class="fas fa-language"></i>
                     </button>
                 </div>
             </div>
             <div class="floating-header-right">
                 <span class="floating-page-info" id="floatingPageInfo">
-                    <span class="page-juz">Juz ${pageData.juz}</span>
+                    <span class="page-juz">${t('alquran.juz', { n: pageData.juz })}</span>
                     <span class="page-divider">•</span>
-                    <span class="page-number">Hal. ${this.currentPage}</span>
+                    <span class="page-number">${t('alquran.pageShort', { n: this.currentPage })}</span>
                 </span>
-                <button class="floating-nav-btn" id="btnSettings" title="Pengaturan"><i class="fas fa-cog"></i></button>
+                <button class="floating-nav-btn" id="btnSettings" title="${t('alquran.settings.title')}"><i class="fas fa-cog"></i></button>
             </div>
         `;
 
@@ -811,13 +812,13 @@ export default class AlQuranApp {
             header.className = 'page-title-section';
             header.innerHTML = `
             <div class="page-title-clean">
-                <h1 class="page-number-big">Halaman ${this.currentPage}</h1>
+                <h1 class="page-number-big">${t('alquran.pageTitle', { n: this.currentPage })}</h1>
                 <h2 class="page-surah-names">${surahNames}</h2>
                 <div class="page-meta-badges">
-                    <span class="meta-badge">Juz ${pageData.juz}</span>
-                    <span class="meta-badge">${pageData.surahs.reduce((sum, s) => sum + s.verses.length, 0)} Ayat</span>
+                    <span class="meta-badge">${t('alquran.juz', { n: pageData.juz })}</span>
+                    <span class="meta-badge">${t('alquran.versesCount', { n: pageData.surahs.reduce((sum, s) => sum + s.verses.length, 0) })}</span>
                     <button class="page-play-btn" data-play-page="${this.currentPage}">
-                        <i class="fas fa-play"></i> Putar Audio
+                        <i class="fas fa-play"></i> ${t('alquran.playAudio')}
                     </button>
                 </div>
             </div>
@@ -883,16 +884,16 @@ export default class AlQuranApp {
                         ${!this.settings.hideTranslation && verse.translation ? `<div class="verse-translation">${verse.translation}</div>` : ''}
                         ${verse.tafsir ? `
                         <details class="verse-tafsir-details">
-                            <summary class="verse-tafsir-summary"><i class="fas fa-book-open"></i> Lihat Tafsir</summary>
+                            <summary class="verse-tafsir-summary"><i class="fas fa-book-open"></i> ${t('alquran.viewTafsir')}</summary>
                             <div class="verse-tafsir-content">
                                 <p>${verse.tafsir}</p>
                             </div>
                         </details>
                         ` : ''}
                         <div class="verse-actions-inline">
-                            <button class="verse-btn-inline verse-btn-copy" data-copy-verse="${verse.number}" title="Salin Ayat"><i class="fas fa-copy"></i></button>
-                            <button class="verse-btn-inline verse-btn-bookmark" data-bookmark-verse="${verse.number}" title="Bookmark"><i class="${isBookmarked ? 'fas' : 'far'} fa-bookmark"></i></button>
-                            ${!this.settings.hideMemorization ? `<button class="verse-btn-inline verse-btn-memorize" data-memorize-verse="${verse.number}" title="Tandai Hafal"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
+                            <button class="verse-btn-inline verse-btn-copy" data-copy-verse="${verse.number}" title="${t('alquran.copyVerse')}"><i class="fas fa-copy"></i></button>
+                            <button class="verse-btn-inline verse-btn-bookmark" data-bookmark-verse="${verse.number}" title="${t('alquran.bookmark')}"><i class="${isBookmarked ? 'fas' : 'far'} fa-bookmark"></i></button>
+                            ${!this.settings.hideMemorization ? `<button class="verse-btn-inline verse-btn-memorize" data-memorize-verse="${verse.number}" title="${t('alquran.markMemorized')}"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
                         </div>
                     `;
                     }
@@ -905,11 +906,11 @@ export default class AlQuranApp {
             navButtons.className = 'page-navigation';
             navButtons.innerHTML = `
             <button class="page-nav-btn page-nav-btn-prev" ${this.currentPage <= 1 ? 'disabled' : ''}>
-                <i class="fas fa-chevron-left"></i> Halaman Sebelumnya
+                <i class="fas fa-chevron-left"></i> ${t('alquran.prevPage')}
             </button>
             <span class="page-nav-info">${this.currentPage} / ${this.totalPages}</span>
             <button class="page-nav-btn page-nav-btn-next" ${this.currentPage >= this.totalPages ? 'disabled' : ''}>
-                Halaman Selanjutnya <i class="fas fa-chevron-right"></i>
+                ${t('alquran.nextPage')} <i class="fas fa-chevron-right"></i>
             </button>
         `;
 
@@ -928,7 +929,7 @@ export default class AlQuranApp {
 
         } catch (error) {
             console.error('[renderPageReader] Error:', error);
-            this._notify('Gagal menampilkan halaman: ' + error.message, 'error');
+            this._notify(t('alquran.notify.failedLoadPage') + ': ' + error.message, 'error');
         }
     }
 
@@ -1057,9 +1058,9 @@ export default class AlQuranApp {
         // You'll need to load this from the page data or cache
         const text = `QS ${surah.name} (${surah.nameArabic}) ${surahNum}:${verseNum}`;
         navigator.clipboard.writeText(text).then(() => {
-            this._notify('Ayat berhasil disalin', 'success');
+            this._notify(t('alquran.notify.verseCopied'), 'success');
         }).catch(() => {
-            this._notify('Gagal menyalin ayat', 'error');
+            this._notify(t('alquran.notify.failedCopyVerse'), 'error');
         });
     }
 
@@ -1069,19 +1070,19 @@ export default class AlQuranApp {
         this.render();
     }
 
-    addBookmark(page) { if (!this.bookmarks.includes(page)) { this.bookmarks.push(page); this._saveJSON('alquran_bookmarks', this.bookmarks); this._notify(`Halaman ${page} disimpan`, 'success'); } }
-    removeBookmark(page) { this.bookmarks = this.bookmarks.filter(p => p !== page); this._saveJSON('alquran_bookmarks', this.bookmarks); this._notify(`Halaman ${page} dihapus`, 'info'); }
+    addBookmark(page) { if (!this.bookmarks.includes(page)) { this.bookmarks.push(page); this._saveJSON('alquran_bookmarks', this.bookmarks); this._notify(`${t('alquran.pageTitle', { n: page })} ${getLang() === 'en' ? 'saved' : 'disimpan'}`, 'success'); } }
+    removeBookmark(page) { this.bookmarks = this.bookmarks.filter(p => p !== page); this._saveJSON('alquran_bookmarks', this.bookmarks); this._notify(`${t('alquran.pageTitle', { n: page })} ${getLang() === 'en' ? 'removed' : 'dihapus'}`, 'info'); }
 
     copyPageText() {
         const versesData = typeof getVersesByPage === 'function' ? getVersesByPage(this.currentPage) : { verses: [] };
         const text = (versesData.verses || []).map(v => `${v.arabic}\n${v.transliteration || ''}\n${v.translation || ''}\n(QS ${v.surah}:${v.verse})`).join('\n\n');
-        navigator.clipboard.writeText(text).then(() => this._notify('Teks halaman berhasil disalin', 'success')).catch(() => this._notify('Gagal menyalin teks', 'error'));
+        navigator.clipboard.writeText(text).then(() => this._notify(t('alquran.notify.pageCopied'), 'success')).catch(() => this._notify(t('alquran.notify.failedCopyVerse'), 'error'));
     }
 
     shareCurrentPage() {
         const url = window.location.href.split('#')[0] + `#page-${this.currentPage}`;
         if (navigator.share) { navigator.share({ title: `Al-Qur'an Halaman ${this.currentPage}`, url }).catch(() => { }); }
-        else { navigator.clipboard.writeText(url).then(() => this._notify('Link halaman disalin ke clipboard', 'success')); }
+        else { navigator.clipboard.writeText(url).then(() => this._notify(t('alquran.notify.pageLinkCopied'), 'success')); }
     }
 
     copyVerse(surah, verse) {
@@ -1096,13 +1097,13 @@ export default class AlQuranApp {
         if (arr.includes(key)) {
             const updated = arr.filter(x => x !== key);
             this._saveJSON('alquran_verse_bookmarks', updated);
-            this._notify('Bookmark ayat dihapus', 'info');
+            this._notify(t('alquran.notify.verseBookmarkRemoved'), 'info');
             this.verseBookmarks = updated;
         }
         else {
             arr.push(key);
             this._saveJSON('alquran_verse_bookmarks', arr);
-            this._notify('Ayat dibookmark', 'success');
+            this._notify(t('alquran.notify.verseBookmarked'), 'success');
             this.verseBookmarks = arr;
         }
 
@@ -1125,7 +1126,7 @@ export default class AlQuranApp {
             // Jika sudah hafal, hapus dari progress
             delete prog[key];
             this._saveJSON('alquran_verse_progress', prog);
-            this._notify(`Ayat ${verse} dihapus dari hafalan`, 'info');
+            this._notify(t('alquran.notify.memorizeRemoved', { verse }), 'info');
 
             // Update icon button if exists
             const btn = document.querySelector(`[data-memorize-verse="${verse}"]`);
@@ -1137,7 +1138,7 @@ export default class AlQuranApp {
             // Tandai langsung sebagai hafal (level 4)
             prog[key] = { level: 4, timestamp: new Date().toISOString() };
             this._saveJSON('alquran_verse_progress', prog);
-            this._notify(`Ayat ${verse} ditandai sebagai hafal ✓`, 'success');
+            this._notify(t('alquran.notify.memorizeSuccess', { verse }), 'success');
 
             // Update icon button if exists
             const btn = document.querySelector(`[data-memorize-verse="${verse}"]`);
@@ -1148,7 +1149,7 @@ export default class AlQuranApp {
         }
     }
 
-    _memorizationLevelName(l) { return { 0: 'Belum', 1: 'Dasar', 2: 'Menengah', 3: 'Lancar', 4: 'Hafal' }[l] || 'Belum'; }
+    _memorizationLevelName(l) { return { 0: t('alquran.memorization.level0'), 1: t('alquran.memorization.level1'), 2: t('alquran.memorization.level2'), 3: t('alquran.memorization.level3'), 4: t('alquran.memorization.level4') }[l] || t('alquran.memorization.level0'); }
 
     // Refresh Quran data from window global
     _refreshQuranData() {
@@ -1177,7 +1178,7 @@ export default class AlQuranApp {
 
         const html = ['<div class="modal-content modal-content-fullscreen">'];
         html.push('<div class="modal-header">');
-        html.push('<h3><i class="fas fa-book-quran"></i> Daftar Surat</h3>');
+        html.push(`<h3><i class="fas fa-book-quran"></i> ${t('alquran.nav.surahList')}</h3>`);
         html.push('<button class="close-btn" data-close>×</button>');
         html.push('</div>');
         html.push('<div class="modal-body modal-body-fullscreen">');
@@ -1185,7 +1186,7 @@ export default class AlQuranApp {
         // Search box with icon
         html.push('<div class="surah-search-wrapper">');
         html.push('<i class="fas fa-search search-icon"></i>');
-        html.push('<input type="text" id="surahSearchInput" placeholder="Cari surat..." class="search-input">');
+        html.push(`<input type="text" id="surahSearchInput" placeholder="${t('alquran.sidebar.searchSurah')}" class="search-input">`);
         html.push('</div>');
 
         if (this.QURAN_SURAHS.length > 0) {
@@ -1202,11 +1203,11 @@ export default class AlQuranApp {
                             <div class="surah-row-meta">
                                 <span class="surah-row-info">${s.revelation}</span>
                                 <span class="surah-row-divider">•</span>
-                                <span class="surah-row-info">${s.verses} ayat</span>
+                                <span class="surah-row-info">${t('alquran.versesCount', { n: s.verses })}</span>
                             </div>
                         </div>
                         <div class="surah-row-actions">
-                            <button class="surah-row-btn-verse" data-surah="${s.number}" data-total-verses="${s.verses}" title="Lompat ke ayat">
+                            <button class="surah-row-btn-verse" data-surah="${s.number}" data-total-verses="${s.verses}" title="${t('alquran.jump.verseBtn')}">
                                 <i class="fas fa-list-ol"></i>
                             </button>
                         </div>
@@ -1285,7 +1286,7 @@ export default class AlQuranApp {
             try {
                 await this.readSurah(surahNum);
             } catch (error) {
-                this._notify('Gagal memuat surat', 'error');
+                this._notify(t('alquran.notify.failedLoadSurah'), 'error');
             }
         }));
 
@@ -1385,13 +1386,13 @@ export default class AlQuranApp {
         modal.id = 'bookmarksModal';
         modal.className = 'modal modal-fullscreen';
 
-        const html = ['<div class="modal-content modal-content-fullscreen"><div class="modal-header"><h3><i class="fas fa-heart"></i> Tersimpan</h3><button class="close-btn" data-close>×</button></div><div class="modal-body modal-body-fullscreen">'];
+        const html = [`<div class="modal-content modal-content-fullscreen"><div class="modal-header"><h3><i class="fas fa-heart"></i> ${t('alquran.bookmarks.title')}</h3><button class="close-btn" data-close>×</button></div><div class="modal-body modal-body-fullscreen">`];
 
         // Get verse bookmarks
         const verseBookmarks = this._loadJSON('alquran_verse_bookmarks', []);
 
         if (verseBookmarks.length === 0) {
-            html.push('<div class="empty-state"><i class="fas fa-heart-broken"></i><h3>Belum Ada Favorit</h3><p>Tandai ayat favorit Anda dengan tombol bookmark</p></div>');
+            html.push(`<div class="empty-state"><i class="fas fa-heart-broken"></i><h3>${t('alquran.bookmarks.emptyTitle')}</h3><p>${t('alquran.bookmarks.emptyDesc')}</p></div>`);
         } else {
             html.push('<div class="bookmarks-list">');
             for (const key of verseBookmarks) {
@@ -1402,7 +1403,7 @@ export default class AlQuranApp {
                         <div class="bookmark-item verse-bookmark" data-surah="${surahNum}" data-verse="${verseNum}">
                             <div class="bookmark-info">
                                 <h4>${surahInfo.nameArabic}</h4>
-                                <p>${surahInfo.name} • Ayat ${verseNum}</p>
+                                <p>${surahInfo.name} • ${t('alquran.verseNumber', { n: verseNum })}</p>
                             </div>
                             <button class="remove-bookmark" data-remove="${key}"><i class="fas fa-trash"></i></button>
                         </div>
@@ -1437,7 +1438,7 @@ export default class AlQuranApp {
                     modalContent.innerHTML = `
                         <div style="text-align: center; padding: 60px 20px;">
                             <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
-                            <p style="color: var(--text-primary); font-size: 1.1rem;">Memuat surat...</p>
+                            <p style="color: var(--text-primary); font-size: 1.1rem;">${t('alquran.notify.loadingSurah')}</p>
                         </div>
                     `;
 
@@ -1458,7 +1459,7 @@ export default class AlQuranApp {
                         }, 300);
                     } catch (error) {
                         modalContent.innerHTML = originalContent;
-                        this._notify('Gagal memuat surat', 'error');
+                        this._notify(t('alquran.notify.failedLoadSurah'), 'error');
                     }
                 }
             });
@@ -1471,7 +1472,7 @@ export default class AlQuranApp {
             const arr = this._loadJSON('alquran_verse_bookmarks', []);
             const updated = arr.filter(x => x !== key);
             this._saveJSON('alquran_verse_bookmarks', updated);
-            this._notify('Bookmark dihapus', 'info');
+            this._notify(t('alquran.notify.bookmarkRemoved'), 'info');
             this._showBookmarksModal();
         }));
     }
@@ -1483,28 +1484,28 @@ export default class AlQuranApp {
 
         const html = ['<div class="modal-content modal-content-fullscreen">'];
         html.push('<div class="modal-header">');
-        html.push('<h3><i class="fas fa-file-alt"></i> Buka Halaman</h3>');
+        html.push(`<h3><i class="fas fa-file-alt"></i> ${t('alquran.jump.pageTitle')}</h3>`);
         html.push('<button class="close-btn" data-close>×</button>');
         html.push('</div>');
         html.push('<div class="modal-body modal-body-fullscreen">');
 
         html.push('<div class="page-jump-wrapper">');
         html.push('<div class="page-input-section">');
-        html.push('<label class="input-label"><i class="fas fa-hashtag"></i> Nomor Halaman</label>');
+        html.push(`<label class="input-label"><i class="fas fa-hashtag"></i> ${t('alquran.jump.pageLabel')}</label>`);
         html.push('<div class="page-input-group">');
         html.push(`<input type="number" id="jumpPageInput" min="1" max="604" value="${this.currentPage}" class="page-jump-input" placeholder="1-604">`);
-        html.push('<button class="btn-goto-page" id="btnGoToPage"><i class="fas fa-arrow-right"></i> Buka</button>');
+        html.push(`<button class="btn-goto-page" id="btnGoToPage"><i class="fas fa-arrow-right"></i> ${t('alquran.jump.openBtn')}</button>`);
         html.push('</div>');
-        html.push('<p class="input-hint">Masukkan nomor halaman dari 1 sampai 604</p>');
+        html.push(`<p class="input-hint">${t('alquran.jump.pageHint')}</p>`);
         html.push('</div>');
 
         html.push('<div class="quick-access-section">');
-        html.push('<h4 class="section-title"><i class="fas fa-bolt"></i> Akses Cepat</h4>');
+        html.push(`<h4 class="section-title"><i class="fas fa-bolt"></i> ${t('alquran.jump.quickAccess')}</h4>`);
         html.push('<div class="quick-page-grid">');
-        html.push('<button class="quick-page-btn" data-page="1"><i class="fas fa-play"></i><span>Halaman 1</span><small>Awal Al-Qur\'an</small></button>');
-        html.push('<button class="quick-page-btn" data-page="302"><i class="fas fa-grip-lines"></i><span>Halaman 302</span><small>Tengah Al-Qur\'an</small></button>');
-        html.push('<button class="quick-page-btn" data-page="582"><i class="fas fa-star"></i><span>Halaman 582</span><small>Juz 30 (Juz \'Amma)</small></button>');
-        html.push('<button class="quick-page-btn" data-page="604"><i class="fas fa-flag-checkered"></i><span>Halaman 604</span><small>Akhir Al-Qur\'an</small></button>');
+        html.push(`<button class="quick-page-btn" data-page="1"><i class="fas fa-play"></i><span>${t('alquran.pageTitle', { n: 1 })}</span><small>${t('alquran.jump.page1Desc')}</small></button>`);
+        html.push(`<button class="quick-page-btn" data-page="302"><i class="fas fa-grip-lines"></i><span>${t('alquran.pageTitle', { n: 302 })}</span><small>${t('alquran.jump.page302Desc')}</small></button>`);
+        html.push(`<button class="quick-page-btn" data-page="582"><i class="fas fa-star"></i><span>${t('alquran.pageTitle', { n: 582 })}</span><small>${t('alquran.jump.page582Desc')}</small></button>`);
+        html.push(`<button class="quick-page-btn" data-page="604"><i class="fas fa-flag-checkered"></i><span>${t('alquran.pageTitle', { n: 604 })}</span><small>${t('alquran.jump.page604Desc')}</small></button>`);
         html.push('</div>');
         html.push('</div>');
 
@@ -1525,7 +1526,7 @@ export default class AlQuranApp {
                 this.openPage(page);
                 modal.remove();
             } else {
-                this._notify('Masukkan nomor halaman antara 1-604', 'error');
+                this._notify(t('alquran.notify.invalidPageNum'), 'error');
             }
         });
 
@@ -1568,16 +1569,16 @@ export default class AlQuranApp {
         modal.className = 'modal modal-fullscreen verse-jump-modal';
 
         const html = ['<div class="modal-content modal-content-fullscreen">'];
-        html.push(`<div class="modal-header"><h3>Lompat ke Ayat - ${surah.name}</h3><button class="close-btn" data-close>×</button></div>`);
+        html.push(`<div class="modal-header"><h3>${t('alquran.jump.verseTitle', { surah: surah.name })}</h3><button class="close-btn" data-close>×</button></div>`);
         html.push('<div class="modal-body modal-body-fullscreen">');
         html.push('<div class="verse-jump-container">');
-        html.push(`<label>Pilih nomor ayat (1-${totalVerses})</label>`);
+        html.push(`<label>${t('alquran.jump.verseLabel', { total: totalVerses })}</label>`);
         html.push(`<input type="number" id="jumpVerseInput" min="1" max="${totalVerses}" value="1" class="verse-jump-input">`);
-        html.push(`<button class="btn-jump-to-verse" id="btnJumpToVerse">Lompat ke Ayat</button>`);
+        html.push(`<button class="btn-jump-to-verse" id="btnJumpToVerse">${t('alquran.jump.verseBtn')}</button>`);
 
         // Quick verse access - like Android app
         html.push('<div class="quick-verse-access">');
-        html.push('<h4>Akses Cepat</h4>');
+        html.push(`<h4>${t('alquran.jump.quickAccess')}</h4>`);
         html.push('<div class="quick-verse-grid">');
 
         // Generate quick access buttons (every 10 verses, plus first and last)
@@ -1590,7 +1591,7 @@ export default class AlQuranApp {
         }
 
         quickVerses.forEach(v => {
-            html.push(`<button class="quick-verse-btn" data-verse="${v}">Ayat ${v}</button>`);
+            html.push(`<button class="quick-verse-btn" data-verse="${v}">${t('alquran.verseNumber', { n: v })}</button>`);
         });
 
         html.push('</div></div>');
@@ -1608,7 +1609,7 @@ export default class AlQuranApp {
             const input = modal.querySelector('#jumpVerseInput');
             const verseNum = parseInt(input.value, 10);
             if (isNaN(verseNum) || verseNum < 1 || verseNum > totalVerses) {
-                this._notify(`Masukkan nomor ayat antara 1-${totalVerses}`, 'error');
+                this._notify(t('alquran.notify.invalidVerseNum', { total: totalVerses }), 'error');
                 return;
             }
             this.readSurahAndJumpToVerse(surahNumber, verseNum);
@@ -1687,7 +1688,7 @@ export default class AlQuranApp {
         modal.innerHTML = `
             <div class="modal-content modal-content-fullscreen">
                 <div class="modal-header">
-                    <h3><i class="fas fa-cog"></i> Pengaturan</h3>
+                    <h3><i class="fas fa-cog"></i> ${t('alquran.settings.title')}</h3>
                     <button class="close-btn" data-close>×</button>
                 </div>
                 <div class="modal-body modal-body-fullscreen">
@@ -1695,13 +1696,13 @@ export default class AlQuranApp {
                         <!-- Font Settings Section -->
                         <div class="settings-section">
                             <h4 class="settings-section-title">
-                                <i class="fas fa-font"></i> Pengaturan Teks Arab
+                                <i class="fas fa-font"></i> ${t('alquran.settings.arabicText')}
                             </h4>
                             
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <i class="fas fa-text-height"></i>
-                                    <span>Ukuran Teks Arab</span>
+                                    <span>${t('alquran.settings.arabicFontSize')}</span>
                                 </div>
                                 <div class="font-size-control">
                                     <button class="font-btn" data-font-action="decrease"><i class="fas fa-minus"></i></button>
@@ -1713,7 +1714,7 @@ export default class AlQuranApp {
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <i class="fas fa-font"></i>
-                                    <span>Jenis Font Arab</span>
+                                    <span>${t('alquran.settings.arabicFontType')}</span>
                                 </div>
                                 <select id="arabicFontSelect" class="font-select">
                                     <option value="lpmq" ${this.settings.arabicFont === 'lpmq' ? 'selected' : ''}>LPMQ Isep Misbah (Standar Indonesia)</option>
@@ -1727,11 +1728,11 @@ export default class AlQuranApp {
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <i class="fas fa-book-quran"></i>
-                                    <span>Jenis Mushaf</span>
+                                    <span>${t('alquran.settings.mushafType')}</span>
                                 </div>
                                 <select id="mushafScriptSelect" class="font-select">
-                                    <option value="kemenag" ${this.settings.mushafScript === 'kemenag' ? 'selected' : ''}>Standar Indonesia (Kemenag)</option>
-                                    <option value="madinah" ${this.settings.mushafScript === 'madinah' ? 'selected' : ''}>Rasm Utsmani Madinah</option>
+                                    <option value="kemenag" ${this.settings.mushafScript === 'kemenag' ? 'selected' : ''}>${t('alquran.info.mushafKemenag')}</option>
+                                    <option value="madinah" ${this.settings.mushafScript === 'madinah' ? 'selected' : ''}>${t('alquran.info.mushafMadinah')}</option>
                                 </select>
                             </div>
                         </div>
@@ -1739,29 +1740,27 @@ export default class AlQuranApp {
                         <!-- Theme Settings Section -->
                         <div class="settings-section">
                             <h4 class="settings-section-title">
-                                <i class="fas fa-palette"></i> Tema Warna Baca
+                                <i class="fas fa-palette"></i> ${t('alquran.settings.readingTheme')}
                             </h4>
-                            <div class="setting-item">
-                                <div class="reading-theme-picker">
-                                    <button class="theme-swatch theme-dark ${(this.settings.readingTheme||'dark') === 'dark' ? 'active' : ''}" data-theme="dark" title="Gelap"><span>Gelap</span></button>
-                                    <button class="theme-swatch theme-black ${this.settings.readingTheme === 'black' ? 'active' : ''}" data-theme="black" title="Hitam"><span>Hitam</span></button>
-                                    <button class="theme-swatch theme-gray ${this.settings.readingTheme === 'gray' ? 'active' : ''}" data-theme="gray" title="Abu-abu"><span>Abu</span></button>
-                                    <button class="theme-swatch theme-sepia ${this.settings.readingTheme === 'sepia' ? 'active' : ''}" data-theme="sepia" title="Coklat"><span>Coklat</span></button>
-                                    <button class="theme-swatch theme-white ${this.settings.readingTheme === 'white' ? 'active' : ''}" data-theme="white" title="Putih"><span>Putih</span></button>
-                                </div>
+                            <div class="reading-theme-picker">
+                                <button class="theme-swatch theme-dark ${(this.settings.readingTheme||'dark') === 'dark' ? 'active' : ''}" data-theme="dark" title="${t('alquran.settings.themeDark')}"><span>${t('alquran.settings.themeDark')}</span></button>
+                                <button class="theme-swatch theme-black ${this.settings.readingTheme === 'black' ? 'active' : ''}" data-theme="black" title="${t('alquran.settings.themeBlack')}"><span>${t('alquran.settings.themeBlack')}</span></button>
+                                <button class="theme-swatch theme-gray ${this.settings.readingTheme === 'gray' ? 'active' : ''}" data-theme="gray" title="${t('alquran.settings.themeGray')}"><span>${t('alquran.settings.themeGrayShort')}</span></button>
+                                <button class="theme-swatch theme-sepia ${this.settings.readingTheme === 'sepia' ? 'active' : ''}" data-theme="sepia" title="${t('alquran.settings.themeSepia')}"><span>${t('alquran.settings.themeSepia')}</span></button>
+                                <button class="theme-swatch theme-white ${this.settings.readingTheme === 'white' ? 'active' : ''}" data-theme="white" title="${t('alquran.settings.themeWhite')}"><span>${t('alquran.settings.themeWhite')}</span></button>
                             </div>
                         </div>
 
                         <!-- Display Settings Section -->
                         <div class="settings-section">
                             <h4 class="settings-section-title">
-                                <i class="fas fa-eye"></i> Tampilan
+                                <i class="fas fa-eye"></i> ${t('alquran.settings.display')}
                             </h4>
                             
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <i class="fas fa-eye-slash"></i>
-                                    <span>Sembunyikan Transliterasi</span>
+                                    <span>${t('alquran.settings.hideTranslit')}</span>
                                 </div>
                                 <label class="toggle-switch">
                                     <input type="checkbox" id="set_hide_translit" ${this.settings.hideTransliteration ? 'checked' : ''}>
@@ -1771,7 +1770,7 @@ export default class AlQuranApp {
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <i class="fas fa-language"></i>
-                                    <span>Sembunyikan Terjemahan</span>
+                                    <span>${t('alquran.settings.hideTrans')}</span>
                                 </div>
                                 <label class="toggle-switch">
                                     <input type="checkbox" id="set_hide_trans" ${this.settings.hideTranslation ? 'checked' : ''}>
@@ -1783,13 +1782,13 @@ export default class AlQuranApp {
                         <!-- Feature Settings Section -->
                         <div class="settings-section">
                             <h4 class="settings-section-title">
-                                <i class="fas fa-sliders-h"></i> Fitur
+                                <i class="fas fa-sliders-h"></i> ${t('alquran.settings.features')}
                             </h4>
                             
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <i class="fas fa-forward"></i>
-                                    <span>Auto-play halaman berikutnya</span>
+                                    <span>${t('alquran.settings.autoplay')}</span>
                                 </div>
                                 <label class="toggle-switch">
                                     <input type="checkbox" id="set_autoplay" ${this.settings.autoPlayNext ? 'checked' : ''}>
@@ -1799,7 +1798,7 @@ export default class AlQuranApp {
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <i class="fas fa-book-reader"></i>
-                                    <span>Sembunyikan Lanjutkan Bacaan</span>
+                                    <span>${t('alquran.settings.hideLastRead')}</span>
                                 </div>
                                 <label class="toggle-switch">
                                     <input type="checkbox" id="set_hide_lastread" ${this.settings.hideLastRead ? 'checked' : ''}>
@@ -1809,7 +1808,7 @@ export default class AlQuranApp {
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <i class="fas fa-brain"></i>
-                                    <span>Sembunyikan Fitur Hafalan</span>
+                                    <span>${t('alquran.settings.hideMemorization')}</span>
                                 </div>
                                 <label class="toggle-switch">
                                     <input type="checkbox" id="set_hide_memorization" ${this.settings.hideMemorization ? 'checked' : ''}>
@@ -1821,7 +1820,7 @@ export default class AlQuranApp {
                         <!-- Reset Button -->
                         <div class="settings-section">
                             <button class="settings-reset-btn" id="resetSettings">
-                                <i class="fas fa-undo"></i> Reset ke Default
+                                <i class="fas fa-undo"></i> ${t('alquran.settings.reset')}
                             </button>
                         </div>
                     </div>
@@ -1950,7 +1949,7 @@ export default class AlQuranApp {
         const resetBtn = document.getElementById('resetSettings');
         if (resetBtn) {
             resetBtn.addEventListener('click', () => {
-                if (confirm('Apakah Anda yakin ingin mereset semua pengaturan ke default?')) {
+                if (confirm(t('alquran.settings.resetConfirm'))) {
                     this.settings = {
                         hideTransliteration: true,
                         hideTranslation: false,
@@ -1986,15 +1985,15 @@ export default class AlQuranApp {
             modal.innerHTML = `
                 <div class="modal-content modal-content-fullscreen">
                     <div class="modal-header">
-                        <h3><i class="fas fa-brain"></i> Progress Hafalan</h3>
+                        <h3><i class="fas fa-brain"></i> ${t('alquran.memorization.title')}</h3>
                         <button class="close-btn" data-close>×</button>
                     </div>
                     <div class="modal-body modal-body-fullscreen">
                         <div class="feature-disabled-message">
                             <i class="fas fa-info-circle"></i>
-                            <h4>Fitur Hafalan Dinonaktifkan</h4>
-                            <p>Anda telah menonaktifkan fitur hafalan di pengaturan.</p>
-                            <p>Untuk mengaktifkan kembali, silakan buka <strong>Pengaturan</strong> dan nonaktifkan opsi "Sembunyikan Fitur Hafalan".</p>
+                            <h4>${t('alquran.memorization.disabledTitle')}</h4>
+                            <p>${t('alquran.memorization.disabledDesc')}</p>
+                            <p>${t('alquran.memorization.disabledHint')}</p>
                         </div>
                     </div>
                 </div>
@@ -2034,8 +2033,8 @@ export default class AlQuranApp {
             contentHtml = `
                 <div class="empty-state">
                     <i class="fas fa-brain"></i>
-                    <h4>Belum Ada Progress Hafalan</h4>
-                    <p>Mulai tandai ayat yang telah Anda hafal untuk melihat progress di sini</p>
+                    <h4>${t('alquran.memorization.emptyTitle')}</h4>
+                    <p>${t('alquran.memorization.emptyDesc')}</p>
                 </div>
             `;
         } else {
@@ -2046,19 +2045,19 @@ export default class AlQuranApp {
                         <i class="fas fa-check-circle"></i>
                         <div class="stat-info">
                             <span class="stat-value">${totalVerses}</span>
-                            <span class="stat-label">Ayat Dihafal</span>
+                            <span class="stat-label">${t('alquran.memorization.versesMemorized')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-book-quran"></i>
                         <div class="stat-info">
                             <span class="stat-value">${Object.keys(surahStats).length}</span>
-                            <span class="stat-label">Surat</span>
+                            <span class="stat-label">${t('alquran.memorization.surahs')}</span>
                         </div>
                     </div>
                 </div>
                 <div class="progress-list-header">
-                    <h4>Detail Per Surat</h4>
+                    <h4>${t('alquran.memorization.detailPerSurah')}</h4>
                 </div>
                 <div class="progress-surah-list">
             `;
@@ -2098,7 +2097,7 @@ export default class AlQuranApp {
         modal.innerHTML = `
             <div class="modal-content modal-content-fullscreen">
                 <div class="modal-header">
-                    <h3><i class="fas fa-brain"></i> Progress Hafalan</h3>
+                    <h3><i class="fas fa-brain"></i> ${t('alquran.memorization.title')}</h3>
                     <button class="close-btn" data-close>×</button>
                 </div>
                 <div class="modal-body modal-body-fullscreen">
@@ -2160,7 +2159,7 @@ export default class AlQuranApp {
         }
         if (!this._offlineTextNoticeShown) {
             this._offlineTextNoticeShown = true;
-            this._notify('Offline: terjemahan halaman ini belum tersimpan. Teks Arab tetap tampil. Simpan semua teks lewat Mode Offline.', 'info');
+            this._notify(t('alquran.notify.offlineNoTrans'), 'info');
         }
         return { pageNumber, offlineTextOnly: true, surahs: [...surahs.values()] };
     }
@@ -2202,7 +2201,7 @@ export default class AlQuranApp {
         this._stopAllAudio();
         try {
             // Show inline loader
-            this._showInlineLoader('Memuat Surat...');
+            this._showInlineLoader(t('alquran.notify.loadingSurah'));
 
             // Get surah info from QURAN_SURAHS
             const surah = this.QURAN_SURAHS.find(s => s.number === surahNumber);
@@ -2286,7 +2285,7 @@ export default class AlQuranApp {
         } catch (error) {
             this._hideInlineLoader();
             console.error('Error loading surah:', error);
-            this._notify('Gagal memuat surat. Data belum tersedia.', 'error');
+            this._notify(t('alquran.notify.failedLoadSurahData'), 'error');
         }
     }
 
@@ -2295,7 +2294,7 @@ export default class AlQuranApp {
         this._stopAllAudio();
         try {
             // Show inline loader
-            this._showInlineLoader('Memuat Juz...');
+            this._showInlineLoader(t('loader.alquran'));
 
             // Get juz info
             const juz = this.QURAN_JUZ.find(j => j.number === juzNumber);
@@ -2372,7 +2371,7 @@ export default class AlQuranApp {
         } catch (error) {
             this._hideInlineLoader();
             console.error('Error loading juz:', error);
-            this._notify('Gagal memuat juz. Data belum tersedia.', 'error');
+            this._notify(t('alquran.notify.failedLoadJuzData'), 'error');
         }
     }
 
@@ -2455,10 +2454,10 @@ export default class AlQuranApp {
             </div>
             <div class="floating-header-center">
                 <div class="floating-mode-toggle">
-                    <button class="floating-mode-btn ${this.viewMode === 'reading' ? 'active' : ''}" data-mode="reading" title="Mode Baca">
+                    <button class="floating-mode-btn ${this.viewMode === 'reading' ? 'active' : ''}" data-mode="reading" title="${t('alquran.mode.reading')}">
                         <i class="fas fa-book"></i>
                     </button>
-                    <button class="floating-mode-btn ${this.viewMode === 'translation' ? 'active' : ''}" data-mode="translation" title="Mode Terjemahan">
+                    <button class="floating-mode-btn ${this.viewMode === 'translation' ? 'active' : ''}" data-mode="translation" title="${t('alquran.mode.translation')}">
                         <i class="fas fa-language"></i>
                     </button>
                 </div>
@@ -2469,7 +2468,7 @@ export default class AlQuranApp {
                     <span class="page-divider">•</span>
                     <span class="page-number">Hal. ${firstVerse.page}</span>
                 </span>
-                <button class="floating-nav-btn" id="btnSettings" title="Pengaturan"><i class="fas fa-cog"></i></button>
+                <button class="floating-nav-btn" id="btnSettings" title="${t('alquran.settings.title')}"><i class="fas fa-cog"></i></button>
             </div>
         `;
 
@@ -2501,7 +2500,7 @@ export default class AlQuranApp {
                 <span class="page-separator-juz">${juz.name}</span>
                 <span class="page-separator-divider">•</span>
                 <span class="page-separator-page">Hal. ${juz.startPage}</span>
-                <button class="page-separator-play" data-play-page="${juz.startPage}" title="Putar audio halaman ini">
+                <button class="page-separator-play" data-play-page="${juz.startPage}" title="${t('alquran.playAudio')}">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
@@ -2581,7 +2580,7 @@ export default class AlQuranApp {
                         <span class="page-separator-juz">${juz.name}</span>
                         <span class="page-separator-divider">•</span>
                         <span class="page-separator-page">Hal. ${versePage}</span>
-                        <button class="page-separator-play" data-play-page="${versePage}" title="Putar audio halaman ini">
+                        <button class="page-separator-play" data-play-page="${versePage}" title="${t('alquran.playAudio')}">
                             <i class="fas fa-play"></i>
                         </button>
                     </div>
@@ -2617,11 +2616,11 @@ export default class AlQuranApp {
                     <div class="verse-header-bar">
                         <span class="verse-ref-badge">${verseSurah}:${verse.number}</span>
                         <div class="verse-actions-row">
-                            <button class="verse-action-btn" data-play-verse-audio="${verseKey}" title="Putar Audio Ayat"><i class="fas fa-play"></i></button>
-                            <button class="verse-action-btn" data-copy-verse="${verseKey}" title="Salin Ayat"><i class="fas fa-copy"></i></button>
+                            <button class="verse-action-btn" data-play-verse-audio="${verseKey}" title="${t('alquran.playVerseAudio')}"><i class="fas fa-play"></i></button>
+                            <button class="verse-action-btn" data-copy-verse="${verseKey}" title="${t('alquran.copyVerse')}"><i class="fas fa-copy"></i></button>
                             <button class="verse-action-btn ${isBookmarked ? 'active' : ''}" data-bookmark-verse="${verseKey}" title="Bookmark"><i class="${isBookmarked ? 'fas' : 'far'} fa-bookmark"></i></button>
-                            ${!this.settings.hideMemorization ? `<button class="verse-action-btn" data-memorize-verse="${verseKey}" title="Tandai Hafal"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
-                            ${verse.tafsir ? `<button class="verse-action-btn" data-tafsir-verse="${verseKey}" title="Lihat Tafsir"><i class="fas fa-book-open"></i></button>` : ''}
+                            ${!this.settings.hideMemorization ? `<button class="verse-action-btn" data-memorize-verse="${verseKey}" title="${t('alquran.markMemorized')}"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
+                            ${verse.tafsir ? `<button class="verse-action-btn" data-tafsir-verse="${verseKey}" title="${t('alquran.viewTafsir')}"><i class="fas fa-book-open"></i></button>` : ''}
                         </div>
                     </div>
                     <div class="verse-arabic ${this.settings.arabicFont}">${verse.arabic}</div>
@@ -2638,8 +2637,8 @@ export default class AlQuranApp {
         const prevJuz = this.currentJuz > 1 ? this.currentJuz - 1 : null;
         const nextJuz = this.currentJuz < 30 ? this.currentJuz + 1 : null;
         juzNav.innerHTML = `
-            ${prevJuz ? `<button class="nav-surah-btn prev" data-juz="${prevJuz}"><i class="fas fa-chevron-left"></i> Juz Sebelumnya</button>` : '<div></div>'}
-            ${nextJuz ? `<button class="nav-surah-btn next" data-juz="${nextJuz}">Juz Selanjutnya <i class="fas fa-chevron-right"></i></button>` : '<div></div>'}
+            ${prevJuz ? `<button class="nav-surah-btn prev" data-juz="${prevJuz}"><i class="fas fa-chevron-left"></i> ${t('alquran.prevJuz')}</button>` : '<div></div>'}
+            ${nextJuz ? `<button class="nav-surah-btn next" data-juz="${nextJuz}">${t('alquran.nextJuz')} <i class="fas fa-chevron-right"></i></button>` : '<div></div>'}
         `;
 
         // Audio Player (same design as surah mode)
@@ -2723,7 +2722,7 @@ export default class AlQuranApp {
                     if (verse) {
                         const text = `${verse.surahName} (${verse.surahNameArabic}) ${verseNum}\n\n${verse.arabic}\n\n${verse.transliteration}\n\n${verse.translation}`;
                         navigator.clipboard.writeText(text).then(() => {
-                            this._notify('Ayat berhasil disalin', 'success');
+                            this._notify(t('alquran.notify.verseCopied'), 'success');
                         });
                     }
                 });
@@ -2737,10 +2736,10 @@ export default class AlQuranApp {
                     const icon = btn.querySelector('i');
                     if (this.verseBookmarks.includes(verseKey)) {
                         icon.className = 'fas fa-bookmark';
-                        this._notify('Ayat ditandai', 'success');
+                        this._notify(t('alquran.notify.verseMarked'), 'success');
                     } else {
                         icon.className = 'far fa-bookmark';
-                        this._notify('Tanda ayat dihapus', 'info');
+                        this._notify(t('alquran.notify.verseUnmarked'), 'info');
                     }
                 });
             });
@@ -2871,17 +2870,17 @@ export default class AlQuranApp {
         sidebar.id = 'quranSidebar';
         sidebar.innerHTML = `
             <div class="sidebar-header">
-                <h3>Navigasi</h3>
+                <h3>${t('alquran.sidebar.nav')}</h3>
                 <button class="sidebar-close" id="closeSidebar"><i class="fas fa-times"></i></button>
             </div>
             <div class="sidebar-tabs">
-                <button class="sidebar-tab active" data-tab="surah">Surat</button>
-                <button class="sidebar-tab" data-tab="juz">Juz</button>
-                <button class="sidebar-tab" data-tab="page">Halaman</button>
+                <button class="sidebar-tab active" data-tab="surah">${t('alquran.sidebar.surah')}</button>
+                <button class="sidebar-tab" data-tab="juz">${t('alquran.sidebar.juz')}</button>
+                <button class="sidebar-tab" data-tab="page">${t('alquran.sidebar.page')}</button>
             </div>
             <div class="sidebar-content">
                 <div class="sidebar-search">
-                    <input type="text" placeholder="Cari surat..." id="sidebarSearch">
+                    <input type="text" placeholder="${t('alquran.sidebar.searchSurah')}" id="sidebarSearch">
                 </div>
                 <div class="sidebar-list" id="sidebarList">
                     <!-- Dynamic content -->
@@ -2904,10 +2903,10 @@ export default class AlQuranApp {
             </div>
             <div class="floating-header-center">
                 <div class="floating-mode-toggle">
-                    <button class="floating-mode-btn ${this.viewMode === 'reading' ? 'active' : ''}" data-mode="reading" title="Mode Baca">
+                    <button class="floating-mode-btn ${this.viewMode === 'reading' ? 'active' : ''}" data-mode="reading" title="${t('alquran.mode.reading')}">
                         <i class="fas fa-book"></i>
                     </button>
-                    <button class="floating-mode-btn ${this.viewMode === 'translation' ? 'active' : ''}" data-mode="translation" title="Mode Terjemahan">
+                    <button class="floating-mode-btn ${this.viewMode === 'translation' ? 'active' : ''}" data-mode="translation" title="${t('alquran.mode.translation')}">
                         <i class="fas fa-language"></i>
                     </button>
                 </div>
@@ -2918,7 +2917,7 @@ export default class AlQuranApp {
                     <span class="page-divider">•</span>
                     <span class="page-number">Hal. ${surah.startPage}</span>
                 </span>
-                <button class="floating-nav-btn" id="btnSettings" title="Pengaturan"><i class="fas fa-cog"></i></button>
+                <button class="floating-nav-btn" id="btnSettings" title="${t('alquran.settings.title')}"><i class="fas fa-cog"></i></button>
             </div>
             <div class="surah-reading-progress">
                 <div class="surah-reading-progress-bar" id="surahProgressBar"></div>
@@ -2955,7 +2954,7 @@ export default class AlQuranApp {
                 <span class="page-separator-juz">Juz ${this._getJuzByPage(surah.startPage)}</span>
                 <span class="page-separator-divider">•</span>
                 <span class="page-separator-page">Hal. ${surah.startPage}</span>
-                <button class="page-separator-play" data-play-page="${surah.startPage}" title="Putar audio halaman ini">
+                <button class="page-separator-play" data-play-page="${surah.startPage}" title="${t('alquran.playAudio')}">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
@@ -2987,7 +2986,7 @@ export default class AlQuranApp {
                         <span class="page-separator-juz">Juz ${this._getJuzByPage(versePage)}</span>
                         <span class="page-separator-divider">•</span>
                         <span class="page-separator-page">Hal. ${versePage}</span>
-                        <button class="page-separator-play" data-play-page="${versePage}" title="Putar audio halaman ini">
+                        <button class="page-separator-play" data-play-page="${versePage}" title="${t('alquran.playAudio')}">
                             <i class="fas fa-play"></i>
                         </button>
                     </div>
@@ -3023,11 +3022,11 @@ export default class AlQuranApp {
                     <div class="verse-header-bar">
                         <span class="verse-ref-badge">${surah.number}:${verse.number}</span>
                         <div class="verse-actions-row">
-                            <button class="verse-action-btn" data-play-verse-audio="${verse.number}" title="Putar Audio Ayat"><i class="fas fa-play"></i></button>
-                            <button class="verse-action-btn" data-copy-verse="${verse.number}" title="Salin Ayat"><i class="fas fa-copy"></i></button>
+                            <button class="verse-action-btn" data-play-verse-audio="${verse.number}" title="${t('alquran.playVerseAudio')}"><i class="fas fa-play"></i></button>
+                            <button class="verse-action-btn" data-copy-verse="${verse.number}" title="${t('alquran.copyVerse')}"><i class="fas fa-copy"></i></button>
                             <button class="verse-action-btn ${isBookmarked ? 'active' : ''}" data-bookmark-verse="${verse.number}" title="Bookmark"><i class="${isBookmarked ? 'fas' : 'far'} fa-bookmark"></i></button>
-                            ${!this.settings.hideMemorization ? `<button class="verse-action-btn" data-memorize-verse="${verse.number}" title="Tandai Hafal"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
-                            ${verse.tafsir ? `<button class="verse-action-btn" data-tafsir-verse="${verse.number}" title="Lihat Tafsir"><i class="fas fa-book-open"></i></button>` : ''}
+                            ${!this.settings.hideMemorization ? `<button class="verse-action-btn" data-memorize-verse="${verse.number}" title="${t('alquran.markMemorized')}"><i class="${isMemorized ? 'fas fa-check-circle' : 'far fa-circle'}"></i></button>` : ''}
+                            ${verse.tafsir ? `<button class="verse-action-btn" data-tafsir-verse="${verse.number}" title="${t('alquran.viewTafsir')}"><i class="fas fa-book-open"></i></button>` : ''}
                         </div>
                     </div>
                     <div class="verse-arabic ${this.settings.arabicFont}">${verse.arabic}</div>
@@ -3044,8 +3043,8 @@ export default class AlQuranApp {
         const prevSurah = this.currentSurah > 1 ? this.currentSurah - 1 : null;
         const nextSurah = this.currentSurah < 114 ? this.currentSurah + 1 : null;
         surahNav.innerHTML = `
-            ${prevSurah ? `<button class="nav-surah-btn prev" data-surah="${prevSurah}"><i class="fas fa-chevron-left"></i> Surat Sebelumnya</button>` : '<div></div>'}
-            ${nextSurah ? `<button class="nav-surah-btn next" data-surah="${nextSurah}">Surat Selanjutnya <i class="fas fa-chevron-right"></i></button>` : '<div></div>'}
+            ${prevSurah ? `<button class="nav-surah-btn prev" data-surah="${prevSurah}"><i class="fas fa-chevron-left"></i> ${t('alquran.prevSurah')}</button>` : '<div></div>'}
+            ${nextSurah ? `<button class="nav-surah-btn next" data-surah="${nextSurah}">${t('alquran.nextSurah')} <i class="fas fa-chevron-right"></i></button>` : '<div></div>'}
         `;
 
         // Audio Player (same design as Dzikir)
@@ -3398,7 +3397,7 @@ export default class AlQuranApp {
         const text = `${surah.nameArabic} - ${surah.name}\n${surah.meaning}\n\n` +
             surah.verses.map(v => `${v.number}. ${v.arabic}\n${v.transliteration}\n${v.translation}`).join('\n\n') +
             `\n\n(QS ${surah.name})`;
-        navigator.clipboard.writeText(text).then(() => this._notify('Teks surat disalin', 'success'));
+        navigator.clipboard.writeText(text).then(() => this._notify(t('alquran.notify.surahCopied'), 'success'));
     }
 
     shareSurah() {
@@ -3410,7 +3409,7 @@ export default class AlQuranApp {
         if (navigator.share) {
             navigator.share({ title: text, url }).catch(() => { });
         } else {
-            navigator.clipboard.writeText(url).then(() => this._notify('Link surat disalin', 'success'));
+            navigator.clipboard.writeText(url).then(() => this._notify(t('alquran.notify.surahLinkCopied'), 'success'));
         }
     }
 
@@ -3481,7 +3480,7 @@ export default class AlQuranApp {
             <div class="alq-muratal-page" id="alqMuratalPage">
                 <div class="alq-muratal-header">
                     <button class="alq-muratal-back" id="alqMuratalBack"><i class="fas fa-arrow-left"></i></button>
-                    <div class="alq-muratal-title"><i class="fas fa-headphones"></i> Muratal Al-Qur'an</div>
+                    <div class="alq-muratal-title"><i class="fas fa-headphones"></i> ${t('alquran.muratal.title')}</div>
                 </div>
 
                 <!-- Now Playing -->
@@ -3489,7 +3488,7 @@ export default class AlQuranApp {
                     <div class="alq-muratal-now-icon"><i class="fas fa-music"></i></div>
                     <div class="alq-muratal-now-info">
                         <div class="alq-muratal-now-title" id="alqMuratalNowTitle">-</div>
-                        <div class="alq-muratal-now-sub" id="alqMuratalNowSub">Sedang diputar</div>
+                        <div class="alq-muratal-now-sub" id="alqMuratalNowSub">${t('alquran.muratal.nowPlaying')}</div>
                     </div>
                     <div class="alq-muratal-now-ctrl">
                         <button class="alq-muratal-ctrl-btn" id="alqMuratalPlayPause" title="Play/Pause"><i class="fas fa-pause"></i></button>
@@ -3511,7 +3510,7 @@ export default class AlQuranApp {
                 <!-- Search -->
                 <div class="alq-muratal-search-wrap">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="alqMuratalSearch" class="alq-muratal-search" placeholder="Cari surat...">
+                    <input type="text" id="alqMuratalSearch" class="alq-muratal-search" placeholder="${t('alquran.muratal.search')}">
                 </div>
 
                 <!-- Surah list -->
@@ -3965,7 +3964,7 @@ export default class AlQuranApp {
 
     // Modal popups for surah info
     _showSurahInfoModal(surah) {
-        const modal = this._createModal('Tentang Surat Ini', `
+        const modal = this._createModal(t('alquran.info.aboutSurah'), `
             <div class="modal-surah-info">
                 <div class="info-header">
                     <h3>${surah.nameArabic}</h3>
@@ -3981,7 +3980,7 @@ export default class AlQuranApp {
 
     _showOtherNamesModal(surah) {
         const namesHTML = surah.otherNames.map(name => `<li><i class="fas fa-check-circle"></i> ${name}</li>`).join('');
-        const modal = this._createModal('Nama Lain Surat Ini', `
+        const modal = this._createModal(t('alquran.info.otherNames'), `
             <div class="modal-list-content">
                 <ul class="names-list">${namesHTML}</ul>
             </div>
@@ -3990,7 +3989,7 @@ export default class AlQuranApp {
 
     _showBenefitsModal(surah) {
         const benefitsHTML = surah.benefits.map(benefit => `<li><i class="fas fa-star"></i> ${benefit}</li>`).join('');
-        const modal = this._createModal('Keutamaan', `
+        const modal = this._createModal(t('alquran.info.benefits'), `
             <div class="modal-list-content">
                 <ul class="benefits-list">${benefitsHTML}</ul>
             </div>
@@ -3998,7 +3997,7 @@ export default class AlQuranApp {
     }
 
     _showTafsirModal(verse, surah) {
-        const modal = this._createModal(`Tafsir QS ${surah.name}:${verse.number}`, `
+        const modal = this._createModal(t('alquran.tafsir.title', { surah: surah.name, verse: verse.number }), `
             <div class="modal-tafsir">
                 <div class="tafsir-verse-arabic">${verse.arabic}</div>
                 <div class="tafsir-verse-trans">${verse.translation}</div>
@@ -4131,7 +4130,7 @@ export default class AlQuranApp {
                 }
             }
 
-            this._notify('Tidak ada ayat di halaman ini', 'error');
+            this._notify(t('alquran.notify.noVersesOnPage'), 'error');
             return;
         }
 
@@ -4141,7 +4140,7 @@ export default class AlQuranApp {
         const surahInfo = this.QURAN_SURAHS.find(s => s.number === firstVerse.surah);
 
         if (!surahInfo) {
-            this._notify('Data surat tidak ditemukan', 'error');
+            this._notify(t('alquran.notify.surahDataNotFound'), 'error');
             return;
         }
 
@@ -4322,7 +4321,7 @@ export default class AlQuranApp {
                             const nextPage = completedPage + 1;
                             setTimeout(() => this._playPageAudio(nextPage), 800);
                         } else {
-                            this._notify('Selesai memutar halaman ' + completedPage, 'success');
+                            this._notify(t('alquran.notify.finishPageAudio', { page: completedPage }), 'success');
                             // Stop playback
                             if (playPauseBtn?.querySelector('i')) {
                                 playPauseBtn.querySelector('i').className = 'fas fa-play';
@@ -4380,7 +4379,7 @@ export default class AlQuranApp {
                     // Play previous verse in same surah
                     this.playVerseAudio(surah, verse - 1);
                 } else {
-                    this._notify('Sudah di ayat pertama surat ini', 'info');
+                    this._notify(t('alquran.notify.firstVerseSurah'), 'info');
                 }
             } else {
                 // Page mode
@@ -4388,7 +4387,7 @@ export default class AlQuranApp {
                     this.currentAudioPage--;
                     this._playPage(this.currentAudioSurah, this.currentAudioPage);
                 } else {
-                    this._notify('Sudah di halaman pertama', 'info');
+                    this._notify(t('alquran.notify.firstPage'), 'info');
                 }
             }
         };
@@ -4405,7 +4404,7 @@ export default class AlQuranApp {
                     // Play next verse in same surah
                     this.playVerseAudio(surah, verse + 1);
                 } else {
-                    this._notify('Sudah di ayat terakhir surat ini', 'info');
+                    this._notify(t('alquran.notify.lastVerseSurah'), 'info');
                 }
             } else {
                 // Page mode
@@ -4413,7 +4412,7 @@ export default class AlQuranApp {
                     this.currentAudioPage++;
                     this._playPage(this.currentAudioSurah, this.currentAudioPage);
                 } else {
-                    this._notify('Sudah di halaman terakhir', 'info');
+                    this._notify(t('alquran.notify.lastPage'), 'info');
                 }
             }
         };
@@ -4515,7 +4514,7 @@ export default class AlQuranApp {
 
             // Update audio info display
             if (audioInfo) {
-                audioInfo.textContent = `${surahName} - Ayat ${verseNumber}`;
+                audioInfo.textContent = `${surahName} - ${t('alquran.verseNumber', { n: verseNumber })}`;
             }
             // Clear right-side counter (may have stale radio station name from previous radio mode)
             const counterEl = document.getElementById('audioVerseCounter');
@@ -4552,7 +4551,7 @@ export default class AlQuranApp {
             } catch (err) {
                 console.error('Error playing verse audio:', err);
                 // Keep the player on screen so the user can press play again.
-                if (audioInfo) audioInfo.textContent = `${surahName} - Ayat ${verseNumber} · gagal dimuat, tekan putar lagi`;
+                if (audioInfo) audioInfo.textContent = `${surahName} - ${t('alquran.verseNumber', { n: verseNumber })} · ${getLang() === 'en' ? 'failed to load, tap play again' : 'gagal dimuat, tekan putar lagi'}`;
                 if (playPauseBtn && playPauseBtn.querySelector('i')) playPauseBtn.querySelector('i').className = 'fas fa-rotate-right';
                 this.isPlaying = false;
                 // Remove highlight on error
@@ -4595,12 +4594,12 @@ export default class AlQuranApp {
         popup.innerHTML = `
             <div class="verse-play-popup-content">
                 <div class="verse-play-info">
-                    <div class="verse-play-title">${surahName} • Ayat ${verseNumber}</div>
+                    <div class="verse-play-title">${surahName} • ${t('alquran.verseNumber', { n: verseNumber })}</div>
                 </div>
                 <div class="verse-play-actions">
                     <button class="verse-play-btn" id="versePlayPopupBtn">
                         <i class="fas fa-play"></i>
-                        Putar
+                        ${t('alquran.versePopup.play')}
                     </button>
                     <button class="verse-play-close" id="versePlayPopupClose">
                         <i class="fas fa-times"></i>

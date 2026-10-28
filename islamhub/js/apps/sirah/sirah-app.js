@@ -1,5 +1,7 @@
 /* ===== Sirah Nabi App - IslamHub ===== */
 
+import { t, locale, getLang } from '../../i18n/index.js';
+
 export default class SirahApp {
     constructor(globalState, mainApp) {
         this.state = globalState;
@@ -25,13 +27,13 @@ export default class SirahApp {
         this.container.innerHTML = `
             <div class="sirah-container">
                 <div class="sirah-header">
-                    <h2><i class="fas fa-tree"></i> Sirah Nabi, Rasul & Sahabat</h2>
-                    <p class="subtitle">Kisah Para Nabi, Rasul, dan Sahabat Nabi</p>
+                    <h2><i class="fas fa-tree"></i> ${t('sirah.title')}</h2>
+                    <p class="subtitle">${t('sirah.subtitle')}</p>
                 </div>
 
                 <!-- Search Bar -->
                 <div class="search-container">
-                    <input type="text" id="sirahSearchInput" placeholder="Cari nama nabi atau sahabat..." />
+                    <input type="text" id="sirahSearchInput" placeholder="${t('sirah.searchPlaceholder')}" />
                     <i class="fas fa-search"></i>
                     <button class="clear-search" id="sirahClearSearch" style="display: none;">
                         <i class="fas fa-times-circle"></i>
@@ -39,22 +41,22 @@ export default class SirahApp {
                 </div>                <!-- Filter Tabs -->
                 <div class="filter-tabs" id="sirahFilterTabs">
                     <button class="filter-tab active" data-filter="timeline">
-                        <i class="fas fa-stream"></i> Timeline Nabi
+                        <i class="fas fa-stream"></i> ${t('sirah.tabTimeline')}
                     </button>
                     <button class="filter-tab" data-filter="konstelasi">
-                        <i class="fas fa-star-of-life"></i> Konstelasi Sahabat
+                        <i class="fas fa-star-of-life"></i> ${t('sirah.tabConstellation')}
                     </button>
                     <button class="filter-tab" data-filter="all">
-                        <i class="fas fa-list"></i> Semua
+                        <i class="fas fa-list"></i> ${t('common.all')}
                     </button>
                     <button class="filter-tab" data-filter="nabi">
-                        <i class="fas fa-star"></i> Nabi & Rasul
+                        <i class="fas fa-star"></i> ${t('sirah.tabProphets')}
                     </button>
                     <button class="filter-tab" data-filter="sahabat">
-                        <i class="fas fa-users"></i> Sahabat
+                        <i class="fas fa-users"></i> ${t('sirah.tabCompanions')}
                     </button>
                     <button class="filter-tab" data-filter="favorit">
-                        <i class="fas fa-heart"></i> Favorit
+                        <i class="fas fa-heart"></i> ${t('common.favorite')}
                     </button>
                 </div>
 
@@ -71,21 +73,21 @@ export default class SirahApp {
                             <button class="modal-back" id="prophetBack">
                                 <i class="fas fa-arrow-left"></i>
                             </button>
-                            <h3 id="prophetName">Nama Nabi</h3>
+                            <h3 id="prophetName">${t('sirah.defaultName')}</h3>
                             <div class="modal-actions">
-                                <button class="action-btn" id="prophetCopy">
+                                <button class="action-btn" id="prophetCopy" title="${t('common.copy')}">
                                     <i class="fas fa-copy"></i>
                                 </button>
-                                <button class="action-btn" id="prophetFavorite">
+                                <button class="action-btn" id="prophetFavorite" title="${t('common.favorite')}">
                                     <i class="far fa-heart"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="modal-tabs" id="prophetTabs">
-                            <button class="tab-btn active" data-tab="biodata">Biodata</button>
-                            <button class="tab-btn" data-tab="events">Peristiwa</button>
-                            <button class="tab-btn" data-tab="lessons">Hikmah</button>
-                            <button class="tab-btn" data-tab="references">Referensi</button>
+                            <button class="tab-btn active" data-tab="biodata">${t('sirah.tabBiodata')}</button>
+                            <button class="tab-btn" data-tab="events">${t('sirah.tabEvents')}</button>
+                            <button class="tab-btn" data-tab="lessons">${t('sirah.tabLessons')}</button>
+                            <button class="tab-btn" data-tab="references">${t('sirah.tabReferences')}</button>
                         </div>
                         <div class="modal-body" id="prophetContent">
                             <!-- Dynamic content -->
@@ -143,7 +145,7 @@ export default class SirahApp {
             console.log(`Loaded ${this.prophets.length} persons (Nabi, Rasul, dan Sahabat)`);
         } catch (error) {
             console.error('Failed to load sirah data:', error);
-            this.showError('Gagal memuat data sirah');
+            this.showError(t('sirah.loadError'));
         }
     }
 
@@ -259,7 +261,7 @@ export default class SirahApp {
             grid.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-search"></i>
-                    <p>Tidak ada hasil ditemukan</p>
+                    <p>${t('sirah.emptyResults')}</p>
                 </div>
             `;
             return;
@@ -268,21 +270,21 @@ export default class SirahApp {
         grid.innerHTML = filtered.map(prophet => {
             const isFavorite = this.favorites.some(f => f.id === prophet.id);
             const isInFavoriteView = this.currentFilter === 'favorit';
-            const categoryLabel = prophet.category === 'nabi' ? 'Nabi' : 
-                                  prophet.category === 'rasul' ? 'Rasul' : 
-                                  prophet.category === 'sahabat' ? 'Sahabat' : 
+            const categoryLabel = prophet.category === 'nabi' ? t('sirah.kindProphet') : 
+                                  prophet.category === 'rasul' ? t('sirah.kindMessenger') : 
+                                  prophet.category === 'sahabat' ? t('sirah.kindCompanion') : 
                                   prophet.category;
             
             // Readable labels; the category and subcategory used to repeat each other ("Nabi nabi").
             const GROUPS = {
-                nabi: 'Nabi', rasul: 'Rasul', khulafa_rasyidin: 'Khulafaur Rasyidin', asharah_mubasysyarah: 'Dijamin surga',
-                muhajirin: 'Muhajirin', anshar_aus: 'Anshar · Aus', anshar_khazraj: 'Anshar · Khazraj', ummul_mukminin: 'Ummul Mukminin',
-                ummahatul_mukminin: 'Ummul Mukminin', panglima: 'Panglima', sahabat_awal: 'Assabiqunal Awwalun', ahlu_bait: 'Ahlul Bait',
-                sahabiyat_muhajirat: 'Muhajirat'
+                nabi: t('sirah.kindProphet'), rasul: t('sirah.kindMessenger'), khulafa_rasyidin: t('sirah.groupKhulafa'), asharah_mubasysyarah: t('sirah.groupAsharah'),
+                muhajirin: t('sirah.groupMuhajirin'), anshar_aus: t('sirah.groupAnsharAus'), anshar_khazraj: t('sirah.groupAnsharKhazraj'), ummul_mukminin: t('sirah.groupUmmulMukminin'),
+                ummahatul_mukminin: t('sirah.groupUmmulMukminin'), panglima: t('sirah.groupCommander'), sahabat_awal: t('sirah.groupEarlyCompanions'), ahlu_bait: t('sirah.groupAhlulBait'),
+                sahabiyat_muhajirat: t('sirah.groupMuhajirat')
             };
             const group = GROUPS[prophet.subcategory] || categoryLabel;
-            const kind = prophet.category === 'nabi' ? (prophet.subcategory === 'rasul' ? 'Rasul' : 'Nabi')
-                : prophet.category === 'sahabiyat' ? 'Sahabiyah' : 'Sahabat';
+            const kind = prophet.category === 'nabi' ? (prophet.subcategory === 'rasul' ? t('sirah.kindMessenger') : t('sirah.kindProphet'))
+                : prophet.category === 'sahabiyat' ? t('sirah.kindFemaleCompanion') : t('sirah.kindCompanion');
             const chips = [kind, group].filter((v, i, a) => v && a.indexOf(v) === i)
                 .map((v, i) => `<span class="sx-chip${i ? '' : ' main'}">${v}</span>`).join('');
             const period = prophet.period && !/tidak diketahui/i.test(prophet.period) ? prophet.period : '';
@@ -293,7 +295,7 @@ export default class SirahApp {
             const preview = (prophet.biography || '').replace(/\s+/g, ' ').trim();
 
             const deleteBtn = isInFavoriteView
-                ? `<button class="sx-del" onclick="event.stopPropagation(); window.sirahApp.removeFromFavorites('${prophet.id}');" title="Hapus dari favorit" aria-label="Hapus dari favorit"><i class="fas fa-trash-alt"></i></button>`
+                ? `<button class="sx-del" onclick="event.stopPropagation(); window.sirahApp.removeFromFavorites('${prophet.id}');" title="${t('common.removeFromFavorites')}" aria-label="${t('common.removeFromFavorites')}"><i class="fas fa-trash-alt"></i></button>`
                 : '';
 
             return `
@@ -324,29 +326,29 @@ export default class SirahApp {
     // =====================================================================
     renderTimeline(grid) {
         const eras = [
-            { id: 'pra-banjir', title: 'Era Pra-Banjir Besar',
+            { id: 'pra-banjir', title: t('sirah.era1Title'),
               icon: 'fas fa-mountain',
-              note: 'Sejak penciptaan manusia hingga sebelum banjir besar Nabi Nuh',
+              note: t('sirah.era1Note'),
               color: '#4dd0e1', accent: '#0288d1',
               ids: ['adam', 'idris'] },
-            { id: 'banjir-arab', title: 'Era Pasca-Banjir & Arab Kuno',
+            { id: 'banjir-arab', title: t('sirah.era2Title'),
               icon: 'fas fa-water',
-              note: "Bangkitnya kaum 'Aad, Tsamud, dan keluarga Ibrahim",
+              note: t('sirah.era2Note'),
               color: '#26a69a', accent: '#00838f',
               ids: ['nuh', 'hud', 'shalih'] },
-            { id: 'ibrahim', title: 'Era Keluarga Ibrahim',
+            { id: 'ibrahim', title: t('sirah.era3Title'),
               icon: 'fas fa-kaaba',
-              note: 'Bapak para Nabi (Khalilullah) dan keturunannya',
+              note: t('sirah.era3Note'),
               color: '#ffd700', accent: '#ff6f61',
               ids: ['ibrahim', 'lut', 'ismail', 'ishaq', 'yaqub', 'yusuf', 'ayyub', 'syuaib'] },
-            { id: 'bani-israel', title: 'Era Bani Israel',
+            { id: 'bani-israel', title: t('sirah.era4Title'),
               icon: 'fas fa-scroll',
-              note: "Para nabi dari keturunan Ya'qub (Bani Israel)",
+              note: t('sirah.era4Note'),
               color: '#66bb6a', accent: '#2e7d32',
               ids: ['musa', 'harun', 'daud', 'sulaiman', 'yunus', 'zakariya', 'ilyas', 'alyasa', 'yahya', 'isa'] },
-            { id: 'akhir-zaman', title: 'Era Akhir Zaman',
+            { id: 'akhir-zaman', title: t('sirah.era5Title'),
               icon: 'fas fa-moon',
-              note: 'Khatamun Nabiyyin — penutup para nabi',
+              note: t('sirah.era5Note'),
               color: '#ce93d8', accent: '#7b1fa2',
               ids: ['muhammad'] }
         ];
@@ -373,14 +375,14 @@ export default class SirahApp {
                 <div class="timeline-intro-bg"></div>
                 <div class="timeline-intro-icon"><i class="fas fa-stream"></i></div>
                 <div class="timeline-intro-text">
-                    <span class="timeline-intro-tag">PERJALANAN PARA UTUSAN</span>
-                    <h3>Timeline 25 Nabi &amp; Rasul</h3>
-                    <p>Dari Nabi Adam <span class="alaihissalam">عليه السلام</span> hingga Nabi Muhammad ﷺ — kisah-kisah agung yang membentuk peradaban manusia.</p>
+                    <span class="timeline-intro-tag">${t('sirah.timelineTag')}</span>
+                    <h3>${t('sirah.timelineTitle')}</h3>
+                    <p>${t('sirah.timelineDesc')}</p>
                 </div>
                 <div class="timeline-intro-stats">
-                    <div class="timeline-stat"><span class="timeline-stat-num">25</span><span class="timeline-stat-lbl">Nabi &amp; Rasul</span></div>
-                    <div class="timeline-stat"><span class="timeline-stat-num">${totalEvents}</span><span class="timeline-stat-lbl">Peristiwa</span></div>
-                    <div class="timeline-stat"><span class="timeline-stat-num">${totalLessons}</span><span class="timeline-stat-lbl">Hikmah</span></div>
+                    <div class="timeline-stat"><span class="timeline-stat-num">25</span><span class="timeline-stat-lbl">${t('sirah.statProphets')}</span></div>
+                    <div class="timeline-stat"><span class="timeline-stat-num">${totalEvents}</span><span class="timeline-stat-lbl">${t('sirah.statEvents')}</span></div>
+                    <div class="timeline-stat"><span class="timeline-stat-num">${totalLessons}</span><span class="timeline-stat-lbl">${t('sirah.statLessons')}</span></div>
                 </div>
             </div>
 
@@ -388,7 +390,7 @@ export default class SirahApp {
                 ${eras.map((e, i) => `
                     <button class="era-nav-pill" data-era-target="${e.id}" style="--era-color:${e.color}">
                         <span class="era-nav-num">${i + 1}</span>
-                        <span class="era-nav-title">${e.title.replace('Era ', '')}</span>
+                        <span class="era-nav-title">${e.title.replace(/^Era\s+/, '')}</span>
                     </button>
                 `).join('')}
             </div>
@@ -412,7 +414,7 @@ export default class SirahApp {
                     <div class="timeline-era-marker">
                         <div class="era-marker-dot"><i class="${era.icon}"></i></div>
                         <div class="era-marker-label">
-                            <span class="era-num">Era ${eraIdx + 1} · ${eraProphets.length} Nabi</span>
+                            <span class="era-num">${t('sirah.eraMarkerLabel', { era: eraIdx + 1, count: eraProphets.length })}</span>
                             <h4>${era.title}</h4>
                             <p>${era.note}</p>
                         </div>
@@ -451,10 +453,10 @@ export default class SirahApp {
                                 ${prophet.period ? `<div class="timeline-card-period"><i class="fas fa-clock"></i> ${prophet.period}</div>` : ''}
                                 ${preview ? `<p class="timeline-card-preview">${preview}</p>` : ''}
                                 <div class="timeline-card-stats">
-                                    ${eventCount ? `<span class="timeline-stat-chip"><i class="fas fa-bookmark"></i> ${eventCount} peristiwa</span>` : ''}
-                                    ${lessonCount ? `<span class="timeline-stat-chip"><i class="fas fa-lightbulb"></i> ${lessonCount} hikmah</span>` : ''}
+                                    ${eventCount ? `<span class="timeline-stat-chip"><i class="fas fa-bookmark"></i> ${t('sirah.eventCount', { n: eventCount })}</span>` : ''}
+                                    ${lessonCount ? `<span class="timeline-stat-chip"><i class="fas fa-lightbulb"></i> ${t('sirah.lessonCount', { n: lessonCount })}</span>` : ''}
                                 </div>
-                                <button class="timeline-card-cta">Baca kisah lengkap <i class="fas fa-arrow-right"></i></button>
+                                <button class="timeline-card-cta">${t('sirah.readFullStory')} <i class="fas fa-arrow-right"></i></button>
                             </div>
                         </div>
                     </div>
@@ -467,7 +469,7 @@ export default class SirahApp {
         });
 
         if (totalRendered === 0) {
-            html += `<div class="empty-state"><i class="fas fa-search"></i><p>Tidak ada hasil untuk "${this.searchQuery}"</p></div>`;
+            html += `<div class="empty-state"><i class="fas fa-search"></i><p>${t('sirah.emptySearchQuery', { query: this.searchQuery })}</p></div>`;
         }
         html += '</div>';
         grid.innerHTML = html;
@@ -526,39 +528,39 @@ export default class SirahApp {
         const orbits = [
             {
                 id: 'khulafa',
-                title: 'Khulafāur Rāsyidīn',
-                subtitle: 'Empat khalifah yang lurus — pengganti langsung Rasulullah ﷺ',
+                title: t('sirah.orbit1Title'),
+                subtitle: t('sirah.orbit1Subtitle'),
                 subcats: ['khulafa_rasyidin'],
                 icon: 'fas fa-crown',
                 color: '#ffd54f', accent: '#f57f17',
-                rank: 'Orbit Terdalam'
+                rank: t('sirah.orbit1Rank')
             },
             {
                 id: 'asharah',
-                title: '‘Asyarah Mubasysyarah',
-                subtitle: 'Sepuluh sahabat yang dijamin masuk surga semasa hidup',
+                title: t('sirah.orbit2Title'),
+                subtitle: t('sirah.orbit2Subtitle'),
                 subcats: ['asharah_mubasysyarah'],
                 icon: 'fas fa-star',
                 color: '#80cbc4', accent: '#00695c',
-                rank: 'Orbit ke-2'
+                rank: t('sirah.orbit2Rank')
             },
             {
                 id: 'muhajirin',
-                title: 'Muhājirīn, Anshār & Pejuang',
-                subtitle: 'Para perintis hijrah, penolong di Madinah, dan panglima perang',
+                title: t('sirah.orbit3Title'),
+                subtitle: t('sirah.orbit3Subtitle'),
                 subcats: ['muhajirin', 'anshar_aus', 'anshar_khazraj', 'sahabat_awal', 'panglima', 'ahlu_bait'],
                 icon: 'fas fa-route',
                 color: '#90caf9', accent: '#1565c0',
-                rank: 'Orbit ke-3'
+                rank: t('sirah.orbit3Rank')
             },
             {
                 id: 'sahabiyat',
-                title: 'Sahabiyāt — Wanita Pilihan',
-                subtitle: 'Ibu kaum mukminin dan wanita-wanita mulia di sekitar Nabi ﷺ',
+                title: t('sirah.orbit4Title'),
+                subtitle: t('sirah.orbit4Subtitle'),
                 subcats: ['ummahatul_mukminin', 'ummul_mukminin', 'sahabiyat_muhajirat'],
                 icon: 'fas fa-dove',
                 color: '#f48fb1', accent: '#ad1457',
-                rank: 'Orbit ke-4'
+                rank: t('sirah.orbit4Rank')
             }
         ];
 
@@ -595,14 +597,14 @@ export default class SirahApp {
                     }).join('')}
                 </div>
                 <div class="konstelasi-hero-body">
-                    <span class="konstelasi-tag">⌖ MAP OF COMPANIONS ⌖</span>
-                    <h3>Konstelasi Para Sahabat ﷺ</h3>
-                    <p class="konstelasi-arabic">رَضِيَ اللَّهُ عَنْهُمْ أَجْمَعِينَ</p>
-                    <p class="konstelasi-sub">Sahabat — bintang-bintang yang mengelilingi matahari risalah. Setiap orbit menggambarkan tingkat kedekatan mereka dengan Rasulullah ﷺ.</p>
+                    <span class="konstelasi-tag">${t('sirah.constellationTag')}</span>
+                    <h3>${t('sirah.constellationTitle')}</h3>
+                    <p class="konstelasi-arabic">${t('sirah.constellationArabic')}</p>
+                    <p class="konstelasi-sub">${t('sirah.constellationSub')}</p>
                 </div>
                 <div class="konstelasi-hero-stats">
-                    <div class="kons-stat"><span class="kons-stat-num">${totalSahabat}</span><span class="kons-stat-lbl">Total Sahabat</span></div>
-                    <div class="kons-stat"><span class="kons-stat-num">${orbits.length}</span><span class="kons-stat-lbl">Orbit</span></div>
+                    <div class="kons-stat"><span class="kons-stat-num">${totalSahabat}</span><span class="kons-stat-lbl">${t('sirah.totalCompanions')}</span></div>
+                    <div class="kons-stat"><span class="kons-stat-num">${orbits.length}</span><span class="kons-stat-lbl">${t('sirah.orbit')}</span></div>
                 </div>
             </div>
         `;
@@ -615,8 +617,8 @@ export default class SirahApp {
                 <div class="kons-core-ring kons-core-ring-3"></div>
                 <div class="kons-core-center">
                     <div class="kons-core-arabic">ﷺ</div>
-                    <div class="kons-core-label">Rasulullah Muhammad</div>
-                    <div class="kons-core-sub">Pusat Konstelasi Sahabat</div>
+                    <div class="kons-core-label">${t('sirah.rasulullah')}</div>
+                    <div class="kons-core-sub">${t('sirah.constellationCenter')}</div>
                 </div>
             </div>
         `;
@@ -637,7 +639,7 @@ export default class SirahApp {
                             <h4>${orbit.title}</h4>
                             <p>${orbit.subtitle}</p>
                         </div>
-                        <div class="orbit-header-count">${members.length} sahabat</div>
+                        <div class="orbit-header-count">${t('sirah.companionCount', { n: members.length })}</div>
                     </header>
 
                     <div class="orbit-trail" aria-hidden="true">
@@ -669,7 +671,7 @@ export default class SirahApp {
                                         ${period ? `<div class="orbit-card-period"><i class="fas fa-history"></i> ${period}</div>` : ''}
                                     </div>
                                     <div class="orbit-card-cta">
-                                        <span>Selami kisahnya</span> <i class="fas fa-arrow-right"></i>
+                                        <span>${t('sirah.exploreStory')}</span> <i class="fas fa-arrow-right"></i>
                                     </div>
                                 </article>
                             `;
@@ -682,7 +684,7 @@ export default class SirahApp {
 
         if (totalRendered === 0) {
             html += `<div class="empty-state"><i class="fas fa-search"></i>
-                <p>${this.searchQuery ? `Tidak ada sahabat yang cocok dengan "${this.searchQuery}"` : 'Data sahabat belum tersedia'}</p></div>`;
+                <p>${this.searchQuery ? t('sirah.noCompanionsMatch', { query: this.searchQuery }) : t('sirah.noCompanionsAvailable')}</p></div>`;
         }
 
         grid.innerHTML = html;
@@ -783,24 +785,24 @@ export default class SirahApp {
                 </div>
 
                 <div class="info-section">
-                    <h4><i class="fas fa-user"></i> Informasi Dasar</h4>
+                    <h4><i class="fas fa-user"></i> ${t('sirah.basicInfo')}</h4>
                     <div class="info-grid">
-                        ${prophet.category ? `<div class="info-item"><strong>Kategori:</strong> ${prophet.category === 'nabi' ? 'Nabi' : prophet.category === 'rasul' ? 'Rasul' : prophet.category === 'sahabat' ? 'Sahabat' : prophet.category}</div>` : ''}
-                        ${prophet.subcategory ? `<div class="info-item"><strong>Sub Kategori:</strong> ${prophet.subcategory}</div>` : ''}
-                        ${prophet.father ? `<div class="info-item"><strong>Ayah:</strong> ${prophet.father}</div>` : ''}
-                        ${prophet.mother ? `<div class="info-item"><strong>Ibu:</strong> ${prophet.mother}</div>` : ''}
-                        ${prophet.birthPlace ? `<div class="info-item"><strong>Tempat Lahir:</strong> ${prophet.birthPlace}</div>` : ''}
-                        ${prophet.deathPlace ? `<div class="info-item"><strong>Tempat Wafat:</strong> ${prophet.deathPlace}</div>` : ''}
-                        ${prophet.tribe ? `<div class="info-item"><strong>Kaum/Suku:</strong> ${prophet.tribe}</div>` : ''}
-                        ${prophet.period ? `<div class="info-item"><strong>Periode:</strong> ${prophet.period}</div>` : ''}
-                        ${prophet.periodHijri ? `<div class="info-item"><strong>Periode Hijriah:</strong> ${prophet.periodHijri}</div>` : ''}
-                        ${prophet.profession ? `<div class="info-item"><strong>Profesi:</strong> ${prophet.profession}</div>` : ''}
+                        ${prophet.category ? `<div class="info-item"><strong>${t('sirah.lblCategory')}</strong> ${prophet.category === 'nabi' ? t('sirah.kindProphet') : prophet.category === 'rasul' ? t('sirah.kindMessenger') : prophet.category === 'sahabat' ? t('sirah.kindCompanion') : prophet.category}</div>` : ''}
+                        ${prophet.subcategory ? `<div class="info-item"><strong>${t('sirah.lblSubcategory')}</strong> ${prophet.subcategory}</div>` : ''}
+                        ${prophet.father ? `<div class="info-item"><strong>${t('sirah.lblFather')}</strong> ${prophet.father}</div>` : ''}
+                        ${prophet.mother ? `<div class="info-item"><strong>${t('sirah.lblMother')}</strong> ${prophet.mother}</div>` : ''}
+                        ${prophet.birthPlace ? `<div class="info-item"><strong>${t('sirah.lblBirthPlace')}</strong> ${prophet.birthPlace}</div>` : ''}
+                        ${prophet.deathPlace ? `<div class="info-item"><strong>${t('sirah.lblDeathPlace')}</strong> ${prophet.deathPlace}</div>` : ''}
+                        ${prophet.tribe ? `<div class="info-item"><strong>${t('sirah.lblTribe')}</strong> ${prophet.tribe}</div>` : ''}
+                        ${prophet.period ? `<div class="info-item"><strong>${t('sirah.lblPeriod')}</strong> ${prophet.period}</div>` : ''}
+                        ${prophet.periodHijri ? `<div class="info-item"><strong>${t('sirah.lblPeriodHijri')}</strong> ${prophet.periodHijri}</div>` : ''}
+                        ${prophet.profession ? `<div class="info-item"><strong>${t('sirah.lblProfession')}</strong> ${prophet.profession}</div>` : ''}
                     </div>
                 </div>
 
                 ${prophet.wife && prophet.wife.length > 0 ? `
                 <div class="info-section">
-                    <h4><i class="fas fa-heart"></i> Istri</h4>
+                    <h4><i class="fas fa-heart"></i> ${t('sirah.lblWife')}</h4>
                     <ul class="info-list">
                         ${prophet.wife.map(w => `<li>${w}</li>`).join('')}
                     </ul>
@@ -809,7 +811,7 @@ export default class SirahApp {
 
                 ${prophet.children && prophet.children.length > 0 ? `
                 <div class="info-section">
-                    <h4><i class="fas fa-users"></i> Anak</h4>
+                    <h4><i class="fas fa-users"></i> ${t('sirah.lblChildren')}</h4>
                     <ul class="info-list">
                         ${prophet.children.map(c => `<li>${c}</li>`).join('')}
                     </ul>
@@ -818,7 +820,7 @@ export default class SirahApp {
 
                 ${prophet.qualities && prophet.qualities.length > 0 ? `
                 <div class="info-section">
-                    <h4><i class="fas fa-star"></i> Sifat & Keutamaan</h4>
+                    <h4><i class="fas fa-star"></i> ${t('sirah.lblVirtues')}</h4>
                     <ul class="info-list">
                         ${prophet.qualities.map(q => `<li>${q}</li>`).join('')}
                     </ul>
@@ -826,8 +828,8 @@ export default class SirahApp {
                 ` : ''}
 
                 <div class="info-section">
-                    <h4><i class="fas fa-book-open"></i> Biografi</h4>
-                    <p class="biography-text">${prophet.biography || 'Tidak ada informasi biografi.'}</p>
+                    <h4><i class="fas fa-book-open"></i> ${t('sirah.lblBiography')}</h4>
+                    <p class="biography-text">${prophet.biography || t('sirah.noBio')}</p>
                 </div>
             </div>
         `;
@@ -835,7 +837,7 @@ export default class SirahApp {
 
     renderEvents(prophet) {
         if (!prophet.majorEvents || prophet.majorEvents.length === 0) {
-            return `<div class="empty-state"><p>Tidak ada data peristiwa</p></div>`;
+            return `<div class="empty-state"><p>${t('sirah.noEvents')}</p></div>`;
         }
 
         return `
@@ -862,7 +864,7 @@ export default class SirahApp {
 
     renderLessons(prophet) {
         if (!prophet.lessons || prophet.lessons.length === 0) {
-            return `<div class="empty-state"><p>Tidak ada data hikmah</p></div>`;
+            return `<div class="empty-state"><p>${t('sirah.noLessons')}</p></div>`;
         }
 
         return `
@@ -886,7 +888,7 @@ export default class SirahApp {
         const hasReferences = prophet.references && prophet.references.length > 0;
 
         if (hasHadits || hasReferences) {
-            html += '<div class="ref-section"><h4><i class="fas fa-book"></i> Referensi Al-Quran & Hadits</h4>';
+            html += `<div class="ref-section"><h4><i class="fas fa-book"></i> ${t('sirah.referencesTitle')}</h4>`;
             
             // Hadits Shahih (ditampilkan sebagai card)
             if (hasHadits) {
@@ -927,13 +929,13 @@ export default class SirahApp {
         const index = this.favorites.findIndex(f => f.id === this.currentProphet.id);
         if (index !== -1) {
             this.favorites.splice(index, 1);
-            this.showToast('Dihapus dari favorit');
+            this.showToast(t('sirah.removedFav'));
         } else {
             this.favorites.push({
                 id: this.currentProphet.id,
                 name: this.currentProphet.name
             });
-            this.showToast('Ditambahkan ke favorit');
+            this.showToast(t('sirah.addedFav'));
         }
 
         this.saveFavorites();
@@ -947,7 +949,7 @@ export default class SirahApp {
             this.favorites.splice(index, 1);
             this.saveFavorites();
             this.displayProphets(); // Refresh the grid
-            this.showToast(`${prophet ? prophet.name : 'Item'} dihapus dari favorit`);
+            this.showToast(t('sirah.itemRemovedFav', { name: prophet ? prophet.name : 'Item' }));
         }
     }
 
@@ -1025,7 +1027,7 @@ export default class SirahApp {
             this.showCopySuccess();
         }).catch(err => {
             console.error('Failed to copy:', err);
-            this.showToast('Gagal menyalin teks');
+            this.showToast(t('sirah.copyFailed'));
         });
     }
 
@@ -1039,7 +1041,7 @@ export default class SirahApp {
                 copyBtn.innerHTML = originalHTML;
             }, 2000);
         }
-        this.showToast('Teks berhasil disalin!');
+        this.showToast(t('sirah.copied'));
     }
 
     loadFavorites() {

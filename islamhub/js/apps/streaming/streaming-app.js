@@ -1,3 +1,5 @@
+import { t } from '../../i18n/index.js';
+
 class StreamingApp {
     constructor() {
         this.currentStream = null;
@@ -164,9 +166,9 @@ class StreamingApp {
     }
 
     liveStatus(c) {
-        if (c.live) return '<span class="status-dot live"></span><span>Live sekarang</span>';
-        if (c.always) return '<span class="status-dot live"></span><span>Siaran 24 jam</span>';
-        return '<span class="status-dot"></span><span>Belum live · putar video terbaru</span>';
+        if (c.live) return '<span class="status-dot live"></span><span>' + t('streaming.status.liveNow') + '</span>';
+        if (c.always) return '<span class="status-dot live"></span><span>' + t('streaming.status.twentyFourHours') + '</span>';
+        return '<span class="status-dot"></span><span>' + t('streaming.status.notLive') + '</span>';
     }
 
     renderVideoCard(c) {
@@ -186,7 +188,7 @@ class StreamingApp {
                 </div>
                 <button class="btn-video" onclick="window.streamingApp.openLive('${c.key}')">
                     <i class="fas ${live ? 'fa-play-circle' : 'fa-list-ul'}"></i>
-                    <span>${live ? 'Tonton Live' : 'Video Terbaru'}</span>
+                    <span>${live ? t('streaming.btn.watchLive') : t('streaming.btn.latestVideo')}</span>
                 </button>
             </div>`;
     }
@@ -203,35 +205,35 @@ class StreamingApp {
         const c = this.liveChannels.find(x => x.key === key);
         if (!c) return;
         const live = c.videoId && (c.live || c.always);
-        this.openVideoStream(this.embedUrl(c), live ? c.name : `${c.name} · terbaru`, c);
+        this.openVideoStream(this.embedUrl(c), live ? c.name : t('streaming.title.channelLatest', { name: c.name }), c);
     }
 
     render() {
-        return `
+        const html = `
             <div class="streaming-container">
                 <div class="streaming-header">
-                    <h1><i class="fas fa-broadcast-tower"></i> Streaming Kajian Islam</h1>
-                    <p class="subtitle">Radio dan video streaming kajian Islam live 24/7</p>
+                    <h1><i class="fas fa-broadcast-tower"></i> ${t('streaming.header.title')}</h1>
+                    <p class="subtitle">${t('streaming.header.subtitle')}</p>
                 </div>
 
                 <!-- Filter & Search Bar -->
                 <div class="streaming-toolbar">
                     <div class="streaming-search">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="streamingSearchInput" placeholder="Cari channel atau radio...">
+                        <input type="text" id="streamingSearchInput" placeholder="${t('streaming.search.placeholder')}">
                     </div>
                     <div class="streaming-filters">
                         <button class="streaming-filter-btn active" data-filter="all">
-                            <i class="fas fa-th"></i> Semua
+                            <i class="fas fa-th"></i> ${t('streaming.filter.all')}
                         </button>
                         <button class="streaming-filter-btn" data-filter="radio">
-                            <i class="fas fa-radio"></i> Radio
+                            <i class="fas fa-radio"></i> ${t('streaming.filter.radio')}
                         </button>
                         <button class="streaming-filter-btn" data-filter="video">
-                            <i class="fas fa-tv"></i> Video TV
+                            <i class="fas fa-tv"></i> ${t('streaming.filter.video')}
                         </button>
                         <button class="streaming-filter-btn" data-filter="haramain">
-                            <i class="fas fa-kaaba"></i> Haramain
+                            <i class="fas fa-kaaba"></i> ${t('streaming.filter.haramain')}
                         </button>
                     </div>
                 </div>
@@ -240,7 +242,7 @@ class StreamingApp {
                 <div class="streaming-livestats">
                     <div class="livestats-item">
                         <span class="live-dot"></span>
-                        <span><strong id="liveCountTotal">${this.radioStations.length + this.liveChannels.filter(c => c.live || c.always).length}</strong> Channel Live Sekarang</span>
+                        <span><strong id="liveCountTotal">${this.radioStations.length + this.liveChannels.filter(c => c.live || c.always).length}</strong> ${t('streaming.stats.channelsLive')}</span>
                     </div>
                 </div>
 
@@ -248,7 +250,7 @@ class StreamingApp {
                 <div class="streaming-section" data-section="radio">
                     <div class="section-header">
                         <i class="fas fa-radio"></i>
-                        <h2>Streaming Radio Kajian</h2>
+                        <h2>${t('streaming.section.radio')}</h2>
                     </div>
                     
                     ${this.radioStations.map((station, index) => `
@@ -262,13 +264,13 @@ class StreamingApp {
                                     <p>${station.description}</p>
                                     <div class="radio-status" id="radioStatus${index}">
                                         <span class="status-dot"></span>
-                                        <span>Siap Streaming</span>
+                                        <span>${t('streaming.radio.ready')}</span>
                                     </div>
                                 </div>
                             </div>
                             <button class="btn-radio" id="btnRadio${index}" data-station-index="${index}">
                                 <i class="fas fa-play"></i>
-                                <span>Putar Radio</span>
+                                <span>${t('streaming.radio.play')}</span>
                             </button>
                         </div>
                     `).join('')}
@@ -279,10 +281,10 @@ class StreamingApp {
                 <div class="streaming-section" data-section="video">
                     <div class="section-header">
                         <i class="fas fa-tv"></i>
-                        <h2>Streaming Video Kajian</h2>
+                        <h2>${t('streaming.section.video')}</h2>
                     </div>
                     <p class="section-description">
-                        Tonton live streaming TV dakwah Islam langsung dari browser
+                        ${t('streaming.section.videoDesc')}
                     </p>
                     
                     ${this.videoChannels.map(c => this.renderVideoCard(c)).join('')}
@@ -292,10 +294,10 @@ class StreamingApp {
                 <div class="streaming-section" data-section="haramain">
                     <div class="section-header">
                         <i class="fas fa-kaaba"></i>
-                        <h2>Live Makkah & Madinah</h2>
+                        <h2>${t('streaming.section.haramain')}</h2>
                     </div>
                     <p class="section-description">
-                        Saksikan langsung suasana Masjidil Haram dan Masjid Nabawi 24 jam
+                        ${t('streaming.section.haramainDesc')}
                     </p>
                     
                     ${this.liveHaramain.map(c => this.renderVideoCard(c)).join('')}
@@ -306,13 +308,13 @@ class StreamingApp {
                     <div class="tip-card">
                         <i class="fas fa-lightbulb"></i>
                         <div class="tip-content">
-                            <h4>Tips Streaming</h4>
+                            <h4>${t('streaming.tips.title')}</h4>
                             <ul>
-                                <li>Pastikan koneksi internet stabil untuk streaming lancar</li>
-                                <li>Live Haramain menampilkan suasana Makkah & Madinah realtime 24/7</li>
-                                <li>Radio streaming akan diputar langsung di aplikasi</li>
-                                <li>Video streaming kajian akan dibuka di aplikasi</li>
-                                <li>Gunakan WiFi untuk menghemat kuota internet</li>
+                                <li>${t('streaming.tips.tip1')}</li>
+                                <li>${t('streaming.tips.tip2')}</li>
+                                <li>${t('streaming.tips.tip3')}</li>
+                                <li>${t('streaming.tips.tip4')}</li>
+                                <li>${t('streaming.tips.tip5')}</li>
                             </ul>
                         </div>
                     </div>
@@ -323,7 +325,7 @@ class StreamingApp {
             <div class="video-modal" id="videoModal">
                 <div class="video-modal-content">
                     <div class="video-modal-header">
-                        <h3 id="videoModalTitle">Live Streaming</h3>
+                        <h3 id="videoModalTitle">${t('streaming.modal.title')}</h3>
                         <button class="video-modal-close" onclick="window.streamingApp.closeVideoStream()">
                             <i class="fas fa-times"></i>
                         </button>
@@ -332,25 +334,39 @@ class StreamingApp {
                         <iframe id="videoIframe" src="" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
                     <div class="video-modal-foot">
-                        <span>Siaran berhenti atau tidak muncul?</span>
-                        <button type="button" class="video-reload-btn" onclick="window.streamingApp.reloadVideoStream()"><i class="fas fa-rotate-right"></i> Muat ulang</button>
+                        <span>${t('streaming.modal.issuePrompt')}</span>
+                        <button type="button" class="video-reload-btn" onclick="window.streamingApp.reloadVideoStream()"><i class="fas fa-rotate-right"></i> ${t('streaming.modal.reload')}</button>
                     </div>
                 </div>
             </div>
         `;
+
+        const container = document.getElementById('streaming-app');
+        if (container) {
+            container.innerHTML = html;
+            this.setupEventListeners();
+            if (this.currentStream !== null) {
+                this.updateSignalStatus(this.isRetrying ? 'reconnecting' : 'live');
+                const btnRadio = document.getElementById(`btnRadio${this.currentStream}`);
+                if (btnRadio) {
+                    btnRadio.innerHTML = '<i class="fas fa-stop"></i><span>' + t('streaming.radio.stop') + '</span>';
+                    btnRadio.classList.add('active');
+                }
+            }
+        }
+        return html;
     }
 
     async init() {
         console.log('[Streaming] Initializing...');
-        
+        window.streamingApp = this;
         await this.loadLiveChannels();
 
-        // Render content
-        const container = document.getElementById('streaming-app');
-        if (container) {
-            container.innerHTML = this.render();
-            console.log('[Streaming] Content rendered');
-        }
+        // Render content and wire event listeners
+        this.render();
+        
+        console.log('[Streaming] Initialized successfully');
+    }
         
         // Setup event listeners after render
         this.setupEventListeners();
@@ -528,7 +544,7 @@ class StreamingApp {
         if (this.retryCount === 3 && !this.reassurancePopupShown) {
             this.reassurancePopupShown = true;
             this.showStreamingPopup(
-                'Sinyal internet kurang stabil. Aplikasi akan terus mencoba menyambung ulang otomatis di latar belakang.',
+                t('streaming.popup.unstableSignal'),
                 'info'
             );
         }
@@ -595,11 +611,11 @@ class StreamingApp {
         if (this.currentStream !== null) {
             const radioStatus = document.getElementById(`radioStatus${this.currentStream}`);
             if (status === 'reconnecting') {
-                if (radioStatus) radioStatus.innerHTML = '<span class="status-dot loading"></span><span>Menghubungkan ulang...</span>';
+                if (radioStatus) radioStatus.innerHTML = '<span class="status-dot loading"></span><span>' + t('streaming.status.reconnecting') + '</span>';
             } else if (status === 'live') {
-                if (radioStatus) radioStatus.innerHTML = '<span class="status-dot live"></span><span>Sedang Streaming</span>';
+                if (radioStatus) radioStatus.innerHTML = '<span class="status-dot live"></span><span>' + t('streaming.status.streamingNow') + '</span>';
             } else if (status === 'failed') {
-                if (radioStatus) radioStatus.innerHTML = '<span class="status-dot"></span><span>Koneksi Gagal</span>';
+                if (radioStatus) radioStatus.innerHTML = '<span class="status-dot"></span><span>' + t('streaming.status.failed') + '</span>';
             }
         }
 
@@ -682,8 +698,8 @@ class StreamingApp {
             this.resetRetryState();
 
             // Show loading (btnRadio/radioStatus may be null when called from adzan panel)
-            if (btnRadio) { btnRadio.disabled = true; btnRadio.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Menghubungkan...</span>'; }
-            if (radioStatus) radioStatus.innerHTML = '<span class="status-dot loading"></span><span>Menghubungkan...</span>';
+            if (btnRadio) { btnRadio.disabled = true; btnRadio.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>' + t('streaming.status.connecting') + '</span>'; }
+            if (radioStatus) radioStatus.innerHTML = '<span class="status-dot loading"></span><span>' + t('streaming.status.connecting') + '</span>';
 
             // Set radio source (persistent global element in #bottom-dock)
             radioPlayer.src = station.url;
@@ -698,19 +714,19 @@ class StreamingApp {
             // (called every second). Trigger immediately for snappy UI.
             if (window.islamHub) window.islamHub._globalPlayerUpdate();
             
-            if (btnRadio) { btnRadio.innerHTML = '<i class="fas fa-stop"></i><span>Stop</span>'; btnRadio.classList.add('active'); btnRadio.disabled = false; }
-            if (radioStatus) radioStatus.innerHTML = '<span class="status-dot live"></span><span>Sedang Streaming</span>';
+            if (btnRadio) { btnRadio.innerHTML = '<i class="fas fa-stop"></i><span>' + t('streaming.radio.stop') + '</span>'; btnRadio.classList.add('active'); btnRadio.disabled = false; }
+            if (radioStatus) radioStatus.innerHTML = '<span class="status-dot live"></span><span>' + t('streaming.status.streamingNow') + '</span>';
             
             console.log(`[Streaming] ${station.name} started`);
         } catch (error) {
             console.error('[Streaming] Radio error:', error);
             
             // Reset button
-            if (btnRadio) { btnRadio.disabled = false; btnRadio.innerHTML = '<i class="fas fa-play"></i><span>Putar Radio</span>'; }
-            if (radioStatus) radioStatus.innerHTML = '<span class="status-dot"></span><span>Error</span>';
+            if (btnRadio) { btnRadio.disabled = false; btnRadio.innerHTML = '<i class="fas fa-play"></i><span>' + t('streaming.radio.play') + '</span>'; }
+            if (radioStatus) radioStatus.innerHTML = '<span class="status-dot"></span><span>' + t('streaming.status.error') + '</span>';
             
             this.showStreamingPopup(
-                `Gagal memulai streaming ${station.name}. Pastikan koneksi internet Anda stabil.`,
+                t('streaming.popup.startError', { name: station.name }),
                 'error'
             );
         }
@@ -742,11 +758,11 @@ class StreamingApp {
         if (window.islamHub) window.islamHub._globalPlayerUpdate();
         
         if (btnRadio) {
-            btnRadio.innerHTML = '<i class="fas fa-play"></i><span>Putar Radio</span>';
+            btnRadio.innerHTML = '<i class="fas fa-play"></i><span>' + t('streaming.radio.play') + '</span>';
             btnRadio.classList.remove('active');
         }
         if (radioStatus) {
-            radioStatus.innerHTML = '<span class="status-dot"></span><span>Siap Streaming</span>';
+            radioStatus.innerHTML = '<span class="status-dot"></span><span>' + t('streaming.radio.ready') + '</span>';
         }
         
         console.log('[Streaming] Radio stopped');
@@ -783,7 +799,7 @@ class StreamingApp {
     }
     
     openYouTubeChannel(channelId) {
-        const c = this.liveChannels.find(x => x.channelId === channelId) || { channelId, name: 'Video terbaru' };
+        const c = this.liveChannels.find(x => x.channelId === channelId) || { channelId, name: t('streaming.channel.latestFallback') };
         this.openVideoStream(this.embedUrl(c), c.name, c);
     }
 

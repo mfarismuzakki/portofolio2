@@ -2,6 +2,7 @@
 import Arena from '../../utils/arena.js';
 import { shuffle, pick, blip, vibrate } from '../../utils/game-kit.js';
 import { UMRAH, HAJI } from './manasik-game.js';
+import { t } from '../../i18n/index.js';
 
 const DAYS = ['8 Dzulhijjah · Tarwiyah', '9 Dzulhijjah · Arafah', '10 Dzulhijjah · Nahr', '11–13 Dzulhijjah · Tasyrik'];
 const DAY_CARDS = [
@@ -54,16 +55,16 @@ function jumrahGame(api) {
     let throws = 0, spares = 5, score = 0, combo = 0, choice = 0, needle = 0, dir = 1, zone = null, flying = null, raf = null, last = null, msg = null, done = false;
     const lines = [];
     api.stage.innerHTML = `<div class="gk-throw">
-        <p class="gk-prompt">Hari tasyrik: lontar <b>Ula → Wustha → Aqabah</b>, masing-masing 7 kerikil. Pilih jumrah, lalu tekan <b>Lontar</b> saat jarum di zona hijau. Kerikil yang meleset tidak dihitung, gunakan kerikil cadangan.</p>
+        <p class="gk-prompt">${t('haji.game.jumrahPrompt')}</p>
         <canvas width="${W * 2}" height="${H * 2}" aria-label="Arena lontar jumrah"></canvas>
         <div class="gk-throw-controls"><div class="gk-pillars" role="group" aria-label="Pilih jumrah">${NAMES.map((n, i) => `<button data-p="${i}" aria-pressed="${i === 0}">${n}</button>`).join('')}</div>
-        <button class="gk-btn gk-primary" data-throw>🤲 Lontar</button><span class="gk-chip gk-spares"></span></div></div>`;
+        <button class="gk-btn gk-primary" data-throw>${t('haji.game.throwBtn')}</button><span class="gk-chip gk-spares"></span></div></div>`;
     const canvas = api.stage.querySelector('canvas'), c = canvas.getContext('2d');
     c.scale(2, 2);
     const newZone = () => { const width = Math.max(0.1, 0.24 - throws * 0.006); const start = 0.08 + Math.random() * (0.84 - width); zone = [start, start + width]; };
     newZone();
     const target = () => Math.min(2, Math.floor(throws / 7));
-    const hud = () => { api.hud({ score, round: throws, total: 21, combo }); api.stage.querySelector('.gk-spares').textContent = `Cadangan: ${'●'.repeat(Math.max(0, spares))}${'○'.repeat(Math.max(0, 5 - Math.max(0, spares)))}`; };
+    const hud = () => { api.hud({ score, round: throws, total: 21, combo }); api.stage.querySelector('.gk-spares').textContent = t('haji.game.spares', { marks: '●'.repeat(Math.max(0, spares)) + '○'.repeat(Math.max(0, 5 - Math.max(0, spares))) }); };
     const draw = () => {
         c.clearRect(0, 0, W, H);
         const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#f4efdf'); g.addColorStop(1, '#e3dcc6'); c.fillStyle = g; c.fillRect(0, 0, W, H);
@@ -111,16 +112,16 @@ function jumrahGame(api) {
             throws++; combo++;
             const gain = 80 + f.accuracy + (combo > 3 ? 20 : 0);
             score += gain; blip('ok');
-            msg = { text: 'Allāhu akbar!', x: X[f.p], color: '#2f7d5b', life: 900 };
-            api.feedback(`Masuk kolam ${NAMES[f.p]} (+${gain}).${throws % 7 === 0 && throws < 21 ? ` ${NAMES[f.p]} selesai. ${f.p < 2 ? 'Berdoa sejenak, lalu lanjut ke ' + NAMES[f.p + 1] + '.' : ''}` : ''}`, 'ok');
+            msg = { text: t('haji.game.takbir'), x: X[f.p], color: '#2f7d5b', life: 900 };
+            api.feedback(t('haji.game.hitPool', { name: NAMES[f.p], gain }) + (throws % 7 === 0 && throws < 21 ? t('haji.game.stageDone', { name: NAMES[f.p] }) + (f.p < 2 ? t('haji.game.prayThenNext', { next: NAMES[f.p + 1] }) : '') : ''), 'ok');
             newZone();
-            if (throws >= 21) { done = true; setTimeout(() => api.end({ score, max: 21 * 140, lines: [`${21} kerikil masuk, ${5 - spares} kerikil cadangan terpakai.`, ...lines.slice(0, 3)] }), 700); }
+            if (throws >= 21) { done = true; setTimeout(() => api.end({ score, max: 21 * 140, lines: [t('haji.game.jumrahDone', { n: 21, spares: 5 - spares }), ...lines.slice(0, 3)] }), 700); }
         } else {
             combo = 0; spares--; blip('bad'); vibrate(); api.flash('bad');
-            msg = { text: 'Meleset', x: X[f.p], color: '#b5543f', life: 900 };
-            api.feedback('Kerikil tidak masuk kolam sehingga tidak dihitung. Lontar lagi dengan kerikil cadangan.', 'bad');
-            lines.push('Kerikil harus masuk ke kolam jumrah; yang meleset diganti.');
-            if (spares < 0) { done = true; setTimeout(() => api.end({ score, max: 21 * 140, lines: [`Kerikil cadangan habis setelah ${throws} lontaran masuk.`, ...lines.slice(0, 3)] }), 600); }
+            msg = { text: t('haji.game.missed'), x: X[f.p], color: '#b5543f', life: 900 };
+            api.feedback(t('haji.game.missedDesc'), 'bad');
+            lines.push(t('haji.game.missedLine'));
+            if (spares < 0) { done = true; setTimeout(() => api.end({ score, max: 21 * 140, lines: [t('haji.game.sparesDepleted', { n: throws }), ...lines.slice(0, 3)] }), 600); }
         }
         hud();
     };
@@ -129,8 +130,8 @@ function jumrahGame(api) {
         const t = target();
         if (choice !== t) {
             combo = 0; score = Math.max(0, score - 30); blip('bad'); api.flash('bad');
-            api.feedback(`Urutannya Ula → Wustha → Aqabah. Sekarang giliran <b>${NAMES[t]}</b> (−30).`, 'bad');
-            lines.push(`Melontar ${NAMES[choice]} sebelum ${NAMES[t]} tidak sesuai urutan.`);
+            api.feedback(t('haji.game.wrongOrder', { name: NAMES[t] }), 'bad');
+            lines.push(t('haji.game.wrongOrderLine', { choice: NAMES[choice], target: NAMES[t] }));
             hud(); return;
         }
         const hit = needle >= zone[0] && needle <= zone[1];
@@ -249,11 +250,17 @@ export const HAJI_GAMES = [
 ];
 
 export default function createHajiArena(root) {
+    const games = [
+        { id: 'haji-jumrah', icon: '🎯', tag: t('haji.game.jumrahTag'), title: t('games.hajiJumrah'), desc: t('haji.game.jumrahDesc'), run: jumrahGame },
+        { id: 'haji-hari', icon: '📅', tag: t('haji.game.hariTag'), title: t('games.hajiHari'), desc: t('haji.game.hariDesc'), run: dayGame },
+        { id: 'haji-ihram', icon: '🧕', tag: t('haji.game.ihramTag'), title: t('games.hajiIhram'), desc: t('haji.game.ihramDesc'), run: ihramGame },
+        { id: 'haji-kuis', icon: '⏱️', tag: t('haji.game.kuisTag'), title: t('games.hajiKuis'), desc: t('haji.game.kuisDesc'), run: quizGame }
+    ];
     return new Arena(root, {
-        eyebrow: 'ARENA MANASIK · BELAJAR SAMBIL BERMAIN',
-        title: 'Siap berangkat? Uji manasikmu.',
-        intro: 'Empat permainan singkat pelengkap Jelajah Manasik. Bintang dan XP digabung dengan Arena Sholat.',
-        games: HAJI_GAMES,
+        eyebrow: t('haji.arena.eyebrow'),
+        title: t('haji.arena.title'),
+        intro: t('haji.arena.intro'),
+        games,
         theme: 'gk-haji'
     });
 }

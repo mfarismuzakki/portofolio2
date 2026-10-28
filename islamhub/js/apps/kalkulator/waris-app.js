@@ -3,6 +3,7 @@
 // Menggunakan Metode Jumhur Ulama
 
 import { computeFaraid } from './waris-engine.js';
+import { t, locale, getLang } from '../../i18n/index.js';
 
 export default class WarisApp {
     constructor(state, mainApp) {
@@ -59,6 +60,21 @@ export default class WarisApp {
         window.warisApp = this;
     }
 
+    render() {
+        this.renderHeirsForm();
+        if (this.currentPage === 'favorites') {
+            this.renderFavorites();
+        } else if (this.currentPage === 'calculator' && this.data.results) {
+            try {
+                this.data.results = this.processInheritanceCalculation();
+            } catch (e) {
+                // Keep existing results if recomputation fails
+            }
+            this.displayResults(this.data.results);
+            this.updateFavoriteButton();
+        }
+    }
+
     // ===== FAVORITES =====
     loadFavorites() {
         const saved = localStorage.getItem('warisFavorites');
@@ -82,7 +98,7 @@ export default class WarisApp {
             // Remove from favorites
             this.favorites.splice(existingIndex, 1);
             this.saveFavorites();
-            this.showToast('Dihapus dari favorit');
+            this.showToast(t('waris.toast.removedFav'));
             this.updateFavoriteButton();
         } else {
             // Add to favorites
@@ -100,7 +116,7 @@ export default class WarisApp {
             }
             
             this.saveFavorites();
-            this.showToast('Perhitungan disimpan ke favorit!');
+            this.showToast(t('waris.toast.savedFav'));
             this.updateFavoriteButton();
         }
     }
@@ -109,7 +125,7 @@ export default class WarisApp {
         this.favorites = this.favorites.filter(f => f.id !== id);
         this.saveFavorites();
         this.showFavorites();
-        this.showToast('Dihapus dari favorit');
+        this.showToast(t('waris.toast.removedFav'));
     }
 
     isFavorite() {
@@ -125,8 +141,8 @@ export default class WarisApp {
         if (favBtn) {
             const isFav = this.isFavorite();
             favBtn.innerHTML = isFav 
-                ? '<i class="fas fa-star"></i> Tersimpan'
-                : '<i class="far fa-star"></i> Simpan ke Favorit';
+                ? '<i class="fas fa-star"></i> ' + t('waris.favBtn.saved')
+                : '<i class="far fa-star"></i> ' + t('waris.favBtn.save');
             favBtn.classList.toggle('saved', isFav);
         }
     }
@@ -180,15 +196,15 @@ export default class WarisApp {
             container.innerHTML = `
                 <div class="waris-empty-state">
                     <i class="fas fa-star" style="font-size: 4rem; color: rgba(255,255,255,0.2); margin-bottom: 1rem;"></i>
-                    <h3>Belum Ada Favorit</h3>
-                    <p>Simpan perhitungan waris Anda untuk akses cepat di masa mendatang</p>
+                    <h3>${t('waris.fav.emptyTitle')}</h3>
+                    <p>${t('waris.fav.emptyDesc')}</p>
                 </div>
             `;
             return;
         }
 
         container.innerHTML = this.favorites.map(fav => {
-            const date = new Date(fav.date).toLocaleDateString('id-ID', {
+            const date = new Date(fav.date).toLocaleDateString(locale(), {
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric'
@@ -211,16 +227,16 @@ export default class WarisApp {
                     </div>
                     <div class="favorite-info">
                         <div class="favorite-amount">
-                            <span class="label">Harta Bersih</span>
+                            <span class="label">${t('waris.fav.netAssets')}</span>
                             <span class="value">${this.formatCurrency(fav.tirkah.netAssets)}</span>
                         </div>
                         <div class="favorite-heirs">
-                            <span class="label"><i class="fas fa-users"></i> ${heirsCount} Ahli Waris</span>
+                            <span class="label"><i class="fas fa-users"></i> ${t('waris.fav.heirsCount', { n: heirsCount })}</span>
                             <p class="heirs-list">${heirsList}</p>
                         </div>
                     </div>
                     <button class="waris-btn waris-btn-primary" onclick="window.warisApp.loadFavorite(${fav.id})">
-                        <i class="fas fa-eye"></i> Lihat Detail
+                        <i class="fas fa-eye"></i> ${t('waris.fav.viewDetail')}
                     </button>
                 </div>
             `;
@@ -314,19 +330,19 @@ export default class WarisApp {
             const wasiatInput = document.getElementById('waris-wasiat');
             
             if (totalAssetsInput) {
-                totalAssetsInput.value = data.tirkah.totalAssets.toLocaleString('id-ID');
+                totalAssetsInput.value = data.tirkah.totalAssets.toLocaleString(locale());
                 console.log('Set totalAssets:', totalAssetsInput.value);
             }
             if (funeralCostsInput) {
-                funeralCostsInput.value = data.tirkah.funeralCosts.toLocaleString('id-ID');
+                funeralCostsInput.value = data.tirkah.funeralCosts.toLocaleString(locale());
                 console.log('Set funeralCosts:', funeralCostsInput.value);
             }
             if (debtsInput) {
-                debtsInput.value = data.tirkah.debts.toLocaleString('id-ID');
+                debtsInput.value = data.tirkah.debts.toLocaleString(locale());
                 console.log('Set debts:', debtsInput.value);
             }
             if (wasiatInput) {
-                wasiatInput.value = data.tirkah.wasiat.toLocaleString('id-ID');
+                wasiatInput.value = data.tirkah.wasiat.toLocaleString(locale());
                 console.log('Set wasiat:', wasiatInput.value);
             }
             
@@ -379,7 +395,7 @@ export default class WarisApp {
             // Convert to number and format with thousand separator
             // Using BigInt for large numbers to avoid precision loss
             const numValue = value.length > 15 ? BigInt(value) : parseInt(value);
-            value = numValue.toLocaleString('id-ID');
+            value = numValue.toLocaleString(locale());
         }
         e.target.value = value;
     }
@@ -460,48 +476,50 @@ export default class WarisApp {
 
     // ===== HEIRS INPUT SETUP =====
     // Every heir the engine knows, grouped as a family tree reads. max = most people allowed.
-    static HEIR_GROUPS = [
-        { title: 'Pasangan', icon: 'fa-ring', items: [
-            { key: 'husband', label: 'Suami', icon: 'fa-person', max: 1 },
-            { key: 'wife', label: 'Istri', icon: 'fa-person-dress', max: 4 },
-        ] },
-        { title: 'Orang tua, kakek & nenek', icon: 'fa-user-group', items: [
-            { key: 'father', label: 'Ayah', icon: 'fa-person-cane', max: 1 },
-            { key: 'mother', label: 'Ibu', icon: 'fa-person-dress', max: 1 },
-            { key: 'grandfather', label: 'Kakek', hint: 'ayah dari ayah', icon: 'fa-person-cane', max: 1 },
-            { key: 'grandmotherPaternal', label: 'Nenek', hint: 'ibu dari ayah', icon: 'fa-person-dress', max: 1 },
-            { key: 'grandmotherMaternal', label: 'Nenek', hint: 'ibu dari ibu', icon: 'fa-person-dress', max: 1 },
-        ] },
-        { title: 'Anak & cucu', icon: 'fa-children', items: [
-            { key: 'sons', label: 'Anak laki-laki', icon: 'fa-child', max: 30 },
-            { key: 'daughters', label: 'Anak perempuan', icon: 'fa-child-dress', max: 30 },
-            { key: 'grandsons', label: 'Cucu laki-laki', hint: 'dari anak laki-laki', icon: 'fa-child', max: 30 },
-            { key: 'granddaughters', label: 'Cucu perempuan', hint: 'dari anak laki-laki', icon: 'fa-child-dress', max: 30 },
-        ] },
-        { title: 'Saudara', icon: 'fa-people-group', more: true, items: [
-            { key: 'fullBrothers', label: 'Saudara laki-laki', hint: 'kandung', icon: 'fa-person', max: 30 },
-            { key: 'fullSisters', label: 'Saudari', hint: 'kandung', icon: 'fa-person-dress', max: 30 },
-            { key: 'paternalBrothers', label: 'Saudara laki-laki', hint: 'seayah', icon: 'fa-person', max: 30 },
-            { key: 'paternalSisters', label: 'Saudari', hint: 'seayah', icon: 'fa-person-dress', max: 30 },
-            { key: 'maternalBrothers', label: 'Saudara laki-laki', hint: 'seibu', icon: 'fa-person', max: 30 },
-            { key: 'maternalSisters', label: 'Saudari', hint: 'seibu', icon: 'fa-person-dress', max: 30 },
-        ] },
-        { title: 'Keponakan, paman & sepupu', icon: 'fa-sitemap', more: true,
-          note: 'Kerabat laki-laki dari jalur ayah. Mereka asabah: mewarisi sisa bila tidak ada yang lebih dekat.', items: [
-            { key: 'fullNephews', label: 'Keponakan laki-laki', hint: 'anak saudara kandung', icon: 'fa-child', max: 30 },
-            { key: 'paternalNephews', label: 'Keponakan laki-laki', hint: 'anak saudara seayah', icon: 'fa-child', max: 30 },
-            { key: 'fullUncles', label: 'Paman (om)', hint: 'saudara kandung ayah', icon: 'fa-person', max: 30 },
-            { key: 'paternalUncles', label: 'Paman (om)', hint: 'saudara seayah dari ayah', icon: 'fa-person', max: 30 },
-            { key: 'fullCousins', label: 'Sepupu laki-laki', hint: 'anak paman kandung', icon: 'fa-person', max: 30 },
-            { key: 'paternalCousins', label: 'Sepupu laki-laki', hint: 'anak paman seayah', icon: 'fa-person', max: 30 },
-        ] },
-        { title: 'Bibi & paman dari ibu (dzawil arham)', icon: 'fa-user-group', more: true,
-          note: 'Mewarisi hanya jika tidak ada ashabul furudh (selain suami/istri) dan tidak ada asabah.', items: [
-            { key: 'paternalAunts', label: 'Bibi (tante)', hint: 'saudari ayah', icon: 'fa-person-dress', max: 30 },
-            { key: 'maternalAunts', label: 'Bibi (tante)', hint: 'saudari ibu', icon: 'fa-person-dress', max: 30 },
-            { key: 'maternalUncles', label: 'Paman (om)', hint: 'saudara laki-laki ibu', icon: 'fa-person', max: 30 },
-        ] },
-    ];
+    static get HEIR_GROUPS() {
+        return [
+            { title: t('waris.group.spouse'), icon: 'fa-ring', items: [
+                { key: 'husband', label: t('waris.heirLabel.husband'), icon: 'fa-person', max: 1 },
+                { key: 'wife', label: t('waris.heirLabel.wife'), icon: 'fa-person-dress', max: 4 },
+            ] },
+            { title: t('waris.group.parents'), icon: 'fa-user-group', items: [
+                { key: 'father', label: t('waris.heirLabel.father'), icon: 'fa-person-cane', max: 1 },
+                { key: 'mother', label: t('waris.heirLabel.mother'), icon: 'fa-person-dress', max: 1 },
+                { key: 'grandfather', label: t('waris.heirLabel.grandfather'), hint: t('waris.hint.fatherOfFather'), icon: 'fa-person-cane', max: 1 },
+                { key: 'grandmotherPaternal', label: t('waris.heirLabel.grandmotherPaternal'), hint: t('waris.hint.motherOfFather'), icon: 'fa-person-dress', max: 1 },
+                { key: 'grandmotherMaternal', label: t('waris.heirLabel.grandmotherMaternal'), hint: t('waris.hint.motherOfMother'), icon: 'fa-person-dress', max: 1 },
+            ] },
+            { title: t('waris.group.children'), icon: 'fa-children', items: [
+                { key: 'sons', label: t('waris.heirLabel.sons'), icon: 'fa-child', max: 30 },
+                { key: 'daughters', label: t('waris.heirLabel.daughters'), icon: 'fa-child-dress', max: 30 },
+                { key: 'grandsons', label: t('waris.heirLabel.grandsons'), hint: t('waris.hint.fromSon'), icon: 'fa-child', max: 30 },
+                { key: 'granddaughters', label: t('waris.heirLabel.granddaughters'), hint: t('waris.hint.fromSon'), icon: 'fa-child-dress', max: 30 },
+            ] },
+            { title: t('waris.group.siblings'), icon: 'fa-people-group', more: true, items: [
+                { key: 'fullBrothers', label: t('waris.heirLabel.fullBrothers'), hint: t('waris.hint.kandung'), icon: 'fa-person', max: 30 },
+                { key: 'fullSisters', label: t('waris.heirLabel.fullSisters'), hint: t('waris.hint.kandung'), icon: 'fa-person-dress', max: 30 },
+                { key: 'paternalBrothers', label: t('waris.heirLabel.paternalBrothers'), hint: t('waris.hint.seayah'), icon: 'fa-person', max: 30 },
+                { key: 'paternalSisters', label: t('waris.heirLabel.paternalSisters'), hint: t('waris.hint.seayah'), icon: 'fa-person-dress', max: 30 },
+                { key: 'maternalBrothers', label: t('waris.heirLabel.maternalBrothers'), hint: t('waris.hint.seibu'), icon: 'fa-person', max: 30 },
+                { key: 'maternalSisters', label: t('waris.heirLabel.maternalSisters'), hint: t('waris.hint.seibu'), icon: 'fa-person-dress', max: 30 },
+            ] },
+            { title: t('waris.group.uncles'), icon: 'fa-sitemap', more: true,
+              note: t('waris.group.unclesNote'), items: [
+                { key: 'fullNephews', label: t('waris.heirLabel.fullNephews'), hint: t('waris.hint.sonOfFullBrother'), icon: 'fa-child', max: 30 },
+                { key: 'paternalNephews', label: t('waris.heirLabel.paternalNephews'), hint: t('waris.hint.sonOfPaternalBrother'), icon: 'fa-child', max: 30 },
+                { key: 'fullUncles', label: t('waris.heirLabel.fullUncles'), hint: t('waris.hint.fullBrotherOfFather'), icon: 'fa-person', max: 30 },
+                { key: 'paternalUncles', label: t('waris.heirLabel.paternalUncles'), hint: t('waris.hint.paternalBrotherOfFather'), icon: 'fa-person', max: 30 },
+                { key: 'fullCousins', label: t('waris.heirLabel.fullCousins'), hint: t('waris.hint.sonOfFullUncle'), icon: 'fa-person', max: 30 },
+                { key: 'paternalCousins', label: t('waris.heirLabel.paternalCousins'), hint: t('waris.hint.sonOfPaternalUncle'), icon: 'fa-person', max: 30 },
+            ] },
+            { title: t('waris.group.arham'), icon: 'fa-user-group', more: true,
+              note: t('waris.group.arhamNote'), items: [
+                { key: 'paternalAunts', label: t('waris.heirLabel.paternalAunts'), hint: t('waris.hint.sisterOfFather'), icon: 'fa-person-dress', max: 30 },
+                { key: 'maternalAunts', label: t('waris.heirLabel.maternalAunts'), hint: t('waris.hint.sisterOfMother'), icon: 'fa-person-dress', max: 30 },
+                { key: 'maternalUncles', label: t('waris.heirLabel.maternalUncles'), hint: t('waris.hint.brotherOfMother'), icon: 'fa-person', max: 30 },
+            ] },
+        ];
+    }
 
     setupHeirsInputs() {
         this.heirCounts = this.heirCounts || {};
@@ -518,9 +536,9 @@ export default class WarisApp {
                 const n = counts[it.key] || 0;
                 const stepper = n && it.max > 1 ? `
                         <div class="wh-count">
-                            <button type="button" data-step="${it.key}" data-d="-1" aria-label="Kurangi"><i class="fas fa-minus"></i></button>
-                            <b>${n}</b><span>orang</span>
-                            <button type="button" data-step="${it.key}" data-d="1" aria-label="Tambah"><i class="fas fa-plus"></i></button>
+                            <button type="button" data-step="${it.key}" data-d="-1" aria-label="${t('waris.btn.reduce')}"><i class="fas fa-minus"></i></button>
+                            <b>${n}</b><span>${t('waris.units.people')}</span>
+                            <button type="button" data-step="${it.key}" data-d="1" aria-label="${t('waris.btn.add')}"><i class="fas fa-plus"></i></button>
                         </div>` : '';
                 return `
                     <div class="wh-card${n ? ' on' : ''}" data-key="${it.key}">
@@ -673,13 +691,13 @@ export default class WarisApp {
             case 1:
                 const assets = this.parseCurrencyValue(document.getElementById('waris-totalAssets').value);
                 if (!assets || assets <= 0) {
-                    alert('Masukkan total harta yang valid!');
+                    alert(t('waris.alert.invalidAssets'));
                     return false;
                 }
                 return true;
             case 2:
                 if (Object.keys(this.data.heirs).length === 0) {
-                    alert('Pilih minimal satu ahli waris!');
+                    alert(t('waris.alert.chooseHeir'));
                     return false;
                 }
                 return true;
@@ -708,7 +726,7 @@ export default class WarisApp {
             }
         } catch (error) {
             console.error('Calculation error:', error);
-            alert('Terjadi kesalahan dalam perhitungan!');
+            alert(t('waris.alert.calcError'));
         }
     }
 
@@ -748,22 +766,22 @@ export default class WarisApp {
         // Summary
         html += `
             <div class="waris-result-card waris-summary-card">
-                <h4><i class="fas fa-chart-pie"></i> Ringkasan Harta</h4>
+                <h4><i class="fas fa-chart-pie"></i> ${t('waris.summary.title')}</h4>
                 <div class="waris-summary-grid">
                     <div class="waris-summary-item">
-                        <span class="label">Total Harta</span>
+                        <span class="label">${t('waris.summary.totalAssets')}</span>
                         <span class="value">${this.formatCurrency(results.tirkah.assets)}</span>
                     </div>
                     <div class="waris-summary-item">
-                        <span class="label">Dikurangi Biaya & Hutang</span>
+                        <span class="label">${t('waris.summary.deductions')}</span>
                         <span class="value negative">-${this.formatCurrency(results.tirkah.funeral + results.tirkah.debts)}</span>
                     </div>
                     <div class="waris-summary-item">
-                        <span class="label">Wasiat (max 1/3)</span>
+                        <span class="label">${t('waris.summary.wasiat')}</span>
                         <span class="value negative">-${this.formatCurrency(results.tirkah.wasiat)}</span>
                     </div>
                     <div class="waris-summary-item highlight">
-                        <span class="label">Harta yang Dibagi</span>
+                        <span class="label">${t('waris.summary.netAssets')}</span>
                         <span class="value">${this.formatCurrency(results.tirkah.netAssets)}</span>
                     </div>
                 </div>
@@ -774,7 +792,7 @@ export default class WarisApp {
         html += this.renderShareChart(results.heirs);
 
         // Heirs distribution
-        html += `<div class="waris-result-card"><h4><i class="fas fa-users"></i> Pembagian Ahli Waris</h4>`;
+        html += `<div class="waris-result-card"><h4><i class="fas fa-users"></i> ${t('waris.results.distributionTitle')}</h4>`;
 
         results.heirs.forEach(heir => {
             const heirName = this.getHeirName(heir.type);
@@ -794,9 +812,9 @@ export default class WarisApp {
                         </div>
                     </div>
                     <div class="waris-heir-details">
-                        <span class="detail-item"><i class="fas fa-user"></i> ${heir.count} orang</span>
+                        <span class="detail-item"><i class="fas fa-user"></i> ${t('waris.results.personCount', { n: heir.count })}</span>
                         <span class="detail-item"><i class="fas fa-divide"></i> ${heir.fraction}</span>
-                        <span class="detail-item"><i class="fas fa-coins"></i> ${this.formatCurrency(amountPerPerson)}/orang</span>
+                        <span class="detail-item"><i class="fas fa-coins"></i> ${t('waris.results.perPerson', { amount: this.formatCurrency(amountPerPerson) })}</span>
                     </div>
                     <div class="waris-heir-condition">${heir.condition}</div>
                 </div>
@@ -807,12 +825,12 @@ export default class WarisApp {
 
         // Heirs who receive nothing, and why (hajb)
         if (results.excluded && results.excluded.length) {
-            html += `<div class="waris-result-card waris-excluded-card"><h4><i class="fas fa-user-slash"></i> Tidak Mendapat Bagian</h4>`;
+            html += `<div class="waris-result-card waris-excluded-card"><h4><i class="fas fa-user-slash"></i> ${t('waris.results.excludedTitle')}</h4>`;
             results.excluded.forEach(x => {
                 html += `
                     <div class="waris-excluded-item">
                         <span class="waris-heir-avatar muted" aria-hidden="true"><i class="fas ${this.getHeirIcon(x.type)}"></i></span>
-                        <div><strong>${this.getHeirName(x.type)}${x.count > 1 ? ` · ${x.count} orang` : ''}</strong><span>${x.reason}</span></div>
+                        <div><strong>${this.getHeirName(x.type)}${x.count > 1 ? ` · ${t('waris.results.personCount', { n: x.count })}` : ''}</strong><span>${x.reason}</span></div>
                     </div>`;
             });
             html += '</div>';
@@ -820,7 +838,7 @@ export default class WarisApp {
 
         // Catatan kasus khusus ('awl, radd, Umariyyatan)
         if (results.notes && results.notes.length) {
-            html += `<div class="waris-result-card"><h4><i class="fas fa-circle-info"></i> Catatan Perhitungan</h4>`;
+            html += `<div class="waris-result-card"><h4><i class="fas fa-circle-info"></i> ${t('waris.results.notesTitle')}</h4>`;
             results.notes.forEach(n => { html += `<div class="waris-heir-condition">${n}</div>`; });
             html += '</div>';
         }
@@ -828,7 +846,7 @@ export default class WarisApp {
         // Dalil
         html += `
             <div class="waris-result-card">
-                <h4><i class="fas fa-book-quran"></i> Dalil & Penjelasan</h4>
+                <h4><i class="fas fa-book-quran"></i> ${t('waris.results.dalilTitle')}</h4>
                 <div class="waris-dalil-card">
                     <p class="dalil-arabic">${this.dalilDatabase.ayahQuran["4:11"].arabic}</p>
                     <p class="dalil-translation">${this.dalilDatabase.ayahQuran["4:11"].translation}</p>
@@ -892,12 +910,12 @@ export default class WarisApp {
 
         return `
             <div class="waris-result-card waris-chart-card">
-                <h4><i class="fas fa-chart-pie"></i> Visualisasi Pembagian</h4>
+                <h4><i class="fas fa-chart-pie"></i> ${t('waris.results.chartTitle')}</h4>
                 <div class="waris-chart-wrapper">
                     <svg class="waris-chart-svg" viewBox="0 0 200 200">
                         ${segments}
                         <text x="100" y="95" text-anchor="middle" class="waris-chart-center-num">${heirs.length}</text>
-                        <text x="100" y="115" text-anchor="middle" class="waris-chart-center-lbl">AHLI WARIS</text>
+                        <text x="100" y="115" text-anchor="middle" class="waris-chart-center-lbl">${t('waris.results.chartLabel')}</text>
                     </svg>
                     <div class="waris-chart-legend">${legend}</div>
                 </div>
@@ -915,15 +933,15 @@ export default class WarisApp {
         const item = WarisApp.HEIR_GROUPS.flatMap(g => g.items).find(i => i.key === type);
         if (item) return item.hint ? `${item.label} (${item.hint})` : item.label;
         // results saved by older versions of the calculator
-        return { daughters_with_sons: 'Anak Perempuan (dgn saudara laki)' }[type] || type;
+        return { daughters_with_sons: t('waris.heirLabel.daughtersWithSons') }[type] || type;
     }
 
     formatCurrency(amount) {
         const rounded = Math.round(amount);
         if (this.currency === 'IDR') {
-            return 'Rp ' + rounded.toLocaleString('id-ID');
+            return 'Rp ' + rounded.toLocaleString(locale());
         }
-        return rounded.toLocaleString();
+        return rounded.toLocaleString(locale());
     }
 
     resetCalculator() {

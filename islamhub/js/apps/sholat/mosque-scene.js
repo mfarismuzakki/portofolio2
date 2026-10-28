@@ -1,5 +1,6 @@
 // Procedural teaching model. World: +Y up, -Z qibla, +X person's right.
 // Explicit contact points keep the palms, knees and toes on the prayer mat.
+import { t } from '../../i18n/index.js';
 export function sampleTransition(path, elapsed, duration) {
     // A queued RAF can predate the input event that started a new transition.
     // Never use a negative segment index, including after rapid pose changes.
@@ -55,7 +56,7 @@ export function posture(pose) {
 export default class MosqueScene {
     constructor(canvas) {
         this.canvas=canvas; this.T=window.THREE;
-        if(!this.T) throw new Error('Peraga 3D belum dapat dimuat. Periksa koneksi, lalu muat ulang.');
+        if(!this.T) throw new Error(t('sholat.errorThreeLoad'));
         const T=this.T;
         this.scene=new T.Scene(); this.scene.background=new T.Color('#f5efe3'); this.scene.fog=new T.Fog('#f5efe3',18,48);
         this.camera=new T.PerspectiveCamera(38,1,.1,40);
@@ -73,7 +74,7 @@ export default class MosqueScene {
         canvas.addEventListener('pointermove',e=>{if(!this.drag)return;this.angle-=(e.clientX-this.drag.x)*.009;this.pitch=Math.max(.04,Math.min(.8,this.pitch+(e.clientY-this.drag.y)*.004));this.drag={x:e.clientX,y:e.clientY};this.requestRender();});
         const end=()=>this.drag=null;canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);
         canvas.addEventListener('lostpointercapture',end);
-        canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();this.contextLost=true;this.stop();this.onStatus?.('Tampilan 3D terhenti. Tekan Pulihkan tampilan. Bacaan dan tombol langkah tetap tersedia.');});
+        canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();this.contextLost=true;this.stop();this.onStatus?.(t('sholat.webglLost'));});
         canvas.addEventListener('webglcontextrestored',()=>{this.contextLost=false;this.renderer.shadowMap.needsUpdate=true;this.onStatus?.('');this.start();});
     }
     mat(color){return new this.T.MeshStandardMaterial({color,roughness:.88});}

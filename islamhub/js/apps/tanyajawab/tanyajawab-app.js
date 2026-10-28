@@ -11,6 +11,7 @@ import {
     DEFAULT_CONFIG,
     searchKnowledgeBase
 } from '../../data/tanyajawab/tanyajawab-data.js';
+import { t, locale, getLang } from '../../i18n/index.js';
 
 const STORAGE_KEY = 'islamhub_tanyajawab_v1';
 const CONFIG_KEY = 'islamhub_tanyajawab_config';
@@ -46,15 +47,13 @@ export default class TanyaJawabApp {
     async init() {
         this.loadConfig();
         this.loadSessions();
-        this.render();
-        this.setupEvents();
 
         // Ensure at least one session exists
         if (this.sessions.length === 0) {
             this.createSession(false);
         }
 
-        this.renderAll();
+        this.render();
     }
 
     // ── Persistence ──────────────────────────────────────────────────
@@ -111,7 +110,7 @@ export default class TanyaJawabApp {
     createSession(render = true) {
         const session = {
             id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-            title: 'Chat Baru',
+            title: t('tanyajawab.newChat'),
             messages: [],
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
@@ -152,8 +151,8 @@ export default class TanyaJawabApp {
             <!-- Sidebar -->
             <aside class="tj-sidebar" id="tjSidebar">
                 <div class="tj-sidebar-header">
-                    <h3><i class="fas fa-comments"></i> Riwayat Chat</h3>
-                    <button class="tj-header-btn" id="tjNewChatSidebar" title="Chat Baru">
+                    <h3><i class="fas fa-comments"></i> ${t('tanyajawab.chatHistory')}</h3>
+                    <button class="tj-header-btn" id="tjNewChatSidebar" title="${t('tanyajawab.newChat')}">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>
@@ -167,23 +166,23 @@ export default class TanyaJawabApp {
                 <!-- Header -->
                 <div class="tj-header">
                     <div class="tj-header-left">
-                        <button class="tj-header-btn" id="tjToggleSidebar" title="Riwayat Chat">
+                        <button class="tj-header-btn" id="tjToggleSidebar" title="${t('tanyajawab.chatHistory')}">
                             <i class="fas fa-bars"></i>
                         </button>
-                        <span class="tj-header-title" id="tjHeaderTitle">Tanya Jawab Islam</span>
+                        <span class="tj-header-title" id="tjHeaderTitle">${t('tanyajawab.title')}</span>
                     </div>
                     <div class="tj-header-right">
                         <div class="tj-status" id="tjStatus">
                             <span class="tj-status-dot" id="tjStatusDot"></span>
-                            <span class="tj-status-text" id="tjStatusText">Offline</span>
+                            <span class="tj-status-text" id="tjStatusText">${t('tanyajawab.offline')}</span>
                         </div>
-                        <button class="tj-header-btn" id="tjNewChat" title="Chat Baru">
+                        <button class="tj-header-btn" id="tjNewChat" title="${t('tanyajawab.newChat')}">
                             <i class="fas fa-plus"></i>
                         </button>
-                        <button class="tj-header-btn" id="tjDeleteChat" title="Hapus Chat">
+                        <button class="tj-header-btn" id="tjDeleteChat" title="${t('tanyajawab.deleteChat')}">
                             <i class="fas fa-trash-alt"></i>
                         </button>
-                        <button class="tj-header-btn" id="tjSettingsBtn" title="Pengaturan">
+                        <button class="tj-header-btn" id="tjSettingsBtn" title="${t('tanyajawab.settingsTitle')}">
                             <i class="fas fa-cog"></i>
                         </button>
                     </div>
@@ -198,15 +197,15 @@ export default class TanyaJawabApp {
                 <div class="tj-input-area">
                     <div class="tj-input-wrap">
                         <textarea class="tj-textarea" id="tjInput" rows="1"
-                            placeholder="Tulis pertanyaan tentang Islam..."
+                            placeholder="${t('tanyajawab.inputPlaceholder')}"
                             maxlength="2000"></textarea>
-                        <button class="tj-send-btn" id="tjSendBtn" disabled title="Kirim">
+                        <button class="tj-send-btn" id="tjSendBtn" disabled title="${t('tanyajawab.send')}">
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
                     <div class="tj-input-hint">
                         <i class="fas fa-shield-halved"></i>
-                        Berdasarkan Al-Qur'an & Sunnah sesuai pemahaman Salaf
+                        ${t('tanyajawab.inputHint')}
                     </div>
                 </div>
             </div>
@@ -215,7 +214,7 @@ export default class TanyaJawabApp {
             <div class="tj-settings-overlay" id="tjSettingsOverlay">
                 <div class="tj-settings-panel">
                     <div class="tj-settings-header">
-                        <h3><i class="fas fa-cog"></i> Pengaturan AI</h3>
+                        <h3><i class="fas fa-cog"></i> ${t('tanyajawab.settingsTitle')}</h3>
                         <button class="tj-header-btn" id="tjSettingsClose">
                             <i class="fas fa-times"></i>
                         </button>
@@ -223,10 +222,10 @@ export default class TanyaJawabApp {
                     <div class="tj-settings-body">
                         <!-- Provider Selection -->
                         <div class="tj-settings-group">
-                            <label><i class="fas fa-server"></i> Provider</label>
+                            <label><i class="fas fa-server"></i> ${t('tanyajawab.provider')}</label>
                             <select class="tj-settings-select" id="tjProvider">
-                                <option value="groq">Groq Cloud API (Gratis)</option>
-                                <option value="local">Ollama / LLM Lokal</option>
+                                <option value="groq">${t('tanyajawab.providerGroq')}</option>
+                                <option value="local">${t('tanyajawab.providerLocal')}</option>
                             </select>
                         </div>
 
@@ -237,11 +236,11 @@ export default class TanyaJawabApp {
                                 <input type="password" class="tj-settings-input" id="tjGroqKey"
                                     placeholder="gsk_xxxxxxxxxxxx">
                                 <small class="tj-settings-hint">
-                                    Dapatkan gratis di <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com</a>
+                                    ${t('tanyajawab.groqKeyHint')} <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com</a>
                                 </small>
                             </div>
                             <div class="tj-settings-group">
-                                <label><i class="fas fa-brain"></i> Model</label>
+                                <label><i class="fas fa-brain"></i> ${t('tanyajawab.model')}</label>
                                 <select class="tj-settings-select" id="tjGroqModel">
                                     ${MODEL_OPTIONS.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
                                 </select>
@@ -251,12 +250,12 @@ export default class TanyaJawabApp {
                         <!-- Local Settings -->
                         <div class="tj-provider-section" id="tjLocalSection" style="display:none">
                             <div class="tj-settings-group">
-                                <label><i class="fas fa-link"></i> Server URL</label>
+                                <label><i class="fas fa-link"></i> ${t('tanyajawab.serverUrl')}</label>
                                 <input type="text" class="tj-settings-input" id="tjLocalUrl"
                                     placeholder="http://localhost:11434">
                             </div>
                             <div class="tj-settings-group">
-                                <label><i class="fas fa-brain"></i> Model Name</label>
+                                <label><i class="fas fa-brain"></i> ${t('tanyajawab.modelName')}</label>
                                 <input type="text" class="tj-settings-input" id="tjLocalModel"
                                     placeholder="qwen2.5:7b-instruct">
                             </div>
@@ -265,10 +264,10 @@ export default class TanyaJawabApp {
                         <!-- Test & Save -->
                         <div class="tj-settings-actions">
                             <button class="tj-settings-btn tj-btn-test" id="tjTestConnection">
-                                <i class="fas fa-plug"></i> Test Koneksi
+                                <i class="fas fa-plug"></i> ${t('tanyajawab.testConnection')}
                             </button>
                             <button class="tj-settings-btn tj-btn-save" id="tjSaveSettings">
-                                <i class="fas fa-save"></i> Simpan
+                                <i class="fas fa-save"></i> ${t('tanyajawab.save')}
                             </button>
                         </div>
                         <div class="tj-settings-test-result" id="tjTestResult"></div>
@@ -279,11 +278,11 @@ export default class TanyaJawabApp {
             <!-- Delete Confirmation Modal -->
             <div class="tj-modal-overlay" id="tjDeleteModal">
                 <div class="tj-modal">
-                    <h4><i class="fas fa-exclamation-triangle"></i> Hapus Chat?</h4>
-                    <p id="tjDeleteMsg">Chat ini akan dihapus permanen.</p>
+                    <h4><i class="fas fa-exclamation-triangle"></i> ${t('tanyajawab.deleteModalTitle')}</h4>
+                    <p id="tjDeleteMsg">${t('tanyajawab.deleteModalDesc')}</p>
                     <div class="tj-modal-actions">
-                        <button class="tj-modal-btn tj-btn-cancel" id="tjDeleteCancel">Batal</button>
-                        <button class="tj-modal-btn tj-btn-danger" id="tjDeleteConfirm">Hapus</button>
+                        <button class="tj-modal-btn tj-btn-cancel" id="tjDeleteCancel">${t('tanyajawab.cancel')}</button>
+                        <button class="tj-modal-btn tj-btn-danger" id="tjDeleteConfirm">${t('tanyajawab.delete')}</button>
                     </div>
                 </div>
             </div>
@@ -291,6 +290,8 @@ export default class TanyaJawabApp {
             <!-- Toast -->
             <div class="tj-toast" id="tjToast"></div>
         </div>`;
+        this.setupEvents();
+        this.renderAll();
     }
 
     // ── Render: Messages ─────────────────────────────────────────────
@@ -307,7 +308,7 @@ export default class TanyaJawabApp {
         if (!list) return;
 
         if (this.sessions.length === 0) {
-            list.innerHTML = `<div class="tj-empty-state"><i class="fas fa-comments"></i><p>Belum ada chat</p></div>`;
+            list.innerHTML = `<div class="tj-empty-state"><i class="fas fa-comments"></i><p>${t('tanyajawab.noChats')}</p></div>`;
             return;
         }
 
@@ -322,10 +323,10 @@ export default class TanyaJawabApp {
                     <div class="tj-session-meta">
                         <span>${dateStr}</span>
                         <span>·</span>
-                        <span>${msgCount} pertanyaan</span>
+                        <span>${t('tanyajawab.questionCount', { n: msgCount })}</span>
                     </div>
                 </div>
-                <button class="tj-session-delete" data-delete="${s.id}" title="Hapus">
+                <button class="tj-session-delete" data-delete="${s.id}" title="${t('tanyajawab.delete')}">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </div>`;
@@ -362,13 +363,13 @@ export default class TanyaJawabApp {
                     <div class="tj-refs">
                         <button class="tj-refs-toggle" data-ref="${refId}">
                             <i class="fas fa-book-open"></i>
-                            <span>${refs.length} Sumber Referensi</span>
+                            <span>${t('tanyajawab.refsCount', { n: refs.length })}</span>
                             <i class="fas fa-chevron-down tj-refs-chevron"></i>
                         </button>
                         <div class="tj-refs-panel" id="${refId}">
                             ${refs.map(r => `
                             <div class="tj-ref-item">
-                                <div class="tj-ref-source">${this.esc(r.source || 'Sumber')}</div>
+                                <div class="tj-ref-source">${this.esc(r.source || t('tanyajawab.sourceDefault'))}</div>
                                 <div class="tj-ref-title">${this.esc(r.question || r.title || '')}</div>
                                 <div class="tj-ref-text">${this.esc((r.summary || r.text || '').slice(0, 200))}${(r.summary || r.text || '').length > 200 ? '...' : ''}</div>
                             </div>`).join('')}
@@ -382,7 +383,7 @@ export default class TanyaJawabApp {
                         <div class="tj-msg-bubble">${this.formatMarkdown(msg.content)}</div>
                         ${refsHtml}
                         <div class="tj-msg-actions">
-                            <button class="tj-copy-btn" data-copy="${this.esc(msg.content.replace(/"/g, '&quot;'))}" title="Salin">
+                            <button class="tj-copy-btn" data-copy="${this.esc(msg.content.replace(/"/g, '&quot;'))}" title="${t('tanyajawab.copy')}">
                                 <i class="fas fa-copy"></i>
                             </button>
                             <span class="tj-msg-time">${this.formatTime(msg.time)}</span>
@@ -402,14 +403,13 @@ export default class TanyaJawabApp {
             <div class="tj-welcome-icon">
                 <i class="fas fa-comments"></i>
             </div>
-            <h2 class="tj-welcome-title">Tanya Jawab Islam</h2>
+            <h2 class="tj-welcome-title">${t('tanyajawab.welcomeTitle')}</h2>
             <p class="tj-welcome-desc">
-                Tanyakan apa saja seputar Islam. Jawaban berdasarkan Al-Qur'an, Hadits Shahih, 
-                dan pendapat ulama yang mengikuti manhaj salaf.
+                ${t('tanyajawab.welcomeDesc')}
             </p>
             <div class="tj-manhaj-badge">
                 <i class="fas fa-shield-halved"></i>
-                <span><strong>Manhaj Salaf</strong> — Ibn Baz, Ibn Utsaimin, Al-Albani, Al-Fauzan</span>
+                <span><strong>${t('tanyajawab.manhajSalaf')}</strong> — ${t('tanyajawab.manhajScholars')}</span>
             </div>
             <div class="tj-example-chips">
                 ${EXAMPLE_QUESTIONS.map(q => `
@@ -421,7 +421,7 @@ export default class TanyaJawabApp {
             ${!this.config.groqApiKey && this.config.provider === 'groq' ? `
             <div class="tj-setup-notice">
                 <i class="fas fa-key"></i>
-                <p>Untuk mulai, konfigurasi API key di <button class="tj-link-btn" id="tjOpenSettingsLink">Pengaturan</button></p>
+                <p>${t('tanyajawab.setupNotice')} <button class="tj-link-btn" id="tjOpenSettingsLink">${t('tanyajawab.settingsLink')}</button></p>
             </div>` : ''}
         </div>`;
     }
@@ -430,7 +430,7 @@ export default class TanyaJawabApp {
         const titleEl = document.getElementById('tjHeaderTitle');
         if (!titleEl) return;
         const sess = this.currentSession();
-        titleEl.textContent = sess && sess.messages.length > 0 ? sess.title : 'Tanya Jawab Islam';
+        titleEl.textContent = sess && sess.messages.length > 0 ? sess.title : t('tanyajawab.title');
     }
 
     // ── Send Message & AI Response ───────────────────────────────────
@@ -444,7 +444,7 @@ export default class TanyaJawabApp {
 
         // Validate config
         if (this.config.provider === 'groq' && !this.config.groqApiKey) {
-            this.showToast('⚠️ Silakan masukkan Groq API Key di Pengaturan');
+            this.showToast(t('tanyajawab.errEnterGroqKey'));
             this.openSettings();
             return;
         }
@@ -528,14 +528,14 @@ export default class TanyaJawabApp {
         } catch (e) {
             console.error('[TanyaJawab] Error:', e);
             if (!fullText) {
-                fullText = `⚠️ ${e.message || 'Gagal terhubung ke server AI. Periksa pengaturan Anda.'}`;
+                fullText = `⚠️ ${e.message || t('tanyajawab.errConnectAI')}`;
             }
         } finally {
             // Remove live bubble and add final message
             document.getElementById('tj-live-msg')?.remove();
             sess.messages.push({
                 role: 'assistant',
-                content: fullText || '⚠️ Tidak ada respons dari server.',
+                content: fullText || t('tanyajawab.errNoResponse'),
                 references: references,
                 time: new Date().toISOString()
             });
@@ -574,11 +574,11 @@ export default class TanyaJawabApp {
         if (!response.ok) {
             const errText = await response.text();
             if (response.status === 401) {
-                throw new Error('API Key tidak valid. Periksa kembali di Pengaturan.');
+                throw new Error(t('tanyajawab.errInvalidKey'));
             } else if (response.status === 429) {
-                throw new Error('Batas penggunaan API tercapai. Silakan tunggu beberapa saat.');
+                throw new Error(t('tanyajawab.errRateLimit'));
             } else if (response.status === 413) {
-                throw new Error('Pesan terlalu panjang. Coba pertanyaan yang lebih singkat.');
+                throw new Error(t('tanyajawab.errTooLong'));
             }
             throw new Error(`Error ${response.status}: ${errText.slice(0, 200)}`);
         }
@@ -657,7 +657,7 @@ export default class TanyaJawabApp {
         }
 
         if (!response.ok) {
-            throw new Error(`Server lokal error: ${response.status}`);
+            throw new Error(t('tanyajawab.errLocalServer', { status: response.status }));
         }
 
         const reader = response.body.getReader();
@@ -843,8 +843,8 @@ export default class TanyaJawabApp {
                 const text = copyBtn.dataset.copy;
                 if (text) {
                     navigator.clipboard.writeText(text.replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>'))
-                        .then(() => this.showToast('✅ Disalin ke clipboard'))
-                        .catch(() => this.showToast('❌ Gagal menyalin'));
+                        .then(() => this.showToast(t('tanyajawab.copiedToast')))
+                        .catch(() => this.showToast(t('tanyajawab.copyFailedToast')));
                 }
                 return;
             }
@@ -910,7 +910,7 @@ export default class TanyaJawabApp {
 
         this.saveConfig();
         this.closeSettings();
-        this.showToast('✅ Pengaturan disimpan');
+        this.showToast(t('tanyajawab.settingsSaved'));
         this.updateStatus();
         this.renderMessages(); // Re-render to remove setup notice if key was added
     }
@@ -918,7 +918,7 @@ export default class TanyaJawabApp {
     async testConnection() {
         const resultEl = document.getElementById('tjTestResult');
         if (!resultEl) return;
-        resultEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menguji koneksi...';
+        resultEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${t('tanyajawab.testingConn')}`;
         resultEl.className = 'tj-settings-test-result testing';
 
         const provider = document.getElementById('tjProvider')?.value || 'groq';
@@ -926,7 +926,7 @@ export default class TanyaJawabApp {
         try {
             if (provider === 'groq') {
                 const key = document.getElementById('tjGroqKey')?.value?.trim();
-                if (!key) { resultEl.innerHTML = '❌ API Key kosong'; resultEl.className = 'tj-settings-test-result error'; return; }
+                if (!key) { resultEl.innerHTML = t('tanyajawab.emptyKey'); resultEl.className = 'tj-settings-test-result error'; return; }
 
                 const res = await fetch('https://api.groq.com/openai/v1/models', {
                     headers: { 'Authorization': `Bearer ${key}` }
@@ -935,10 +935,10 @@ export default class TanyaJawabApp {
                 if (res.ok) {
                     const data = await res.json();
                     const models = data.data?.map(m => m.id) || [];
-                    resultEl.innerHTML = `✅ Terhubung! ${models.length} model tersedia.`;
+                    resultEl.innerHTML = t('tanyajawab.connSuccessModels', { count: models.length });
                     resultEl.className = 'tj-settings-test-result success';
                 } else {
-                    resultEl.innerHTML = `❌ Error: ${res.status} - API Key tidak valid`;
+                    resultEl.innerHTML = t('tanyajawab.connErrInvalidKey', { status: res.status });
                     resultEl.className = 'tj-settings-test-result error';
                 }
             } else {
@@ -948,15 +948,15 @@ export default class TanyaJawabApp {
                 if (res.ok) {
                     const data = await res.json();
                     const models = data.models?.map(m => m.name) || [];
-                    resultEl.innerHTML = `✅ Terhubung! Model: ${models.join(', ') || 'Tidak ada model'}`;
+                    resultEl.innerHTML = t('tanyajawab.connSuccessLocal', { models: models.join(', ') || t('tanyajawab.noModels') });
                     resultEl.className = 'tj-settings-test-result success';
                 } else {
-                    resultEl.innerHTML = `❌ Server error: ${res.status}`;
+                    resultEl.innerHTML = t('tanyajawab.connErrServer', { status: res.status });
                     resultEl.className = 'tj-settings-test-result error';
                 }
             }
         } catch (e) {
-            resultEl.innerHTML = `❌ Gagal terhubung: ${e.message}`;
+            resultEl.innerHTML = t('tanyajawab.connErrFailed', { error: e.message });
             resultEl.className = 'tj-settings-test-result error';
         }
     }
@@ -974,7 +974,7 @@ export default class TanyaJawabApp {
             text.textContent = this.config.localModel;
         } else {
             dot.className = 'tj-status-dot';
-            text.textContent = 'Belum dikonfigurasi';
+            text.textContent = t('tanyajawab.notConfigured');
         }
     }
 
@@ -995,7 +995,7 @@ export default class TanyaJawabApp {
         this.pendingDeleteId = id || this.currentSessionId;
         const sess = this.sessions.find(s => s.id === this.pendingDeleteId);
         const msgEl = document.getElementById('tjDeleteMsg');
-        if (msgEl) msgEl.textContent = `"${sess?.title || 'Chat ini'}" akan dihapus permanen.`;
+        if (msgEl) msgEl.textContent = t('tanyajawab.deleteConfirmMsg', { title: sess?.title || t('tanyajawab.deleteThisChat') });
         document.getElementById('tjDeleteModal')?.classList.add('show');
     }
 
@@ -1035,7 +1035,7 @@ export default class TanyaJawabApp {
     formatTime(iso) {
         if (!iso) return '';
         try {
-            return new Date(iso).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            return new Date(iso).toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' });
         } catch { return ''; }
     }
 
@@ -1044,11 +1044,11 @@ export default class TanyaJawabApp {
         try {
             const d = new Date(iso);
             const now = new Date();
-            if (d.toDateString() === now.toDateString()) return 'Hari ini';
+            if (d.toDateString() === now.toDateString()) return t('tanyajawab.today');
             const diff = Math.floor((now - d) / 86400000);
-            if (diff === 1) return 'Kemarin';
-            if (diff < 7) return d.toLocaleDateString('id-ID', { weekday: 'long' });
-            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+            if (diff === 1) return t('tanyajawab.yesterday');
+            if (diff < 7) return d.toLocaleDateString(locale(), { weekday: 'long' });
+            return d.toLocaleDateString(locale(), { day: 'numeric', month: 'short' });
         } catch { return ''; }
     }
 }

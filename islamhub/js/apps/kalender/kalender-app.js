@@ -1,4 +1,5 @@
 // Kalender Hijriyah — Konversi & Tampilan Kalender Islam
+import { t, getLocale } from '../../i18n/index.js';
 
 export default class KalenderApp {
     constructor(globalState, mainApp) {
@@ -18,7 +19,6 @@ export default class KalenderApp {
 
     async init() {
         this.render();
-        this.setupEvents();
     }
 
     // Gregorian → Hijri (Tabular Islamic Calendar)
@@ -53,23 +53,23 @@ export default class KalenderApp {
     buildEvents() {
         // key: "hijriMonth-hijriDay" (month is 1-based)
         return {
-            '1-1':  { label: 'Tahun Baru Hijriyah',        color: '#00ffff', icon: '🌙' },
-            '1-10': { label: 'Hari Asyura',                 color: '#ffd700', icon: '⭐' },
-            '3-12': { label: 'Maulid Nabi ﷺ',             color: '#00ff88', icon: '🕌' },
-            '7-27': { label: 'Isra\' Mi\'raj',             color: '#9370db', icon: '✨' },
-            '8-15': { label: 'Nisfu Sya\'ban',             color: '#ff8c00', icon: '🌙' },
-            '9-1':  { label: 'Awal Ramadan',               color: '#ffd700', icon: '☪️' },
-            '9-17': { label: 'Nuzulul Quran',              color: '#00ffff', icon: '📖' },
-            '9-21': { label: '10 Malam Terakhir Ramadan',  color: '#ff69b4', icon: '🌟' },
-            '9-30': { label: 'Akhir Ramadan',              color: '#ffd700', icon: '🌙' },
-            '10-1': { label: 'Idul Fitri',                 color: '#ffd700', icon: '🎉' },
-            '10-2': { label: 'Hari Tasyriq Fitri',         color: '#ffd700', icon: '🎊' },
-            '10-3': { label: 'Hari Tasyriq Fitri',         color: '#ffd700', icon: '🎊' },
-            '12-9': { label: 'Hari Arafah (Puasa Sunnah)', color: '#00ff88', icon: '🏔️' },
-            '12-10':{ label: 'Idul Adha',                  color: '#ff8c00', icon: '🐑' },
-            '12-11':{ label: 'Hari Tasyriq',               color: '#ff8c00', icon: '🐑' },
-            '12-12':{ label: 'Hari Tasyriq',               color: '#ff8c00', icon: '🐑' },
-            '12-13':{ label: 'Hari Tasyriq',               color: '#ff8c00', icon: '🐑' },
+            '1-1':  { label: t('kalender.event.newYear'),        color: '#00ffff', icon: '🌙' },
+            '1-10': { label: t('kalender.event.asyura'),         color: '#ffd700', icon: '⭐' },
+            '3-12': { label: t('kalender.event.maulid'),         color: '#00ff88', icon: '🕌' },
+            '7-27': { label: t('kalender.event.israMiraj'),      color: '#9370db', icon: '✨' },
+            '8-15': { label: t('kalender.event.nisfuSyaban'),    color: '#ff8c00', icon: '🌙' },
+            '9-1':  { label: t('kalender.event.awalRamadan'),    color: '#ffd700', icon: '☪️' },
+            '9-17': { label: t('kalender.event.nuzululQuran'),   color: '#00ffff', icon: '📖' },
+            '9-21': { label: t('kalender.event.last10Ramadan'), color: '#ff69b4', icon: '🌟' },
+            '9-30': { label: t('kalender.event.akhirRamadan'),   color: '#ffd700', icon: '🌙' },
+            '10-1': { label: t('kalender.event.idulFitri'),      color: '#ffd700', icon: '🎉' },
+            '10-2': { label: t('kalender.event.tasyriqFitri'),  color: '#ffd700', icon: '🎊' },
+            '10-3': { label: t('kalender.event.tasyriqFitri'),  color: '#ffd700', icon: '🎊' },
+            '12-9': { label: t('kalender.event.arafah'),        color: '#00ff88', icon: '🏔️' },
+            '12-10':{ label: t('kalender.event.idulAdha'),       color: '#ff8c00', icon: '🐑' },
+            '12-11':{ label: t('kalender.event.tasyriq'),        color: '#ff8c00', icon: '🐑' },
+            '12-12':{ label: t('kalender.event.tasyriq'),        color: '#ff8c00', icon: '🐑' },
+            '12-13':{ label: t('kalender.event.tasyriq'),        color: '#ff8c00', icon: '🐑' },
         };
     }
 
@@ -105,7 +105,8 @@ export default class KalenderApp {
     }
 
     formatDate(d) {
-        return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        const loc = getLocale() === 'en' ? 'en-US' : 'id-ID';
+        return d.toLocaleDateString(loc, { day: 'numeric', month: 'short', year: 'numeric' });
     }
 
     daysInMonth(year, month) {
@@ -117,6 +118,7 @@ export default class KalenderApp {
     }
 
     render() {
+        this.islamicEvents = this.buildEvents();
         const todayHijri = this.toHijri(
             this.today.getFullYear(),
             this.today.getMonth() + 1,
@@ -125,17 +127,18 @@ export default class KalenderApp {
 
         // Compute next 3 upcoming Islamic events
         const upcomingEvents = this.getUpcomingEvents(3);
+        const loc = getLocale() === 'en' ? 'en-US' : 'id-ID';
 
         this.container.innerHTML = `
         <div class="kalender-container">
             <div class="kalender-header">
-                <h2><i class="fas fa-calendar-alt"></i> Kalender Hijriyah</h2>
+                <h2><i class="fas fa-calendar-alt"></i> ${t('kalender.title')}</h2>
                 <div class="kalender-today-hijri">
                     <span class="kalender-hijri-date">${todayHijri.day} ${this.hijriMonths[todayHijri.month - 1]} ${todayHijri.year} H</span>
-                    <span class="kalender-masehi-date">${this.today.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                    <span class="kalender-masehi-date">${this.today.toLocaleDateString(loc, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
                 </div>
                 <div class="kalender-disclaimer" style="font-size:0.7rem;opacity:0.6;margin-top:6px;text-align:center;">
-                    <i class="fas fa-info-circle"></i> Perhitungan menggunakan algoritma tabulasi. Tanggal Hijriyah dapat berbeda ±1-2 hari dari hasil rukyatul hilal.
+                    <i class="fas fa-info-circle"></i> ${t('kalender.disclaimer')}
                 </div>
             </div>
 
@@ -143,14 +146,14 @@ export default class KalenderApp {
             <div class="kalender-countdown-section">
                 <div class="kalender-countdown-header">
                     <i class="fas fa-hourglass-half"></i>
-                    <h3>Hitung Mundur Tanggal Penting</h3>
+                    <h3>${t('kalender.countdownTitle')}</h3>
                 </div>
                 <div class="kalender-countdown-grid">
                     ${upcomingEvents.map((e, i) => `
                         <div class="kalender-countdown-card${i === 0 ? ' featured' : ''}" style="--event-color:${e.event.color}">
                             <div class="kalender-cd-icon">${e.event.icon}</div>
                             <div class="kalender-cd-days">${e.daysAway}</div>
-                            <div class="kalender-cd-label">hari lagi</div>
+                            <div class="kalender-cd-label">${t('kalender.daysAway')}</div>
                             <div class="kalender-cd-name">${e.event.label}</div>
                             <div class="kalender-cd-date">${this.formatDate(e.gregorianDate)}</div>
                         </div>
@@ -167,8 +170,8 @@ export default class KalenderApp {
 
             <div class="kalender-grid-wrapper">
                 <div class="kalender-weekdays">
-                    ${['Min','Sen','Sel','Rab','Kam','Jum','Sab'].map(d =>
-                        `<div class="kalender-weekday${d === 'Jum' ? ' friday' : ''}">${d}</div>`).join('')}
+                    ${(getLocale() === 'en' ? ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] : ['Min','Sen','Sel','Rab','Kam','Jum','Sab']).map(d =>
+                        `<div class="kalender-weekday${d === 'Jum' || d === 'Fri' ? ' friday' : ''}">${d}</div>`).join('')}
                 </div>
                 <div class="kalender-grid" id="kalenderGrid"></div>
             </div>
@@ -179,26 +182,26 @@ export default class KalenderApp {
             <!-- Cross-App Integration: Fiqh Praktis -->
             <div class="kalender-events" style="margin-top: 20px; background: linear-gradient(135deg, var(--bg-surface-2), rgba(0,255,136,0.05)); border: 1px solid rgba(0,255,136,0.2);">
                 <div style="color: var(--primary-green); font-weight: 600; font-size: 1.1rem; margin-bottom: 8px;">
-                    <i class="fas fa-book-open"></i> Pelajari Fiqh Ibadah
+                    <i class="fas fa-book-open"></i> ${t('kalender.learnFiqhTitle')}
                 </div>
                 <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px;">
-                    Perdalam ilmu Anda mengenai hukum-hukum ibadah harian dan puasa sebelum datangnya waktu pelaksanaannya.
+                    ${t('kalender.learnFiqhDesc')}
                 </p>
                 <button class="btn-primary" style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; font-weight: 600;" onclick="if(window.islamHub) window.islamHub.openApp('fiqh')">
-                    Buka Fiqh Praktis <i class="fas fa-arrow-right"></i>
+                    ${t('kalender.openFiqhBtn')} <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
 
             <!-- Konversi Tanggal -->
             <div class="kalender-convert">
-                <h3><i class="fas fa-exchange-alt"></i> Konversi Tanggal</h3>
+                <h3><i class="fas fa-exchange-alt"></i> ${t('kalender.convertTitle')}</h3>
                 <div class="kalender-convert-form">
                     <div class="kalender-convert-input">
-                        <label>Tanggal Masehi</label>
+                        <label>${t('kalender.gregorianDate')}</label>
                         <input type="date" id="convertInput" value="${this.today.toISOString().split('T')[0]}">
                     </div>
                     <button class="kalender-convert-btn" id="btnConvert">
-                        <i class="fas fa-arrow-right"></i> Konversi
+                        <i class="fas fa-arrow-right"></i> ${t('kalender.convertBtn')}
                     </button>
                     <div class="kalender-convert-result" id="convertResult"></div>
                 </div>
@@ -206,9 +209,9 @@ export default class KalenderApp {
 
             <!-- Keterangan Bulan Hijriyah -->
             <div class="kalender-months-info">
-                <h3><i class="fas fa-info-circle"></i> Bulan-Bulan Hijriyah</h3>
+                <h3><i class="fas fa-info-circle"></i> ${t('kalender.hijriMonthsTitle')}</h3>
                 <p class="kalender-months-note">
-                    <span class="haram-badge">★ Bulan Haram</span> — bulan yang dimuliakan dalam Islam (Muharram, Rajab, Dzulqa'dah, Dzulhijjah).
+                    ${t('kalender.haramMonthsDesc')}
                 </p>
                 <div class="kalender-months-grid">
                     ${this.hijriMonths.map((m, i) => {
@@ -226,13 +229,15 @@ export default class KalenderApp {
         </div>`;
 
         this.renderCalendar();
+        this.setupEvents();
     }
 
     renderCalendar() {
         const totalDays  = this.daysInMonth(this.viewYear, this.viewMonth);
         const firstDay   = this.firstDayOfMonth(this.viewYear, this.viewMonth);
-        const monthNames = ['Januari','Februari','Maret','April','Mei','Juni',
-                            'Juli','Agustus','September','Oktober','November','Desember'];
+        const monthNames = getLocale() === 'en'
+            ? ['January','February','March','April','May','June','July','August','September','October','November','December']
+            : ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
         // Update label
         const hijriFirst = this.toHijri(this.viewYear, this.viewMonth + 1, 1);
@@ -276,7 +281,7 @@ export default class KalenderApp {
         const eventsEl = document.getElementById('kalenderEvents');
         if (eventsEl) {
             if (eventsThisMonth.length > 0) {
-                eventsEl.innerHTML = `<h4><i class="fas fa-star"></i> Hari Penting Bulan Ini</h4>
+                eventsEl.innerHTML = `<h4><i class="fas fa-star"></i> ${t('kalender.eventsThisMonth')}</h4>
                     <div class="kalender-event-list">
                         ${eventsThisMonth.map(e => `
                             <div class="kalender-event-item" style="--event-color:${e.event.color}">
@@ -288,7 +293,7 @@ export default class KalenderApp {
                             </div>`).join('')}
                     </div>`;
             } else {
-                eventsEl.innerHTML = '<p class="kalender-no-events"><i class="fas fa-calendar"></i> Tidak ada hari penting Islam bulan ini.</p>';
+                eventsEl.innerHTML = `<p class="kalender-no-events"><i class="fas fa-calendar"></i> ${t('kalender.noEvents')}</p>`;
             }
         }
     }
@@ -316,13 +321,16 @@ export default class KalenderApp {
         if (!input || !input.value) return;
         const [y, m, d] = input.value.split('-').map(Number);
         const h = this.toHijri(y, m, d);
+        const monthNames = getLocale() === 'en'
+            ? ['January','February','March','April','May','June','July','August','September','October','November','December']
+            : ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
         const resultEl = document.getElementById('convertResult');
         if (resultEl) {
             resultEl.innerHTML = `
                 <div class="convert-output">
                     <div class="convert-masehi">
                         <i class="fas fa-calendar"></i>
-                        <span>${d} ${['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][m-1]} ${y} M</span>
+                        <span>${d} ${monthNames[m-1]} ${y} ${getLocale() === 'en' ? 'CE' : 'M'}</span>
                     </div>
                     <div class="convert-arrow"><i class="fas fa-equals"></i></div>
                     <div class="convert-hijri">
@@ -330,7 +338,7 @@ export default class KalenderApp {
                         <span>${h.day} ${this.hijriMonths[h.month - 1]} ${h.year} H</span>
                     </div>
                     <div class="convert-note" style="font-size:0.7rem;opacity:0.55;margin-top:8px;text-align:center;">
-                        <i class="fas fa-info-circle"></i> Hasil konversi berdasarkan algoritma tabulasi (dapat berbeda ±1-2 hari dari rukyatul hilal)
+                        <i class="fas fa-info-circle"></i> ${t('kalender.convertDisclaimer')}
                     </div>
                 </div>`;
         }

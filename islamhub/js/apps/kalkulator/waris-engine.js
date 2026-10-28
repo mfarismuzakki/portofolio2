@@ -23,6 +23,8 @@
 //   - Dhawil arham inherit by tanzil, male and female equal (Hanbali), and only when there is
 //     no sharer other than a spouse and no 'asabah.
 
+import { t } from '../../i18n/index.js';
+
 const gcd = (a, b) => (b === 0 ? Math.abs(a) : gcd(b, a % b));
 
 export class Frac {
@@ -58,18 +60,11 @@ export const HEIR_KEYS = [
     'paternalAunts', 'maternalAunts', 'maternalUncles',
 ];
 
-// Short Indonesian names, used inside condition and exclusion texts.
-const NAME = {
-    husband: 'suami', wife: 'istri', father: 'ayah', mother: 'ibu', grandfather: 'kakek',
-    grandmotherPaternal: 'nenek dari ayah', grandmotherMaternal: 'nenek dari ibu',
-    sons: 'anak laki-laki', daughters: 'anak perempuan', grandsons: 'cucu laki-laki', granddaughters: 'cucu perempuan',
-    fullBrothers: 'saudara kandung', fullSisters: 'saudari kandung', paternalBrothers: 'saudara seayah',
-    paternalSisters: 'saudari seayah', maternalBrothers: 'saudara seibu', maternalSisters: 'saudari seibu',
-    fullNephews: 'keponakan (anak saudara kandung)', paternalNephews: 'keponakan (anak saudara seayah)',
-    fullUncles: 'paman kandung', paternalUncles: 'paman seayah', fullCousins: 'sepupu (anak paman kandung)',
-    paternalCousins: 'sepupu (anak paman seayah)', paternalAunts: 'bibi dari ayah', maternalAunts: 'bibi dari ibu',
-    maternalUncles: 'paman dari ibu',
-};
+// Localized heir names, used inside condition and exclusion texts.
+const heirName = k => t(`waris.heir.${k}`);
+const NAME = new Proxy({}, {
+    get: (_, k) => heirName(k)
+});
 
 /**
  * @param {object} input  counts per heir key (see HEIR_KEYS)
@@ -89,18 +84,18 @@ export function computeFaraid(input = {}) {
     const exclude = (type, reason) => { if (h[type]) excluded.push({ type, count: h[type], reason }); h[type] = 0; };
 
     // ---------- 1. Hajb hirman (full exclusion) ----------
-    if (h.father) exclude('grandfather', 'Terhalang oleh ayah');
+    if (h.father) exclude('grandfather', t('waris.exclude.byFather'));
     if (h.mother) {
-        exclude('grandmotherPaternal', 'Terhalang oleh ibu');
-        exclude('grandmotherMaternal', 'Terhalang oleh ibu');
+        exclude('grandmotherPaternal', t('waris.exclude.byMother'));
+        exclude('grandmotherMaternal', t('waris.exclude.byMother'));
     }
-    if (h.father) exclude('grandmotherPaternal', 'Terhalang oleh ayah (pendapat jumhur)');
+    if (h.father) exclude('grandmotherPaternal', t('waris.exclude.byFatherJumhur'));
 
     if (h.sons) {
-        exclude('grandsons', 'Terhalang oleh anak laki-laki');
-        exclude('granddaughters', 'Terhalang oleh anak laki-laki');
+        exclude('grandsons', t('waris.exclude.bySon'));
+        exclude('granddaughters', t('waris.exclude.bySon'));
     }
-    if (h.daughters >= 2 && !h.grandsons) exclude('granddaughters', 'Bagian anak perempuan (2/3) sudah habis dan tidak ada cucu laki-laki yang menjadikannya asabah');
+    if (h.daughters >= 2 && !h.grandsons) exclude('granddaughters', t('waris.exclude.granddaughtersExhausted'));
 
     const maleDesc = h.sons + h.grandsons > 0;
     const femaleDesc = h.daughters + h.granddaughters > 0;
@@ -108,28 +103,32 @@ export function computeFaraid(input = {}) {
     // Siblings counted for the mother's share before they are excluded (jumhur).
     const siblingCount = h.fullBrothers + h.fullSisters + h.paternalBrothers + h.paternalSisters + h.maternalBrothers + h.maternalSisters;
 
-    const siblingBlocker = h.sons ? 'anak laki-laki' : h.grandsons ? 'cucu laki-laki' : h.father ? 'ayah' : h.grandfather ? 'kakek' : null;
+    const siblingBlocker = h.sons ? t('waris.blocker.sons') : h.grandsons ? t('waris.blocker.grandsons') : h.father ? t('waris.blocker.father') : h.grandfather ? t('waris.blocker.grandfather') : null;
+    let grandfatherExcludedSiblings = false;
     if (siblingBlocker) {
-        ['fullBrothers', 'fullSisters', 'paternalBrothers', 'paternalSisters'].forEach(t =>
-            exclude(t, `Terhalang oleh ${siblingBlocker}` + (siblingBlocker === 'kakek' ? ' (pendapat Abu Bakr, dipilih Ibnu Taimiyah dan Ibnu Utsaimin)' : '')));
+        if (h.grandfather && !h.father && !h.sons && !h.grandsons) grandfatherExcludedSiblings = true;
+        ['fullBrothers', 'fullSisters', 'paternalBrothers', 'paternalSisters'].forEach(tKey =>
+            exclude(tKey, h.grandfather && !h.father && !h.sons && !h.grandsons
+                ? t('waris.exclude.byGrandfatherAbuBakr')
+                : t('waris.exclude.byBlocker', { blocker: siblingBlocker })));
     }
-    const maternalBlocker = anyDesc ? 'keturunan (anak/cucu)' : h.father ? 'ayah' : h.grandfather ? 'kakek' : null;
+    const maternalBlocker = anyDesc ? t('waris.blocker.descendant') : h.father ? t('waris.blocker.father') : h.grandfather ? t('waris.blocker.grandfather') : null;
     if (maternalBlocker) {
-        exclude('maternalBrothers', `Terhalang oleh ${maternalBlocker}`);
-        exclude('maternalSisters', `Terhalang oleh ${maternalBlocker}`);
+        exclude('maternalBrothers', t('waris.exclude.byBlocker', { blocker: maternalBlocker }));
+        exclude('maternalSisters', t('waris.exclude.byBlocker', { blocker: maternalBlocker }));
     }
 
     // A full sister with a daughter/granddaughter is 'asabah ma'al ghair and ranks as a full brother.
     const fullSisterWithDesc = h.fullSisters > 0 && !h.fullBrothers && femaleDesc;
     if (h.fullBrothers) {
-        exclude('paternalBrothers', 'Terhalang oleh saudara kandung');
-        exclude('paternalSisters', 'Terhalang oleh saudara kandung');
+        exclude('paternalBrothers', t('waris.exclude.byFullBrother'));
+        exclude('paternalSisters', t('waris.exclude.byFullBrother'));
     }
     if (fullSisterWithDesc) {
-        exclude('paternalBrothers', "Terhalang oleh saudari kandung yang menjadi asabah ma'al ghair");
-        exclude('paternalSisters', "Terhalang oleh saudari kandung yang menjadi asabah ma'al ghair");
+        exclude('paternalBrothers', t('waris.exclude.byFullSisterMaalGhair'));
+        exclude('paternalSisters', t('waris.exclude.byFullSisterMaalGhair'));
     }
-    if (h.fullSisters >= 2 && !h.paternalBrothers) exclude('paternalSisters', 'Bagian saudari kandung (2/3) sudah habis dan tidak ada saudara seayah');
+    if (h.fullSisters >= 2 && !h.paternalBrothers) exclude('paternalSisters', t('waris.exclude.paternalSistersExhausted'));
     const paternalSisterWithDesc = h.paternalSisters > 0 && !h.paternalBrothers && !h.fullSisters && femaleDesc;
 
     // ---------- 2. Ashabul furudh ----------
@@ -139,69 +138,74 @@ export function computeFaraid(input = {}) {
     let spouseShare = ZERO;
     if (h.husband) {
         spouseShare = anyDesc ? F(1, 4) : F(1, 2);
-        push('husband', spouseShare, anyDesc ? 'Ada anak/cucu → 1/4 (QS. An-Nisa: 12)' : 'Tidak ada anak/cucu → 1/2 (QS. An-Nisa: 12)', { spouse: true });
+        push('husband', spouseShare, anyDesc ? t('waris.cond.husbandWithDesc') : t('waris.cond.husbandNoDesc'), { spouse: true });
     }
     if (h.wife) {
         spouseShare = anyDesc ? F(1, 8) : F(1, 4);
-        push('wife', spouseShare, (anyDesc ? 'Ada anak/cucu → 1/8' : 'Tidak ada anak/cucu → 1/4') +
-            (h.wife > 1 ? `, dibagi rata ${h.wife} istri` : '') + ' (QS. An-Nisa: 12)', { spouse: true });
+        const splitStr = h.wife > 1 ? t('waris.cond.wifeSplit', { n: h.wife }) : '';
+        push('wife', spouseShare, (anyDesc ? t('waris.cond.wifeWithDesc', { split: splitStr }) : t('waris.cond.wifeNoDesc', { split: splitStr })), { spouse: true });
     }
 
     if (h.mother) {
         if (anyDesc || siblingCount >= 2) {
-            push('mother', F(1, 6), anyDesc ? 'Ada anak/cucu → 1/6 (QS. An-Nisa: 11)' : `Ada ${siblingCount} saudara → 1/6 (QS. An-Nisa: 11), walaupun saudara itu sendiri terhalang`);
+            push('mother', F(1, 6), anyDesc ? t('waris.cond.motherWithDesc') : t('waris.cond.motherWithSiblings', { n: siblingCount }));
         } else if (h.father && (h.husband || h.wife)) {
             const s = ONE.sub(spouseShare).mul(F(1, 3));
-            push('mother', s, `Al-'Umariyyatan: 1/3 dari sisa setelah bagian ${h.husband ? 'suami' : 'istri'} = ${s}`, { label: '1/3 sisa' });
-            notes.push("Kasus Al-'Umariyyatan (Gharrawain): ibu mendapat 1/3 sisa, bukan 1/3 harta, agar bagian ayah tetap 2× ibu (ijtihad Umar bin Khattab ra, disepakati jumhur).");
+            const spouseStr = h.husband ? heirName('husband') : heirName('wife');
+            push('mother', s, t('waris.cond.motherUmariyyatan', { spouse: spouseStr, s: s.toString() }), { label: t('waris.label.oneThirdRem') });
+            notes.push(t('waris.note.umariyyatan'));
         } else {
-            push('mother', F(1, 3), 'Tidak ada anak/cucu dan kurang dari 2 saudara → 1/3 (QS. An-Nisa: 11)');
+            push('mother', F(1, 3), t('waris.cond.motherNormal'));
         }
     }
-    const gms = ['grandmotherPaternal', 'grandmotherMaternal'].filter(t => h[t]);
+    const gms = ['grandmotherPaternal', 'grandmotherMaternal'].filter(tKey => h[tKey]);
     if (gms.length) {
-        gms.forEach(t => push(t, F(1, 6 * gms.length), gms.length > 1
-            ? '1/6 dibagi rata antara dua nenek (HR. Abu Dawud & At-Tirmidzi, kisah Al-Mughirah)'
-            : '1/6 (HR. Abu Dawud & At-Tirmidzi, kisah Al-Mughirah)'));
+        gms.forEach(tKey => push(tKey, F(1, 6 * gms.length), gms.length > 1
+            ? t('waris.cond.gmTwo')
+            : t('waris.cond.gmOne')));
     }
 
     // father / grandfather: 1/6 with any descendant; 'asabah handled below
     const ascendant = h.father ? 'father' : h.grandfather ? 'grandfather' : null;
     if (ascendant && anyDesc) {
-        push(ascendant, F(1, 6), `Ada keturunan → 1/6 (QS. An-Nisa: 11)${ascendant === 'grandfather' ? ', kakek menggantikan ayah' : ''}`);
+        const extra = ascendant === 'grandfather' ? t('waris.cond.grandfatherReplacesFather') : '';
+        push(ascendant, F(1, 6), t('waris.cond.ascendantWithDesc', { extra }));
     }
 
     if (h.daughters && !h.sons) {
         push('daughters', h.daughters === 1 ? F(1, 2) : F(2, 3), h.daughters === 1
-            ? 'Seorang diri, tanpa anak laki-laki → 1/2 (QS. An-Nisa: 11)'
-            : `${h.daughters} anak perempuan, tanpa anak laki-laki → 2/3 dibagi rata (QS. An-Nisa: 11)`);
+            ? t('waris.cond.daughterAlone')
+            : t('waris.cond.daughtersPlural', { n: h.daughters }));
     }
     if (h.granddaughters && !h.grandsons) {
         if (!h.daughters) {
+            const who = h.granddaughters === 1 ? t('waris.cond.whoAlone') : t('waris.cond.whoPlural', { n: h.granddaughters });
+            const share = h.granddaughters === 1 ? '1/2' : '2/3';
             push('granddaughters', h.granddaughters === 1 ? F(1, 2) : F(2, 3),
-                (h.granddaughters === 1 ? 'Seorang diri' : `${h.granddaughters} orang`) + ', tanpa anak → menggantikan anak perempuan: ' + (h.granddaughters === 1 ? '1/2' : '2/3'));
+                t('waris.cond.granddaughtersNoDaughter', { who, share }));
         } else {
-            push('granddaughters', F(1, 6), 'Bersama satu anak perempuan → 1/6 penyempurna 2/3 (HR. Al-Bukhari dari Ibnu Mas\'ud)');
+            push('granddaughters', F(1, 6), t('waris.cond.granddaughterWithOneDaughter'));
         }
     }
 
     if (h.fullSisters && !h.fullBrothers && !femaleDesc) {
         push('fullSisters', h.fullSisters === 1 ? F(1, 2) : F(2, 3), h.fullSisters === 1
-            ? 'Kalalah, seorang diri → 1/2 (QS. An-Nisa: 176)'
-            : `Kalalah, ${h.fullSisters} orang → 2/3 dibagi rata (QS. An-Nisa: 176)`);
+            ? t('waris.cond.fullSisterAlone')
+            : t('waris.cond.fullSistersPlural', { n: h.fullSisters }));
     }
     if (h.paternalSisters && !h.paternalBrothers && !paternalSisterWithDesc) {
         if (!h.fullSisters) {
+            const share = h.paternalSisters === 1 ? '1/2' : '2/3';
             push('paternalSisters', h.paternalSisters === 1 ? F(1, 2) : F(2, 3),
-                'Tanpa saudari kandung → menggantikannya: ' + (h.paternalSisters === 1 ? '1/2' : '2/3') + ' (QS. An-Nisa: 176)');
+                t('waris.cond.paternalSisterReplaces', { share }));
         } else if (h.fullSisters === 1 && !fullSisterWithDesc) {
-            push('paternalSisters', F(1, 6), 'Bersama satu saudari kandung → 1/6 penyempurna 2/3');
+            push('paternalSisters', F(1, 6), t('waris.cond.paternalSisterWithOneFull'));
         }
     }
     const maternal = h.maternalBrothers + h.maternalSisters;
     if (maternal) {
         const total = maternal === 1 ? F(1, 6) : F(1, 3);
-        const cond = maternal === 1 ? 'Seorang diri → 1/6 (QS. An-Nisa: 12)' : `${maternal} orang → 1/3, laki-laki dan perempuan sama rata (QS. An-Nisa: 12)`;
+        const cond = maternal === 1 ? t('waris.cond.maternalAlone') : t('waris.cond.maternalPlural', { n: maternal });
         if (h.maternalBrothers) push('maternalBrothers', total.mul(F(h.maternalBrothers, maternal)), cond);
         if (h.maternalSisters) push('maternalSisters', total.mul(F(h.maternalSisters, maternal)), cond);
     }
@@ -213,7 +217,7 @@ export function computeFaraid(input = {}) {
     if (totalFard.cmp(ONE) > 0) {
         hasAwl = true;
         const asl = fard.reduce((l, e) => (l * e.share.d) / gcd(l, e.share.d), 1);
-        notes.push(`'Awl: jumlah bagian ${totalFard} melebihi 1, asal masalah ${asl} dinaikkan menjadi ${totalFard.mul(F(asl)).value}. Semua bagian dikurangi secara proporsional.`);
+        notes.push(t('waris.note.awl', { total: totalFard.toString(), asl, newAsl: totalFard.mul(F(asl)).value }));
         fard.forEach(e => { e.awlFrom = e.share; e.share = e.share.div(totalFard); });
         totalFard = ONE;
     }
@@ -224,22 +228,22 @@ export function computeFaraid(input = {}) {
     const tie = (male, female, label, cond) => {
         // male and female of one rank: a male takes two parts, a female one (QS. An-Nisa: 11, 176)
         const parts = h[male] * 2 + h[female];
-        if (h[male]) asabah.push({ type: male, part: F(h[male] * 2, parts), label: female && h[female] ? 'Sisa (2 bagian/orang)' : 'Sisa', cond });
-        if (h[female]) asabah.push({ type: female, part: F(h[female], parts), label: 'Sisa (1 bagian/orang)', cond: `Asabah bil-ghair bersama ${NAME[male]}, 1 bagian/orang dari ${parts} bagian` });
+        if (h[male]) asabah.push({ type: male, part: F(h[male] * 2, parts), label: female && h[female] ? t('waris.label.residueTwoShares') : t('waris.label.residue'), cond });
+        if (h[female]) asabah.push({ type: female, part: F(h[female], parts), label: t('waris.label.residueOneShare'), cond: t('waris.cond.asabahBilGhairWith', { male: NAME[male], parts }) });
         return true;
     };
     const ranks = [
-        () => h.sons && tie('sons', 'daughters', '', h.daughters ? `Asabah bil-ghair: sisa dibagi ${h.sons * 2 + h.daughters} bagian, laki-laki 2 : perempuan 1 (QS. An-Nisa: 11)` : 'Asabah bin-nafsi: menghabiskan sisa'),
-        () => h.grandsons && tie('grandsons', 'granddaughters', '', 'Asabah bin-nafsi: cucu laki-laki menggantikan anak laki-laki'),
-        () => ascendant && (asabah.push({ type: ascendant, part: ONE, label: 'Sisa', cond: anyDesc
-            ? 'Hanya ada keturunan perempuan → 1/6 + sisa sebagai asabah'
-            : 'Tidak ada keturunan → asabah, mengambil seluruh sisa' }), true),
-        () => h.fullBrothers && tie('fullBrothers', 'fullSisters', '', h.fullSisters ? 'Asabah bil-ghair: laki-laki 2 : perempuan 1 (QS. An-Nisa: 176)' : 'Asabah bin-nafsi'),
-        () => fullSisterWithDesc && (asabah.push({ type: 'fullSisters', part: ONE, label: 'Sisa', cond: "Asabah ma'al ghair bersama anak/cucu perempuan (HR. Al-Bukhari dari Ibnu Mas'ud)" }), true),
-        () => h.paternalBrothers && tie('paternalBrothers', 'paternalSisters', '', h.paternalSisters ? 'Asabah bil-ghair: laki-laki 2 : perempuan 1' : 'Asabah bin-nafsi'),
-        () => paternalSisterWithDesc && (asabah.push({ type: 'paternalSisters', part: ONE, label: 'Sisa', cond: "Asabah ma'al ghair bersama anak/cucu perempuan" }), true),
-        ...['fullNephews', 'paternalNephews', 'fullUncles', 'paternalUncles', 'fullCousins', 'paternalCousins'].map(t =>
-            () => h[t] && (asabah.push({ type: t, part: ONE, label: 'Sisa', cond: `Asabah bin-nafsi: ${NAME[t]} adalah laki-laki terdekat yang tersisa (HR. Al-Bukhari & Muslim: "fa li-aula rajulin dzakar")` }), true)),
+        () => h.sons && tie('sons', 'daughters', '', h.daughters ? t('waris.cond.asabahBilGhairSons', { parts: h.sons * 2 + h.daughters }) : t('waris.cond.asabahBinNafsiExhausts')),
+        () => h.grandsons && tie('grandsons', 'granddaughters', '', t('waris.cond.asabahGrandsonsReplace')),
+        () => ascendant && (asabah.push({ type: ascendant, part: ONE, label: t('waris.label.residue'), cond: anyDesc
+            ? t('waris.cond.asabahAscendantFemaleDesc')
+            : t('waris.cond.asabahAscendantNoDesc') }), true),
+        () => h.fullBrothers && tie('fullBrothers', 'fullSisters', '', h.fullSisters ? t('waris.cond.asabahFullSiblings') : t('waris.cond.asabahBinNafsi')),
+        () => fullSisterWithDesc && (asabah.push({ type: 'fullSisters', part: ONE, label: t('waris.label.residue'), cond: t('waris.cond.asabahFullSisterMaalGhair') }), true),
+        () => h.paternalBrothers && tie('paternalBrothers', 'paternalSisters', '', h.paternalSisters ? t('waris.cond.asabahPaternalSiblings') : t('waris.cond.asabahBinNafsi')),
+        () => paternalSisterWithDesc && (asabah.push({ type: 'paternalSisters', part: ONE, label: t('waris.label.residue'), cond: t('waris.cond.asabahPaternalSisterMaalGhair') }), true),
+        ...['fullNephews', 'paternalNephews', 'fullUncles', 'paternalUncles', 'fullCousins', 'paternalCousins'].map(tKey =>
+            () => h[tKey] && (asabah.push({ type: tKey, part: ONE, label: t('waris.label.residue'), cond: t('waris.cond.asabahFar', { heir: NAME[tKey] }) }), true)),
     ];
     const farAsabah = ['fullNephews', 'paternalNephews', 'fullUncles', 'paternalUncles', 'fullCousins', 'paternalCousins'];
     let takerRank = -1;
@@ -249,41 +253,41 @@ export function computeFaraid(input = {}) {
     if (takerRank >= 0) {
         // Everyone below the taker in the 'asabah line is excluded by it.
         const takerName = NAME[asabah[0].type];
-        farAsabah.forEach(t => { if (h[t] && !asabah.some(a => a.type === t)) exclude(t, `Terhalang oleh ${takerName} yang lebih dekat`); });
+        farAsabah.forEach(tKey => { if (h[tKey] && !asabah.some(a => a.type === tKey)) exclude(tKey, t('waris.exclude.byCloserHeir', { heir: takerName })); });
         if (!residue.isZero()) {
             asabah.forEach(a => {
                 const amount = residue.mul(a.part);
                 const own = fard.find(e => e.type === a.type);
                 if (own) {
                     own.share = own.share.add(amount);
-                    own.label = `${own.awlFrom || own.share.sub(amount)} + sisa`;
-                    own.category = 'Ashabul Furudh + Asabah';
+                    own.label = t('waris.label.plusResidue', { from: own.awlFrom || own.share.sub(amount) });
+                    own.category = t('waris.category.furudhAndAsabah');
                     own.condition = a.cond;
                 } else {
-                    fard.push({ type: a.type, count: h[a.type], share: amount, category: 'Asabah', label: a.label, condition: a.cond, asabah: true });
+                    fard.push({ type: a.type, count: h[a.type], share: amount, category: t('waris.category.asabah'), label: a.label, condition: a.cond, asabah: true });
                 }
             });
             residue = ZERO;
         } else {
             asabah.forEach(a => {
                 if (fard.some(e => e.type === a.type)) return;
-                excluded.push({ type: a.type, count: h[a.type], reason: 'Asabah, tetapi harta sudah habis dibagi kepada ashabul furudh (tidak ada sisa)' });
+                excluded.push({ type: a.type, count: h[a.type], reason: t('waris.exclude.asabahNoResidue') });
             });
             if (asabah.some(a => a.type === 'fullBrothers') && maternal >= 2) {
-                notes.push('Kasus Al-Himariyyah/Musyarakah: saudara kandung tidak mendapat bagian dan tidak disekutukan dengan saudara seibu (mazhab Hanafi dan Hanbali).');
+                notes.push(t('waris.note.himariyyah'));
             }
         }
     }
 
     // ---------- 5. Radd and dhawil arham ----------
     let hasRadd = false;
-    const arham = ['paternalAunts', 'maternalAunts', 'maternalUncles'].filter(t => h[t]);
+    const arham = ['paternalAunts', 'maternalAunts', 'maternalUncles'].filter(tKey => h[tKey]);
     const nonSpouse = fard.filter(e => !e.spouse);
     if (!residue.isZero() && nonSpouse.length) {
         hasRadd = true;
         const base = nonSpouse.reduce((s, e) => s.add(e.share), ZERO);
         nonSpouse.forEach(e => { e.raddFrom = e.share; e.share = e.share.add(residue.mul(e.share.div(base))); e.isRadd = true; });
-        notes.push(`Radd: sisa ${residue} dikembalikan kepada ashabul furudh secara proporsional. Suami/istri tidak mendapat radd (pendapat jumhur).`);
+        notes.push(t('waris.note.radd', { residue: residue.toString() }));
         residue = ZERO;
     }
     if (arham.length) {
@@ -294,14 +298,14 @@ export function computeFaraid(input = {}) {
             const mother = h.maternalAunts + h.maternalUncles;
             const fShare = father && mother ? F(2, 3) : father ? ONE : ZERO;
             const mShare = ONE.sub(fShare);
-            const cond = side => `Dzawil arham (tanzil): menempati posisi ${side}, laki-laki dan perempuan sama (mazhab Hanbali)`;
-            if (father) fard.push({ type: 'paternalAunts', count: father, share: residue.mul(fShare), category: 'Dzawil Arham', label: father && mother ? '2/3 sisa' : 'Sisa', condition: cond('ayah') });
-            if (h.maternalAunts) fard.push({ type: 'maternalAunts', count: h.maternalAunts, share: residue.mul(mShare).mul(F(h.maternalAunts, mother)), category: 'Dzawil Arham', label: father ? '1/3 sisa' : 'Sisa', condition: cond('ibu') });
-            if (h.maternalUncles) fard.push({ type: 'maternalUncles', count: h.maternalUncles, share: residue.mul(mShare).mul(F(h.maternalUncles, mother)), category: 'Dzawil Arham', label: father ? '1/3 sisa' : 'Sisa', condition: cond('ibu') });
-            notes.push('Tidak ada ashabul furudh (selain suami/istri) maupun asabah, sehingga sisa harta diberikan kepada dzawil arham dengan metode tanzil (mazhab Hanbali).');
+            const cond = side => t('waris.cond.dhawilArham', { side });
+            if (father) fard.push({ type: 'paternalAunts', count: father, share: residue.mul(fShare), category: t('waris.category.dhawilArham'), label: father && mother ? t('waris.label.twoThirdsRem') : t('waris.label.residue'), condition: cond(heirName('father')) });
+            if (h.maternalAunts) fard.push({ type: 'maternalAunts', count: h.maternalAunts, share: residue.mul(mShare).mul(F(h.maternalAunts, mother)), category: t('waris.category.dhawilArham'), label: father ? t('waris.label.oneThirdRem') : t('waris.label.residue'), condition: cond(heirName('mother')) });
+            if (h.maternalUncles) fard.push({ type: 'maternalUncles', count: h.maternalUncles, share: residue.mul(mShare).mul(F(h.maternalUncles, mother)), category: t('waris.category.dhawilArham'), label: father ? t('waris.label.oneThirdRem') : t('waris.label.residue'), condition: cond(heirName('mother')) });
+            notes.push(t('waris.note.dhawilArham'));
             residue = ZERO;
         } else {
-            arham.forEach(t => excluded.push({ type: t, count: h[t], reason: 'Dzawil arham tidak mewarisi selama masih ada ashabul furudh (selain suami/istri) atau asabah' }));
+            arham.forEach(tKey => excluded.push({ type: tKey, count: h[tKey], reason: t('waris.exclude.dhawilArhamBlocked') }));
         }
     }
     if (!residue.isZero()) {
@@ -309,14 +313,14 @@ export function computeFaraid(input = {}) {
         if (spouses.length) {
             hasRadd = true;
             spouses.forEach(e => { e.raddFrom = e.share; e.share = e.share.add(residue); e.isRadd = true; });
-            notes.push(`Tidak ada ahli waris lain: sisa ${residue} dikembalikan kepada suami/istri (pendapat Utsman ra, dipakai banyak lembaga fatwa modern karena baitul mal tidak berjalan).`);
+            notes.push(t('waris.note.raddSpouse', { residue: residue.toString() }));
             residue = ZERO;
         } else {
-            notes.push('Tidak ada ahli waris yang berhak: harta diserahkan ke baitul mal.');
+            notes.push(t('waris.note.baitulMal'));
         }
     }
-    if (h.grandfather && siblingCount && excluded.some(e => /kakek \(pendapat/.test(e.reason))) {
-        notes.push('Kakek bersama saudara diperselisihkan ulama. Di sini kakek menghalangi saudara seperti ayah (pendapat Abu Bakr dan Ibnu Abbas ra, dipilih Ibnu Taimiyah dan Ibnu Utsaimin). Mazhab Syafi\'i dan Hanbali membagi bersama (muqasamah).');
+    if (h.grandfather && siblingCount && grandfatherExcludedSiblings) {
+        notes.push(t('waris.note.grandfatherDispute'));
     }
 
     // ---------- Result ----------
@@ -325,10 +329,10 @@ export function computeFaraid(input = {}) {
         .map(e => ({
             type: e.type,
             count: e.count,
-            category: e.category || 'Ashabul Furudh',
+            category: e.category || t('waris.category.furudh'),
             share: e.share,
             fraction: e.label ? `${e.label} = ${e.share}` : e.awlFrom ? `${e.awlFrom} → ${e.share}` : e.raddFrom ? `${e.raddFrom} + radd = ${e.share}` : `${e.share}`,
-            condition: e.condition + (e.awlFrom && !e.label ? ` • setelah 'awl: ${e.share}` : '') + (e.isRadd ? ` • setelah radd: ${e.share}` : ''),
+            condition: e.condition + (e.awlFrom && !e.label ? t('waris.cond.afterAwl', { share: e.share.toString() }) : '') + (e.isRadd ? t('waris.cond.afterRadd', { share: e.share.toString() }) : ''),
             isAwl: !!e.awlFrom,
             isRadd: !!e.isRadd,
         }))

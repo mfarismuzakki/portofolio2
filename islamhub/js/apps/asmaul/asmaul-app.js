@@ -1,5 +1,6 @@
 // Asmaul Husna — 99 Nama-Nama Allah Yang Indah
 import { ASMAUL_HUSNA, HADITS_ASMAUL_HUSNA } from '../../data/asmaul/asmaul-data.js';
+import { t } from '../../i18n/index.js';
 
 // Auto-classify each name into a theme group (for color coding).
 // Keys are theme IDs, values are { color, accent, label, keywords }.
@@ -13,6 +14,21 @@ const ASMAUL_THEMES = {
     rezeki:    { color: '#22d3ee', label: 'Rezeki & Karunia', kw: ['rezeki','memberi','kaya','mencukupkan','membuka','pemberi'] },
     perlindungan: { color: '#60a5fa', label: 'Perlindungan', kw: ['mengawasi','keamanan','keselamatan','memelihara','menjaga','penolong','penjamin','wakil','pelindung'] }
 };
+
+const THEME_KEYS = {
+    rahmah: 'asmaul.themeRahmah',
+    kekuasaan: 'asmaul.themeKekuasaan',
+    ilmu: 'asmaul.themeIlmu',
+    keadilan: 'asmaul.themeKeadilan',
+    keesaan: 'asmaul.themeKeesaan',
+    keindahan: 'asmaul.themeKeindahan',
+    rezeki: 'asmaul.themeRezeki',
+    perlindungan: 'asmaul.themePerlindungan'
+};
+
+function getThemeLabel(id) {
+    return THEME_KEYS[id] ? t(THEME_KEYS[id]) : ASMAUL_THEMES[id]?.label;
+}
 
 function classifyTheme(name) {
     const m = (name.meaning + ' ' + name.desc).toLowerCase();
@@ -48,7 +64,6 @@ export default class AsmaulApp {
 
     async init() {
         this.render();
-        this.setupEvents();
     }
 
     render() {
@@ -69,8 +84,8 @@ export default class AsmaulApp {
         <div class="asmaul-container">
             <!-- Header -->
             <div class="asmaul-header">
-                <h2><i class="fas fa-star-and-crescent"></i> Asmaul Husna</h2>
-                <p class="asmaul-subtitle">99 Nama-Nama Allah Yang Indah</p>
+                <h2><i class="fas fa-star-and-crescent"></i> ${t('asmaul.title')}</h2>
+                <p class="asmaul-subtitle">${t('asmaul.subtitle')}</p>
             </div>
 
             <!-- Asma Hari Ini (Daily) -->
@@ -82,11 +97,11 @@ export default class AsmaulApp {
                         <circle cx="100" cy="100" r="40" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
                     </svg>
                 </div>
-                <div class="asmaul-daily-label"><i class="fas fa-sun"></i> ASMA HARI INI</div>
+                <div class="asmaul-daily-label"><i class="fas fa-sun"></i> ${t('asmaul.dailyLabel')}</div>
                 <div class="asmaul-daily-arabic">${daily.arabic}</div>
                 <div class="asmaul-daily-latin">${daily.latin}</div>
                 <div class="asmaul-daily-meaning">"${daily.meaning}"</div>
-                <button class="asmaul-daily-cta">Pelajari maknanya <i class="fas fa-arrow-right"></i></button>
+                <button class="asmaul-daily-cta">${t('asmaul.dailyCta')} <i class="fas fa-arrow-right"></i></button>
             </div>
 
             <!-- Hadits Utama -->
@@ -102,17 +117,17 @@ export default class AsmaulApp {
             <div class="asmaul-controls">
                 <div class="asmaul-search-wrap">
                     <i class="fas fa-search"></i>
-                    <input type="text" class="asmaul-search" id="asmaulSearch" placeholder="Cari nama atau makna...">
+                    <input type="text" class="asmaul-search" id="asmaulSearch" placeholder="${t('asmaul.searchPlaceholder')}">
                 </div>
                 <div class="asmaul-themes" id="asmaulThemes">
                     <button class="asmaul-theme-chip active" data-theme="all">
                         <span class="asmaul-theme-dot" style="background:linear-gradient(135deg,#00ffff,#ff00ff)"></span>
-                        Semua <span class="asmaul-theme-count">99</span>
+                        ${t('asmaul.all')} <span class="asmaul-theme-count">99</span>
                     </button>
                     ${themeIds.map(id => `
                         <button class="asmaul-theme-chip" data-theme="${id}" style="--theme-color:${ASMAUL_THEMES[id].color}">
                             <span class="asmaul-theme-dot" style="background:${ASMAUL_THEMES[id].color}"></span>
-                            ${ASMAUL_THEMES[id].label} <span class="asmaul-theme-count">${themeCounts[id]}</span>
+                            ${getThemeLabel(id)} <span class="asmaul-theme-count">${themeCounts[id]}</span>
                         </button>
                     `).join('')}
                 </div>
@@ -129,6 +144,8 @@ export default class AsmaulApp {
                 <div class="asmaul-modal-content" id="asmaulModalContent"></div>
             </div>
         </div>`;
+
+        this.setupEvents();
     }
 
     renderGrid() {
@@ -154,7 +171,7 @@ export default class AsmaulApp {
                     <div class="asmaul-card-meaning">${name.meaning}</div>
                 </div>`;
             })
-            .join('') || '<div class="asmaul-empty"><i class="fas fa-search"></i><p>Nama tidak ditemukan</p></div>';
+            .join('') || `<div class="asmaul-empty"><i class="fas fa-search"></i><p>${t('asmaul.empty')}</p></div>`;
     }
 
     renderModal(name) {

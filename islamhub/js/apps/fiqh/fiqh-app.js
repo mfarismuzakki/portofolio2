@@ -1,5 +1,6 @@
 // Fiqh Praktis — Panduan Ibadah Sehari-hari
 import { FIQH_DATA, FIQH_CATEGORIES } from '../../data/fiqh/fiqh-data.js';
+import { t } from '../../i18n/index.js';
 
 export default class FiqhApp {
     constructor(globalState, mainApp) {
@@ -13,7 +14,6 @@ export default class FiqhApp {
 
     async init() {
         this.render();
-        this.setupEvents();
     }
 
     parseMarkdown(text) {
@@ -30,20 +30,20 @@ export default class FiqhApp {
         this.container.innerHTML = `
         <div class="fiqh-container">
             <div class="fiqh-header">
-                <h2><i class="fas fa-scale-balanced"></i> Fiqh Praktis</h2>
-                <p class="fiqh-subtitle">Panduan ibadah sesuai Al-Qur\'an dan Sunnah shahih</p>
+                <h2><i class="fas fa-scale-balanced"></i> ${t('fiqh.title')}</h2>
+                <p class="fiqh-subtitle">${t('fiqh.subtitle')}</p>
             </div>
 
             <!-- Search -->
             <div class="fiqh-search-wrap">
                 <i class="fas fa-search"></i>
-                <input type="text" id="fiqhSearch" class="fiqh-search" placeholder="Cari topik, pertanyaan, atau keyword...">
+                <input type="text" id="fiqhSearch" class="fiqh-search" placeholder="${t('fiqh.searchPlaceholder')}">
             </div>
 
             <!-- Kategori -->
             <div class="fiqh-categories" id="fiqhCategories">
                 <button class="fiqh-cat-btn active" data-cat="">
-                    <i class="fas fa-th"></i> Semua <span class="fiqh-cat-count">${FIQH_DATA.length}</span>
+                    <i class="fas fa-th"></i> ${t('fiqh.all')} <span class="fiqh-cat-count">${FIQH_DATA.length}</span>
                 </button>
                 ${FIQH_CATEGORIES.map(cat => {
                     const count = FIQH_DATA.filter(d => d.category === cat.id).length;
@@ -57,7 +57,7 @@ export default class FiqhApp {
             <!-- Disclaimer -->
             <div class="fiqh-disclaimer">
                 <i class="fas fa-info-circle"></i>
-                <p>Panduan ini bersifat umum. Untuk masalah fiqh yang lebih spesifik dan kompleks, konsultasikan dengan ulama atau dai yang amanah di lingkungan Anda.</p>
+                <p>${t('fiqh.disclaimer')}</p>
             </div>
 
             <!-- Daftar Fiqh (Accordion) -->
@@ -65,6 +65,8 @@ export default class FiqhApp {
                 ${this.renderList()}
             </div>
         </div>`;
+
+        this.setupEvents();
     }
 
     renderList() {
@@ -79,7 +81,7 @@ export default class FiqhApp {
         });
 
         if (filtered.length === 0) {
-            return `<div class="fiqh-empty"><i class="fas fa-search"></i><p>Tidak ada hasil untuk "${this.searchQuery}"</p></div>`;
+            return `<div class="fiqh-empty"><i class="fas fa-search"></i><p>${t('fiqh.noResults', { query: this.searchQuery })}</p></div>`;
         }
 
         // Group by category
@@ -119,12 +121,12 @@ export default class FiqhApp {
                 </div>
                 <div class="fiqh-dalil">
                     <i class="fas fa-book-open"></i>
-                    <strong>Dalil:</strong> ${item.dalil || '-'}
+                    <strong>${t('fiqh.dalilLabel')}</strong> ${item.dalil || '-'}
                 </div>
                 ${item.catatan ? `
                 <div class="fiqh-catatan">
                     <i class="fas fa-lightbulb"></i>
-                    <div><strong>Catatan:</strong> ${item.catatan}</div>
+                    <div><strong>${t('fiqh.noteLabel')}</strong> ${item.catatan}</div>
                 </div>` : ''}
                 ${item.tags && item.tags.length ? `
                 <div class="fiqh-tags">

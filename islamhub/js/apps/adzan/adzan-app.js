@@ -2,6 +2,7 @@
 /* Logic from adzan_realtime with adaptations for IslamHub */
 
 import islamHubConfig from '../../config.js';
+import { t, locale, getLang } from '../../i18n/index.js';
 
 export default class AdzanApp {
     constructor(globalState, mainApp) {
@@ -99,7 +100,7 @@ export default class AdzanApp {
                     <div class="clock-section">
                         <div class="current-time" id="currentTime">--:--:--</div>
                         <div class="current-gmt" id="currentGMT">GMT+7</div>
-                        <div class="current-date" id="currentDate">Memuat...</div>
+                        <div class="current-date" id="currentDate">${t('common.loading')}</div>
                     </div>
                     <div class="location-section">
                         <div class="location-info">
@@ -107,15 +108,15 @@ export default class AdzanApp {
                             <span class="location-name" id="locationName">Jakarta, Indonesia</span>
                         </div>
                         <div class="location-actions">
-                            <button class="btn-notification" id="btnToggleNotification" title="Notifikasi Waktu Sholat">
+                            <button class="btn-notification" id="btnToggleNotification" title="${t('adzan.notificationTitle')}">
                                 <i class="far fa-bell-slash"></i>
-                                <span>Aktifkan Notifikasi</span>
+                                <span>${t('adzan.enableNotification')}</span>
                             </button>
                             <button class="btn-change-location" id="btnChangeLocation">
-                                <i class="fas fa-edit"></i> Ubah Lokasi
+                                <i class="fas fa-edit"></i> ${t('adzan.changeLocation')}
                             </button>
                             <button class="btn-display-mode" id="btnDisplayMode">
-                                <i class="fas fa-tv"></i> Mode Tampilan Masjid
+                                <i class="fas fa-tv"></i> ${t('adzan.displayMode')}
                             </button>
                         </div>
                     </div>
@@ -125,7 +126,7 @@ export default class AdzanApp {
                 <div class="next-prayer-card">
                     <div class="card-header">
                         <i class="fas fa-clock"></i>
-                        <span>Sholat Berikutnya</span>
+                        <span>${t('home.nextPrayer')}</span>
                     </div>
                     <div class="card-body">
                         <div class="next-prayer-ring-wrapper" id="nextPrayerRingWrapper">
@@ -145,7 +146,7 @@ export default class AdzanApp {
                                     transform="rotate(-90 120 120)"/>
                             </svg>
                             <div class="next-prayer-ring-content">
-                                <h2 class="prayer-name" id="nextPrayerName">Memuat...</h2>
+                                <h2 class="prayer-name" id="nextPrayerName">${t('common.loading')}</h2>
                                 <div class="countdown-timer" id="countdownTimer">--:--:--</div>
                                 <div class="prayer-time-target" id="nextPrayerTime">--:--</div>
                             </div>
@@ -155,9 +156,9 @@ export default class AdzanApp {
 
                 <!-- Prayer Times Table -->
                 <div class="prayer-times-section">
-                    <h3 id="prayerTimesHeading"><i class="fas fa-mosque"></i> Jadwal Sholat Hari Ini</h3>
+                    <h3 id="prayerTimesHeading"><i class="fas fa-mosque"></i> ${t('adzan.todaySchedule')}</h3>
                     <div class="method-selector">
-                        <label for="methodSelect">Metode: </label>
+                        <label for="methodSelect">${t('adzan.method')}: </label>
                         <select id="methodSelect">
                             <option value="KEMENAG">Kemenag Indonesia</option>
                             <option value="MWL">Muslim World League</option>
@@ -170,16 +171,16 @@ export default class AdzanApp {
 
                     <!-- Date Offset Selector -->
                     <div class="date-offset-selector" id="dateOffsetSelector">
-                        <label>Koreksi Hijriah:</label>
+                        <label>${t('adzan.hijriCorrection')}:</label>
                         <div class="date-offset-controls">
-                            <button class="btn-offset-step" id="btnOffsetMinus" type="button" title="Mundur 1 hari">
+                            <button class="btn-offset-step" id="btnOffsetMinus" type="button" title="${t('adzan.prevDay')}">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
-                            <span class="date-offset-label" id="dateOffsetLabel">Tanpa koreksi</span>
-                            <button class="btn-offset-step" id="btnOffsetPlus" type="button" title="Maju 1 hari">
+                            <span class="date-offset-label" id="dateOffsetLabel">${t('adzan.noCorrection')}</span>
+                            <button class="btn-offset-step" id="btnOffsetPlus" type="button" title="${t('adzan.nextDay')}">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
-                            <button class="btn-offset-reset" id="btnOffsetReset" type="button" title="Kembali ke hari ini" style="display:none;">
+                            <button class="btn-offset-reset" id="btnOffsetReset" type="button" title="${t('adzan.resetDay')}" style="display:none;">
                                 <i class="fas fa-rotate-left"></i>
                             </button>
                         </div>
@@ -194,9 +195,9 @@ export default class AdzanApp {
                 <div class="sunnah-section">
                     <div class="section-header">
                         <i class="fas fa-moon"></i>
-                        <h3>Sholat Sunnah Saat Ini</h3>
+                        <h3>${t('adzan.sunnahCurrent')}</h3>
                     </div>
-                    <p class="section-description">Sholat sunnah yang dapat dikerjakan pada waktu ini</p>
+                    <p class="section-description">${t('adzan.sunnahDesc')}</p>
                     <div id="sunnahPrayersList" class="sunnah-prayers-list">
                         <!-- Will be populated dynamically -->
                     </div>
@@ -206,11 +207,11 @@ export default class AdzanApp {
                 <div class="sunnah-section" style="margin-top: 20px; background: linear-gradient(135deg, var(--bg-surface-2), rgba(0,255,255,0.05));">
                     <div class="section-header" style="color: var(--primary-cyan);">
                         <svg class="ic-doa" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-doa"/></svg>
-                        <h3>Dzikir Setelah Sholat</h3>
+                        <h3>${t('adzan.dzikirAfterPrayer')}</h3>
                     </div>
-                    <p class="section-description" style="margin-bottom: 15px;">Sempurnakan ibadah sholat fardhu Anda dengan rangkaian dzikir sesuai sunnah.</p>
+                    <p class="section-description" style="margin-bottom: 15px;">${t('adzan.dzikirAfterPrayerDesc')}</p>
                     <button class="btn-primary" style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; font-weight: 600;" onclick="if(window.islamHub) window.islamHub.openApp('dzikir')">
-                        Buka Panduan Dzikir <i class="fas fa-arrow-right"></i>
+                        ${t('adzan.openDzikirGuide')} <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
 
@@ -218,31 +219,31 @@ export default class AdzanApp {
                 <div class="modal" id="locationModal" style="display: none;">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h3>Ubah Lokasi</h3>
+                            <h3>${t('adzan.changeLocation')}</h3>
                             <button class="modal-close" id="modalClose" type="button">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
                         <div class="modal-body">
                             <div class="input-group">
-                                <input type="text" id="cityInput" placeholder="Ketik nama kota..." autocomplete="off">
+                                <input type="text" id="cityInput" placeholder="${t('adzan.searchCityPlaceholder')}" autocomplete="off">
                                 <button class="btn-primary" id="btnSearchCity">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>
                             <div class="city-search-loader" id="citySearchLoader" style="display: none;">
                                 <div class="loader-spinner"></div>
-                                <span>Mencari kota...</span>
+                                <span>${t('adzan.searchingCity')}</span>
                             </div>
                             <div class="city-dropdown" id="cityDropdown" style="display: none;">
                                 <!-- Dynamic city list -->
                             </div>
                             <div class="gps-loader" id="gpsLoader" style="display: none;">
                                 <div class="loader-spinner"></div>
-                                <span>Mengambil lokasi GPS...</span>
+                                <span>${t('adzan.gettingGPS')}</span>
                             </div>
                             <button class="btn-secondary" id="btnUseGPS">
-                                <i class="fas fa-location-arrow"></i> Gunakan GPS
+                                <i class="fas fa-location-arrow"></i> ${t('adzan.useGPS')}
                             </button>
                         </div>
                     </div>
@@ -483,6 +484,7 @@ export default class AdzanApp {
         const grid = document.getElementById('prayerTimesGrid');
         if (!grid) return;
 
+        const prayerNameKey = { Subuh: 'adzan.fajr', Syuruq: 'adzan.sunrise', Dzuhur: 'adzan.dhuhr', Ashar: 'adzan.asr', Maghrib: 'adzan.maghrib', Isya: 'adzan.isha', Imsak: 'adzan.imsak' };
         const prayers = Object.entries(this.prayerTimes).filter(([name]) => name !== 'Imsak');
         grid.innerHTML = prayers.map(([name, time]) => `
             <div class="prayer-time-card" data-prayer="${name}">
@@ -490,7 +492,7 @@ export default class AdzanApp {
                     <i class="fas fa-mosque"></i>
                 </div>
                 <div class="prayer-info">
-                    <div class="prayer-name">${name}</div>
+                    <div class="prayer-name">${t(prayerNameKey[name] || name)}</div>
                     <div class="prayer-time">${time}</div>
                 </div>
             </div>
@@ -551,7 +553,8 @@ export default class AdzanApp {
         const nameEl = document.getElementById('nextPrayerName');
         const timeEl = document.getElementById('nextPrayerTime');
 
-        if (nameEl) nameEl.textContent = this.nextPrayer.name;
+        const prayerNameKey = { Subuh: 'adzan.fajr', Syuruq: 'adzan.sunrise', Dzuhur: 'adzan.dhuhr', Ashar: 'adzan.asr', Maghrib: 'adzan.maghrib', Isya: 'adzan.isha', Imsak: 'adzan.imsak' };
+        if (nameEl) nameEl.textContent = t(prayerNameKey[this.nextPrayer.name] || this.nextPrayer.name);
         if (timeEl) timeEl.textContent = this.nextPrayer.time;
     }
 
@@ -761,14 +764,14 @@ export default class AdzanApp {
 
     updateDate(hijri) {
         const now = new Date();
-        let dateString = now.toLocaleDateString('id-ID', {
+        let dateString = now.toLocaleDateString(locale(), {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
-        // Ganti Minggu menjadi Ahad
-        if (dateString.startsWith('Minggu')) {
+        // Ganti Minggu menjadi Ahad (ID mode)
+        if (getLang() === 'id' && dateString.startsWith('Minggu')) {
             dateString = dateString.replace('Minggu', 'Ahad');
         }
         let fullDate = dateString;
@@ -902,7 +905,7 @@ export default class AdzanApp {
 
         // Judul jadwal sholat selalu "Hari Ini" (koreksi hanya mempengaruhi tanggal Hijriah)
         if (heading) {
-            heading.innerHTML = '<i class="fas fa-mosque"></i> Jadwal Sholat Hari Ini';
+            heading.innerHTML = `<i class="fas fa-mosque"></i> ${t('adzan.todaySchedule')}`;
         }
     }
 
@@ -1227,7 +1230,7 @@ export default class AdzanApp {
 
         const cityName = input.value.trim();
         if (!cityName) {
-            alert('Masukkan nama kota');
+            alert(t('adzan.enterCityAlert'));
             return;
         }
 
@@ -1261,12 +1264,12 @@ export default class AdzanApp {
                 }
                 this.citySearchResults = [];
             } else {
-                alert('Kota tidak ditemukan');
+                alert(t('adzan.cityNotFound'));
             }
         } catch (error) {
             console.error('Failed to search city:', error);
             if (loader) loader.style.display = 'none';
-            alert('Gagal mencari kota');
+            alert(t('adzan.citySearchFailed'));
         }
     }
 
@@ -1336,7 +1339,7 @@ export default class AdzanApp {
 
         } catch (error) {
             console.error('GPS error:', error);
-            alert(`Gagal mengambil lokasi GPS: ${error.message || error}`);
+            alert(t('adzan.gpsFailed', { error: error.message || error }));
         } finally {
             // Hide loader and enable button
             if (gpsLoader) gpsLoader.style.display = 'none';
@@ -1545,14 +1548,14 @@ export default class AdzanApp {
 
         if (this.notificationEnabled) {
             btn.classList.add('active');
-            btn.title = 'Notifikasi Aktif - Klik untuk Menonaktifkan';
+            btn.title = t('adzan.notifyActive');
             if (icon) icon.className = 'fas fa-bell';
-            if (text) text.textContent = 'Nonaktifkan Notifikasi';
+            if (text) text.textContent = t('adzan.disableNotification');
         } else {
             btn.classList.remove('active');
-            btn.title = 'Notifikasi Nonaktif - Klik untuk Mengaktifkan';
+            btn.title = t('adzan.notifyInactive');
             if (icon) icon.className = 'far fa-bell-slash';
-            if (text) text.textContent = 'Aktifkan Notifikasi';
+            if (text) text.textContent = t('adzan.enableNotification');
         }
     }
 
@@ -1623,7 +1626,7 @@ export default class AdzanApp {
             this.updateNotificationButton();
 
             this.scheduleNotifications();
-            this.showNotificationPopup('✓ Notifikasi waktu sholat diaktifkan', 'success');
+            this.showNotificationPopup(t('adzan.notifyEnabled'), 'success');
 
             // Show welcome notification to confirm it's working
             this.showWelcomeNotification();
@@ -1637,7 +1640,7 @@ export default class AdzanApp {
             this.updateNotificationButton();
 
             this.cancelScheduledNotifications();
-            this.showNotificationPopup('✗ Notifikasi waktu sholat dinonaktifkan', 'info');
+            this.showNotificationPopup(t('adzan.notifyDisabled'), 'info');
         }
     }
 
@@ -2181,15 +2184,15 @@ export default class AdzanApp {
                     <div class="adm-gregorian" id="admGregorian"></div>
                 </div>
                 <div class="adm-top-actions">
-                    <button class="adm-radio-btn" id="admRadioBtn" title="Media &amp; Kajian"><i class="fas fa-broadcast-tower"></i></button>
-                    <button class="adm-settings-btn" id="admSettingsBtn" title="Pengaturan"><i class="fas fa-cog"></i></button>
-                    <button class="adm-close-btn" id="admClose" title="Tutup"><i class="fas fa-times"></i></button>
+                    <button class="adm-radio-btn" id="admRadioBtn" title="${t('adzan.dm.mediaKajian')}"><i class="fas fa-broadcast-tower"></i></button>
+                    <button class="adm-settings-btn" id="admSettingsBtn" title="${t('adzan.dm.settings')}"><i class="fas fa-cog"></i></button>
+                    <button class="adm-close-btn" id="admClose" title="${t('common.close')}"><i class="fas fa-times"></i></button>
                 </div>
             </div>
             <div class="adm-main-area">
                 <div class="adm-sunnah-panel" id="admSunnahPanel"></div>
                 <div class="adm-center-display" id="admCenterDisplay">
-                    <div class="adm-center-next-label">Sholat Berikutnya</div>
+                    <div class="adm-center-next-label">${t('home.nextPrayer')}</div>
                     <div class="adm-center-next-name" id="admCenterNextName">—</div>
                     <div class="adm-center-next-arabic" id="admCenterNextArabic"></div>
                     <div class="adm-center-countdown" id="admCenterCountdown">--:--:--</div>
@@ -2213,8 +2216,8 @@ export default class AdzanApp {
                     <div class="adm-audio-bar-info">
                         <div class="adm-audio-bar-icon" id="admAudioBarIcon"><i class="fas fa-music"></i></div>
                         <div class="adm-audio-bar-text">
-                            <span class="adm-audio-bar-label" id="admAudioBarLabel">Tidak ada audio</span>
-                            <span class="adm-audio-bar-sub" id="admAudioBarSub">Putar radio atau muratal Al-Qur'an di halaman lain</span>
+                            <span class="adm-audio-bar-label" id="admAudioBarLabel">${t('adzan.dm.noAudio')}</span>
+                            <span class="adm-audio-bar-sub" id="admAudioBarSub">${t('adzan.dm.noAudioDesc')}</span>
                         </div>
                     </div>
                     <div class="adm-audio-bar-controls">
@@ -2234,71 +2237,71 @@ export default class AdzanApp {
             <!-- Settings Drawer -->
             <div class="adm-settings-panel" id="admSettingsPanel">
                 <div class="adm-settings-header">
-                    <span><i class="fas fa-cog"></i> Pengaturan Tampilan</span>
+                    <span><i class="fas fa-cog"></i> ${t('adzan.dm.settingsTitle')}</span>
                     <button class="adm-settings-header-close" id="admSettingsHeaderClose"><i class="fas fa-times"></i></button>
                 </div>
                 <div class="adm-settings-body">
                     <div>
-                        <div class="adm-settings-section-title">Tema Warna</div>
+                        <div class="adm-settings-section-title">${t('adzan.dm.colorTheme')}</div>
                         <div class="adm-theme-options">
                             <div class="adm-theme-option ${s.theme === 'default' ? 'active' : ''}" data-theme="default">
                                 <div class="adm-theme-preview adm-theme-preview-default"></div>
-                                <span>Klasik (Emas)</span>
+                                <span>${t('adzan.dm.themeClassic')}</span>
                             </div>
                             <div class="adm-theme-option ${s.theme === 'cyan' ? 'active' : ''}" data-theme="cyan">
                                 <div class="adm-theme-preview adm-theme-preview-cyan"></div>
-                                <span>Modern (Cyan)</span>
+                                <span>${t('adzan.dm.themeModern')}</span>
                             </div>
                             <div class="adm-theme-option ${s.theme === 'green' ? 'active' : ''}" data-theme="green">
                                 <div class="adm-theme-preview adm-theme-preview-green"></div>
-                                <span>Alam (Hijau)</span>
+                                <span>${t('adzan.dm.themeNature')}</span>
                             </div>
                             <div class="adm-theme-option ${s.theme === 'blue' ? 'active' : ''}" data-theme="blue">
                                 <div class="adm-theme-preview adm-theme-preview-blue"></div>
-                                <span>Langit (Biru)</span>
+                                <span>${t('adzan.dm.themeSky')}</span>
                             </div>
                             <div class="adm-theme-option ${s.theme === 'maroon' ? 'active' : ''}" data-theme="maroon">
                                 <div class="adm-theme-preview adm-theme-preview-maroon"></div>
-                                <span>Merah Tua</span>
+                                <span>${t('adzan.dm.themeMaroon')}</span>
                             </div>
                             <div class="adm-theme-option ${s.theme === 'white' ? 'active' : ''}" data-theme="white">
                                 <div class="adm-theme-preview adm-theme-preview-white"></div>
-                                <span>Putih (Terang)</span>
+                                <span>${t('adzan.dm.themeWhite')}</span>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <div class="adm-settings-section-title">Identitas</div>
+                        <div class="adm-settings-section-title">${t('adzan.dm.identity')}</div>
                         <div class="adm-settings-row adm-settings-row-col">
-                            <div class="adm-settings-row-label"><i class="fas fa-mosque"></i> Nama Masjid</div>
-                            <input type="text" id="admMasjidNameInput" class="adm-text-input" placeholder="Contoh: Masjid Al-Ikhlas..." value="${s.masjidName || ''}">
+                            <div class="adm-settings-row-label"><i class="fas fa-mosque"></i> ${t('adzan.dm.masjidName')}</div>
+                            <input type="text" id="admMasjidNameInput" class="adm-text-input" placeholder="${t('adzan.dm.masjidPlaceholder')}" value="${s.masjidName || ''}">
                         </div>
                     </div>
                     <div>
-                        <div class="adm-settings-section-title">Tampilan</div>
+                        <div class="adm-settings-section-title">${t('adzan.dm.display')}</div>
                         <div class="adm-settings-row">
-                            <div class="adm-settings-row-label"><i class="fas fa-star-and-crescent"></i> Sholat Sunnah</div>
+                            <div class="adm-settings-row-label"><i class="fas fa-star-and-crescent"></i> ${t('adzan.dm.sunnahPrayer')}</div>
                             <label class="adm-toggle">
                                 <input type="checkbox" id="admToggleSunnah" ${s.showSunnah ? 'checked' : ''}>
                                 <span class="adm-toggle-slider"></span>
                             </label>
                         </div>
                         <div class="adm-settings-row">
-                            <div class="adm-settings-row-label"><i class="fas fa-clock"></i> Tampilkan Imsak</div>
+                            <div class="adm-settings-row-label"><i class="fas fa-clock"></i> ${t('adzan.dm.showImsak')}</div>
                             <label class="adm-toggle">
                                 <input type="checkbox" id="admToggleImsak" ${s.showImsak ? 'checked' : ''}>
                                 <span class="adm-toggle-slider"></span>
                             </label>
                         </div>
                         <div class="adm-settings-row">
-                            <div class="adm-settings-row-label"><i class="fas fa-sun"></i> Tampilkan Syuruq</div>
+                            <div class="adm-settings-row-label"><i class="fas fa-sun"></i> ${t('adzan.dm.showSyuruq')}</div>
                             <label class="adm-toggle">
                                 <input type="checkbox" id="admToggleSyuruq" ${s.showSyuruq !== false ? 'checked' : ''}>
                                 <span class="adm-toggle-slider"></span>
                             </label>
                         </div>
                         <div class="adm-settings-row">
-                            <div class="adm-settings-row-label"><i class="fas fa-language"></i> Nama Arab Sholat</div>
+                            <div class="adm-settings-row-label"><i class="fas fa-language"></i> ${t('adzan.dm.showArabic')}</div>
                             <label class="adm-toggle">
                                 <input type="checkbox" id="admToggleArabic" ${s.showArabic ? 'checked' : ''}>
                                 <span class="adm-toggle-slider"></span>
@@ -2306,37 +2309,37 @@ export default class AdzanApp {
                         </div>
                     </div>
                     <div>
-                        <div class="adm-settings-section-title">Kotak Informasi Tengah</div>
+                        <div class="adm-settings-section-title">${t('adzan.dm.centerBox')}</div>
                         <div class="adm-settings-row adm-settings-row-col" style="gap:10px">
-                            <div class="adm-settings-row-label"><i class="fas fa-th-large"></i> Gaya Tampilan</div>
+                            <div class="adm-settings-row-label"><i class="fas fa-th-large"></i> ${t('adzan.dm.style')}</div>
                             <div class="adm-center-style-buttons">
-                                <button class="adm-center-style-btn ${!s.centerStyle || s.centerStyle === 'box' ? 'active' : ''}" data-style="box" title="Kotak di tengah layar"><i class="fas fa-square"></i> Kotak</button>
-                                <button class="adm-center-style-btn ${s.centerStyle === 'glass' ? 'active' : ''}" data-style="glass" title="Kotak transparan"><i class="far fa-square"></i> Kaca</button>
-                                <button class="adm-center-style-btn ${s.centerStyle === 'minimal' ? 'active' : ''}" data-style="minimal" title="Tanpa latar kotak"><i class="fas fa-font"></i> Minimal</button>
-                                <button class="adm-center-style-btn ${s.centerStyle === 'footer' ? 'active' : ''}" data-style="footer" title="Countdown di panel bawah"><i class="fas fa-bars"></i> Footer</button>
+                                <button class="adm-center-style-btn ${!s.centerStyle || s.centerStyle === 'box' ? 'active' : ''}" data-style="box" title="Kotak di tengah layar"><i class="fas fa-square"></i> ${t('adzan.dm.styleBox')}</button>
+                                <button class="adm-center-style-btn ${s.centerStyle === 'glass' ? 'active' : ''}" data-style="glass" title="Kotak transparan"><i class="far fa-square"></i> ${t('adzan.dm.styleGlass')}</button>
+                                <button class="adm-center-style-btn ${s.centerStyle === 'minimal' ? 'active' : ''}" data-style="minimal" title="Tanpa latar kotak"><i class="fas fa-font"></i> ${t('adzan.dm.styleMinimal')}</button>
+                                <button class="adm-center-style-btn ${s.centerStyle === 'footer' ? 'active' : ''}" data-style="footer" title="Countdown di panel bawah"><i class="fas fa-bars"></i> ${t('adzan.dm.styleFooter')}</button>
                             </div>
                         </div>
                         <div class="adm-settings-row" id="admCenterSizeRow"${s.centerStyle === 'footer' ? ' style="display:none"' : ''}>
-                            <div class="adm-settings-row-label"><i class="fas fa-expand-alt"></i> Ukuran Kotak</div>
+                            <div class="adm-settings-row-label"><i class="fas fa-expand-alt"></i> ${t('adzan.dm.boxSize')}</div>
                             <div class="adm-center-size-buttons">
-                                <button class="adm-center-size-btn ${s.centerSize === 'sm' ? 'active' : ''}" data-csize="sm">Kecil</button>
-                                <button class="adm-center-size-btn ${!s.centerSize || s.centerSize === 'md' ? 'active' : ''}" data-csize="md">Sedang</button>
-                                <button class="adm-center-size-btn ${s.centerSize === 'lg' ? 'active' : ''}" data-csize="lg">Besar</button>
+                                <button class="adm-center-size-btn ${s.centerSize === 'sm' ? 'active' : ''}" data-csize="sm">${t('adzan.dm.sizeSm')}</button>
+                                <button class="adm-center-size-btn ${!s.centerSize || s.centerSize === 'md' ? 'active' : ''}" data-csize="md">${t('adzan.dm.sizeMd')}</button>
+                                <button class="adm-center-size-btn ${s.centerSize === 'lg' ? 'active' : ''}" data-csize="lg">${t('adzan.dm.sizeLg')}</button>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <div class="adm-settings-section-title">Ukuran Teks</div>
+                        <div class="adm-settings-section-title">${t('adzan.dm.textSize')}</div>
                         <div class="adm-fontsize-buttons">
-                            <button class="adm-fontsize-btn ${s.fontSize === 'sm' ? 'active' : ''}" data-size="sm">Kecil</button>
-                            <button class="adm-fontsize-btn ${!s.fontSize || s.fontSize === 'md' ? 'active' : ''}" data-size="md">Sedang</button>
-                            <button class="adm-fontsize-btn ${s.fontSize === 'lg' ? 'active' : ''}" data-size="lg">Besar</button>
+                            <button class="adm-fontsize-btn ${s.fontSize === 'sm' ? 'active' : ''}" data-size="sm">${t('adzan.dm.sizeSm')}</button>
+                            <button class="adm-fontsize-btn ${!s.fontSize || s.fontSize === 'md' ? 'active' : ''}" data-size="md">${t('adzan.dm.sizeMd')}</button>
+                            <button class="adm-fontsize-btn ${s.fontSize === 'lg' ? 'active' : ''}" data-size="lg">${t('adzan.dm.sizeLg')}</button>
                         </div>
                     </div>
                     <div>
-                        <div class="adm-settings-section-title">Warna Countdown</div>
+                        <div class="adm-settings-section-title">${t('adzan.dm.countdownColor')}</div>
                         <div class="adm-settings-row">
-                            <div class="adm-settings-row-label"><i class="fas fa-palette"></i> Warna Timer</div>
+                            <div class="adm-settings-row-label"><i class="fas fa-palette"></i> ${t('adzan.dm.timerColor')}</div>
                             <div class="adm-color-picker-wrap">
                                 <div class="adm-color-preview" id="admCountdownColorPreview" style="background:${s.countdownColor || '#f5930a'}"></div>
                                 <input type="color" id="admCountdownColor" value="${s.countdownColor || '#f5930a'}" class="adm-color-input">
@@ -2354,8 +2357,8 @@ export default class AdzanApp {
                         </div>
                     </div>
                     <div>
-                        <div class="adm-settings-section-title">Latar Belakang</div>
-                        <div class="adm-bg-section-label">Foto Masjid</div>
+                        <div class="adm-settings-section-title">${t('adzan.dm.background')}</div>
+                        <div class="adm-bg-section-label">${t('adzan.dm.masjidPhoto')}</div>
                         <div class="adm-bg-options adm-bg-options-photos">
                             <div class="adm-bg-option ${!s.bgStyle || s.bgStyle === 'haram' || s.bgStyle === 'image' ? 'active' : ''}" data-bg="haram">
                                 <div class="adm-bg-preview adm-bg-preview-haram"></div>
@@ -2374,40 +2377,40 @@ export default class AdzanApp {
                                 <span>Masjid Istanbul</span>
                             </div>
                         </div>
-                        <div class="adm-bg-section-label" style="margin-top:10px">Gradien</div>
+                        <div class="adm-bg-section-label" style="margin-top:10px">${t('adzan.dm.gradient')}</div>
                         <div class="adm-bg-options adm-bg-options-gradients">
                             <div class="adm-bg-option ${s.bgStyle === 'dark' ? 'active' : ''}" data-bg="dark">
                                 <div class="adm-bg-preview adm-bg-preview-dark"></div>
-                                <span>Gelap</span>
+                                <span>${t('adzan.dm.bgDark')}</span>
                             </div>
                             <div class="adm-bg-option ${s.bgStyle === 'emerald' ? 'active' : ''}" data-bg="emerald">
                                 <div class="adm-bg-preview adm-bg-preview-emerald"></div>
-                                <span>Islami</span>
+                                <span>${t('adzan.dm.bgIslamic')}</span>
                             </div>
                             <div class="adm-bg-option ${s.bgStyle === 'ramadan' ? 'active' : ''}" data-bg="ramadan">
                                 <div class="adm-bg-preview adm-bg-preview-ramadan"></div>
-                                <span>Ramadan</span>
+                                <span>${t('adzan.dm.bgRamadan')}</span>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <div class="adm-settings-section-title">Suara</div>
+                        <div class="adm-settings-section-title">${t('adzan.dm.sound')}</div>
                         <div class="adm-settings-row">
-                            <div class="adm-settings-row-label"><i class="fas fa-bell"></i> Notif bunyi (beep)</div>
+                            <div class="adm-settings-row-label"><i class="fas fa-bell"></i> ${t('adzan.dm.soundBeep')}</div>
                             <label class="adm-toggle">
                                 <input type="checkbox" id="admToggleSound" ${s.adzanSound ? 'checked' : ''}>
                                 <span class="adm-toggle-slider"></span>
                             </label>
                         </div>
                         <div class="adm-settings-row" style="margin-top:10px">
-                            <div class="adm-settings-row-label"><i class="fas fa-volume-up"></i> Putar Adzan Penuh</div>
+                            <div class="adm-settings-row-label"><i class="fas fa-volume-up"></i> ${t('adzan.dm.soundFull')}</div>
                             <label class="adm-toggle">
                                 <input type="checkbox" id="admToggleFullAudio" ${s.adzanFullAudio ? 'checked' : ''}>
                                 <span class="adm-toggle-slider"></span>
                             </label>
                         </div>
                         <div class="adm-settings-row adm-file-selector" id="admFileSelectorRow" style="${s.adzanFullAudio ? '' : 'display:none'}">
-                            <div class="adm-settings-row-label"><i class="fas fa-music"></i> Pilih Suara Adzan</div>
+                            <div class="adm-settings-row-label"><i class="fas fa-music"></i> ${t('adzan.dm.chooseSound')}</div>
                             <select id="admAdzanFileSelect" class="adm-select">
                                 <option value="Abdullah-Al-Zayla'i" ${s.adzanFile === "Abdullah-Al-Zayla'i" ? 'selected' : ''}>Syaikh Abdullah Al-Zayla'i</option>
                                 <option value="Ali-Ahmad-Mulla" ${s.adzanFile === 'Ali-Ahmad-Mulla' ? 'selected' : ''}>Syaikh Ali Ahmad Mulla (Masjidil Haram)</option>
@@ -2415,14 +2418,14 @@ export default class AdzanApp {
                             </select>
                         </div>
                         <div class="adm-settings-row" id="admPreviewAdzanRow" style="${s.adzanFullAudio ? '' : 'display:none'}">
-                            <div class="adm-settings-row-label"><i class="fas fa-play-circle"></i> Preview Adzan</div>
+                            <div class="adm-settings-row-label"><i class="fas fa-play-circle"></i> ${t('adzan.dm.previewSound')}</div>
                             <div class="adm-preview-controls">
                                 <button class="adm-preview-btn" id="admPreviewAdzanBtn" data-playing="0">
-                                    <i class="fas fa-play"></i> Putar
+                                    <i class="fas fa-play"></i> ${t('common.play')}
                                 </button>
                                 <div class="adm-preview-playing" id="admPreviewPlaying" style="display:none">
                                     <span class="adm-pw"></span><span class="adm-pw"></span><span class="adm-pw"></span>
-                                    <span class="adm-preview-playing-label">Memutar...</span>
+                                    <span class="adm-preview-playing-label">${t('adzan.dm.playing')}</span>
                                 </div>
                             </div>
                         </div>
@@ -2442,10 +2445,10 @@ export default class AdzanApp {
             <!-- Adzan alert overlay -->
             <div class="adm-adzan-alert" id="admAdzanAlert">
                 <div class="adm-adzan-alert-box">
-                    <div class="adm-adzan-alert-label">Telah Masuk Waktu</div>
+                    <div class="adm-adzan-alert-label">${t('adzan.dm.timeEntered')}</div>
                     <div class="adm-adzan-alert-name" id="admAdzanAlertName">Subuh</div>
-                    <button class="adm-adzan-stop-btn" id="admAdzanStopBtn" style="display:none" title="Hentikan Adzan">
-                        <i class="fas fa-stop-circle"></i> Hentikan Adzan
+                    <button class="adm-adzan-stop-btn" id="admAdzanStopBtn" style="display:none" title="${t('adzan.dm.stopAdzan')}">
+                        <i class="fas fa-stop-circle"></i> ${t('adzan.dm.stopAdzan')}
                     </button>
                 </div>
             </div>
@@ -2713,7 +2716,7 @@ export default class AdzanApp {
         if (s.showImsak) orderedNames = ['Imsak', ...orderedNames];
         if (s.showSyuruq === false) orderedNames = orderedNames.filter(n => n !== 'Syuruq');
 
-        const labels = { Imsak: 'Imsak (Tanbih)', Subuh: 'Shubuh', Syuruq: 'Syuruq', Dzuhur: 'Dzuhur', Ashar: 'Ashar', Maghrib: 'Maghrib', Isya: "Isya'" };
+        const labels = { Imsak: 'Imsak (Tanbih)', Subuh: t('adzan.fajr'), Syuruq: t('adzan.sunrise'), Dzuhur: t('adzan.dhuhr'), Ashar: t('adzan.asr'), Maghrib: t('adzan.maghrib'), Isya: t('adzan.isha') };
         const arabicNames = { Imsak: 'التنبيه/الإمساك', Subuh: 'الفجر', Syuruq: 'الشروق', Dzuhur: 'الظهر', Ashar: 'العصر', Maghrib: 'المغرب', Isya: 'العشاء' };
 
         grid.style.gridTemplateColumns = `repeat(${orderedNames.length}, 1fr)`;
@@ -3114,13 +3117,13 @@ export default class AdzanApp {
             </div>
             <div class="adm-tab-content" id="admTabMuratal" style="display:none">
                 <div class="adm-muratal-controls">
-                    <span class="adm-muratal-ctrl-label">Ulangi:</span>
-                    <button class="adm-muratal-repeat-btn ${this._dmMuratalRepeat ? 'active' : ''}" id="admMuratalRepeatToggle" title="Ulangi otomatis">
+                    <span class="adm-muratal-ctrl-label">${t('adzan.dm.repeat')}:</span>
+                    <button class="adm-muratal-repeat-btn ${this._dmMuratalRepeat ? 'active' : ''}" id="admMuratalRepeatToggle" title="${t('adzan.dm.repeatAuto')}">
                         <i class="fas fa-redo-alt"></i>
                     </button>
                 </div>
                 <div class="adm-muratal-search-wrap">
-                    <input type="text" id="admMuratalSearch" class="adm-muratal-search" placeholder="Cari surat...">
+                    <input type="text" id="admMuratalSearch" class="adm-muratal-search" placeholder="${t('alquran.sidebar.searchSurah')}">
                 </div>
                 <div class="adm-muratal-list" id="admMuratalList">
                     ${surahs.length ? surahs.map(s => `
@@ -3128,13 +3131,13 @@ export default class AdzanApp {
                             <div class="adm-muratal-num">${s.number}</div>
                             <div class="adm-muratal-info">
                                 <div class="adm-muratal-name">${s.name}</div>
-                                <div class="adm-muratal-meta">${s.nameArabic} &bull; ${s.verses} ayat</div>
+                                <div class="adm-muratal-meta">${s.nameArabic} &bull; ${t('alquran.versesCount', { n: s.verses })}</div>
                             </div>
                             <button class="adm-radio-item-btn" id="admMuratalBtn${s.number}" data-surah="${s.number}" data-surah-name="${s.name}" title="Putar / Stop">
                                 <i class="fas fa-play"></i>
                             </button>
                         </div>
-                    `).join('') : '<div class="adm-muratal-empty">Data surat tidak tersedia</div>'}
+                    `).join('') : '<div class="adm-muratal-empty">${t('alquran.notify.surahDataNotFound')}</div>'}
                 </div>
             </div>
             <div class="adm-tab-content" id="admTabVideo" style="display:none">

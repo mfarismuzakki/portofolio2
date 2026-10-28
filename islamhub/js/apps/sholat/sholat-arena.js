@@ -3,6 +3,7 @@ import Arena from '../../utils/arena.js';
 import { shuffle, pick, blip, vibrate, escapeHtml } from '../../utils/game-kit.js';
 import MosqueScene from './mosque-scene.js?v=4.0.1';
 import { POSES } from './peraga-3d.js?v=4.0.1';
+import { t } from '../../i18n/index.js';
 
 // ---------- Data ----------
 const SEQUENCES = [
@@ -74,7 +75,7 @@ function sequenceGame(api) {
         let next = 0;
         api.hud({ score, lives, round: round + 1, total: SEQUENCES.length });
         api.stage.innerHTML = `<div class="gk-seq">
-            <p class="gk-prompt"><b>${seq.title}.</b> ${seq.hint} Ketuk kartu sesuai urutan.</p>
+            <p class="gk-prompt"><b>${seq.title}.</b> ${seq.hint} ${t('sholat.game.tapInOrder')}</p>
             <ol class="gk-slots">${seq.items.map((_, i) => `<li data-slot="${i}"><span>${i + 1}</span></li>`).join('')}</ol>
             <div class="gk-pool">${shuffle(seq.items.map((t, i) => ({ t, i }))).map(c => `<button class="gk-tile" data-i="${c.i}">${c.t}</button>`).join('')}</div></div>`;
         const t0 = performance.now();
@@ -88,11 +89,11 @@ function sequenceGame(api) {
                 slot.classList.add('filled'); slot.innerHTML = `<span>${next + 1}</span>${b.textContent}`;
                 b.disabled = true; b.classList.add('used');
                 next++;
-                api.feedback('Tepat!', 'ok');
+                api.feedback(t('sholat.game.correct'), 'ok');
                 if (next === seq.items.length) {
                     const bonus = Math.max(0, 300 - Math.round((performance.now() - t0) / 100));
                     score += bonus;
-                    api.feedback(`Urutan lengkap! Bonus waktu +${bonus}`, 'ok');
+                    api.feedback(t('sholat.game.seqComplete', { bonus }), 'ok');
                     round++;
                     api.hud({ score });
                     setTimeout(() => round < SEQUENCES.length ? draw() : finish(), 900);
@@ -101,14 +102,14 @@ function sequenceGame(api) {
                 blip('bad'); vibrate(); api.flash('bad');
                 mistakes++; lives--;
                 b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
-                api.feedback(`Belum. Setelah “${seq.items[next - 1] || 'mulai'}” adalah langkah ke-${next + 1}.`, 'bad');
+                api.feedback(t('sholat.game.seqWrong', { prev: seq.items[next - 1] || 'mulai', next: next + 1 }), 'bad');
                 lines.push(`${seq.title}: “${b.textContent}” bukan langkah ke-${next + 1}.`);
                 if (lives <= 0) return finish();
             }
             api.hud({ score, lives });
         };
     };
-    const finish = () => api.end({ score, max: 3000, lines: lines.length ? lines.slice(0, 4) : [`Selesai dalam ${Math.round((performance.now() - started) / 1000)} detik tanpa kesalahan.`] });
+    const finish = () => api.end({ score, max: 3000, lines: lines.length ? lines.slice(0, 4) : [t('sholat.game.seqFinished', { sec: Math.round((performance.now() - started) / 1000) })] });
     draw();
 }
 
@@ -130,7 +131,7 @@ function poseGame(api) {
         const p = order.pop(), key = poseKey(p);
         const salam = key.startsWith('salam');
         // Salam is judged from behind so left and right match the person praying.
-        const view = salam ? [0.35, 0.18, 'Kamera: dari belakang peraga'] : pick([[Math.PI, 0.12, 'Kamera: depan'], [Math.PI / 2, 0.12, 'Kamera: samping'], [2.25, 0.18, 'Kamera: perspektif']], 1)[0];
+        const view = salam ? [0.35, 0.18, t('sholat.game.camBehind')] : pick([[Math.PI, 0.12, t('sholat.game.camFront')], [Math.PI / 2, 0.12, t('sholat.game.camSide')], [2.25, 0.18, t('sholat.game.camPerspective')]], 1)[0];
         scene.setPose(p, false); scene.setView(view[0], view[1]);
         api.stage.querySelector('.gk-cam').textContent = view[2];
         const options = shuffle([key, ...pick(keys.filter(k => k !== key && !(salam && k.startsWith('salam') )), salam ? 2 : 3), ...(salam ? [key === 'salamKanan' ? 'salamKiri' : 'salamKanan'] : [])]);
@@ -138,7 +139,7 @@ function poseGame(api) {
         box.innerHTML = options.map(k => `<button class="gk-option" data-k="${k}">${POSE_LABELS[k]}</button>`).join('');
         round++;
         api.hud({ score, lives, round, total: rounds, combo });
-        api.feedback('Gerakan apakah ini? Seret peraga untuk memutar kamera.');
+        api.feedback(t('sholat.game.posePrompt'));
         let start = performance.now(), last = start;
         const tick = now => { if (!api.visible()) start += now - last; last = now; const r = 1 - (now - start) / limit; api.timer(r); if (r <= 0) return answer(null); raf = requestAnimationFrame(tick); };
         raf = requestAnimationFrame(tick);
@@ -149,10 +150,10 @@ function poseGame(api) {
                 combo++;
                 const gain = 100 + Math.round(Math.max(0, 1 - (performance.now() - start) / limit) * 50) + (combo > 2 ? 20 : 0);
                 score += gain; blip('ok'); api.flash('ok');
-                api.feedback(`Benar: ${POSE_LABELS[key]} (+${gain})`, 'ok');
+                api.feedback(t('sholat.game.poseCorrect', { name: POSE_LABELS[key], gain }), 'ok');
             } else {
                 combo = 0; lives--; blip('bad'); vibrate(); api.flash('bad');
-                api.feedback(`${k ? 'Kurang tepat' : 'Waktu habis'}. Jawabannya: <b>${POSE_LABELS[key]}</b>.`, 'bad');
+                api.feedback(t('sholat.game.poseWrong', { reason: k ? t('sholat.game.incorrect') : t('sholat.game.timeUp'), name: POSE_LABELS[key] }), 'bad');
                 lines.push(`${p.name}: ${p.tip.split('. ')[0].replace(/\.$/, '')}.`);
             }
             api.hud({ score, lives, combo });
@@ -174,7 +175,7 @@ function readingGame(api) {
         const r = items[round++];
         const options = shuffle([r.at, ...pick(PLACES.map((_, i) => i).filter(i => i !== r.at), 3)]);
         api.hud({ score, lives, round, total: rounds, combo });
-        api.stage.innerHTML = `<div class="gk-reading"><p class="gk-prompt">Bacaan ini diucapkan ketika…</p>
+        api.stage.innerHTML = `<div class="gk-reading"><p class="gk-prompt">${t('sholat.game.readingPrompt')}</p>
             <div class="gk-arabic" lang="ar" dir="rtl">${r.ar}</div><div class="gk-latin">${r.la}</div>
             <div class="gk-options">${options.map(i => `<button class="gk-option" data-i="${i}">${PLACES[i]}</button>`).join('')}</div></div>`;
         api.feedback('');
@@ -182,8 +183,8 @@ function readingGame(api) {
             const b = e.target.closest('button'); if (!b || b.disabled) return;
             const i = Number(b.dataset.i);
             api.stage.querySelectorAll('.gk-option').forEach(o => { o.disabled = true; o.classList.toggle('right', Number(o.dataset.i) === r.at); o.classList.toggle('wrong', o === b && i !== r.at); });
-            if (i === r.at) { combo++; score += 100 + (combo > 2 ? 20 : 0); blip('ok'); api.flash('ok'); api.feedback(`Benar. ${r.note || ''}`, 'ok'); }
-            else { combo = 0; lives--; blip('bad'); vibrate(); api.flash('bad'); api.feedback(`Jawabannya: <b>${PLACES[r.at]}</b>. ${r.note || ''}`, 'bad'); lines.push(`${r.la} → ${PLACES[r.at]}`); }
+            if (i === r.at) { combo++; score += 100 + (combo > 2 ? 20 : 0); blip('ok'); api.flash('ok'); api.feedback(`${t('sholat.game.readingCorrect')} ${r.note || ''}`, 'ok'); }
+            else { combo = 0; lives--; blip('bad'); vibrate(); api.flash('bad'); api.feedback(`${t('sholat.game.readingAnswer', { place: PLACES[r.at] })} ${r.note || ''}`, 'bad'); lines.push(`${r.la} → ${PLACES[r.at]}`); }
             api.hud({ score, lives, combo });
             wait = setTimeout(ask, 1500);
         };
@@ -199,21 +200,21 @@ function factGame(api) {
     api.onCleanup(() => { cancelAnimationFrame(raf); clearTimeout(wait); });
     // The clock pauses while the arena is off screen (other tab or app).
     const tick = now => { if (!api.visible()) start += now - last; last = now; const r = 1 - (now - start) / total; api.timer(r); if (r <= 0) return finish(); raf = requestAnimationFrame(tick); };
-    const finish = () => { cancelAnimationFrame(raf); api.end({ score, max: 1500, lines: [`${right} dari ${i} pernyataan dijawab benar.`, ...lines.slice(0, 3)] }); };
+    const finish = () => { cancelAnimationFrame(raf); api.end({ score, max: 1500, lines: [t('sholat.game.factResult', { right, total: i }), ...lines.slice(0, 3)] }); };
     const show = () => {
         if (i >= facts.length) return finish();
         const [text] = facts[i];
-        api.stage.innerHTML = `<div class="gk-fact"><p class="gk-prompt">Benar atau salah?</p><blockquote>${text}</blockquote>
-            <div class="gk-tf"><button class="gk-btn gk-false" data-v="0">✕ Salah</button><button class="gk-btn gk-true" data-v="1">✓ Benar</button></div>
-            <p class="gk-keys">Keyboard: ← salah · → benar</p></div>`;
+        api.stage.innerHTML = `<div class="gk-fact"><p class="gk-prompt">${t('sholat.game.factPrompt')}</p><blockquote>${text}</blockquote>
+            <div class="gk-tf"><button class="gk-btn gk-false" data-v="0">${t('sholat.game.falseBtn')}</button><button class="gk-btn gk-true" data-v="1">${t('sholat.game.trueBtn')}</button></div>
+            <p class="gk-keys">${t('sholat.game.keyboardHint')}</p></div>`;
         locked = false;
         api.stage.querySelector('.gk-tf').onclick = e => { const b = e.target.closest('button'); if (b) answer(b.dataset.v === '1'); };
     };
     const answer = v => {
         if (locked) return; locked = true;
         const [text, truth, why] = facts[i++];
-        if (v === truth) { combo++; right++; score += 100 + Math.min(combo - 1, 5) * 10; blip('ok'); api.flash('ok'); api.feedback(`<b>Tepat.</b> ${why}`, 'ok'); }
-        else { combo = 0; blip('bad'); vibrate(); api.flash('bad'); api.feedback(`<b>${truth ? 'Benar' : 'Salah'}.</b> ${why}`, 'bad'); lines.push(`“${text}” → ${truth ? 'benar' : 'salah'}. ${why}`); }
+        if (v === truth) { combo++; right++; score += 100 + Math.min(combo - 1, 5) * 10; blip('ok'); api.flash('ok'); api.feedback(`<b>${t('sholat.game.factCorrect')}</b> ${why}`, 'ok'); }
+        else { combo = 0; blip('bad'); vibrate(); api.flash('bad'); api.feedback(`<b>${truth ? t('sholat.game.true') : t('sholat.game.false')}.</b> ${why}`, 'bad'); lines.push(`“${text}” → ${truth ? 'benar' : 'salah'}. ${why}`); }
         api.hud({ score, combo, round: i, total: facts.length });
         wait = setTimeout(show, 1100);
     };
@@ -233,11 +234,17 @@ export const SHOLAT_GAMES = [
 ];
 
 export default function createSholatArena(root) {
+    const games = [
+        { id: 'sholat-urut', icon: '🧩', tag: t('sholat.game.urutTag'), title: t('games.sholatUrut'), desc: t('sholat.game.urutDesc'), run: sequenceGame },
+        { id: 'sholat-pose', icon: '🧍', tag: t('sholat.game.poseTag'), title: t('games.sholatPose'), desc: t('sholat.game.poseDesc'), run: poseGame },
+        { id: 'sholat-bacaan', icon: '📖', tag: t('sholat.game.bacaanTag'), title: t('games.sholatBacaan'), desc: t('sholat.game.bacaanDesc'), run: readingGame },
+        { id: 'sholat-fakta', icon: '⚡', tag: t('sholat.game.faktaTag'), title: t('games.sholatFakta'), desc: t('sholat.game.faktaDesc'), run: factGame }
+    ];
     return new Arena(root, {
-        eyebrow: 'ARENA SHOLAT · BELAJAR SAMBIL BERMAIN',
-        title: 'Uji gerakan & bacaanmu.',
-        intro: 'Empat permainan singkat untuk mengulang materi peraga. Bintang dan XP tersimpan di perangkat ini.',
-        games: SHOLAT_GAMES,
+        eyebrow: t('sholat.arena.eyebrow'),
+        title: t('sholat.arena.title'),
+        intro: t('sholat.arena.intro'),
+        games,
         theme: 'gk-sholat'
     });
 }

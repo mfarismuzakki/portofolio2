@@ -1,4 +1,5 @@
 import MosqueScene from './mosque-scene.js?v=5.4.0';
+import { t } from '../../i18n/index.js';
 
 const POSES = [
     // ===== RAKA'AT 1 =====
@@ -248,7 +249,7 @@ export default class Peraga3D {
         this.setStep(this.currentStep,false);this.world?.start();
     }
     buildUI(){
-        document.getElementById('peragaTimeline').innerHTML=POSES.map((p,i)=>'<button class="peraga-dot" data-step="'+i+'" aria-label="Langkah '+(i+1)+': '+p.name+'">'+(i+1)+'</button>').join('');
+        document.getElementById('peragaTimeline').innerHTML=POSES.map((p,i)=>'<button class="peraga-dot" data-step="'+i+'" aria-label="'+t('sholat.stepLabel', { n: i + 1, name: p.name })+'">'+(i+1)+'</button>').join('');
         document.querySelectorAll('.peraga-dot').forEach(b=>b.addEventListener('click',()=>{this.pause();this.setStep(+b.dataset.step);}));
     }
     bindControls(){
@@ -278,7 +279,7 @@ export default class Peraga3D {
         if(animate&&previous.body==='sujud'&&p.body==='stand')via.push({body:'iftirasy',arms:'thighs'});
         this.world?.setPose(p,animate&&!this.reduced,via);
         const set=(id,t)=>document.getElementById(id).textContent=t;
-        set('peragaStepNum',index+1);set('peragaStepTotal',POSES.length);set('peragaPoseName',p.name);set('peragaBacaanName',p.name);set('peragaBacaanRuling',index<7?'Rakaat 1':index<13?'Rakaat 2':'Tasyahud & salam');
+        set('peragaStepNum',index+1);set('peragaStepTotal',POSES.length);set('peragaPoseName',p.name);set('peragaBacaanName',p.name);set('peragaBacaanRuling',index<7?t('sholat.rakaat1'):index<13?t('sholat.rakaat2'):t('sholat.tasyahudSalam'));
         set('peragaBacaanArabic',p.arabic);set('peragaBacaanLatin',p.latin);set('peragaBacaanTranslation',p.translation);
         let tip=p.tip;
         if(p.id.startsWith('itidal'))tip+=' Setelah mengangkat tangan, turunkan keduanya di samping badan. Peraga memakai posisi irsal; posisi tangan setelah rukuk merupakan perkara yang diperselisihkan ulama.';
@@ -291,7 +292,7 @@ export default class Peraga3D {
     play(){if(this.currentStep===POSES.length-1)this.setStep(0,false);this.isPlaying=true;this.updatePlay();this.queue();}
     queue(){clearTimeout(this.timer);this.timer=setTimeout(()=>{if(!this.isPlaying)return;if(this.currentStep===POSES.length-1){this.pause();return;}this.setStep(this.currentStep+1);this.queue();},POSES[this.currentStep].duration+2300);}
     pause(){this.isPlaying=false;clearTimeout(this.timer);this.updatePlay();}
-    updatePlay(){const b=document.getElementById('peragaPlayBtn');if(b){b.innerHTML=this.isPlaying?'⏸ Jeda':'▶ Putar';b.setAttribute('aria-label',this.isPlaying?'Jeda peragaan':'Putar peragaan');}}
+    updatePlay(){const b=document.getElementById('peragaPlayBtn');if(b){b.innerHTML=this.isPlaying?t('sholat.stepPause'):t('sholat.stepPlay');b.setAttribute('aria-label',this.isPlaying?t('sholat.pauseAria'):t('sholat.playAria'));}}
     onHide(){this.pause();this.world?.stop();}
 }
 export { POSES };

@@ -1,5 +1,29 @@
 /* ===== IslamHub - Main Application Controller ===== */
 import SakinahHome, { doaIcon, currentTheme, applyTheme } from './home.js';
+import { t, getLang, setLang, onLangChange, applyStaticI18n, locale, pick } from './i18n/index.js';
+
+export { t, getLang, setLang, onLangChange, applyStaticI18n, locale, pick };
+
+const PRAYER_I18N_KEYS = {
+    'subuh': 'adzan.fajr',
+    'fajr': 'adzan.fajr',
+    'syuruq': 'adzan.sunrise',
+    'sunrise': 'adzan.sunrise',
+    'dzuhur': 'adzan.dhuhr',
+    'dhuhr': 'adzan.dhuhr',
+    'ashar': 'adzan.asr',
+    'asr': 'adzan.asr',
+    'maghrib': 'adzan.maghrib',
+    'isya': 'adzan.isha',
+    'isha': 'adzan.isha',
+    'imsak': 'adzan.imsak'
+};
+
+export function formatPrayerName(name) {
+    if (!name) return '';
+    const key = PRAYER_I18N_KEYS[name.toLowerCase()];
+    return key ? t(key) : name;
+}
 
 // Apps that are eligible to occupy the 3 customizable footer slots. The first
 // slot (Home) and last slot (Lainnya) are always fixed.
@@ -78,6 +102,24 @@ class IslamHubApp {
         // Initialize native features first
         await this.initializeNativeFeatures();
         
+        // Initialize i18n static text and subscribe to language switches
+        applyStaticI18n(document);
+        onLangChange(() => {
+            applyStaticI18n(document);
+            this.renderFooterNav();
+            this.renderMoreAppsDropdown();
+            this.renderSettingsList();
+            if (this.prayerData) {
+                this.updateHomeWidget(this.prayerData);
+                this.updateFloatingWidget(this.prayerData);
+            }
+            if (this.currentApp === 'home') {
+                this.home?.init();
+            } else {
+                this.reRenderCurrentApp();
+            }
+        });
+
         this.setupNavigation();
         this.setupMobileMenu();
         this.loadStateFromLocalStorage();
@@ -781,6 +823,22 @@ class IslamHubApp {
     // Used by cross-app shortcut buttons inside Adzan and Kalender.
     openApp(appName) { return this.switchApp(appName); }
 
+    async reRenderCurrentApp() {
+        const app = this.currentApp;
+        if (!app || app === 'home') {
+            this.home?.init();
+            return;
+        }
+        const inst = this.appInstances?.get(app) || window[app + 'App'];
+        if (inst) {
+            if (typeof inst.render === 'function') {
+                inst.render();
+            } else if (typeof inst.init === 'function') {
+                await inst.init();
+            }
+        }
+    }
+
     async loadApp(appName) {
         this.loadingApps ||= new Map();
         if (this.loadedApps.has(appName)) return;
@@ -847,30 +905,21 @@ class IslamHubApp {
             const appInstance = new AppClass(this.state, this);
             await appInstance.init();
             
-            // Store app instances globally for reset functionality
+            // Store app instances globally and in map for reset and i18n re-rendering
+            this.appInstances ||= new Map();
+            this.appInstances.set(appName, appInstance);
+            window[appName + 'App'] = appInstance;
+
             if (appName === 'adzan') {
-                window.adzanApp = appInstance;
                 this.home?.renderTimes(appInstance.prayerTimes, appInstance.nextPrayer?.name);
                 this.home?.renderDate();
-            } else if (appName === 'dzikir') {
-                window.dzikirApp = appInstance;
-            } else if (appName === 'alquran') {
-                window.alquranApp = appInstance;
-            } else if (appName === 'sirah') {
-                window.sirahApp = appInstance;
-            } else if (appName === 'waris') {
-                window.warisApp = appInstance;
-            } else if (appName === 'sholat') {
-                window.sholatApp = appInstance;
-            } else if (appName === 'streaming') {
-                window.streamingApp = appInstance;
             }
             
             this.loadedApps.add(appName);
             console.log(`App loaded successfully: ${appName}`);
         } catch (error) {
             console.error(`Failed to load ${appName}:`, error);
-            this.showError(`Gagal memuat aplikasi ${appName}. ${error.message}`);
+            this.showError(t('common.failedLoadApp', { app: appName, error: error.message }));
         }
     }
 
@@ -917,16 +966,17 @@ class IslamHubApp {
         const nav = document.getElementById('bottomNavigation');
         if (!nav) return;
         const pins = this.loadFooterPins();
-        const homeBtn = '<button class="bottom-nav-item" data-app="home"><i class="fas fa-home"></i><span>Beranda</span></button>';
+        const homeBtn = `<button class="bottom-nav-item" data-app="home"><i class="fas fa-home"></i><span>${t('nav.home')}</span></button>`;
         const slots = pins.map(id => {
             const app = FOOTER_PINNABLE.find(a => a.id === id);
             if (!app) return '';
+            const appName = t('app.' + app.id + '.name') || app.name;
             return `<button class="bottom-nav-item" data-app="${app.id}">
                 ${app.icon === 'doa' ? doaIcon() : `<i class="fas ${app.icon}"></i>`}
-                <span>${app.name}</span>
+                <span>${appName}</span>
             </button>`;
         }).join('');
-        const moreBtn = '<button class="bottom-nav-item" id="moreAppsBtn"><i class="fas fa-th"></i><span>Lainnya</span></button>';
+        const moreBtn = `<button class="bottom-nav-item" id="moreAppsBtn"><i class="fas fa-th"></i><span>${t('nav.more')}</span></button>`;
         nav.innerHTML = homeBtn + slots + moreBtn;
 
         // Re-mark currently active app
@@ -964,14 +1014,16 @@ class IslamHubApp {
         list.innerHTML = order.map(id => {
             const app = DROPDOWN_APP_CONFIG.find(a => a.id === id);
             if (!app) return '';
+            const appName = t('app.' + app.id + '.name') || app.name;
+            const appDesc = t('app.' + app.id + '.desc') || app.shortDesc;
             return `
             <button class="more-app-item" data-app="${app.id}">
                 <div class="more-app-icon" style="background:${app.iconBg}">
                     ${app.icon === 'doa' ? doaIcon() : `<i class="fas ${app.icon}"></i>`}
                 </div>
                 <div class="more-app-info">
-                    <h4>${app.name}</h4>
-                    <p>${app.shortDesc}</p>
+                    <h4>${appName}</h4>
+                    <p>${appDesc}</p>
                 </div>
                 <i class="fas fa-chevron-right"></i>
             </button>`;
@@ -979,8 +1031,8 @@ class IslamHubApp {
             <a class="more-app-item more-app-feedback" href="https://forms.gle/4e3mMEaUMsAgJYp6A" target="_blank" rel="noopener" data-link="feedback">
                 <div class="more-app-icon"><i class="fas fa-comment-dots"></i></div>
                 <div class="more-app-info">
-                    <h4>Kritik &amp; Saran</h4>
-                    <p>Laporkan kesalahan konten, bug, atau usulan fitur</p>
+                    <h4>${t('footer.feedback')}</h4>
+                    <p>${t('footer.feedbackDesc')}</p>
                 </div>
                 <i class="fas fa-arrow-up-right-from-square"></i>
             </a>`;
@@ -1005,37 +1057,51 @@ class IslamHubApp {
         const list = document.getElementById('appSettingsList');
         if (!list) return;
 
+        // ----- 0) Language selector -----
+        const lang = getLang();
+        const langHTML = `
+            <div class="settings-section">
+                <div class="settings-section-head">
+                    <i class="fas fa-language"></i>
+                    <h4>${t('settings.language')}</h4>
+                </div>
+                <div class="theme-choice lang-choice">
+                    <button type="button" class="theme-opt ${lang === 'id' ? 'on' : ''}" data-lang-opt="id"><span class="theme-swatch id-flag" style="display:flex;align-items:center;justify-content:center;font-size:16px;">🇮🇩</span>${t('settings.langId')}<small>${t('settings.langIdDesc')}</small></button>
+                    <button type="button" class="theme-opt ${lang === 'en' ? 'on' : ''}" data-lang-opt="en"><span class="theme-swatch en-flag" style="display:flex;align-items:center;justify-content:center;font-size:16px;">🇬🇧</span>${t('settings.langEn')}<small>${t('settings.langEnDesc')}</small></button>
+                </div>
+            </div>
+        `;
+
         // ----- 1) Footer pin selectors (3 customizable footer slots) -----
         const pins = this.loadFooterPins();
-        const slotLabels = ['Slot 2', 'Slot 3', 'Slot 4'];
         const footerHTML = `
             <div class="settings-section">
                 <div class="settings-section-head">
                     <i class="fas fa-thumbtack"></i>
-                    <h4>Menu Footer (3 slot dapat diatur)</h4>
+                    <h4>${t('settings.footerPins')}</h4>
                 </div>
-                <p class="settings-section-hint">Pilih aplikasi yang muncul di bottom nav. Slot Beranda &amp; Lainnya tetap.</p>
+                <p class="settings-section-hint">${t('settings.footerPinsHint')}</p>
                 <div class="footer-pin-grid">
                     <div class="footer-pin-slot fixed">
-                        <span class="footer-pin-label">Slot 1</span>
+                        <span class="footer-pin-label">${t('settings.slot', { n: 1 })}</span>
                         <div class="footer-pin-value">
-                            <i class="fas fa-home"></i> Beranda
+                            <i class="fas fa-home"></i> ${t('nav.home')}
                         </div>
                     </div>
                     ${pins.map((pinId, slotIdx) => `
                         <div class="footer-pin-slot">
-                            <span class="footer-pin-label">${slotLabels[slotIdx]}</span>
+                            <span class="footer-pin-label">${t('settings.slot', { n: slotIdx + 2 })}</span>
                             <select class="footer-pin-select" data-slot="${slotIdx}">
                                 ${FOOTER_PINNABLE.map(a => `
-                                    <option value="${a.id}" ${a.id === pinId ? 'selected' : ''}>${a.name}</option>
+                                    <option value="${a.id}" ${a.id === pinId ? 'selected' : ''}>${t('app.' + a.id + '.name') || a.name}</option>
                                 `).join('')}
                             </select>
                         </div>
                     `).join('')}
                     <div class="footer-pin-slot fixed">
-                        <span class="footer-pin-label">Slot 5</span>
+                        <span class="footer-pin-label">${t('settings.slot', { n: 5 })}</span>
                         <div class="footer-pin-value">
-                            <i class="fas fa-th"></i> Lainnya
+                            <i class="fas fa-th"></i> ${t('nav.more')}
                         </div>
                     </div>
                 </div>
@@ -1050,19 +1116,20 @@ class IslamHubApp {
             <div class="settings-section">
                 <div class="settings-section-head">
                     <i class="fas fa-grip-vertical"></i>
-                    <h4>Urutan Menu "Lainnya"</h4>
+                    <h4>${t('settings.orderLainnya')}</h4>
                 </div>
-                <p class="settings-section-hint">Seret atau gunakan tombol ↑↓ untuk mengatur urutan tampilan. Aplikasi yang dipin ke footer disembunyikan di sini.</p>
+                <p class="settings-section-hint">${t('settings.orderLainnyaHint')}</p>
                 ${order.map((id, idx) => {
                     const app = DROPDOWN_APP_CONFIG.find(a => a.id === id);
                     if (!app) return '';
+                    const appName = t('app.' + app.id + '.name') || app.name;
                     return `
                     <div class="settings-app-item" data-app="${app.id}" draggable="true">
                         <div class="settings-drag-handle"><i class="fas fa-grip-vertical"></i></div>
                         <div class="settings-app-icon" style="background:${app.iconBg}">
                             ${app.icon === 'doa' ? doaIcon() : `<i class="fas ${app.icon}"></i>`}
                         </div>
-                        <span class="settings-app-name">${app.name}</span>
+                        <span class="settings-app-name">${appName}</span>
                         <div class="settings-app-btns">
                             <button class="settings-move-btn" data-action="up" data-app="${app.id}" ${idx === 0 ? 'disabled' : ''}>
                                 <i class="fas fa-chevron-up"></i>
@@ -1081,15 +1148,20 @@ class IslamHubApp {
             <div class="settings-section">
                 <div class="settings-section-head">
                     <i class="fas fa-palette"></i>
-                    <h4>Tema tampilan</h4>
+                    <h4>${t('settings.theme')}</h4>
                 </div>
                 <div class="theme-choice">
-                    <button type="button" class="theme-opt ${theme === 'sakinah' ? 'on' : ''}" data-theme-opt="sakinah"><span class="theme-swatch sk"></span>Sakinah<small>Terang, hijau & emas</small></button>
-                    <button type="button" class="theme-opt ${theme === 'classic' ? 'on' : ''}" data-theme-opt="classic"><span class="theme-swatch cl"></span>Klasik<small>Gelap, neon</small></button>
+                    <button type="button" class="theme-opt ${theme === 'sakinah' ? 'on' : ''}" data-theme-opt="sakinah"><span class="theme-swatch sk"></span>${t('settings.themeSakinah')}<small>${t('settings.themeSakinahDesc')}</small></button>
+                    <button type="button" class="theme-opt ${theme === 'classic' ? 'on' : ''}" data-theme-opt="classic"><span class="theme-swatch cl"></span>${t('settings.themeClassic')}<small>${t('settings.themeClassicDesc')}</small></button>
                 </div>
             </div>
         `;
-        list.innerHTML = themeHTML + footerHTML + reorderHTML;
+        list.innerHTML = langHTML + themeHTML + footerHTML + reorderHTML;
+
+        list.querySelectorAll('[data-lang-opt]').forEach(b => b.addEventListener('click', () => {
+            setLang(b.dataset.langOpt);
+        }));
+
         list.querySelectorAll('[data-theme-opt]').forEach(b => b.addEventListener('click', () => {
             applyTheme(b.dataset.themeOpt);
             this.updateFloatingWidgetVisibility(this.currentApp);
@@ -1275,7 +1347,7 @@ class IslamHubApp {
     initializeHomeWidget() {
         // Will be populated by Adzan app when it loads
         this.updateHomeWidget({
-            prayerName: 'Memuat...',
+            prayerName: t('common.loadingData'),
             prayerTime: '--:--',
             countdown: '--:--:--',
             city: this.state.user.city
@@ -1284,12 +1356,14 @@ class IslamHubApp {
 
     // Update home widget with prayer data
     updateHomeWidget(data) {
+        if (!data) return;
+        this.prayerData = data;
         const prayerNameEl = document.getElementById('homePrayerName');
         const prayerTimeEl = document.getElementById('homePrayerTime');
         const countdownEl = document.getElementById('homeCountdown');
         const cityEl = document.getElementById('homeCity');
         
-        if (prayerNameEl) prayerNameEl.textContent = data.prayerName;
+        if (prayerNameEl) prayerNameEl.textContent = formatPrayerName(data.prayerName);
         if (prayerTimeEl) prayerTimeEl.textContent = data.prayerTime;
         if (countdownEl) countdownEl.textContent = data.countdown;
         if (cityEl) cityEl.textContent = data.city;
@@ -1303,11 +1377,13 @@ class IslamHubApp {
 
     // Update floating widget
     updateFloatingWidget(data) {
+        if (!data) return;
+        this.prayerData = data;
         const widgetPrayerName = document.getElementById('widgetPrayerName');
         const widgetCountdown = document.getElementById('widgetCountdown');
         const widgetCity = document.getElementById('widgetCity');
         
-        if (widgetPrayerName) widgetPrayerName.textContent = data.prayerName;
+        if (widgetPrayerName) widgetPrayerName.textContent = formatPrayerName(data.prayerName);
         if (widgetCountdown) widgetCountdown.textContent = data.countdown;
         if (widgetCity) widgetCity.textContent = data.city;
     }
@@ -2647,11 +2723,11 @@ class IslamHubApp {
             // Update overlay message
             const overlayText = overlay.querySelector('h3');
             if (overlayText) {
-                overlayText.textContent = '✓ Data Berhasil Dihapus!';
+                overlayText.textContent = t('clearData.success');
             }
             const overlaySubtext = overlay.querySelector('p');
             if (overlaySubtext) {
-                overlaySubtext.textContent = 'Memuat ulang aplikasi...';
+                overlaySubtext.textContent = t('clearData.reloading');
             }
             
             // Close modal
@@ -2670,14 +2746,14 @@ class IslamHubApp {
                 }, 1500);
             } else {
                 overlay.remove();
-                this.showToast('Tidak ada data yang dipilih', 'info');
+                this.showToast(t('clearData.noDataSelected'), 'info');
             }
             
         } catch (error) {
             console.error('Error clearing data:', error);
             const overlay = document.querySelector('.cache-loading-overlay');
             if (overlay) overlay.remove();
-            this.showToast('❌ Gagal menghapus data: ' + error.message, 'error');
+            this.showToast(t('clearData.failedClear', { error: error.message }), 'error');
         }
     }
     
