@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-28T21:23Z",
+  "updated": "2026-10-29T00:48Z",
   "channels": [
     {
       "key": "makkah",
@@ -83,7 +83,7 @@
       "always": false,
       "logo": "assets/logo/khalid_tv.jpg",
       "color": "khalid",
-      "live": true
+      "live": false
     },
     {
       "key": "yufid",
