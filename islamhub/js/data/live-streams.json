@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-01T10:34Z",
+  "updated": "2026-11-02T06:23Z",
   "channels": [
     {
       "key": "makkah",
@@ -107,7 +107,7 @@
       "always": false,
       "icon": "fas fa-satellite-dish",
       "color": "ahsan",
-      "live": true
+      "live": false
     }
   ]
 }
