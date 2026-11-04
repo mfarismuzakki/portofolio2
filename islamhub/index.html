@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IslamHub pindah ke islamhub.web.id</title>
     <link rel="canonical" href="https://islamhub.web.id/">
+    <meta name="referrer" content="origin">
     <meta http-equiv="refresh" content="3;url=https://islamhub.web.id/">
     <style>
         body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; box-sizing: border-box;
@@ -17,7 +18,28 @@
         // GitHub Pages has no server redirects. Clear this path's old service worker and caches first,
         // so the old version cannot open again here, and never wait long for that cleanup.
         (function () {
-            var target = 'https://islamhub.web.id/' + location.search + location.hash;
+            // The user's data travels in the URL fragment, which never reaches a server; the new site
+            // imports it once and removes it from the address. Same keys as the list in its index.html,
+            // most valuable first. Location, the Tanya Jawab API key and chat history stay behind.
+            var KEYS = ['alquran_bookmarks', 'alquran_verse_bookmarks', 'alquran_memorization_progress', 'alquran_verse_progress',
+                'alquran_last_read', 'alquran_last_page', 'alquran_streak', 'alquran_history', 'alquran_settings', 'alquran_view_mode',
+                'islamhub_dzikir_favorites', 'islamhub_hadits_favorites', 'islamhub_sirah_favorites', 'sholatFavorites', 'warisFavorites',
+                'islamhub_haji_done', 'islamhub_manasik_game_v1', 'islamhub_arena_v1', 'islamhub_lang', 'islamhub_adzan_method',
+                'adm-settings', 'islamhub_app_order', 'islamhub_footer_pins'];
+            function forwardedData() {
+                try {
+                    var data = {}, size = 0;
+                    KEYS.forEach(function (key) {
+                        var value = localStorage.getItem(key);
+                        if (value !== null && size + value.length < 100000) { data[key] = value; size += value.length; }
+                    });
+                    if (!size) return '';
+                    var binary = '';
+                    new TextEncoder().encode(JSON.stringify(data)).forEach(function (b) { binary += String.fromCharCode(b); });
+                    return '#ihmigrate=' + btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+                } catch (e) { return ''; }
+            }
+            var target = 'https://islamhub.web.id/' + location.search + (forwardedData() || location.hash);
             var cleanup = Promise.all([
                 'serviceWorker' in navigator ? navigator.serviceWorker.getRegistrations().then(function (regs) {
                     return Promise.all(regs.filter(function (r) {
