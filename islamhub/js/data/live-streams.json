@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-07T17:47Z",
+  "updated": "2026-11-07T21:56Z",
   "channels": [
     {
       "key": "makkah",
@@ -35,7 +35,7 @@
       "always": true,
       "logo": "assets/logo/syafiq_tv.jpg",
       "color": "syafiq",
-      "live": true
+      "live": false
     },
     {
       "key": "meds",
