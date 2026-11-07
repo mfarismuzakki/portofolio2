@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-07T10:21Z",
+  "updated": "2026-11-07T17:47Z",
   "channels": [
     {
       "key": "makkah",
@@ -35,7 +35,7 @@
       "always": true,
       "logo": "assets/logo/syafiq_tv.jpg",
       "color": "syafiq",
-      "live": false
+      "live": true
     },
     {
       "key": "meds",
@@ -83,7 +83,7 @@
       "always": false,
       "logo": "assets/logo/khalid_tv.jpg",
       "color": "khalid",
-      "live": true
+      "live": false
     },
     {
       "key": "yufid",
@@ -107,7 +107,7 @@
       "always": false,
       "icon": "fas fa-satellite-dish",
       "color": "ahsan",
-      "live": true
+      "live": false
     }
   ]
 }
