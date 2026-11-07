@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-07T00:58Z",
+  "updated": "2026-11-07T10:21Z",
   "channels": [
     {
       "key": "makkah",
@@ -23,7 +23,7 @@
       "always": true,
       "icon": "fas fa-mosque",
       "color": "madinah",
-      "live": true
+      "live": false
     },
     {
       "key": "srb",
@@ -79,11 +79,11 @@
       "name": "Khalid Basalamah Official",
       "desc": "Kajian langsung Ustadz Khalid Basalamah",
       "channelId": "UCJHC3VbFsp7kJ2NxPGltwiw",
-      "videoId": "l_CnsYOSZaM",
+      "videoId": "Zjr9-clGJP4",
       "always": false,
       "logo": "assets/logo/khalid_tv.jpg",
       "color": "khalid",
-      "live": false
+      "live": true
     },
     {
       "key": "yufid",
