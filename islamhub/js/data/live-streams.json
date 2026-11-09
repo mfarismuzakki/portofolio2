@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-09T11:42Z",
+  "updated": "2026-11-09T22:27Z",
   "channels": [
     {
       "key": "makkah",
@@ -7,11 +7,11 @@
       "name": "Makkah Live",
       "desc": "Masjidil Haram 24 jam · Saudi Quran TV",
       "channelId": "UCos52azQNBgW63_9uDJoPDA",
-      "videoId": "eC4LfEVxvKg",
+      "videoId": "IsJTAdC3-Jw",
       "always": true,
       "icon": "fas fa-kaaba",
       "color": "makkah",
-      "live": false
+      "live": true
     },
     {
       "key": "madinah",
@@ -103,7 +103,7 @@
       "name": "Ahsan TV",
       "desc": "Kajian sunnah Ahsan TV Indonesia",
       "channelId": "UC6c15GN6fw8ASTBKjODgtcw",
-      "videoId": "fd7z-cULEXg",
+      "videoId": "rpoqU6mrAqE",
       "always": false,
       "icon": "fas fa-satellite-dish",
       "color": "ahsan",
