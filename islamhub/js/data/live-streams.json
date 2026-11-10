@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-09T22:27Z",
+  "updated": "2026-11-10T07:26Z",
   "channels": [
     {
       "key": "makkah",
@@ -91,11 +91,11 @@
       "name": "Yufid.TV",
       "desc": "Kajian dan ceramah Islam Yufid",
       "channelId": "UCX-4mrOc5r691SzDhHtkOgw",
-      "videoId": "kjDIa94Pits",
+      "videoId": "sQQvuWFMD9I",
       "always": false,
       "icon": "fas fa-play",
       "color": "yufid",
-      "live": false
+      "live": true
     },
     {
       "key": "ahsan",
@@ -103,7 +103,7 @@
       "name": "Ahsan TV",
       "desc": "Kajian sunnah Ahsan TV Indonesia",
       "channelId": "UC6c15GN6fw8ASTBKjODgtcw",
-      "videoId": "rpoqU6mrAqE",
+      "videoId": "7mX_sHh8eeo",
       "always": false,
       "icon": "fas fa-satellite-dish",
       "color": "ahsan",
