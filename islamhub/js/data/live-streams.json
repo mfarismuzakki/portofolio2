@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-15T16:25Z",
+  "updated": "2026-11-16T06:40Z",
   "channels": [
     {
       "key": "makkah",
@@ -103,7 +103,7 @@
       "name": "Ahsan TV",
       "desc": "Kajian sunnah Ahsan TV Indonesia",
       "channelId": "UC6c15GN6fw8ASTBKjODgtcw",
-      "videoId": "_5qbGVygRSU",
+      "videoId": "1eW1Nn8qHRM",
       "always": false,
       "icon": "fas fa-satellite-dish",
       "color": "ahsan",
