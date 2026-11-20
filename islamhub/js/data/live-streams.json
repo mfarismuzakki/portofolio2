@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:48Z",
+  "updated": "2026-11-20T20:28Z",
   "channels": [
     {
       "key": "makkah",
@@ -11,7 +11,7 @@
       "always": true,
       "icon": "fas fa-kaaba",
       "color": "makkah",
-      "live": false
+      "live": true
     },
     {
       "key": "madinah",
@@ -35,7 +35,7 @@
       "always": true,
       "logo": "assets/logo/syafiq_tv.jpg",
       "color": "syafiq",
-      "live": false
+      "live": true
     },
     {
       "key": "meds",
@@ -43,11 +43,11 @@
       "name": "Media Sunnah Aceh TV",
       "desc": "Siaran dakwah MedS.TV dari Aceh",
       "channelId": "UCem4zrffr93cp-o8cOPDhdQ",
-      "videoId": "o602MxuwDk8",
+      "videoId": "3Q4z6cmKgSo",
       "always": true,
       "icon": "fas fa-tv",
       "color": "meds",
-      "live": false
+      "live": true
     },
     {
       "key": "wesal",
