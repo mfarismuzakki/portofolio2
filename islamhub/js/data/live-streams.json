@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T02:23Z",
+  "updated": "2026-11-21T11:15Z",
   "channels": [
     {
       "key": "makkah",
@@ -11,7 +11,7 @@
       "always": true,
       "icon": "fas fa-kaaba",
       "color": "makkah",
-      "live": true
+      "live": false
     },
     {
       "key": "madinah",
@@ -35,7 +35,7 @@
       "always": true,
       "logo": "assets/logo/syafiq_tv.jpg",
       "color": "syafiq",
-      "live": true
+      "live": false
     },
     {
       "key": "meds",
@@ -47,7 +47,7 @@
       "always": true,
       "icon": "fas fa-tv",
       "color": "meds",
-      "live": true
+      "live": false
     },
     {
       "key": "wesal",
@@ -95,7 +95,7 @@
       "always": false,
       "icon": "fas fa-play",
       "color": "yufid",
-      "live": true
+      "live": false
     },
     {
       "key": "ahsan",
@@ -103,7 +103,7 @@
       "name": "Ahsan TV",
       "desc": "Kajian sunnah Ahsan TV Indonesia",
       "channelId": "UC6c15GN6fw8ASTBKjODgtcw",
-      "videoId": "M3kRkoMjItk",
+      "videoId": "QEovVcn4yKE",
       "always": false,
       "icon": "fas fa-satellite-dish",
       "color": "ahsan",
