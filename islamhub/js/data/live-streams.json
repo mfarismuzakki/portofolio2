@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T11:15Z",
+  "updated": "2026-11-21T19:23Z",
   "channels": [
     {
       "key": "makkah",
@@ -11,7 +11,7 @@
       "always": true,
       "icon": "fas fa-kaaba",
       "color": "makkah",
-      "live": false
+      "live": true
     },
     {
       "key": "madinah",
@@ -35,7 +35,7 @@
       "always": true,
       "logo": "assets/logo/syafiq_tv.jpg",
       "color": "syafiq",
-      "live": false
+      "live": true
     },
     {
       "key": "meds",
@@ -47,7 +47,7 @@
       "always": true,
       "icon": "fas fa-tv",
       "color": "meds",
-      "live": false
+      "live": true
     },
     {
       "key": "wesal",
@@ -79,11 +79,11 @@
       "name": "Khalid Basalamah Official",
       "desc": "Kajian langsung Ustadz Khalid Basalamah",
       "channelId": "UCJHC3VbFsp7kJ2NxPGltwiw",
-      "videoId": "Zjr9-clGJP4",
+      "videoId": "jPmJfr5a7Bw",
       "always": false,
       "logo": "assets/logo/khalid_tv.jpg",
       "color": "khalid",
-      "live": false
+      "live": true
     },
     {
       "key": "yufid",
@@ -91,11 +91,11 @@
       "name": "Yufid.TV",
       "desc": "Kajian dan ceramah Islam Yufid",
       "channelId": "UCX-4mrOc5r691SzDhHtkOgw",
-      "videoId": "zDy_uktRfgA",
+      "videoId": "sqIfK7asvVw",
       "always": false,
       "icon": "fas fa-play",
       "color": "yufid",
-      "live": false
+      "live": true
     },
     {
       "key": "ahsan",
@@ -107,7 +107,7 @@
       "always": false,
       "icon": "fas fa-satellite-dish",
       "color": "ahsan",
-      "live": true
+      "live": false
     }
   ]
 }
