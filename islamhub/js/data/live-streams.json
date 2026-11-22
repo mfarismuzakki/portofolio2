@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T19:23Z",
+  "updated": "2026-11-22T01:23Z",
   "channels": [
     {
       "key": "makkah",
@@ -11,7 +11,7 @@
       "always": true,
       "icon": "fas fa-kaaba",
       "color": "makkah",
-      "live": true
+      "live": false
     },
     {
       "key": "madinah",
@@ -35,7 +35,7 @@
       "always": true,
       "logo": "assets/logo/syafiq_tv.jpg",
       "color": "syafiq",
-      "live": true
+      "live": false
     },
     {
       "key": "meds",
@@ -47,7 +47,7 @@
       "always": true,
       "icon": "fas fa-tv",
       "color": "meds",
-      "live": true
+      "live": false
     },
     {
       "key": "wesal",
@@ -83,7 +83,7 @@
       "always": false,
       "logo": "assets/logo/khalid_tv.jpg",
       "color": "khalid",
-      "live": true
+      "live": false
     },
     {
       "key": "yufid",
@@ -95,7 +95,7 @@
       "always": false,
       "icon": "fas fa-play",
       "color": "yufid",
-      "live": true
+      "live": false
     },
     {
       "key": "ahsan",
