@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-24T23:57Z",
+  "updated": "2026-11-25T08:44Z",
   "channels": [
     {
       "key": "makkah",
@@ -11,7 +11,7 @@
       "always": true,
       "icon": "fas fa-kaaba",
       "color": "makkah",
-      "live": false
+      "live": true
     },
     {
       "key": "madinah",
@@ -19,11 +19,11 @@
       "name": "Madinah Live",
       "desc": "Masjid Nabawi 24 jam · Saudi Sunnah TV",
       "channelId": "UCROKYPep-UuODNwyipe6JMw",
-      "videoId": "Rs7St51oDDc",
+      "videoId": "DLnqQHiDbaI",
       "always": true,
       "icon": "fas fa-mosque",
       "color": "madinah",
-      "live": false
+      "live": true
     },
     {
       "key": "srb",
@@ -35,7 +35,7 @@
       "always": true,
       "logo": "assets/logo/syafiq_tv.jpg",
       "color": "syafiq",
-      "live": false
+      "live": true
     },
     {
       "key": "meds",
@@ -47,7 +47,7 @@
       "always": true,
       "icon": "fas fa-tv",
       "color": "meds",
-      "live": false
+      "live": true
     },
     {
       "key": "wesal",
@@ -103,7 +103,7 @@
       "name": "Ahsan TV",
       "desc": "Kajian sunnah Ahsan TV Indonesia",
       "channelId": "UC6c15GN6fw8ASTBKjODgtcw",
-      "videoId": "pX767QgG0fE",
+      "videoId": "29GgG5YOAoA",
       "always": false,
       "icon": "fas fa-satellite-dish",
       "color": "ahsan",
